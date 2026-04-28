@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
@@ -21,6 +21,35 @@ const seedElements = seeds.map(s => `<ellipse cx='${s.x}' cy='${s.y}' rx='3' ry=
 
 export function Melon() {
   const meshRef = useRef<THREE.Mesh>(null);
+  const [scale, setScale] = useState(1);
+
+  // Responsive scale and element tracking setup
+  useEffect(() => {
+    const handleResize = () => setScale(window.innerWidth < 768 ? 0.7 : 1);
+    handleResize();
+
+    // Cache elements and update their CSS custom properties only on scroll/resize!
+    // Doing this inside useFrame at 60fps was a massive performance killer.
+    const updateElements = () => {
+      const elements = document.querySelectorAll('.text-outline, .text-outline-accent, .text-outline-thick');
+      elements.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        (el as HTMLElement).style.setProperty('--elem-x', `${rect.left}px`);
+        (el as HTMLElement).style.setProperty('--elem-y', `${rect.top}px`);
+      });
+    };
+
+    updateElements();
+    window.addEventListener("resize", handleResize, { passive: true });
+    window.addEventListener("scroll", updateElements, { passive: true });
+    window.addEventListener("resize", updateElements, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", updateElements);
+      window.removeEventListener("resize", updateElements);
+    };
+  }, []);
 
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
@@ -122,9 +151,9 @@ export function Melon() {
       const x = (center.x * 0.5 + 0.5) * window.innerWidth;
       const y = (-(center.y * 0.5) + 0.5) * window.innerHeight;
       
-      // Calculate projected radius in pixels (sphere radius is 2)
+      // Calculate projected radius in pixels (sphere radius is 2 * responsive scale)
       const edge = pos.clone();
-      edge.x += 2; // Since camera looks down Z, moving along global X is perfect for radius
+      edge.x += 2 * scale; // Adjust radius based on mobile scale
       edge.project(state.camera);
       const edgeX = (edge.x * 0.5 + 0.5) * window.innerWidth;
       // Add a slight multiplier to cover the 3D bulge perfectly
@@ -149,20 +178,13 @@ export function Melon() {
       // Generate dynamic SVG for rotating seeds
       const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='-100 -100 200 200'><g transform='rotate(${angle.toFixed(1)})'>${seedElements}</g></svg>`;
       document.documentElement.style.setProperty('--melon-seeds-bg', `url("data:image/svg+xml,${svg}")`);
-
-      // Calculate relative position for text elements to avoid background-attachment: fixed bugs
-      const elements = document.querySelectorAll('.text-outline, .text-outline-accent, .text-outline-thick');
-      elements.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        (el as HTMLElement).style.setProperty('--elem-x', `${rect.left}px`);
-        (el as HTMLElement).style.setProperty('--elem-y', `${rect.top}px`);
-      });
     }
   });
 
   return (
-    <mesh ref={meshRef}>
-      <sphereGeometry args={[2, 64, 64]} />
+    <mesh ref={meshRef} scale={scale}>
+      {/* Lower segment count (32 vs 64) for massive performance boost on phones without losing visual quality */}
+      <sphereGeometry args={[2, 32, 32]} />
       <meshStandardMaterial 
         map={texture}
         roughness={0.7} 

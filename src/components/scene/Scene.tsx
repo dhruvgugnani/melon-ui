@@ -7,7 +7,7 @@ import { Melon } from "./Melon";
 export function Scene() {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
-      <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
+      <Canvas camera={{ position: [0, 0, 8], fov: 45 }} dpr={[1, 1.5]}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[5, 5, 5]} intensity={2} />
         <directionalLight position={[-5, -5, -5]} intensity={0.5} color="#78efff" />
