@@ -50,17 +50,17 @@ export function LoadingScreen() {
   return (
     <div className="loading-screen fixed inset-0 z-[10000] bg-black flex flex-col items-center justify-center pointer-events-auto">
       <div className="loading-content relative flex flex-col items-center text-center">
-        {/* Simple animated brand mark */}
-        <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white mb-10">
-          <span className="block text-outline" data-text="Melon">Melon</span>
-          <span className="block">UI Store</span>
+        {/* Sleek animated brand mark */}
+        <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-[0.2em] mb-8 flex gap-2">
+          <span className="text-[#5c8a4d]">Melon</span>
+          <span className="text-accent">UI</span>
         </h1>
         
         {/* Progress Bar Container */}
         <div className="w-64 md:w-96 h-1 bg-white/10 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-accent transition-none"
-            style={{ width: `${progress}%` }}
+            className="w-full h-full bg-accent transition-none"
+            style={{ transform: `scaleX(${progress / 100})`, transformOrigin: "left" }}
           />
         </div>
         
