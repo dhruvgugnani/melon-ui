@@ -183,8 +183,7 @@ export function Melon() {
 
   return (
     <mesh ref={meshRef} scale={scale}>
-      {/* Lower segment count (32 vs 64) for massive performance boost on phones without losing visual quality */}
-      <sphereGeometry args={[2, 32, 32]} />
+      <sphereGeometry args={[2, 64, 64]} />
       <meshStandardMaterial 
         map={texture}
         roughness={0.7} 
