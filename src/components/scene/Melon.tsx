@@ -28,9 +28,19 @@ export function Melon() {
   const topHalfRef = useRef<THREE.Group>(null);
   const bottomHalfRef = useRef<THREE.Group>(null);
   const katanaRef = useRef<THREE.Group>(null);
+  const splashGroupRef = useRef<THREE.Group>(null); // Independent group for splashes so they don't orbit!
   const idleSpeed = useRef({ val: 0.1 });
   const [scale, setScale] = useState(1);
   const [segments, setSegments] = useState(64);
+
+  // Physically accurate Anime Teardrop geometry (Fat head at +X, Pointy tail at -X)
+  const teardropShape = useMemo(() => {
+    const shape = new THREE.Shape();
+    shape.moveTo(-1, 0); // Pointy tail
+    shape.bezierCurveTo(-0.2, 0.4, 0.5, 0.6, 0.5, 0); // Top curve
+    shape.bezierCurveTo(0.5, -0.6, -0.2, -0.4, -1, 0); // Bottom curve
+    return shape;
+  }, []);
 
   // Responsive scale setup
   useEffect(() => {
@@ -163,15 +173,51 @@ export function Melon() {
   }, []);
 
   const dropletsData = useMemo(() => {
-    return Array.from({ length: 30 }).map(() => ({
-      position: [(Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5] as [number, number, number],
-      scale: Math.random() * 0.08 + 0.02,
-      target: [
-        (Math.random() - 0.5) * 12, // Explode outwards X
-        (Math.random() - 0.5) * 12, // Towards/Away Z
-        -(Math.random() * 10 + 4)   // Explode UPWARDS! (Negative local Z)
-      ]
-    }));
+    // Mixed Artistic Splash: 24 manga streaks + 12 round droplets
+    return Array.from({ length: 36 }).map((_, i) => {
+      const isStreak = i < 24;
+      const angle = isStreak ? (Math.PI * 2 / 24) * i : Math.random() * Math.PI * 2;
+      
+      let speed = 12;
+      let scale = 0.3;
+      
+      if (isStreak) {
+        // Fixed starburst for streaks (reduced scale for finer, sharper lines)
+        const lengthType = i % 3;
+        if (lengthType === 0) { speed = 22; scale = 0.25; }
+        else if (lengthType === 1) { speed = 10; scale = 0.1; }
+        else { speed = 16; scale = 0.15; }
+      } else {
+        // Random distribution for droplets (much smaller, subtle droplets)
+        speed = Math.random() * 8 + 4;
+        scale = Math.random() * 0.08 + 0.05;
+      }
+
+      const targetX = Math.cos(angle) * speed;
+      let targetY = Math.sin(angle) * speed * 0.5; // Flatten explosion
+      
+      if (!isStreak) {
+        targetY -= 2; // Drops fall slightly more
+      }
+
+      // Calculate display angle AFTER gravity offset so teardrops align flawlessly with their trajectory!
+      const displayAngle = Math.atan2(targetY, targetX);
+
+      return {
+        isStreak,
+        angle: displayAngle,
+        // Z=1 places them IN FRONT of the melon (which is at Z=0)
+        position: [
+          isStreak ? 0 : (Math.random() - 0.5), 
+          isStreak ? 0 : (Math.random() - 0.5), 
+          1 
+        ] as [number, number, number],
+        targetX,
+        targetY,
+        targetZ: 1.5, // Fly slightly towards camera
+        scale
+      };
+    });
   }, []);
   const dropletsRefs = useRef<(THREE.Mesh | null)[]>([]);
 
@@ -198,12 +244,9 @@ export function Melon() {
   }, []);
 
   useGSAP(() => {
-    if (!groupRef.current || !idleGroupRef.current || !topHalfRef.current || !bottomHalfRef.current || !katanaRef.current) return;
+    if (!groupRef.current || !idleGroupRef.current || !topHalfRef.current || !bottomHalfRef.current || !katanaRef.current || !splashGroupRef.current) return;
 
     setTimeout(() => {
-      // MASTER SCROLL TIMELINE
-      // This entirely eliminates GSAP overwrite conflicts by putting all sequences 
-      // into a single flawlessly scrubbable timeline attached to the whole page!
       const masterTl = gsap.timeline({
         scrollTrigger: {
           trigger: "#scroll-content",
@@ -214,81 +257,69 @@ export function Melon() {
         }
       });
 
-      // SECTION 1 & 2: EXPLICIT DETERMINISTIC TUMBLE
-      // We break the 3.0 continuous tumble into two explicit tweens that meet exactly at t=1.625.
-      // This forces GSAP to hit the exact Euler angles at the moment of the slice without any interpolation drift.
-      
       masterTl.to(groupRef.current!.rotation, {
-        x: Math.PI / 2, // Exactly 90 degrees pitch (local Y points at camera)
-        y: Math.PI * 2 - Math.PI / 12, // Exactly 1 full roll minus 15 degrees to match Katana
-        z: Math.PI * 2, // Exactly 1 full yaw (0 relative). RED FACE IS LOCKED TO CAMERA!
+        x: Math.PI / 2,
+        y: Math.PI * 2 - Math.PI / 12,
+        z: Math.PI * 2,
         ease: "power1.inOut", 
         duration: 1.625
       }, 0);
 
-      // Continue tumbling after the slice so it feels alive and organic!
       masterTl.to(groupRef.current!.rotation, {
         x: Math.PI,
         y: Math.PI * 3,
         z: Math.PI * 3,
         ease: "power1.inOut",
-        duration: 1.375 // Remaining time (3.0 - 1.625)
+        duration: 1.375
       }, 1.625);
 
-      // Deterministic Idle Spin: Spin continuously for the entire 3.0 duration
       masterTl.to(idleGroupRef.current!.rotation, {
         y: Math.PI * 4,
         ease: "none",
         duration: 3.0
       }, 0);
 
-      // Hero -> Showcase position drop
-      masterTl.to(groupRef.current!.position, {
+      masterTl.to([groupRef.current!.position, splashGroupRef.current!.position], {
         y: -1,
         ease: "power1.inOut",
         duration: 1
       }, 0);
 
-      // SECTION 2: SHOWCASE -> FEATURES (50% to 100% of page scroll)
-      // These animations start at time 1.0 on the master timeline
-
-      // Reset initial states for Katana so it doesn't float in early
       katanaRef.current!.position.set(15, 10, 0);
       katanaRef.current!.rotation.set(0, 0, Math.PI / 4);
 
-      // Phase 1 (1.0 to 1.35): Sword readies itself dynamically as you scroll.
-      // Notice: NO melon rotation tweens here anymore! It's seamlessly handled by the continuous tumble above.
       masterTl.to(katanaRef.current!.position, { x: 8, y: 3, ease: "power2.out", duration: 0.35 }, 1.0)
             .to(katanaRef.current!.rotation, { z: -Math.PI / 12, ease: "power2.out", duration: 0.35 }, 1.0);
 
-      // Phase 2 (1.35 to 1.9): THE HORIZONTAL SLICE! 
       masterTl.to(katanaRef.current!.position, { x: -8, y: -3, ease: "none", duration: 0.55 }, 1.35)
             .to(katanaRef.current!.rotation, { z: -Math.PI / 6, ease: "none", duration: 0.55 }, 1.35);
 
-      // Phase 3 (1.625 to 2.0): Top half tumbles away!
       masterTl.to(topHalfRef.current!.position, { z: 12, y: 4, x: -2, ease: "power2.in", duration: 0.375 }, 1.625)
             .to(topHalfRef.current!.rotation, { x: Math.PI, y: Math.PI / 4, z: -Math.PI / 12, ease: "none", duration: 0.375 }, 1.625)
-            // "Delete" the top half right after it flies out of view so it doesn't orbit back onto the screen!
             .to(topHalfRef.current!.scale, { x: 0, y: 0, z: 0, duration: 0.01 }, 2.0);
 
-      // Juice Splash!
+      // Mixed Artistic Splash!
       dropletsData.forEach((drop, i) => {
         const mesh = dropletsRefs.current[i];
         if (mesh) {
-          masterTl.set(mesh.scale, { x: drop.scale, y: drop.scale, z: drop.scale }, 1.625) // Pop into existence
-                .to(mesh.position, { x: drop.target[0], y: drop.target[1], z: drop.target[2], duration: 0.275, ease: "power2.out" }, 1.625)
-                .to(mesh.scale, { x: 0, y: 0, z: 0, duration: 0.1, ease: "power2.in" }, 1.8); // Shrink away
+          // Start exactly at 0 so they don't pop in as thick blobs!
+          masterTl.set(mesh.scale, { x: 0, y: 0, z: 0 }, 1.625)
+                .to(mesh.position, { x: drop.targetX, y: drop.targetY, z: drop.targetZ, duration: 1.375, ease: "power3.out" }, 1.625);
+
+          if (drop.isStreak) {
+            // Smoothly grow into sharp, thin lines
+            masterTl.to(mesh.scale, { x: drop.scale * 6, y: drop.scale * 0.15, z: drop.scale * 0.15, duration: 0.2, ease: "power4.out" }, 1.625);
+          } else {
+            // Smoothly pop into elongated anime teardrops! (Stretched in direction of travel)
+            masterTl.to(mesh.scale, { x: drop.scale * 2.5, y: drop.scale * 0.8, z: drop.scale * 0.8, duration: 0.3, ease: "back.out(2)" }, 1.625);
+          }
+
+          masterTl.to(mesh.scale, { x: 0, y: 0, z: 0, duration: 1.175, ease: "power2.inOut" }, 1.825); // Shrink and disappear
         }
       });
 
-      // Phase 4 (1.9 to 2.0): Sword follows through and exits
       masterTl.to(katanaRef.current!.position, { x: -15, y: -5, ease: "power2.in", duration: 0.1 }, 1.9);
 
-      // SECTION 3: FEATURES -> CTA (2.0 to 3.0)
-      // This invisible 1-second spacer perfectly aligns the math!
-      // Total Timeline Duration = 3.0.
-      // Total Scroll Distance = 3 section transitions (Hero->Showcase, Showcase->Features, Features->CTA).
-      // Therefore, 1.0 duration = exactly 1 section transition!
       masterTl.to(groupRef.current!.position, { y: -1, duration: 1 }, 2.0);
 
       ScrollTrigger.refresh();
@@ -297,7 +328,6 @@ export function Melon() {
 
   useFrame((state, delta) => {
     if (idleGroupRef.current) {
-      // Need to use the idleGroupRef for the seeds calculations since it holds the actual rotation now
       const pos = new THREE.Vector3();
       groupRef.current?.getWorldPosition(pos);
 
@@ -408,22 +438,27 @@ export function Melon() {
               ))}
             </mesh>
           </group>
-
-          {/* Juice Splash Particles */}
-          <group position-y={0.01}>
-            {dropletsData.map((drop, i) => (
-              <mesh 
-                key={`drop-${i}`} 
-                ref={(el) => { if (el) dropletsRefs.current[i] = el; }} 
-                position={drop.position}
-                scale={0}
-              >
-                <sphereGeometry args={[2, 8, 8]} />
-                <meshStandardMaterial map={innerTexture} bumpMap={innerTexture} bumpScale={0.2} roughness={0.6} transparent opacity={0.9} />
-              </mesh>
-            ))}
-          </group>
         </group>
+      </group>
+
+      {/* 2D Fixed Starburst Splashes - INDEPENDENT FROM MELON ROTATION! */}
+      <group ref={splashGroupRef} scale={scale}>
+        {dropletsData.map((drop, i) => (
+          <mesh 
+            key={`drop-${i}`} 
+            ref={(el) => { if (el) dropletsRefs.current[i] = el; }} 
+            position={drop.position}
+            rotation={[0, 0, drop.angle]}
+            scale={0}
+          >
+            {drop.isStreak ? (
+              <circleGeometry args={[1, 16]} />
+            ) : (
+              <shapeGeometry args={[teardropShape]} />
+            )}
+            <meshBasicMaterial color="#d92027" transparent opacity={0.8} />
+          </mesh>
+        ))}
       </group>
     </>
   );
