@@ -1,6 +1,6 @@
 export function ShowcaseSection() {
   return (
-    <section className="snap-start relative w-full h-screen flex flex-col justify-center px-6 z-10">
+    <section id="showcase-section" className="snap-start relative w-full h-screen flex flex-col justify-center px-6 z-10">
       <div className="max-w-7xl w-full mx-auto flex flex-col md:flex-row items-center gap-12 md:gap-24">
         
         {/* Text Block */}
