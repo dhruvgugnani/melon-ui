@@ -1,6 +1,6 @@
 export function HeroSection() {
   return (
-    <section className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden z-10 px-6">
+    <section className="snap-start relative w-full h-screen flex flex-col items-center justify-center overflow-hidden z-10 px-6">
       <div className="absolute top-10 left-10 flex items-center gap-3">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-lg">
           {/* Dark green outer shell */}

@@ -100,10 +100,10 @@ export function Melon() {
 
     // Wait slightly to ensure sibling Overlay components have mounted their DOM nodes
     setTimeout(() => {
-      // Rotate the melon based on scroll
+      // Rotate the melon based on scroll (1 full rotation per section transition)
       gsap.to(meshRef.current!.rotation, {
-        y: Math.PI * 2,
-        x: Math.PI / 4,
+        y: Math.PI * 6,
+        x: (Math.PI / 4) * 3,
         ease: "none",
         scrollTrigger: {
           trigger: "#scroll-content",
