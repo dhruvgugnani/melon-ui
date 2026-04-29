@@ -22,9 +22,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfitFont.variable} h-full antialiased`}
+      className={`${outfitFont.variable} antialiased h-screen w-full overflow-hidden bg-black`}
     >
-      <body className="flex min-h-full flex-col font-sans">
+      <body className="flex h-screen w-full flex-col font-sans overflow-hidden">
         <Frame />
         {children}
       </body>

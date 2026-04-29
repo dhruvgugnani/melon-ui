@@ -9,46 +9,36 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Pre-computed organic seed distribution for the X-ray effect
-const seeds = [
-  { x: 20, y: 30, a: 30 }, { x: -30, y: 10, a: -45 }, { x: 10, y: -40, a: 60 },
-  { x: -20, y: -20, a: -15 }, { x: 40, y: -10, a: 80 }, { x: -10, y: 50, a: 10 },
-  { x: -50, y: -30, a: -60 }, { x: 30, y: 15, a: 45 }, { x: -40, y: 35, a: -30 },
-  { x: 0, y: -10, a: 0 }, { x: 15, y: -50, a: 120 }, { x: 45, y: -35, a: -20 },
-  { x: -25, y: 60, a: 70 }, { x: 50, y: 40, a: 15 }
+// Pre-computed polar coordinates for the seed distribution
+const seedsRaw = [
+  { x: 20, y: 30 }, { x: -30, y: 10 }, { x: 10, y: -40 },
+  { x: -20, y: -20 }, { x: 40, y: -10 }, { x: -10, y: 50 },
+  { x: -50, y: -30 }, { x: 30, y: 15 }, { x: -40, y: 35 },
+  { x: 0, y: -10 }, { x: 15, y: -50 }, { x: 45, y: -35 },
+  { x: -25, y: 60 }, { x: 50, y: 40 }
 ];
-const seedElements = seeds.map(s => `<ellipse cx='${s.x}' cy='${s.y}' rx='3' ry='5' fill='%231a1a1a' transform='rotate(${s.a} ${s.x} ${s.y})'/>`).join('');
+const seedsPolar = seedsRaw.map(s => ({
+  r: Math.sqrt(s.x * s.x + s.y * s.y),
+  theta: Math.atan2(s.y, s.x)
+}));
 
 export function Melon() {
   const meshRef = useRef<THREE.Mesh>(null);
   const [scale, setScale] = useState(1);
+  const [segments, setSegments] = useState(64);
 
-  // Responsive scale and element tracking setup
+  // Responsive scale setup
   useEffect(() => {
-    const handleResize = () => setScale(window.innerWidth < 768 ? 0.7 : 1);
-    handleResize();
-
-    // Cache elements and update their CSS custom properties only on scroll/resize!
-    // Doing this inside useFrame at 60fps was a massive performance killer.
-    const updateElements = () => {
-      const elements = document.querySelectorAll('.text-outline, .text-outline-accent, .text-outline-thick');
-      elements.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        (el as HTMLElement).style.setProperty('--elem-x', `${rect.left}px`);
-        (el as HTMLElement).style.setProperty('--elem-y', `${rect.top}px`);
-      });
+    const handleResize = () => {
+      setScale(window.innerWidth < 768 ? 0.7 : 1);
+      setSegments(window.innerWidth < 768 ? 32 : 64);
     };
-
-    updateElements();
+    
+    // Initial calculation (slight delay to ensure DOM is fully laid out)
+    setTimeout(handleResize, 100);
+    
     window.addEventListener("resize", handleResize, { passive: true });
-    window.addEventListener("scroll", updateElements, { passive: true });
-    window.addEventListener("resize", updateElements, { passive: true });
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("scroll", updateElements);
-      window.removeEventListener("resize", updateElements);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const texture = useMemo(() => {
@@ -108,30 +98,36 @@ export function Melon() {
   useGSAP(() => {
     if (!meshRef.current) return;
 
-    // Rotate the melon based on scroll
-    gsap.to(meshRef.current.rotation, {
-      y: Math.PI * 2,
-      x: Math.PI / 4,
-      ease: "none",
-      scrollTrigger: {
-        trigger: document.body,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1, // Smooth scrubbing
-      },
-    });
+    // Wait slightly to ensure sibling Overlay components have mounted their DOM nodes
+    setTimeout(() => {
+      // Rotate the melon based on scroll
+      gsap.to(meshRef.current!.rotation, {
+        y: Math.PI * 2,
+        x: Math.PI / 4,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#scroll-content",
+          scroller: "#snap-container",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1, // Smooth scrubbing
+        },
+      });
 
-    // We can also animate its position or scale if we want
-    gsap.to(meshRef.current.position, {
-      y: -1, // move it down slightly
-      ease: "power1.inOut",
-      scrollTrigger: {
-        trigger: document.body,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1,
-      },
-    });
+      // We can also animate its position or scale if we want
+      gsap.to(meshRef.current!.position, {
+        y: -1, // move it down slightly
+        ease: "power1.inOut",
+        scrollTrigger: {
+          trigger: "#scroll-content",
+          scroller: "#snap-container",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1,
+        },
+      });
+      ScrollTrigger.refresh();
+    }, 100);
   });
 
   // A slow continuous idle rotation and 2D projection for X-ray effect
@@ -170,20 +166,28 @@ export function Melon() {
       meshRef.current.getWorldQuaternion(worldQuat);
       const euler = new THREE.Euler().setFromQuaternion(worldQuat, 'YXZ');
       
-      // WebGL Z-axis positive rotation is counter-clockwise on screen.
-      // SVG positive rotation is clockwise. We negate Z to match the visual direction!
-      // Multiplying by a scalar (1.2) if they feel it's too slow, but mathematically 1.0 is exact.
-      const angle = (euler.y + euler.x - euler.z) * (180 / Math.PI);
+      const angleRad = (euler.y + euler.x - euler.z);
       
-      // Generate dynamic SVG for rotating seeds
-      const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='-100 -100 200 200'><g transform='rotate(${angle.toFixed(1)})'>${seedElements}</g></svg>`;
-      document.documentElement.style.setProperty('--melon-seeds-bg', `url("data:image/svg+xml,${svg}")`);
+      // OPTIMIZATION: Calculate seeds directly in CSS variables via Trigonometry.
+      // This completely removes the string-parsing and DOM injection lag of generating SVG strings,
+      // allowing us to run this completely smoothly at 60fps!
+      seedsPolar.forEach((seed, i) => {
+        // Since original SVG viewBox was 200x200, the "radius" of coordinate space is 100.
+        // We multiply by (r / 100) to perfectly map logical seed coordinates to dynamic pixel screen radius!
+        const rScaled = seed.r * (r / 100);
+        const sX = rScaled * Math.cos(seed.theta + angleRad);
+        const sY = rScaled * Math.sin(seed.theta + angleRad);
+        
+        document.documentElement.style.setProperty(`--s${i}x`, `${sX}px`);
+        document.documentElement.style.setProperty(`--s${i}y`, `${sY}px`);
+      });
     }
   });
 
   return (
     <mesh ref={meshRef} scale={scale}>
-      <sphereGeometry args={[2, 64, 64]} />
+      {/* Dynamically drop complexity by 75% on mobile to save GPU */}
+      <sphereGeometry args={[2, segments, segments]} />
       <meshStandardMaterial 
         map={texture}
         roughness={0.7} 

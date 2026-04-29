@@ -79,8 +79,21 @@ html {
       #2e4a25 var(--melon-r, 0px),
       transparent var(--melon-r, 0px)
     ),
-    /* 2. Seeds (Dynamic SVG from React) */
-    var(--melon-seeds-bg, none),
+    /* 2. Seeds (14 GPU-accelerated CSS radial gradients - elliptical shape) */
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s0x, 0px)) calc(var(--melon-y, 50vh) + var(--s0y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s1x, 0px)) calc(var(--melon-y, 50vh) + var(--s1y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s2x, 0px)) calc(var(--melon-y, 50vh) + var(--s2y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s3x, 0px)) calc(var(--melon-y, 50vh) + var(--s3y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s4x, 0px)) calc(var(--melon-y, 50vh) + var(--s4y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s5x, 0px)) calc(var(--melon-y, 50vh) + var(--s5y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s6x, 0px)) calc(var(--melon-y, 50vh) + var(--s6y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s7x, 0px)) calc(var(--melon-y, 50vh) + var(--s7y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s8x, 0px)) calc(var(--melon-y, 50vh) + var(--s8y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s9x, 0px)) calc(var(--melon-y, 50vh) + var(--s9y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s10x, 0px)) calc(var(--melon-y, 50vh) + var(--s10y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s11x, 0px)) calc(var(--melon-y, 50vh) + var(--s11y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s12x, 0px)) calc(var(--melon-y, 50vh) + var(--s12y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
+    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s13x, 0px)) calc(var(--melon-y, 50vh) + var(--s13y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
     /* 3. Red Flesh */
     radial-gradient(
       circle at var(--melon-x, 50vw) var(--melon-y, 50vh),
@@ -89,19 +102,11 @@ html {
       transparent var(--melon-r-80, 0px)
     );
 
-  /* Offset the backgrounds to align perfectly with the viewport */
-  background-position: 
-    calc(0px - var(--elem-x, 0px)) calc(0px - var(--elem-y, 0px)), 
-    calc(var(--melon-x, 50vw) - var(--elem-x, 0px) - var(--melon-r-80, 0px)) calc(var(--melon-y, 50vh) - var(--elem-y, 0px) - var(--melon-r-80, 0px)), 
-    calc(0px - var(--elem-x, 0px)) calc(0px - var(--elem-y, 0px));
-    
-  background-size: 
-    100vw 100vh, 
-    calc(var(--melon-r-80, 0px) * 2) calc(var(--melon-r-80, 0px) * 2), 
-    100vw 100vh;
-    
-  background-repeat: no-repeat, no-repeat, no-repeat;
-  background-attachment: scroll;
+  /* Native GPU-accelerated viewport locking! No JS required. */
+  background-position: top left;
+  background-size: 100vw 100vh;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   
   background-clip: text;
   -webkit-background-clip: text;

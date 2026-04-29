@@ -1,7 +1,7 @@
 export function ShowcaseSection() {
   return (
-    <section className="relative w-full py-[20vh] px-6 z-10">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 md:gap-24">
+    <section className="relative w-full h-full flex flex-col justify-center px-6 z-10">
+      <div className="max-w-7xl w-full mx-auto flex flex-col md:flex-row items-center gap-12 md:gap-24">
         
         {/* Text Block */}
         <div className="flex-1 space-y-8">
@@ -16,7 +16,7 @@ export function ShowcaseSection() {
 
         {/* Component Showcase Block (Placeholder) */}
         <div className="flex-1 w-full max-w-lg">
-          <div className="glass-panel rounded-3xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500 ease-out">
+          <div className="glass-panel rounded-3xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500 ease-out will-change-transform">
             <div className="flex justify-between items-start mb-12">
               <div className="w-12 h-12 rounded-full bg-accent" />
               <div className="text-right">
