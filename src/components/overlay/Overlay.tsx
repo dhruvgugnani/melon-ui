@@ -3,6 +3,7 @@ import React from "react";
 import { HeroSection } from "./HeroSection";
 import { ShowcaseSection } from "./ShowcaseSection";
 import { FeaturesSection } from "./FeaturesSection";
+import { SandSection } from "./SandSection";
 import { CTASection } from "./CTASection";
 
 export function Overlay() {
@@ -12,6 +13,7 @@ export function Overlay() {
         <HeroSection />
         <ShowcaseSection />
         <FeaturesSection />
+        <SandSection />
         <CTASection />
       </div>
     </div>

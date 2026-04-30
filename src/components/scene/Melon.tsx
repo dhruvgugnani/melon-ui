@@ -28,7 +28,11 @@ export function Melon() {
   const topHalfRef = useRef<THREE.Group>(null);
   const bottomHalfRef = useRef<THREE.Group>(null);
   const katanaRef = useRef<THREE.Group>(null);
-  const splashGroupRef = useRef<THREE.Group>(null); // Independent group for splashes so they don't orbit!
+  const splashGroupRef = useRef<THREE.Group>(null);
+  const seedsRefs = useRef<(THREE.Mesh | null)[]>([]); // original seeds on the flesh
+  const fallingSeedsGroupRef = useRef<THREE.Group>(null); // INDEPENDENT group - not child of melon!
+  const fallingSeedsRefs = useRef<(THREE.Mesh | null)[]>([]); // refs for the falling seeds
+  const sandRef = useRef<THREE.Group>(null);
   const idleSpeed = useRef({ val: 0.1 });
   const [scale, setScale] = useState(1);
   const [segments, setSegments] = useState(64);
@@ -265,18 +269,22 @@ export function Melon() {
         duration: 1.625
       }, 0);
 
+      // Post-slice: keep x=π/2 so flat red flesh STAYS facing camera!
+      // Only gently settle the y/z to stop the spin smoothly.
       masterTl.to(groupRef.current!.rotation, {
-        x: Math.PI,
-        y: Math.PI * 3,
-        z: Math.PI * 3,
-        ease: "power1.inOut",
-        duration: 1.375
+        x: Math.PI / 2,   // ← LOCKED: local +Y → world +Z = flesh faces camera
+        y: Math.PI * 2.5, // Gentle continued y-spin for drama
+        z: Math.PI * 2,
+        ease: "power3.out",
+        duration: 0.375
       }, 1.625);
 
+      // 1. Continuous Idle Spin (0 to 2.0)
+      // Stops exactly at 2.0 so the melon hovers gracefully
       masterTl.to(idleGroupRef.current!.rotation, {
-        y: Math.PI * 4,
+        y: Math.PI * 2, 
         ease: "none",
-        duration: 3.0
+        duration: 2.0
       }, 0);
 
       masterTl.to([groupRef.current!.position, splashGroupRef.current!.position], {
@@ -314,13 +322,76 @@ export function Melon() {
             masterTl.to(mesh.scale, { x: drop.scale * 2.5, y: drop.scale * 0.8, z: drop.scale * 0.8, duration: 0.3, ease: "back.out(2)" }, 1.625);
           }
 
-          masterTl.to(mesh.scale, { x: 0, y: 0, z: 0, duration: 1.175, ease: "power2.inOut" }, 1.825); // Shrink and disappear
+          // Shrink and disappear
+          masterTl.to(mesh.scale, { x: 0, y: 0, z: 0, duration: 1.175, ease: "power2.inOut" }, 1.825);
         }
       });
 
       masterTl.to(katanaRef.current!.position, { x: -15, y: -5, ease: "power2.in", duration: 0.1 }, 1.9);
 
-      masterTl.to(groupRef.current!.position, { y: -1, duration: 1 }, 2.0);
+      // SECTION 3: FEATURES -> SAND SECTION (2.0 to 3.0)
+      // Melon slides UP out of view (stays visually in crisp section above)
+      masterTl.to(groupRef.current!.position, { y: 8, duration: 0.5, ease: "power2.inOut" }, 2.0);
+
+      // Sand Dune rises from below — shorter travel, higher final position
+      masterTl.to(sandRef.current!.position, { y: -3.2, duration: 0.6, ease: "power2.out" }, 2.0);
+      masterTl.to(sandRef.current!.scale, { x: 1, y: 1, z: 1, duration: 0.6, ease: "power2.out" }, 2.0);
+
+      // At t=2.0: hide original seeds, show independent falling seeds at world positions
+      // Seed world position when groupRef is at (x=π/2, y=-1):
+      // seed[x_s, y_s, 0.01] → innerFleshCap(rot-x=-π/2) → (x_s, 0.015, -y_s)
+      // → groupRef(rot-x=π/2, pos-y=-1) → world (x_s, y_s - 1, ~0.015)
+      seeds3D.forEach((seed, i) => {
+        const originalMesh = seedsRefs.current[i];
+        const fallingMesh = fallingSeedsRefs.current[i];
+        const isLandingSeed = i === 22;
+
+        // Hide original seeds as melon slides up
+        if (originalMesh) {
+          masterTl.to(originalMesh.scale, { x: 0, y: 0, z: 0, duration: 0.01 }, 2.0);
+        }
+
+        if (fallingMesh) {
+          const stagger = 2.05 + Math.random() * 0.45;
+          const landX = isLandingSeed ? 0 : (Math.random() - 0.5) * 5;
+          const landZ = isLandingSeed ? 0.2 : (Math.random() - 0.5) * 2;
+          const sandTop = -1.55; // sandY(-3.2) + dome height(1.6)
+
+          // Pop visible from above where melon was
+          masterTl.to(fallingMesh.scale, { x: 1, y: 1.8, z: 0.4, duration: 0.05 }, 2.0);
+
+          // ALL seeds fall onto the sand surface
+          masterTl.to(fallingMesh.position, {
+            x: landX,
+            y: sandTop + (isLandingSeed ? 0 : Math.random() * 0.4),
+            z: landZ,
+            duration: 0.4 + Math.random() * 0.3,
+            ease: "power3.in"
+          }, stagger);
+
+          // Spin while falling
+          masterTl.to(fallingMesh.rotation, {
+            x: Math.random() * Math.PI * 4,
+            y: Math.random() * Math.PI * 4,
+            z: Math.random() * Math.PI * 4,
+            duration: 0.45, ease: "none"
+          }, stagger);
+
+          if (!isLandingSeed) {
+            // After landing, all seeds slowly fade out
+            masterTl.to(fallingMesh.scale, {
+              x: 0, y: 0, z: 0,
+              duration: 0.35 + Math.random() * 0.25,
+              ease: "power1.in"
+            }, stagger + 0.42 + Math.random() * 0.2);
+          }
+          // Seed 22 stays permanently on the sand!
+        }
+      });
+
+      // SECTION 4: SAND -> CTA (3.0 to 4.0)
+      // Sand dune slides back down. Melon stays frozen in place.
+      masterTl.to(sandRef.current!.position, { y: -15, duration: 1, ease: "power2.inOut" }, 3.0);
 
       ScrollTrigger.refresh();
     }, 100);
@@ -431,7 +502,13 @@ export function Melon() {
               <meshStandardMaterial map={innerTexture} bumpMap={innerTexture} bumpScale={0.1} roughness={0.7} />
               {/* 3D Seeds for true physical depth */}
               {seeds3D.map((s, i) => (
-                <mesh key={i} position={[s.position[0], s.position[1], s.position[2]]} rotation={[s.rotation[0], s.rotation[1], s.rotation[2]]} scale={[1, 1.8, 0.4]}>
+                <mesh 
+                  key={i} 
+                  ref={(el) => { if (el) seedsRefs.current[i] = el; }}
+                  position={[s.position[0], s.position[1], s.position[2]]} 
+                  rotation={[s.rotation[0], s.rotation[1], s.rotation[2]]} 
+                  scale={[1, 1.8, 0.4]}
+                >
                   <sphereGeometry args={[0.04, 8, 8]} />
                   <meshStandardMaterial color="#1a0a05" roughness={0.2} metalness={0.1} />
                 </mesh>
@@ -457,6 +534,34 @@ export function Melon() {
               <shapeGeometry args={[teardropShape]} />
             )}
             <meshBasicMaterial color="#d92027" transparent opacity={0.8} />
+          </mesh>
+        ))}
+      </group>
+
+      {/* 3D Sand Dune - wider, starts higher, shorter travel */}
+      <group ref={sandRef} position={[0, -4.5, 0]} scale={0}>
+        <mesh scale={[4.0, 0.8, 4.0]}>
+          <sphereGeometry args={[2, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          <meshStandardMaterial color="#d4b473" roughness={1} metalness={0.1} />
+        </mesh>
+        {/* Tiny pebbles sitting on dome surface. Dome wider (scale 4.0) so surface Y ≈ 1.59 */}
+        <mesh position={[1.2, 1.62, 0.8]} scale={0.1}><sphereGeometry args={[1,8,8]}/><meshStandardMaterial color="#8a7660" roughness={0.8} emissive="#4a3a28" emissiveIntensity={0.4}/></mesh>
+        <mesh position={[-1.4, 1.60, 0.5]} scale={0.08}><sphereGeometry args={[1,8,8]}/><meshStandardMaterial color="#6e5f4a" roughness={0.9} emissive="#3a2818" emissiveIntensity={0.4}/></mesh>
+        <mesh position={[0.3, 1.64, -1.0]} scale={0.12}><sphereGeometry args={[1,8,8]}/><meshStandardMaterial color="#9b8a70" roughness={0.85} emissive="#4a3a20" emissiveIntensity={0.4}/></mesh>
+        <mesh position={[-0.8, 1.62, 1.2]} scale={0.09}><sphereGeometry args={[1,8,8]}/><meshStandardMaterial color="#7a6a55" roughness={0.9} emissive="#3a2818" emissiveIntensity={0.4}/></mesh>
+      </group>
+
+      {/* INDEPENDENT Falling Seeds — start from ABOVE (where melon was), hidden until t=2.0 */}
+      <group ref={fallingSeedsGroupRef}>
+        {seeds3D.map((s, i) => (
+          <mesh
+            key={`falling-seed-${i}`}
+            ref={(el) => { if (el) fallingSeedsRefs.current[i] = el; }}
+            position={[s.position[0], 1.5, 0.3]}
+            scale={0}
+          >
+            <sphereGeometry args={[i === 22 ? 0.07 : 0.04, 8, 8]} />
+            <meshStandardMaterial color="#1a0a05" roughness={0.2} metalness={0.2} emissive="#0a0502" emissiveIntensity={0.3} />
           </mesh>
         ))}
       </group>
