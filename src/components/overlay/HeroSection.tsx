@@ -1,6 +1,6 @@
 export function HeroSection() {
   return (
-    <section className="snap-start relative w-full h-screen flex flex-col items-center justify-center overflow-hidden z-10 px-6">
+    <section className="snap-start relative w-full h-screen flex flex-col items-center justify-center overflow-hidden z-10 px-6" style={{ scrollSnapStop: "always" }}>
       <div className="absolute top-10 left-10 flex items-center gap-3">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-lg">
           {/* Dark green outer shell */}
@@ -22,7 +22,7 @@ export function HeroSection() {
       <div className="text-center mt-[-10vh]">
         <h1 className="text-[12vw] leading-none font-black tracking-tighter uppercase mb-4">
           <span className="block">Juicy</span>
-          <span className="block text-outline-thick" data-text="Components">Components</span>
+          <span className="block text-outline-title">Components</span>
         </h1>
         <p className="text-xl md:text-2xl text-gray-400 font-medium max-w-lg mx-auto uppercase tracking-wide">
           Premium UI elements with a fresh taste. Scroll to taste.

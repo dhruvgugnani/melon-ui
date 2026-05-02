@@ -1,45 +1,61 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { startTransition, useDeferredValue, useEffect, useState } from "react";
 import { useProgress } from "@react-three/drei";
 import gsap from "gsap";
+
+const READY_EVENT = "melonui:ready";
+const SCENE_READY_EVENT = "melonui:scene-ready";
 
 export function LoadingScreen() {
   const { progress: actualProgress, active, total } = useProgress();
   const [displayProgress, setDisplayProgress] = useState(0);
   const [mounted, setMounted] = useState(true);
+  const [sceneReady, setSceneReady] = useState(
+    () => typeof document !== "undefined" && document.documentElement.dataset.melonSceneReady === "true",
+  );
+  const deferredProgress = useDeferredValue(displayProgress);
+
+  useEffect(() => {
+    const handleSceneReady = () => setSceneReady(true);
+
+    window.addEventListener(SCENE_READY_EVENT, handleSceneReady, { once: true });
+    return () => window.removeEventListener(SCENE_READY_EVENT, handleSceneReady);
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Create a minimum loading duration for WebGL shader compilation (1.5s)
-      // while also waiting for actual WebGL assets to load via useProgress.
       const tracker = { p: 0 };
-      
+      const progressTarget = sceneReady
+        ? (actualProgress === 0 && !active ? 100 : actualProgress)
+        : Math.min(actualProgress, 92);
+
       gsap.to(tracker, {
-        p: 100,
-        duration: 1.5,
+        p: progressTarget,
+        duration: sceneReady ? 0.9 : 1.2,
         ease: "power3.inOut",
         onUpdate: () => {
-          // Display the slower of the two: actual loading or synthetic minimum
-          setDisplayProgress(Math.min(tracker.p, actualProgress === 0 ? tracker.p : actualProgress));
+          startTransition(() => setDisplayProgress(tracker.p));
         },
       });
     });
 
     return () => ctx.revert();
-  }, [actualProgress]);
+  }, [actualProgress, active, sceneReady]);
 
   useEffect(() => {
-    // Only dismiss the loading screen if our minimum compilation timeout has passed AND 
-    // either actual assets are loaded (100%), or there are no assets to load at all (total === 0).
     const isAssetLoadingComplete = actualProgress === 100 || (!active && total === 0);
-    
-    if (displayProgress >= 99 && isAssetLoadingComplete) {
+
+    if (displayProgress >= 99 && isAssetLoadingComplete && sceneReady) {
       const ctx = gsap.context(() => {
         const tl = gsap.timeline({
-          onComplete: () => setMounted(false)
+          onComplete: () => {
+            document.documentElement.dataset.melonReady = "true";
+            window.dispatchEvent(new Event(READY_EVENT));
+            startTransition(() => setMounted(false));
+          },
         });
-        
+
         tl.to(".loading-content", {
           opacity: 0,
           y: -30,
@@ -50,12 +66,12 @@ export function LoadingScreen() {
         .to(".loading-screen", {
           yPercent: -100,
           duration: 1.2,
-          ease: "power4.inOut"
+          ease: "power4.inOut",
         }, "-=0.2");
       });
       return () => ctx.revert();
     }
-  }, [displayProgress, actualProgress, active, total]);
+  }, [displayProgress, actualProgress, active, total, sceneReady]);
 
   if (!mounted) return null;
 
@@ -70,15 +86,15 @@ export function LoadingScreen() {
         
         {/* Progress Bar Container */}
         <div className="w-64 md:w-96 h-1 bg-white/10 rounded-full overflow-hidden">
-          <div 
+          <div
             className="w-full h-full bg-accent transition-none"
-            style={{ transform: `scaleX(${displayProgress / 100})`, transformOrigin: "left" }}
+            style={{ transform: `scaleX(${deferredProgress / 100})`, transformOrigin: "left" }}
           />
         </div>
-        
+
         {/* Progress Text */}
         <p className="absolute -bottom-10 text-sm font-bold tracking-widest text-accent">
-          {Math.round(displayProgress)}%
+          {Math.round(deferredProgress)}%
         </p>
       </div>
     </div>

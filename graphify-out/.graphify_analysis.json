@@ -1,0 +1,192 @@
+{
+  "communities": {
+    "0": [
+      "scene_engine_clamp",
+      "scene_engine_getscrollprogress",
+      "scene_engine_gettargetscenetime",
+      "scene_engine_stepscenetime",
+      "scene_melon_clamp",
+      "scene_melon_createmelonbodygeometry",
+      "scene_melon_createmelonhalfgeometry",
+      "scene_melon_pseudorandom",
+      "scene_melon_randombetween",
+      "src_components_scene_engine_ts",
+      "src_components_scene_melon_tsx"
+    ],
+    "1": [
+      "scene_melon_melon",
+      "scene_runtime_getdevicememory",
+      "scene_runtime_getscenequality",
+      "scene_runtime_usescenequality",
+      "src_components_scene_runtime_ts",
+      "src_components_scene_scene_tsx"
+    ],
+    "2": [
+      "app_page_home",
+      "overlay_loadingscreen_loadingscreen",
+      "src_app_page_tsx",
+      "src_components_overlay_loadingscreen_tsx"
+    ],
+    "3": [
+      "overlay_overlay_overlay",
+      "overlay_smallmelonsection_smallmelonsection",
+      "src_components_overlay_overlay_tsx",
+      "src_components_overlay_smallmelonsection_tsx"
+    ],
+    "4": [
+      "app_layout_rootlayout",
+      "src_app_layout_tsx"
+    ],
+    "5": [
+      "overlay_featuressection_featuressection",
+      "src_components_overlay_featuressection_tsx"
+    ],
+    "6": [
+      "overlay_sandsection_sandsection",
+      "src_components_overlay_sandsection_tsx"
+    ],
+    "7": [
+      "overlay_lenisprovider_lenisprovider",
+      "src_components_overlay_lenisprovider_tsx"
+    ],
+    "8": [
+      "overlay_herosection_herosection",
+      "src_components_overlay_herosection_tsx"
+    ],
+    "9": [
+      "overlay_showcasesection_showcasesection",
+      "src_components_overlay_showcasesection_tsx"
+    ],
+    "10": [
+      "overlay_plantsection_plantsection",
+      "src_components_overlay_plantsection_tsx"
+    ],
+    "11": [
+      "eslint_config_mjs"
+    ],
+    "12": [
+      "next_env_d_ts"
+    ],
+    "13": [
+      "next_config_ts"
+    ],
+    "14": [
+      "postcss_config_mjs"
+    ],
+    "15": [
+      "src_components_overlay_clientoverlay_tsx"
+    ],
+    "16": [
+      "src_components_overlay_ctasection_tsx"
+    ],
+    "17": [
+      "src_components_overlay_frame_tsx"
+    ],
+    "18": [
+      "src_components_scene_clientscene_tsx"
+    ]
+  },
+  "cohesion": {
+    "0": 0.27,
+    "1": 0.4,
+    "2": 0.5,
+    "3": 0.5,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 1.0,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0
+  },
+  "community_labels": {
+    "0": "getTargetSceneTime / getScrollProgress",
+    "1": "getDeviceMemory / getSceneQuality",
+    "2": "LoadingScreen",
+    "3": "SmallMelonSection",
+    "4": "Community 4",
+    "5": "FeaturesSection",
+    "6": "SandSection",
+    "7": "LenisProvider",
+    "8": "HeroSection",
+    "9": "ShowcaseSection",
+    "10": "PlantSection",
+    "11": "Community 11",
+    "12": "Community 12",
+    "13": "Community 13",
+    "14": "Community 14",
+    "15": "Community 15",
+    "16": "Community 16",
+    "17": "Community 17",
+    "18": "Community 18"
+  },
+  "gods": [
+    {
+      "id": "scene_engine_clamp",
+      "label": "clamp()",
+      "degree": 3
+    },
+    {
+      "id": "scene_engine_getscrollprogress",
+      "label": "getScrollProgress()",
+      "degree": 3
+    },
+    {
+      "id": "scene_engine_gettargetscenetime",
+      "label": "getTargetSceneTime()",
+      "degree": 3
+    },
+    {
+      "id": "overlay_featuressection_featuressection",
+      "label": "FeaturesSection()",
+      "degree": 2
+    },
+    {
+      "id": "overlay_herosection_herosection",
+      "label": "HeroSection()",
+      "degree": 2
+    },
+    {
+      "id": "overlay_lenisprovider_lenisprovider",
+      "label": "LenisProvider()",
+      "degree": 2
+    },
+    {
+      "id": "overlay_loadingscreen_loadingscreen",
+      "label": "LoadingScreen()",
+      "degree": 2
+    },
+    {
+      "id": "overlay_plantsection_plantsection",
+      "label": "PlantSection()",
+      "degree": 2
+    },
+    {
+      "id": "overlay_sandsection_sandsection",
+      "label": "SandSection()",
+      "degree": 2
+    },
+    {
+      "id": "overlay_showcasesection_showcasesection",
+      "label": "ShowcaseSection()",
+      "degree": 2
+    }
+  ],
+  "surprises": [],
+  "questions": [
+    {
+      "type": "no_signal",
+      "question": null,
+      "why": "Not enough signal to generate questions. This usually means the corpus has no AMBIGUOUS edges, no bridge nodes, no INFERRED relationships, and all communities are tightly cohesive. Add more files or run with --mode deep to extract richer edges."
+    }
+  ],
+  "mode": "ast-only"
+}

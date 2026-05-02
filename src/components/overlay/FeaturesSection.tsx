@@ -1,12 +1,12 @@
 export function FeaturesSection() {
   return (
-    <section id="features-section" className="snap-start relative w-full h-screen flex flex-col justify-center px-6 z-10">
+    <section id="features-section" className="snap-start relative w-full h-screen flex flex-col justify-center px-6 z-10" style={{ scrollSnapStop: "always" }}>
       <div className="max-w-7xl w-full mx-auto flex flex-col md:flex-row-reverse items-center gap-12 md:gap-24">
         
         {/* Text Block */}
         <div className="flex-1 space-y-8 text-right">
           <h2 className="text-[8vw] md:text-[6vw] leading-none font-black uppercase tracking-tighter">
-            <span className="block text-outline-thick" data-text="Crisp">Crisp</span>
+            <span className="block text-outline-title">Crisp</span>
             <span className="block">Details</span>
           </h2>
           <p className="text-xl text-gray-400 font-medium max-w-md ml-auto uppercase tracking-wider leading-relaxed">

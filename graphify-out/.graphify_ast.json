@@ -1,0 +1,1193 @@
+{
+  "nodes": [
+    {
+      "id": "eslint_config_mjs",
+      "label": "eslint.config.mjs",
+      "file_type": "code",
+      "source_file": "eslint.config.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "next_env_d_ts",
+      "label": "next-env.d.ts",
+      "file_type": "code",
+      "source_file": "next-env.d.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "next_config_ts",
+      "label": "next.config.ts",
+      "file_type": "code",
+      "source_file": "next.config.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "postcss_config_mjs",
+      "label": "postcss.config.mjs",
+      "file_type": "code",
+      "source_file": "postcss.config.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_app_layout_tsx",
+      "label": "layout.tsx",
+      "file_type": "code",
+      "source_file": "src\\app\\layout.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_layout_rootlayout",
+      "label": "RootLayout()",
+      "file_type": "code",
+      "source_file": "src\\app\\layout.tsx",
+      "source_location": "L17"
+    },
+    {
+      "id": "src_app_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "src\\app\\page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_page_home",
+      "label": "Home()",
+      "file_type": "code",
+      "source_file": "src\\app\\page.tsx",
+      "source_location": "L5"
+    },
+    {
+      "id": "src_components_overlay_clientoverlay_tsx",
+      "label": "ClientOverlay.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\ClientOverlay.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_overlay_ctasection_tsx",
+      "label": "CTASection.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\CTASection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_overlay_featuressection_tsx",
+      "label": "FeaturesSection.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\FeaturesSection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "overlay_featuressection_featuressection",
+      "label": "FeaturesSection()",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\FeaturesSection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_overlay_frame_tsx",
+      "label": "Frame.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\Frame.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_overlay_herosection_tsx",
+      "label": "HeroSection.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\HeroSection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "overlay_herosection_herosection",
+      "label": "HeroSection()",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\HeroSection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_overlay_lenisprovider_tsx",
+      "label": "LenisProvider.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\LenisProvider.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "overlay_lenisprovider_lenisprovider",
+      "label": "LenisProvider()",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\LenisProvider.tsx",
+      "source_location": "L16"
+    },
+    {
+      "id": "src_components_overlay_loadingscreen_tsx",
+      "label": "LoadingScreen.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\LoadingScreen.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "overlay_loadingscreen_loadingscreen",
+      "label": "LoadingScreen()",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\LoadingScreen.tsx",
+      "source_location": "L9"
+    },
+    {
+      "id": "src_components_overlay_overlay_tsx",
+      "label": "Overlay.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "overlay_overlay_overlay",
+      "label": "Overlay()",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L13"
+    },
+    {
+      "id": "src_components_overlay_plantsection_tsx",
+      "label": "PlantSection.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\PlantSection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "overlay_plantsection_plantsection",
+      "label": "PlantSection()",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\PlantSection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_overlay_sandsection_tsx",
+      "label": "SandSection.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\SandSection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "overlay_sandsection_sandsection",
+      "label": "SandSection()",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\SandSection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_overlay_showcasesection_tsx",
+      "label": "ShowcaseSection.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\ShowcaseSection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "overlay_showcasesection_showcasesection",
+      "label": "ShowcaseSection()",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\ShowcaseSection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_overlay_smallmelonsection_tsx",
+      "label": "SmallMelonSection.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\SmallMelonSection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "overlay_smallmelonsection_smallmelonsection",
+      "label": "SmallMelonSection()",
+      "file_type": "code",
+      "source_file": "src\\components\\overlay\\SmallMelonSection.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_scene_clientscene_tsx",
+      "label": "ClientScene.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\ClientScene.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_components_scene_engine_ts",
+      "label": "engine.ts",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\engine.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "scene_engine_clamp",
+      "label": "clamp()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\engine.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "scene_engine_getscrollprogress",
+      "label": "getScrollProgress()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\engine.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "scene_engine_gettargetscenetime",
+      "label": "getTargetSceneTime()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\engine.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "scene_engine_stepscenetime",
+      "label": "stepSceneTime()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\engine.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "src_components_scene_melon_tsx",
+      "label": "Melon.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "scene_melon_pseudorandom",
+      "label": "pseudoRandom()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L23"
+    },
+    {
+      "id": "scene_melon_randombetween",
+      "label": "randomBetween()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L28"
+    },
+    {
+      "id": "scene_melon_clamp",
+      "label": "clamp()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L32"
+    },
+    {
+      "id": "scene_melon_createmelonbodygeometry",
+      "label": "createMelonBodyGeometry()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L36"
+    },
+    {
+      "id": "scene_melon_createmelonhalfgeometry",
+      "label": "createMelonHalfGeometry()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L62"
+    },
+    {
+      "id": "scene_melon_melon",
+      "label": "Melon()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L105"
+    },
+    {
+      "id": "src_components_scene_runtime_ts",
+      "label": "runtime.ts",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\runtime.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "scene_runtime_getdevicememory",
+      "label": "getDeviceMemory()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\runtime.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "scene_runtime_getscenequality",
+      "label": "getSceneQuality()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\runtime.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "scene_runtime_usescenequality",
+      "label": "useSceneQuality()",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\runtime.ts",
+      "source_location": "L89"
+    },
+    {
+      "id": "src_components_scene_scene_tsx",
+      "label": "Scene.tsx",
+      "file_type": "code",
+      "source_file": "src\\components\\scene\\Scene.tsx",
+      "source_location": "L1"
+    }
+  ],
+  "edges": [
+    {
+      "source": "eslint_config_mjs",
+      "target": "config",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "eslint.config.mjs",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "eslint_config_mjs",
+      "target": "core_web_vitals",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "eslint.config.mjs",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "eslint_config_mjs",
+      "target": "typescript",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "eslint.config.mjs",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "next_env_d_ts",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_next_dev_types_routes_d_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "next-env.d.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "next_config_ts",
+      "target": "next",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "next.config.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_layout_tsx",
+      "target": "next",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\layout.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_layout_tsx",
+      "target": "google",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\layout.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_layout_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_app_globals_css",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\layout.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_layout_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_overlay_frame",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\layout.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_layout_tsx",
+      "target": "overlay_frame_frame",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\layout.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_layout_tsx",
+      "target": "app_layout_rootlayout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\layout.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_page_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_overlay_loadingscreen",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_page_tsx",
+      "target": "overlay_loadingscreen_loadingscreen",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_page_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_scene_clientscene",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\page.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_page_tsx",
+      "target": "scene_clientscene_clientscene",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\page.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_page_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_overlay_clientoverlay",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_page_tsx",
+      "target": "overlay_clientoverlay_clientoverlay",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_page_tsx",
+      "target": "app_page_home",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\app\\page.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_clientoverlay_tsx",
+      "target": "dynamic",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\ClientOverlay.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_featuressection_tsx",
+      "target": "overlay_featuressection_featuressection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\FeaturesSection.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_herosection_tsx",
+      "target": "overlay_herosection_herosection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\HeroSection.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_lenisprovider_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\LenisProvider.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_lenisprovider_tsx",
+      "target": "lenis",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\LenisProvider.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_lenisprovider_tsx",
+      "target": "gsap",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\LenisProvider.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_lenisprovider_tsx",
+      "target": "scrolltrigger",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\LenisProvider.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_lenisprovider_tsx",
+      "target": "overlay_lenisprovider_lenisprovider",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\LenisProvider.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_loadingscreen_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\LoadingScreen.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_loadingscreen_tsx",
+      "target": "drei",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\LoadingScreen.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_loadingscreen_tsx",
+      "target": "gsap",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\LoadingScreen.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_loadingscreen_tsx",
+      "target": "overlay_loadingscreen_loadingscreen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\LoadingScreen.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_overlay_herosection",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "overlay_herosection_herosection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_overlay_showcasesection",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "overlay_showcasesection_showcasesection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_overlay_featuressection",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "overlay_featuressection_featuressection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_overlay_sandsection",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "overlay_sandsection_sandsection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_overlay_plantsection",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "overlay_plantsection_plantsection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_overlay_smallmelonsection",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "overlay_smallmelonsection_smallmelonsection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_overlay_ctasection",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "overlay_ctasection_ctasection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_overlay_lenisprovider",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "overlay_lenisprovider_lenisprovider",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_overlay_tsx",
+      "target": "overlay_overlay_overlay",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\Overlay.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_plantsection_tsx",
+      "target": "overlay_plantsection_plantsection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\PlantSection.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_sandsection_tsx",
+      "target": "overlay_sandsection_sandsection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\SandSection.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_showcasesection_tsx",
+      "target": "overlay_showcasesection_showcasesection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\ShowcaseSection.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_overlay_smallmelonsection_tsx",
+      "target": "overlay_smallmelonsection_smallmelonsection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\overlay\\SmallMelonSection.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_clientscene_tsx",
+      "target": "dynamic",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\ClientScene.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_engine_ts",
+      "target": "three",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\engine.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_engine_ts",
+      "target": "scene_engine_clamp",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\engine.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_engine_ts",
+      "target": "scene_engine_getscrollprogress",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\engine.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_engine_ts",
+      "target": "scene_engine_gettargetscenetime",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\engine.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_engine_ts",
+      "target": "scene_engine_stepscenetime",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\engine.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "scene_engine_getscrollprogress",
+      "target": "scene_engine_clamp",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\engine.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "scene_engine_gettargetscenetime",
+      "target": "scene_engine_clamp",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\engine.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "fiber",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "three",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "gsap",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_scene_runtime",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "scene_runtime_scenequalityconfig",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_scene_engine",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "scene_engine_getscrollprogress",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "scene_engine_gettargetscenetime",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "scene_engine_stepscenetime",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "scene_melon_pseudorandom",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "scene_melon_randombetween",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "scene_melon_clamp",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "scene_melon_createmelonbodygeometry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "scene_melon_createmelonhalfgeometry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_melon_tsx",
+      "target": "scene_melon_melon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "scene_melon_randombetween",
+      "target": "scene_melon_pseudorandom",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Melon.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_runtime_ts",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\runtime.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_runtime_ts",
+      "target": "scene_runtime_getdevicememory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\runtime.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_runtime_ts",
+      "target": "scene_runtime_getscenequality",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\runtime.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_runtime_ts",
+      "target": "scene_runtime_usescenequality",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\runtime.ts",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "scene_runtime_getscenequality",
+      "target": "scene_runtime_getdevicememory",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\runtime.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_scene_tsx",
+      "target": "fiber",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Scene.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_scene_tsx",
+      "target": "drei",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Scene.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_scene_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_scene_melon",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Scene.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_scene_tsx",
+      "target": "scene_melon_melon",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Scene.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_scene_tsx",
+      "target": "c_users_gugna_desktop_melonui_melonui_web_src_components_scene_runtime",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Scene.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "src_components_scene_scene_tsx",
+      "target": "scene_runtime_usescenequality",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src\\components\\scene\\Scene.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

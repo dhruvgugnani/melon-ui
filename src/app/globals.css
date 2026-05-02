@@ -40,25 +40,15 @@ html {
 }
 
 /* Typography utilities */
-:root {
-  --melon-x: 50vw;
-  --melon-y: 50vh;
-  --melon-r: 0px;
-}
-
-/* Typography utilities */
-/* X-RAY MAGIC: 
-   Layer 1 (Main element): Solid black text with a perfectly seamless white text-shadow outline.
-   Layer 2 (::after pseudo): Transparent text with X-ray radial gradients clipped to the text.
-   This two-layer approach perfectly solves WebKit text-shadow bugs! */
-.text-outline, .text-outline-accent, .text-outline-thick {
+/* Hero + CTA only: stable watermelon scan treatment without live 3D/CSS projection. */
+.text-melon-xray {
   position: relative;
   display: inline-block;
   color: black !important;
   -webkit-text-fill-color: black !important;
 }
 
-.text-outline::after, .text-outline-accent::after, .text-outline-thick::after {
+.text-melon-xray::after {
   content: attr(data-text);
   position: absolute;
   inset: 0;
@@ -68,85 +58,106 @@ html {
   text-shadow: none;
   
   background-image: 
-    /* 1. Rind and Shell */
     radial-gradient(
-      circle at var(--melon-x, 50vw) var(--melon-y, 50vh),
-      transparent 0px,
-      transparent var(--melon-r-80, 0px),
-      #e0f2dc var(--melon-r-80, 0px),
-      #e0f2dc var(--melon-r-90, 0px),
-      #2e4a25 var(--melon-r-90, 0px),
-      #2e4a25 var(--melon-r, 0px),
-      transparent var(--melon-r, 0px)
+      circle at 52% 48%,
+      #ff6a7d 0%,
+      #ff5c71 34%,
+      #ff8d9a 54%,
+      #eef8e8 55%,
+      #eef8e8 63%,
+      #26431e 64%,
+      #1a2f14 77%,
+      transparent 78%
     ),
-    /* 2. Seeds (14 GPU-accelerated CSS radial gradients - elliptical shape) */
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s0x, 0px)) calc(var(--melon-y, 50vh) + var(--s0y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s1x, 0px)) calc(var(--melon-y, 50vh) + var(--s1y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s2x, 0px)) calc(var(--melon-y, 50vh) + var(--s2y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s3x, 0px)) calc(var(--melon-y, 50vh) + var(--s3y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s4x, 0px)) calc(var(--melon-y, 50vh) + var(--s4y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s5x, 0px)) calc(var(--melon-y, 50vh) + var(--s5y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s6x, 0px)) calc(var(--melon-y, 50vh) + var(--s6y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s7x, 0px)) calc(var(--melon-y, 50vh) + var(--s7y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s8x, 0px)) calc(var(--melon-y, 50vh) + var(--s8y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s9x, 0px)) calc(var(--melon-y, 50vh) + var(--s9y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s10x, 0px)) calc(var(--melon-y, 50vh) + var(--s10y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s11x, 0px)) calc(var(--melon-y, 50vh) + var(--s11y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s12x, 0px)) calc(var(--melon-y, 50vh) + var(--s12y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    radial-gradient(ellipse 2.5px 4.5px at calc(var(--melon-x, 50vw) + var(--s13x, 0px)) calc(var(--melon-y, 50vh) + var(--s13y, 0px)), #1a1a1a 0%, #1a1a1a 100%, transparent 100%),
-    /* 3. Red Flesh */
-    radial-gradient(
-      circle at var(--melon-x, 50vw) var(--melon-y, 50vh),
-      var(--accent) 0px,
-      var(--accent) var(--melon-r-80, 0px),
-      transparent var(--melon-r-80, 0px)
-    );
+    radial-gradient(ellipse 1.4% 2.8% at 38% 42%, #140908 0%, #140908 100%, transparent 100%),
+    radial-gradient(ellipse 1.4% 2.8% at 47% 57%, #140908 0%, #140908 100%, transparent 100%),
+    radial-gradient(ellipse 1.4% 2.8% at 57% 38%, #140908 0%, #140908 100%, transparent 100%),
+    radial-gradient(ellipse 1.4% 2.8% at 61% 53%, #140908 0%, #140908 100%, transparent 100%),
+    radial-gradient(ellipse 1.4% 2.8% at 43% 33%, #140908 0%, #140908 100%, transparent 100%),
+    radial-gradient(circle at 52% 48%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.08) 22%, transparent 46%);
 
-  /* Native GPU-accelerated viewport locking! No JS required. */
-  background-position: top left;
-  background-size: 100vw 100vh;
+  background-position: center;
+  background-size: 140% 140%;
   background-repeat: no-repeat;
-  background-attachment: fixed;
   
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: saturate(1.05) contrast(1.03);
 }
 
-.text-outline {
+.text-melon-xray {
   text-shadow: 
-    -2px -2px 0 rgba(255,255,255,0.5), 
-     2px -2px 0 rgba(255,255,255,0.5), 
-    -2px  2px 0 rgba(255,255,255,0.5), 
-     2px  2px 0 rgba(255,255,255,0.5),
-    -2px  0px 0 rgba(255,255,255,0.5), 
-     2px  0px 0 rgba(255,255,255,0.5), 
-     0px -2px 0 rgba(255,255,255,0.5), 
-     0px  2px 0 rgba(255,255,255,0.5);
+    -3px -3px 0 rgba(255,255,255,0.76), 
+     3px -3px 0 rgba(255,255,255,0.76), 
+    -3px  3px 0 rgba(255,255,255,0.76), 
+     3px  3px 0 rgba(255,255,255,0.76),
+    -3px  0px 0 rgba(255,255,255,0.76), 
+     3px  0px 0 rgba(255,255,255,0.76), 
+     0px -3px 0 rgba(255,255,255,0.76), 
+     0px  3px 0 rgba(255,255,255,0.76);
 }
 
-.text-outline-accent {
-  text-shadow: 
-    -2px -2px 0 var(--accent), 
-     2px -2px 0 var(--accent), 
-    -2px  2px 0 var(--accent), 
-     2px  2px 0 var(--accent),
-    -2px  0px 0 var(--accent), 
-     2px  0px 0 var(--accent), 
-     0px -2px 0 var(--accent), 
-     0px  2px 0 var(--accent);
+.text-shell-title,
+.text-pulp-title,
+.text-vine-title {
+  position: relative;
+  display: inline-block;
+  line-height: 0.92;
 }
 
-.text-outline-thick {
+.text-shell-title {
+  color: #f5f8ef;
   text-shadow: 
-    -3px -3px 0 rgba(255,255,255,0.8), 
-     3px -3px 0 rgba(255,255,255,0.8), 
-    -3px  3px 0 rgba(255,255,255,0.8), 
-     3px  3px 0 rgba(255,255,255,0.8),
-    -3px  0px 0 rgba(255,255,255,0.8), 
-     3px  0px 0 rgba(255,255,255,0.8), 
-     0px -3px 0 rgba(255,255,255,0.8), 
-     0px  3px 0 rgba(255,255,255,0.8);
+    0 0 0 rgba(0,0,0,0),
+    0 14px 30px rgba(0,0,0,0.28);
+  -webkit-text-stroke: 1.5px rgba(220, 244, 214, 0.58);
+}
+
+.text-shell-title::after {
+  content: "";
+  position: absolute;
+  inset: 10% -2% 14% -2%;
+  z-index: -1;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(224,242,220,0.12), rgba(255,255,255,0) 20%, rgba(255,255,255,0) 80%, rgba(224,242,220,0.12)),
+    linear-gradient(180deg, rgba(46,74,37,0.18), rgba(46,74,37,0));
+  filter: blur(10px);
+}
+
+.text-pulp-title {
+  color: #fff7f8;
+  background: linear-gradient(180deg, #fff7f8 0%, #ffd2d8 46%, #ff7d90 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow:
+    0 2px 0 rgba(255,255,255,0.12),
+    0 12px 28px rgba(255,92,113,0.2);
+  -webkit-text-stroke: 1.2px rgba(255, 206, 215, 0.32);
+}
+
+.text-vine-title {
+  color: #d7ffb5;
+  background: linear-gradient(180deg, #edffd7 0%, #b7f26d 58%, #5f9f28 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow:
+    0 12px 24px rgba(18, 54, 12, 0.35),
+    0 0 18px rgba(135, 255, 96, 0.08);
+  -webkit-text-stroke: 1px rgba(223, 255, 193, 0.26);
+}
+
+.text-outline-title {
+  position: relative;
+  display: inline-block;
+  line-height: 0.92;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.6px rgba(255, 255, 255, 0.82);
+  text-shadow: 0 14px 28px rgba(0, 0, 0, 0.24);
 }
 
 .glass-panel {

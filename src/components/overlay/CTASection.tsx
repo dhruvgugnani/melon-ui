@@ -1,8 +1,8 @@
 export function CTASection() {
   return (
-    <section className="snap-start relative w-full h-screen flex flex-col items-center justify-center text-center px-6 z-10">
+    <section className="snap-start relative w-full h-screen flex flex-col items-center justify-center text-center px-6 z-10" style={{ scrollSnapStop: "always" }}>
       <h2 className="text-[10vw] leading-none font-black uppercase tracking-tighter mb-12">
-        <span className="block text-outline" data-text="Ready To">Ready To</span>
+        <span className="block text-outline-title">Ready To</span>
         <span className="block">Build?</span>
       </h2>
       

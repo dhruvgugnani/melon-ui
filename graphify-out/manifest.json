@@ -1,0 +1,118 @@
+{
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\eslint.config.mjs": {
+    "mtime": 1776862914.7845378,
+    "hash": "dfa1f5f6a7037bf39dc510f30b180002"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\next-env.d.ts": {
+    "mtime": 1777760707.4164226,
+    "hash": "d0f8375ae1199dc7acd3977fc33b78b8"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\next.config.ts": {
+    "mtime": 1776862914.9333987,
+    "hash": "9b77af189a21a7a64e4bd7a426f64176"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\postcss.config.mjs": {
+    "mtime": 1776862914.8243544,
+    "hash": "239f3ebf717465dc636818a1a619398d"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\app\\layout.tsx": {
+    "mtime": 1777488923.4410725,
+    "hash": "d29505fcb898dbe411151f5abf32b20d"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\app\\page.tsx": {
+    "mtime": 1777488935.7928977,
+    "hash": "70222d8f3ea3c5288f49e0ea815e0358"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\overlay\\ClientOverlay.tsx": {
+    "mtime": 1777401991.412529,
+    "hash": "df1614f4c116afd396f2928468fd057b"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\overlay\\CTASection.tsx": {
+    "mtime": 1777757898.3199525,
+    "hash": "47a24de4be04142afb03e0a22687cae0"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\overlay\\FeaturesSection.tsx": {
+    "mtime": 1777757897.7768047,
+    "hash": "fb0755caefb521015a4a8496b5924755"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\overlay\\Frame.tsx": {
+    "mtime": 1777387372.6855915,
+    "hash": "45af4f54190f81b8ca8e212a5f475cfa"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\overlay\\HeroSection.tsx": {
+    "mtime": 1777757897.4656727,
+    "hash": "47129ee0f0d42e3603f9528b590e815f"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\overlay\\LenisProvider.tsx": {
+    "mtime": 1777713577.4902658,
+    "hash": "1ad4017adfe689c079604365bb1eb280"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\overlay\\LoadingScreen.tsx": {
+    "mtime": 1777713599.9326494,
+    "hash": "8f4c315f2f2b551bee67b0fda3a78fd5"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\overlay\\Overlay.tsx": {
+    "mtime": 1777760546.3430274,
+    "hash": "d18f067d1874ae8d4d0e5b4889d91176"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\overlay\\PlantSection.tsx": {
+    "mtime": 1777757898.039217,
+    "hash": "35f9de93eb1b6b771e9b165dd3a33035"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\overlay\\SandSection.tsx": {
+    "mtime": 1777757897.9069884,
+    "hash": "6ff0c799a9ec90737d06f747b44203e0"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\overlay\\ShowcaseSection.tsx": {
+    "mtime": 1777757897.6245973,
+    "hash": "fa62e231acf69c16b9e2db5d6d76d175"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\overlay\\SmallMelonSection.tsx": {
+    "mtime": 1777757898.1719816,
+    "hash": "cc47a34925c7514ee451631d2ff7810b"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\scene\\ClientScene.tsx": {
+    "mtime": 1777401976.283772,
+    "hash": "d8ffa17453d2b17d0cd6f704dbff2da6"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\scene\\engine.ts": {
+    "mtime": 1777758697.8406494,
+    "hash": "91d9486f861092e478a2752f0a2d0505"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\scene\\Melon.tsx": {
+    "mtime": 1777760209.7823894,
+    "hash": "7819c89353573a57a4c425fcc7ddbc1e"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\scene\\runtime.ts": {
+    "mtime": 1777750135.4281163,
+    "hash": "fd14c71e9c44995464f6c39d14b808b5"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\src\\components\\scene\\Scene.tsx": {
+    "mtime": 1777759544.8306067,
+    "hash": "091f7ec48e8dfe689750f1651d7153dc"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\README.md": {
+    "mtime": 1776862914.7533982,
+    "hash": "f15aaa42d5d299d091b1171097ea56ad"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\public\\file.svg": {
+    "mtime": 1776862914.833105,
+    "hash": "d09f95206c3fa0bb9bd9fefabfd0ea71"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\public\\globe.svg": {
+    "mtime": 1776862914.8468037,
+    "hash": "2aaafa6a49b6563925fe440891e32717"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\public\\next.svg": {
+    "mtime": 1776862914.867912,
+    "hash": "8e061864f388b47f33a1c3780831193e"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\public\\vercel.svg": {
+    "mtime": 1776862914.8840554,
+    "hash": "c0af2f507b369b085b35ef4bbe3bcf1e"
+  },
+  "C:\\Users\\gugna\\Desktop\\melonui\\melonui-web\\public\\window.svg": {
+    "mtime": 1776862914.8975065,
+    "hash": "a2760511c65806022ad20adf74370ff3"
+  }
+}
