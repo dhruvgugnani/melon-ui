@@ -1,0 +1,9 @@
+
+> melonui-web@0.1.0 dev
+> next dev --port 3002
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3002
+- Network:       http://192.168.1.14:3002
+✓ Ready in 2.2s
+[?25h

@@ -77,6 +77,9 @@ export function Melon({ quality }: MelonProps) {
   const plantPhase = 4.02;
   const fruitPhase = 5.02;
   const returnPhase = 5.72;
+  const swordEnterAt = 1.16;
+  const swordCutAt = 1.5;
+  const swordExitAt = 2.05;
 
   const teardropShape = useMemo(() => {
     const shape = new THREE.Shape();
@@ -771,7 +774,7 @@ export function Melon({ quality }: MelonProps) {
 
       katana.position.set(15, 6.9, 0);
       katana.rotation.set(0, 0, Math.PI / 5.4);
-      katana.visible = false;
+      katana.visible = true;
 
       sand.position.set(0, -4.7, 0);
       sand.rotation.set(0, 0, 0);
@@ -833,12 +836,12 @@ export function Melon({ quality }: MelonProps) {
         mesh.scale.set(0, 0, 0);
       });
 
-      const timeline = gsap.timeline({
-        defaults: { overwrite: "auto" },
-        paused: true,
-      });
+      const timeline = gsap.timeline({ paused: true });
       masterTl = timeline;
       timelineRef.current = timeline;
+
+      timeline.set(katana.position, { x: 15, y: 6.9, z: 0 }, 0);
+      timeline.set(katana.rotation, { x: 0, y: 0, z: Math.PI / 5.4 }, 0);
 
       timeline.to(group.rotation, {
         x: Math.PI / 2,
@@ -872,25 +875,25 @@ export function Melon({ quality }: MelonProps) {
         x: 8,
         y: 0.7,
         ease: "power2.out",
-        duration: 0.35,
-      }, 1.16);
+        duration: 0.34,
+      }, swordEnterAt);
       timeline.to(katana.rotation, {
         z: -Math.PI / 14,
         ease: "power2.out",
-        duration: 0.35,
-      }, 1.16);
+        duration: 0.34,
+      }, swordEnterAt);
 
       timeline.to(katana.position, {
         x: -8,
         y: -2.45,
         ease: "none",
-        duration: 0.55,
-      }, 1.5);
+        duration: 0.54,
+      }, swordCutAt);
       timeline.to(katana.rotation, {
         z: -Math.PI / 8,
         ease: "none",
-        duration: 0.55,
-      }, 1.5);
+        duration: 0.54,
+      }, swordCutAt);
 
       timeline.to(topHalf.position, {
         z: reducedMotion ? 5.2 : 7.4,
@@ -960,8 +963,8 @@ export function Melon({ quality }: MelonProps) {
         x: -15,
         y: -5.8,
         ease: "power2.in",
-        duration: 0.12,
-      }, 2.04);
+        duration: 0.16,
+      }, swordExitAt);
 
       timeline.to(group.position, {
         x: -0.02,
