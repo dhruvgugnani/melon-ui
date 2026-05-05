@@ -4,7 +4,6 @@ import { startTransition, useDeferredValue, useEffect, useState } from "react";
 import { useProgress } from "@react-three/drei";
 import gsap from "gsap";
 
-const READY_EVENT = "melonui:ready";
 const SCENE_READY_EVENT = "melonui:scene-ready";
 
 export function LoadingScreen() {
@@ -50,8 +49,6 @@ export function LoadingScreen() {
       const ctx = gsap.context(() => {
         const tl = gsap.timeline({
           onComplete: () => {
-            document.documentElement.dataset.melonReady = "true";
-            window.dispatchEvent(new Event(READY_EVENT));
             startTransition(() => setMounted(false));
           },
         });

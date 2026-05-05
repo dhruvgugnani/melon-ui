@@ -2,7 +2,7 @@ export function PlantSection() {
   return (
     <section
       id="plant-section"
-      className="snap-start relative w-full h-screen z-10 pointer-events-none flex items-center px-6"
+      className="snap-start horizontal-section horizontal-section-right relative w-full h-screen z-10 pointer-events-none flex items-center px-6"
       style={{ scrollSnapStop: "always" }}
     >
       <div className="max-w-7xl w-full mx-auto flex flex-col md:flex-row-reverse items-center gap-12 md:gap-24">

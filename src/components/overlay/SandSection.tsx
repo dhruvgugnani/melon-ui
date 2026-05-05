@@ -1,6 +1,10 @@
 export function SandSection() {
   return (
-    <section id="sand-section" className="snap-start relative w-full h-screen flex flex-col justify-center px-6 z-10 pointer-events-none" style={{ scrollSnapStop: "always" }}>
+    <section
+      id="sand-section"
+      className="snap-start horizontal-section horizontal-section-left relative w-full h-screen flex flex-col justify-center px-6 z-10 pointer-events-none"
+      style={{ scrollSnapStop: "always" }}
+    >
       <div className="max-w-7xl w-full mx-auto flex flex-col md:flex-row items-center gap-12 md:gap-24">
         <div className="flex-1 space-y-8">
           <h2 className="text-[8vw] md:text-[6vw] leading-none font-black uppercase tracking-tighter">

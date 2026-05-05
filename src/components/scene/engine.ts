@@ -1,7 +1,5 @@
 "use client";
 
-import * as THREE from "three";
-
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
@@ -13,9 +11,4 @@ export function getScrollProgress(scroller: HTMLElement, content: HTMLElement) {
 
 export function getTargetSceneTime(duration: number, progress: number) {
   return clamp(progress, 0, 1) * Math.max(duration, 0);
-}
-
-export function stepSceneTime(current: number, target: number, delta: number, smoothing: number) {
-  const next = THREE.MathUtils.damp(current, target, smoothing, delta);
-  return Math.abs(next - target) < 0.001 ? target : next;
 }

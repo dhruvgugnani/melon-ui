@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
 import type { SceneQualityConfig } from "./runtime";
-import { getScrollProgress, getTargetSceneTime, stepSceneTime } from "./engine";
+import { getScrollProgress, getTargetSceneTime } from "./engine";
 
 const seedsRaw = [
   { x: 20, y: 30 }, { x: -30, y: 10 }, { x: 10, y: -40 },
@@ -30,6 +30,11 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
+function smoothStep(value: number) {
+  const t = clamp(value, 0, 1);
+  return t * t * (3 - 2 * t);
+}
+
 type MelonProps = {
   quality: SceneQualityConfig;
 };
@@ -42,7 +47,9 @@ export function Melon({ quality }: MelonProps) {
   const bottomHalfRef = useRef<THREE.Group>(null);
   const katanaRef = useRef<THREE.Group>(null);
   const splashGroupRef = useRef<THREE.Group>(null);
-  const seedsRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const originalSeedsRef = useRef<THREE.InstancedMesh>(null);
+  const originalSeedScalesRef = useRef<{ x: number; y: number; z: number }[]>([]);
+  const originalSeedsResetRef = useRef(false);
   const fallingSeedsGroupRef = useRef<THREE.Group>(null);
   const fallingSeedsRefs = useRef<(THREE.Mesh | null)[]>([]);
   const sandRef = useRef<THREE.Group>(null);
@@ -64,9 +71,8 @@ export function Melon({ quality }: MelonProps) {
   const pluckMelonRef = useRef<THREE.Mesh>(null);
   const dropletsRefs = useRef<(THREE.Mesh | null)[]>([]);
   const scenePhaseRef = useRef(0);
-  const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const sceneTimeRef = useRef(0);
-  const targetSceneTimeRef = useRef(0);
+  const introSectionDurationRef = useRef(0);
 
   const scale = quality.sceneScale;
   const segments = quality.segments;
@@ -625,25 +631,39 @@ export function Melon({ quality }: MelonProps) {
     opacity: 0.8,
   }), []);
   const pebbleGeometry = useMemo(() => new THREE.SphereGeometry(1, 8, 8), []);
+  const seedMatrixDummy = useMemo(() => new THREE.Object3D(), []);
 
-  useFrame((state, delta) => {
-    const masterTimeline = timelineRef.current;
-    if (masterTimeline) {
-      const smoothing = reducedMotion ? 18 : quality.deviceTier === "desktop" ? 8.5 : 10;
-      const nextSceneTime = stepSceneTime(
-        sceneTimeRef.current,
-        targetSceneTimeRef.current,
-        delta,
-        smoothing,
-      );
+  const updateSeedInstance = useCallback((index: number) => {
+    const mesh = originalSeedsRef.current;
+    const seed = seeds3D[index];
+    const scaleState = originalSeedScalesRef.current[index];
 
-      if (nextSceneTime !== sceneTimeRef.current) {
-        sceneTimeRef.current = nextSceneTime;
-        masterTimeline.totalTime(nextSceneTime, false);
-        scenePhaseRef.current = nextSceneTime;
-      }
+    if (!mesh || !seed || !scaleState) {
+      return;
     }
 
+    seedMatrixDummy.position.set(...seed.position);
+    seedMatrixDummy.rotation.set(...seed.rotation);
+    seedMatrixDummy.scale.set(scaleState.x, scaleState.y, scaleState.z);
+    seedMatrixDummy.updateMatrix();
+    mesh.setMatrixAt(index, seedMatrixDummy.matrix);
+    mesh.instanceMatrix.needsUpdate = true;
+  }, [seedMatrixDummy, seeds3D]);
+
+  const resetOriginalSeeds = useCallback(() => {
+    const mesh = originalSeedsRef.current;
+    if (!mesh) {
+      return;
+    }
+
+    mesh.visible = true;
+    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    originalSeedScalesRef.current = seeds3D.map(() => ({ x: 1, y: 1.8, z: 0.4 }));
+    seeds3D.forEach((_, index) => updateSeedInstance(index));
+    originalSeedsResetRef.current = true;
+  }, [seeds3D, updateSeedInstance]);
+
+  useFrame((state) => {
     if (reducedMotion) {
       return;
     }
@@ -690,6 +710,8 @@ export function Melon({ quality }: MelonProps) {
       !bottomHalfRef.current ||
       !katanaRef.current ||
       !splashGroupRef.current ||
+      !originalSeedsRef.current ||
+      !fallingSeedsGroupRef.current ||
       !sandRef.current ||
       !plantGroupRef.current ||
       !sproutRef.current ||
@@ -732,6 +754,7 @@ export function Melon({ quality }: MelonProps) {
       const bottomHalf = bottomHalfRef.current!;
       const katana = katanaRef.current!;
       const splashGroup = splashGroupRef.current!;
+      const fallingSeedsGroup = fallingSeedsGroupRef.current!;
       const sand = sandRef.current!;
       const plantGroup = plantGroupRef.current!;
       const sprout = sproutRef.current!;
@@ -770,7 +793,9 @@ export function Melon({ quality }: MelonProps) {
 
       splashGroup.position.set(0, 0, 0);
       splashGroup.scale.set(1, 1, 1);
-      splashGroup.visible = true;
+      splashGroup.visible = false;
+
+      fallingSeedsGroup.visible = false;
 
       katana.position.set(15, 6.9, 0);
       katana.rotation.set(0, 0, Math.PI / 5.4);
@@ -814,9 +839,7 @@ export function Melon({ quality }: MelonProps) {
       pluckMelon.rotation.set(0, 0, 0);
       pluckMelon.visible = false;
 
-      seedsRefs.current.forEach((mesh) => {
-        mesh?.scale.set(1, 1.8, 0.4);
-      });
+      resetOriginalSeeds();
 
       fallingSeedsRefs.current.forEach((mesh, index) => {
         if (!mesh) {
@@ -838,7 +861,6 @@ export function Melon({ quality }: MelonProps) {
 
       const timeline = gsap.timeline({ paused: true });
       masterTl = timeline;
-      timelineRef.current = timeline;
 
       timeline.set(katana.position, { x: 15, y: 6.9, z: 0 }, 0);
       timeline.set(katana.rotation, { x: 0, y: 0, z: Math.PI / 5.4 }, 0);
@@ -915,6 +937,8 @@ export function Melon({ quality }: MelonProps) {
         z: 0,
         duration: 0.01,
       }, 2.0);
+
+      timeline.set(splashGroup, { visible: true }, 1.76);
 
       dropletsData.forEach((drop, index) => {
         const mesh = dropletsRefs.current[index];
@@ -1008,18 +1032,22 @@ export function Melon({ quality }: MelonProps) {
       }, sandPhase + 0.02);
 
       seedFallData.forEach((fall, index) => {
-        const originalMesh = seedsRefs.current[index];
         const fallingMesh = fallingSeedsRefs.current[index];
         const isLandingSeed = index === landingSeedIndex;
         const impactAt = fall.releaseAt + fall.slipDuration + fall.fallDuration;
+        const originalSeedScale = originalSeedScalesRef.current[index];
 
-        if (originalMesh) {
-          timeline.to(originalMesh.scale, {
+        if (originalSeedScale) {
+          timeline.to(originalSeedScale, {
             x: 0,
             y: 0,
             z: 0,
             duration: 0.05,
             ease: "power1.out",
+            onUpdate: () => {
+              originalSeedsResetRef.current = false;
+              updateSeedInstance(index);
+            },
           }, fall.releaseAt);
         }
         if (!fallingMesh) {
@@ -1103,6 +1131,14 @@ export function Melon({ quality }: MelonProps) {
           }, fall.fadeAt);
         }
       });
+
+      const firstSeedReleaseAt = Math.min(...seedFallData.map((fall) => fall.releaseAt));
+      const finalSeedFadeAt = Math.max(
+        ...seedFallData.map((fall) => fall.fadeAt + fall.fadeDuration),
+        plantPhase + 0.2,
+      );
+      timeline.set(fallingSeedsGroup, { visible: true }, firstSeedReleaseAt - 0.04);
+      timeline.set(fallingSeedsGroup, { visible: false }, finalSeedFadeAt + 0.02);
 
       timeline.to(group.position, {
         x: -0.12,
@@ -1380,16 +1416,72 @@ export function Melon({ quality }: MelonProps) {
         ease: "power2.out",
       }, returnPhase + 0.22);
 
+      const sectionIntervals = Math.max(trigger.children.length - 1, 1);
+      introSectionDurationRef.current = timeline.duration() / sectionIntervals;
+
+      const renderIntroSection = (sceneTime: number) => {
+        const time = clamp(sceneTime, 0, Math.max(introSectionDurationRef.current, 0.001));
+        const rotationEase = smoothStep(time / 1.6);
+        const positionEase = smoothStep(time / 1);
+        const idleEase = clamp(time / 2, 0, 1);
+
+        group.visible = true;
+        group.position.set(0, -0.58 * positionEase, 0);
+        group.rotation.set(
+          Math.PI / 2 * rotationEase,
+          Math.PI * 1.1 * rotationEase,
+          Math.PI * 0.32 * rotationEase,
+        );
+        group.scale.set(1, 1, 1);
+        idleGroup.rotation.set(0, Math.PI * 0.88 * idleEase, 0);
+
+        topHalf.position.set(0, 0, 0);
+        topHalf.rotation.set(0, 0, 0);
+        topHalf.scale.set(1, 1, 1);
+        bottomHalf.position.set(0, 0, 0);
+        bottomHalf.rotation.set(0, 0, 0);
+        bottomHalf.scale.set(1, 1, 1);
+
+        katana.position.set(15, 6.9, 0);
+        katana.rotation.set(0, 0, Math.PI / 5.4);
+        katana.visible = true;
+
+        splashGroup.position.set(0, group.position.y, 0);
+        splashGroup.visible = false;
+        fallingSeedsGroup.visible = false;
+        if (!originalSeedsResetRef.current) {
+          resetOriginalSeeds();
+        }
+        sand.visible = false;
+        plantGroup.visible = false;
+        smallMelon.visible = false;
+        pluckMelon.visible = false;
+      };
+
+      const applySceneTime = (sceneTime: number) => {
+        sceneTimeRef.current = sceneTime;
+        scenePhaseRef.current = sceneTime;
+
+        if (
+          introSectionDurationRef.current > 0 &&
+          sceneTime <= introSectionDurationRef.current
+        ) {
+          renderIntroSection(sceneTime);
+          return;
+        }
+
+        timeline.totalTime(sceneTime, false);
+      };
+
       const syncTargetTime = (force = false) => {
         const progress = getScrollProgress(scroller, trigger);
         const targetTime = getTargetSceneTime(timeline.duration(), progress);
-        targetSceneTimeRef.current = targetTime;
 
-        if (force) {
-          sceneTimeRef.current = targetTime;
-          timeline.totalTime(targetTime, false);
-          scenePhaseRef.current = targetTime;
+        if (!force && Math.abs(targetTime - sceneTimeRef.current) < 0.0005) {
+          return;
         }
+
+        applySceneTime(targetTime);
       };
 
       const handleScroll = () => {
@@ -1404,7 +1496,6 @@ export function Melon({ quality }: MelonProps) {
       };
 
       sceneTimeRef.current = 0;
-      targetSceneTimeRef.current = 0;
       timeline.totalTime(0, false);
       scenePhaseRef.current = 0;
       syncTargetTime(true);
@@ -1425,9 +1516,8 @@ export function Melon({ quality }: MelonProps) {
         window.cancelAnimationFrame(scrollFrameId);
         scrollFrameId = null;
       }
-      timelineRef.current = null;
       sceneTimeRef.current = 0;
-      targetSceneTimeRef.current = 0;
+      introSectionDurationRef.current = 0;
       masterTl?.kill();
     };
   }, [
@@ -1435,7 +1525,9 @@ export function Melon({ quality }: MelonProps) {
     fruitScale,
     landingSeedIndex,
     reducedMotion,
+    resetOriginalSeeds,
     seedFallData,
+    updateSeedInstance,
   ]);
 
   return (
@@ -1489,17 +1581,10 @@ export function Melon({ quality }: MelonProps) {
               <mesh rotation-x={-Math.PI / 2} position-y={-0.005}>
                 <circleGeometry args={[2, segments]} />
                 <meshStandardMaterial map={innerTexture} bumpMap={innerTexture} bumpScale={0.1} roughness={0.7} />
-                {seeds3D.map((seed, index) => (
-                  <mesh
-                    key={index}
-                    ref={(element) => { if (element) { seedsRefs.current[index] = element; } }}
-                    position={seed.position}
-                    rotation={seed.rotation}
-                    scale={[1, 1.8, 0.4]}
-                    geometry={seedGeometry}
-                    material={originalSeedMaterial}
-                  />
-                ))}
+                <instancedMesh
+                  ref={originalSeedsRef}
+                  args={[seedGeometry, originalSeedMaterial, seeds3D.length]}
+                />
               </mesh>
             </group>
           </group>
@@ -1539,7 +1624,7 @@ export function Melon({ quality }: MelonProps) {
         </mesh>
       </group>
 
-      <group ref={fallingSeedsGroupRef}>
+      <group ref={fallingSeedsGroupRef} visible={false}>
         {seeds3D.map((seed, index) => (
           <mesh
             key={`falling-seed-${index}`}
