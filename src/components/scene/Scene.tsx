@@ -11,6 +11,7 @@ export function Scene() {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
       <Canvas
+        shadows
         camera={{ position: [0, 0, 8], fov: 45 }}
         dpr={quality.dpr}
         frameloop={quality.motion === "full" ? "always" : "demand"}

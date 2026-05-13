@@ -1,3 +1,4 @@
+
 export function HeroSection() {
   return (
     <section className="snap-start relative w-full h-screen flex flex-col items-center justify-center overflow-hidden z-10 px-6" style={{ scrollSnapStop: "always" }}>
@@ -20,9 +21,9 @@ export function HeroSection() {
       </div>
       
       <div className="text-center mt-[-10vh]">
-        <h1 className="text-[12vw] leading-none font-black tracking-tighter uppercase mb-4">
-          <span className="block">Juicy</span>
-          <span className="block text-outline-title">Components</span>
+        <h1 className="text-[12vw] leading-none font-black tracking-tighter uppercase mb-4 flex flex-col items-center">
+          <span className="block text-white">Juicy</span>
+          <span className="block text-outline-title mt-[-2vw]">Components</span>
         </h1>
         <p className="text-xl md:text-2xl text-gray-400 font-medium max-w-lg mx-auto uppercase tracking-wide">
           Premium UI elements with a fresh taste. Scroll to taste.
