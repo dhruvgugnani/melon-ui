@@ -1,10 +1,28 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Outfit, Londrina_Sketch, Londrina_Solid, Anton } from "next/font/google";
 import "./globals.css";
 
 const outfitFont = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
+});
+
+const londrinaSketchFont = Londrina_Sketch({
+  variable: "--font-londrina-sketch",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const londrinaSolidFont = Londrina_Solid({
+  variable: "--font-londrina-solid",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const antonFont = Anton({
+  variable: "--font-anton",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -22,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfitFont.variable} antialiased h-screen w-full overflow-hidden bg-black`}
+      className={`${outfitFont.variable} ${londrinaSketchFont.variable} ${londrinaSolidFont.variable} ${antonFont.variable} antialiased h-screen w-full overflow-hidden bg-black`}
     >
       <body className="flex h-screen w-full flex-col font-sans overflow-hidden">
         <Frame />

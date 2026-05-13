@@ -1417,59 +1417,10 @@ export function Melon({ quality }: MelonProps) {
       }, returnPhase + 0.22);
 
       const sectionIntervals = Math.max(trigger.children.length - 1, 1);
-      introSectionDurationRef.current = timeline.duration() / sectionIntervals;
-
-      const renderIntroSection = (sceneTime: number) => {
-        const time = clamp(sceneTime, 0, Math.max(introSectionDurationRef.current, 0.001));
-        const rotationEase = smoothStep(time / 1.6);
-        const positionEase = smoothStep(time / 1);
-        const idleEase = clamp(time / 2, 0, 1);
-
-        group.visible = true;
-        group.position.set(0, -0.58 * positionEase, 0);
-        group.rotation.set(
-          Math.PI / 2 * rotationEase,
-          Math.PI * 1.1 * rotationEase,
-          Math.PI * 0.32 * rotationEase,
-        );
-        group.scale.set(1, 1, 1);
-        idleGroup.rotation.set(0, Math.PI * 0.88 * idleEase, 0);
-
-        topHalf.position.set(0, 0, 0);
-        topHalf.rotation.set(0, 0, 0);
-        topHalf.scale.set(1, 1, 1);
-        bottomHalf.position.set(0, 0, 0);
-        bottomHalf.rotation.set(0, 0, 0);
-        bottomHalf.scale.set(1, 1, 1);
-
-        katana.position.set(15, 6.9, 0);
-        katana.rotation.set(0, 0, Math.PI / 5.4);
-        katana.visible = true;
-
-        splashGroup.position.set(0, group.position.y, 0);
-        splashGroup.visible = false;
-        fallingSeedsGroup.visible = false;
-        if (!originalSeedsResetRef.current) {
-          resetOriginalSeeds();
-        }
-        sand.visible = false;
-        plantGroup.visible = false;
-        smallMelon.visible = false;
-        pluckMelon.visible = false;
-      };
 
       const applySceneTime = (sceneTime: number) => {
         sceneTimeRef.current = sceneTime;
         scenePhaseRef.current = sceneTime;
-
-        if (
-          introSectionDurationRef.current > 0 &&
-          sceneTime <= introSectionDurationRef.current
-        ) {
-          renderIntroSection(sceneTime);
-          return;
-        }
-
         timeline.totalTime(sceneTime, false);
       };
 

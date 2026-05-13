@@ -40,12 +40,28 @@ html {
 }
 
 /* Typography utilities */
+h1, h2 {
+  font-family: var(--font-londrina-solid), "Londrina Solid", sans-serif;
+  font-weight: 400 !important;
+  letter-spacing: 0.02em;
+}
+
+h3, h4, h5, h6 {
+  font-family: var(--font-anton), "Anton", sans-serif;
+  font-weight: 400 !important;
+  letter-spacing: 0.05em;
+}
+
 /* Hero + CTA only: stable watermelon scan treatment without live 3D/CSS projection. */
 .text-melon-xray {
   position: relative;
   display: inline-block;
-  color: black !important;
-  -webkit-text-fill-color: black !important;
+  font-family: var(--font-londrina-sketch), "Londrina Sketch", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: rgba(255,255,255,0.76) !important;
+  letter-spacing: 0.05em;
+  -webkit-text-stroke: 0.6px rgba(255,255,255,0.76);
 }
 
 .text-melon-xray::after {
@@ -86,17 +102,6 @@ html {
   filter: saturate(1.05) contrast(1.03);
 }
 
-.text-melon-xray {
-  text-shadow: 
-    -3px -3px 0 rgba(255,255,255,0.76), 
-     3px -3px 0 rgba(255,255,255,0.76), 
-    -3px  3px 0 rgba(255,255,255,0.76), 
-     3px  3px 0 rgba(255,255,255,0.76),
-    -3px  0px 0 rgba(255,255,255,0.76), 
-     3px  0px 0 rgba(255,255,255,0.76), 
-     0px -3px 0 rgba(255,255,255,0.76), 
-     0px  3px 0 rgba(255,255,255,0.76);
-}
 
 .text-shell-title,
 .text-pulp-title,
@@ -154,10 +159,13 @@ html {
   position: relative;
   display: inline-block;
   line-height: 0.92;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 1.6px rgba(255, 255, 255, 0.82);
+  font-family: var(--font-londrina-sketch), "Londrina Sketch", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.82);
   text-shadow: 0 14px 28px rgba(0, 0, 0, 0.24);
+  letter-spacing: 0.05em;
+  -webkit-text-stroke: 0.6px rgba(255, 255, 255, 0.82);
 }
 
 .horizontal-section {

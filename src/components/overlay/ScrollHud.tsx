@@ -38,7 +38,7 @@ export function ScrollHud() {
       }
 
       if (barRef.current) {
-        barRef.current.style.transform = `scaleX(${progress / 100})`;
+        barRef.current.style.scale = `${progress / 100} 1`;
       }
     };
 
@@ -95,7 +95,8 @@ export function ScrollHud() {
       <div className="h-[3px] w-full overflow-hidden rounded-full bg-white/12">
         <div
           ref={barRef}
-          className="h-full origin-left scale-x-0 rounded-full bg-white shadow-[0_0_18px_rgba(255,92,113,0.5)]"
+          className="h-full origin-left rounded-full bg-white shadow-[0_0_18px_rgba(255,92,113,0.5)]"
+          style={{ scale: "0 1" }}
         />
       </div>
     </div>
