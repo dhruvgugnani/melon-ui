@@ -26,8 +26,8 @@ const antonFont = Anton({
 });
 
 export const metadata: Metadata = {
-  title: "UI | MelonUI Store",
-  description: "A premium 3D component storefront.",
+  title: "MelonUI",
+  description: "A premium 3D component lab for fresh interface pieces.",
 };
 
 import { Frame } from "@/components/overlay/Frame";

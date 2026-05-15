@@ -1,38 +1,45 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useMemo, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+
+const PARTICLE_COUNT = 1200;
+const PARTICLE_PALETTE = [
+  [0.5, 1.0, 0.37],
+  [1.0, 0.36, 0.44],
+  [0.91, 0.84, 0.72],
+];
+
+function pseudoRandom(seed: number) {
+  const value = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return value - Math.floor(value);
+}
+
+function createParticlePositions() {
+  const arr = new Float32Array(PARTICLE_COUNT * 3);
+  for (let i = 0; i < PARTICLE_COUNT * 3; i += 1) {
+    arr[i] = (pseudoRandom(i + 1) - 0.5) * 8;
+  }
+  return arr;
+}
+
+function createParticleColors() {
+  const arr = new Float32Array(PARTICLE_COUNT * 3);
+  for (let i = 0; i < PARTICLE_COUNT; i += 1) {
+    const c = PARTICLE_PALETTE[Math.floor(pseudoRandom(i + 4001) * PARTICLE_PALETTE.length)];
+    arr[i * 3] = c[0];
+    arr[i * 3 + 1] = c[1];
+    arr[i * 3 + 2] = c[2];
+  }
+  return arr;
+}
 
 function ParticleField() {
   const meshRef = useRef<THREE.Points>(null);
   const mouse = useRef({ x: 0, y: 0 });
-  const count = 1200;
-
-  // Generate random particle positions
-  const positions = useRef(() => {
-    const arr = new Float32Array(count * 3);
-    for (let i = 0; i < count * 3; i++) {
-      arr[i] = (Math.random() - 0.5) * 8;
-    }
-    return arr;
-  });
-
-  const colors = useRef(() => {
-    const arr = new Float32Array(count * 3);
-    const palette = [
-      [0.5, 1.0, 0.37], // #7fff5e leaf green
-      [1.0, 0.36, 0.44], // #ff5c71 melon red
-      [0.91, 0.84, 0.72], // #e8d5b7 sand
-    ];
-    for (let i = 0; i < count; i++) {
-      const c = palette[Math.floor(Math.random() * palette.length)];
-      arr[i * 3] = c[0];
-      arr[i * 3 + 1] = c[1];
-      arr[i * 3 + 2] = c[2];
-    }
-    return arr;
-  });
+  const positions = useMemo(() => createParticlePositions(), []);
+  const colors = useMemo(() => createParticleColors(), []);
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
@@ -55,11 +62,11 @@ function ParticleField() {
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          args={[positions.current(), 3]}
+          args={[positions, 3]}
         />
         <bufferAttribute
           attach="attributes-color"
-          args={[colors.current(), 3]}
+          args={[colors, 3]}
         />
       </bufferGeometry>
       <pointsMaterial

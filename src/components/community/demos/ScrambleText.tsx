@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useCallback } from "react";
-import gsap from "gsap";
 
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%";
 

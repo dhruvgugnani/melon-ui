@@ -22,7 +22,6 @@ export function VineInput() {
   const handleFocus = () => {
     const path = svgRef.current;
     if (!path) return;
-    const len = path.getTotalLength();
     gsap.to(path, {
       strokeDashoffset: 0,
       duration: 0.7,

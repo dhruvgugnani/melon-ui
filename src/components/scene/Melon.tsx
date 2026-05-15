@@ -30,11 +30,6 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
-function smoothStep(value: number) {
-  const t = clamp(value, 0, 1);
-  return t * t * (3 - 2 * t);
-}
-
 type MelonProps = {
   quality: SceneQualityConfig;
 };
@@ -1560,8 +1555,6 @@ export function Melon({ quality }: MelonProps) {
         duration: 0.38,
         ease: "power2.out",
       }, returnPhase + 0.22);
-
-      const sectionIntervals = Math.max(trigger.children.length - 1, 1);
 
       const applySceneTime = (sceneTime: number) => {
         sceneTimeRef.current = sceneTime;
