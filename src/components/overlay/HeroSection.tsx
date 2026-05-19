@@ -4,129 +4,100 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 
-const NAV_ITEMS = ["Store", "Docs", "GitHub"];
+const GITHUB_URL = "https://github.com/dhruvgugnani/melon-ui";
 
 export function HeroSection() {
-  const headRef = useRef<HTMLHeadingElement>(null);
-  const subRef = useRef<HTMLParagraphElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
-  const tagRef = useRef<HTMLDivElement>(null);
-  const arrowRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const copyRef = useRef<HTMLParagraphElement>(null);
+  const chipsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.from(navRef.current, { y: -20, opacity: 0, duration: 0.6 })
-        .from(tagRef.current, { x: -30, opacity: 0, duration: 0.5 }, "-=0.2")
-        .from(headRef.current?.children ?? [], {
-          y: 80,
-          opacity: 0,
-          duration: 0.9,
-          stagger: 0.12,
-        }, "-=0.2")
-        .from(subRef.current, { y: 20, opacity: 0, duration: 0.6 }, "-=0.4")
-        .from(arrowRef.current, { opacity: 0, y: 10, duration: 0.5 }, "-=0.2");
+      tl.from(navRef.current, { y: -18, opacity: 0, duration: 0.55 })
+        .from(titleRef.current?.children ?? [], { y: 72, opacity: 0, duration: 0.85, stagger: 0.08 }, "-=0.2")
+        .from(copyRef.current, { y: 18, opacity: 0, duration: 0.55 }, "-=0.35")
+        .from(chipsRef.current?.children ?? [], { y: 16, opacity: 0, duration: 0.45, stagger: 0.05 }, "-=0.25");
     });
+
     return () => ctx.revert();
   }, []);
 
   return (
     <section
-      className="snap-start relative w-full h-screen overflow-hidden z-10"
+      className="snap-start relative h-screen w-full overflow-hidden z-10"
       style={{ scrollSnapStop: "always" }}
     >
-      {/* NAV */}
-      <div ref={navRef} className="absolute top-0 left-0 right-0 flex items-center justify-between px-8 pt-8 z-20">
-        <div className="flex items-center gap-2">
-          {/* Logo mark */}
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path d="M2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12H2Z" fill="#2e4a25"/>
-            <path d="M3.5 12C3.5 16.6944 7.30558 20.5 12 20.5C16.6944 20.5 20.5 16.6944 20.5 12H3.5Z" fill="#e0f2dc"/>
-            <path d="M5 12C5 15.866 8.13401 19 12 19C15.866 19 19 15.866 19 12H5Z" fill="#ff5c71"/>
-            <circle cx="9" cy="15" r="1.2" fill="#000"/>
-            <circle cx="12" cy="17" r="1.2" fill="#000"/>
-            <circle cx="15" cy="15" r="1.2" fill="#000"/>
-          </svg>
-          <span
-            className="text-sm font-black uppercase tracking-widest text-white"
-            style={{ fontFamily: "var(--font-anton)" }}
-          >
+      <div className="pointer-events-none absolute left-[-12vw] top-[18vh] h-10 w-[52vw] -rotate-6 bg-[#ff5c71]" />
+      <div className="pointer-events-none absolute bottom-[18vh] right-[-10vw] h-16 w-[48vw] rotate-[-8deg] border-y border-[#e0f2dc]/30 bg-[#203f18]/30" />
+
+      <div ref={navRef} className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-6 py-6 md:px-10">
+        <Link href="/" className="flex items-center gap-3" aria-label="MelonUI home">
+          <span className="relative h-9 w-9 overflow-hidden rounded-full border border-white/15 bg-[#ff5c71]">
+            <span className="absolute inset-x-1 bottom-1 h-5 rounded-b-full bg-[#203f18]" />
+            <span className="absolute inset-x-2 bottom-2 h-3 rounded-b-full bg-[#e0f2dc]" />
+            <span className="absolute inset-x-3 bottom-3 h-2 rounded-b-full bg-[#ff5c71]" />
+            <span className="absolute bottom-3 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-black" />
+          </span>
+          <span className="text-sm font-black uppercase text-white" style={{ fontFamily: "var(--font-anton)", letterSpacing: 0 }}>
             MelonUI
           </span>
-        </div>
-        <div ref={navRef} className="flex items-center gap-6">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item}
-              href={item === "Store" ? "/community" : "#"}
-              className="font-mono text-xs uppercase tracking-widest text-white/40 hover:text-white transition-colors"
-            >
-              {item}
-            </Link>
-          ))}
+        </Link>
+
+        <div className="flex items-center gap-2 text-xs font-bold">
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-full border border-white/12 bg-black/35 px-4 py-2 text-white/70 backdrop-blur-md transition-colors hover:text-white"
+          >
+            GitHub
+          </a>
           <Link
             href="/community"
-            className="px-4 py-1.5 bg-[#ff5c71] text-[#050505] font-mono text-xs uppercase tracking-widest font-black hover:bg-white transition-colors"
+            className="rounded-full bg-[#e0f2dc] px-4 py-2 text-black transition-colors hover:bg-white"
           >
-            Get Started →
+            Store
           </Link>
         </div>
       </div>
 
-      {/* CATEGORY TAG — top left floater */}
-      <div
-        ref={tagRef}
-        className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col gap-1 z-20"
-      >
-        <span className="font-mono text-[9px] text-white/25 uppercase tracking-[0.3em]">v1.0.0</span>
-        <div className="w-px h-24 bg-white/10 mx-auto" />
-        <span className="font-mono text-[9px] text-white/25 uppercase tracking-[0.3em] [writing-mode:vertical-lr]">
-          Component Library
-        </span>
-      </div>
-
-      {/* MAIN HEADING — bottom anchored, massive */}
-      <div className="absolute bottom-0 left-0 right-0 px-6 md:px-10 pb-28 z-20">
-        <h1
-          ref={headRef}
-          className="font-black uppercase leading-[0.82] tracking-tighter overflow-hidden"
-          style={{ fontFamily: "var(--font-londrina-solid)", fontSize: "clamp(4.5rem, 14vw, 14rem)" }}
-        >
-          <span className="block text-white overflow-hidden">Build</span>
-          <span className="block text-[#ff5c71] overflow-hidden">Juicy</span>
-          <span className="block text-[#7fff5e] overflow-hidden" style={{ fontFamily: "var(--font-londrina-sketch)" }}>
-            Interfaces
-          </span>
-        </h1>
-
-        {/* Inline sub + CTA row */}
-        <div className="flex items-end justify-between mt-6">
-          <p
-            ref={subRef}
-            className="font-mono text-xs text-white/35 uppercase tracking-[0.2em] max-w-xs leading-relaxed"
-          >
-            Premium UI components built with GSAP, Three.js & React.
-            Copy-paste ready. No fluff.
+      <div className="relative z-20 grid h-full grid-cols-12 items-end gap-5 px-6 pb-24 pt-28 md:px-10 md:pb-28">
+        <div className="col-span-12 lg:col-span-8">
+          <p className="mb-4 font-mono text-xs uppercase text-[#e0f2dc]/62" style={{ letterSpacing: 0 }}>
+            Chaotic components. Production taste.
           </p>
-          <div className="flex items-center gap-4">
-            <span className="font-mono text-[10px] text-white/20 uppercase tracking-widest hidden md:block">
-              20+ components
-            </span>
-            <span className="font-mono text-[10px] text-white/20 uppercase tracking-widest hidden md:block">·</span>
-            <span className="font-mono text-[10px] text-white/20 uppercase tracking-widest hidden md:block">
-              Free forever
-            </span>
+          <h1
+            ref={titleRef}
+            className="font-black uppercase leading-[0.76] text-white text-[clamp(4.5rem,14vw,14rem)]"
+            style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
+          >
+            <span className="block">Slice</span>
+            <span className="block translate-x-[9vw] text-[#ff5c71] md:translate-x-24">The</span>
+            <span className="block text-[#e0f2dc]">Web</span>
+          </h1>
+        </div>
+
+        <div className="col-span-12 mb-3 max-w-xl lg:col-span-4">
+          <p ref={copyRef} className="text-lg font-semibold leading-7 text-white/68 md:text-xl md:leading-8">
+            A scrollable component storefront told through one melon: cut it open, collect the drops, copy the code, and unlock the pieces your interface actually deserves.
+          </p>
+          <div ref={chipsRef} className="mt-6 flex flex-wrap gap-2">
+            {["Most drops free", "Pro vault later", "GSAP + R3F", "Copy ready"].map((chip) => (
+              <span key={chip} className="rounded-full border border-white/12 bg-white/7 px-3 py-1.5 text-xs font-bold text-white/72 backdrop-blur-md">
+                {chip}
+              </span>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* SCROLL INDICATOR */}
-      <div
-        ref={arrowRef}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20"
-      >
-        <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-white/20">Scroll</span>
-        <div className="w-px h-10 bg-gradient-to-b from-white/20 to-transparent" />
+      <div className="absolute bottom-7 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2">
+        <span className="font-mono text-[10px] uppercase text-white/30" style={{ letterSpacing: 0 }}>
+          Scroll the story
+        </span>
+        <div className="h-10 w-px bg-gradient-to-b from-white/30 to-transparent" />
       </div>
     </section>
   );

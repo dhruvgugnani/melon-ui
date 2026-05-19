@@ -3,16 +3,23 @@
 import { useEffect, useRef } from "react";
 import { getScrollProgress } from "@/components/scene/engine";
 
+const CHAPTERS = [
+  "crate",
+  "slice",
+  "drops",
+  "code",
+  "wind",
+  "access",
+  "ship",
+];
+
 export function ScrollHud() {
   const progressTextRef = useRef<HTMLSpanElement>(null);
-  const fpsTextRef = useRef<HTMLSpanElement>(null);
+  const chapterTextRef = useRef<HTMLSpanElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let fpsFrameId = 0;
     let progressFrameId: number | null = null;
-    let lastFpsSample = performance.now();
-    let frameCount = 0;
     let lastProgress = -1;
 
     const updateProgress = () => {
@@ -37,6 +44,11 @@ export function ScrollHud() {
         progressTextRef.current.textContent = `${progress.toFixed(1)}%`;
       }
 
+      if (chapterTextRef.current) {
+        const chapterIndex = Math.min(CHAPTERS.length - 1, Math.floor((progress / 100) * CHAPTERS.length));
+        chapterTextRef.current.textContent = CHAPTERS[chapterIndex];
+      }
+
       if (barRef.current) {
         barRef.current.style.scale = `${progress / 100} 1`;
       }
@@ -50,30 +62,12 @@ export function ScrollHud() {
       progressFrameId = window.requestAnimationFrame(updateProgress);
     };
 
-    const tickFps = (now: number) => {
-      frameCount += 1;
-
-      if (now - lastFpsSample >= 500) {
-        const fps = Math.round((frameCount * 1000) / Math.max(now - lastFpsSample, 1));
-        frameCount = 0;
-        lastFpsSample = now;
-
-        if (fpsTextRef.current) {
-          fpsTextRef.current.textContent = `${fps} FPS`;
-        }
-      }
-
-      fpsFrameId = window.requestAnimationFrame(tickFps);
-    };
-
     const scroller = document.getElementById("snap-container");
     scheduleProgress();
     scroller?.addEventListener("scroll", scheduleProgress, { passive: true });
     window.addEventListener("resize", scheduleProgress, { passive: true });
-    fpsFrameId = window.requestAnimationFrame(tickFps);
 
     return () => {
-      window.cancelAnimationFrame(fpsFrameId);
       if (progressFrameId !== null) {
         window.cancelAnimationFrame(progressFrameId);
       }
@@ -88,14 +82,15 @@ export function ScrollHud() {
       className="pointer-events-none fixed inset-x-6 bottom-5 z-40 md:inset-x-10"
       aria-hidden="true"
     >
-      <div className="mb-2 flex items-end justify-between font-bold uppercase tracking-[0.28em] text-white/58">
-        <span ref={progressTextRef} className="text-[10px] md:text-xs">0.0%</span>
-        <span ref={fpsTextRef} className="text-[10px] md:text-xs">60 FPS</span>
+      <div className="mb-2 flex items-end gap-3 text-xs font-bold uppercase text-white/58" style={{ letterSpacing: 0 }}>
+        <span ref={progressTextRef}>0.0%</span>
+        <span className="text-white/22">/</span>
+        <span ref={chapterTextRef}>crate</span>
       </div>
       <div className="h-[3px] w-full overflow-hidden rounded-full bg-white/12">
         <div
           ref={barRef}
-          className="h-full origin-left rounded-full bg-white shadow-[0_0_18px_rgba(255,92,113,0.5)]"
+          className="h-full origin-left rounded-full bg-[#ff5c71] shadow-[0_0_18px_rgba(255,92,113,0.5)]"
           style={{ scale: "0 1" }}
         />
       </div>

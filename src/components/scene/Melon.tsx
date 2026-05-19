@@ -333,179 +333,9 @@ export function Melon({ quality }: MelonProps) {
     });
   }, [landingSeedIndex, plantPhase, sandPhase, seeds3D]);
 
-  const stemCurve = useMemo(() => new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0, 0, 0),
-    new THREE.Vector3(0.03, 0.26, 0.02),
-    new THREE.Vector3(-0.04, 0.62, -0.04),
-    new THREE.Vector3(0.08, 1.02, 0.06),
-    new THREE.Vector3(-0.02, 1.38, -0.03),
-    new THREE.Vector3(0.1, 1.76, 0.08),
-    new THREE.Vector3(0.22, 2.08, 0.16),
-  ]), []);
-
-  const sideVineCurve = useMemo(() => new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-0.02, 0.86, 0.02),
-    new THREE.Vector3(-0.28, 1.02, -0.08),
-    new THREE.Vector3(-0.56, 1.18, -0.2),
-    new THREE.Vector3(-0.84, 1.26, -0.28),
-  ]), []);
-
-  const fruitStemCurve = useMemo(() => new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0.2, 1.92, 0.14),
-    new THREE.Vector3(0.42, 1.92, 0.12),
-    new THREE.Vector3(0.58, 1.78, 0.08),
-    new THREE.Vector3(0.68, 1.62, 0.03),
-  ]), []);
-
-  const tendrilLeftCurve = useMemo(() => new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-0.32, 1.02, -0.08),
-    new THREE.Vector3(-0.48, 1.08, -0.16),
-    new THREE.Vector3(-0.52, 0.95, -0.22),
-    new THREE.Vector3(-0.36, 0.88, -0.18),
-    new THREE.Vector3(-0.28, 1.0, -0.12),
-  ]), []);
-
-  const tendrilRightCurve = useMemo(() => new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0.2, 1.58, 0.04),
-    new THREE.Vector3(0.34, 1.66, 0.14),
-    new THREE.Vector3(0.26, 1.82, 0.2),
-    new THREE.Vector3(0.12, 1.76, 0.18),
-    new THREE.Vector3(0.18, 1.6, 0.08),
-  ]), []);
-
-  const cotyledonShape = useMemo(() => {
-    const shape = new THREE.Shape();
-    shape.moveTo(0, 0);
-    shape.bezierCurveTo(0.16, -0.02, 0.16, 0.22, 0, 0.26);
-    shape.bezierCurveTo(-0.16, 0.22, -0.16, -0.02, 0, 0);
-    return shape;
-  }, []);
-
-  const leafShape = useMemo(() => {
-    const shape = new THREE.Shape();
-    shape.moveTo(0, 0.02);
-    shape.bezierCurveTo(-0.08, -0.05, -0.24, -0.1, -0.38, 0.06);
-    shape.bezierCurveTo(-0.56, 0.24, -0.54, 0.54, -0.38, 0.72);
-    shape.bezierCurveTo(-0.24, 0.9, -0.06, 0.94, 0, 0.78);
-    shape.bezierCurveTo(0.08, 0.94, 0.28, 0.9, 0.42, 0.74);
-    shape.bezierCurveTo(0.58, 0.56, 0.56, 0.24, 0.38, 0.06);
-    shape.bezierCurveTo(0.24, -0.1, 0.08, -0.05, 0, 0.02);
-    return shape;
-  }, []);
-
-  const calyxShape = useMemo(() => {
-    const shape = new THREE.Shape();
-    shape.moveTo(0, 0);
-    shape.lineTo(0.1, 0.3);
-    shape.bezierCurveTo(0.04, 0.26, -0.02, 0.26, -0.1, 0.3);
-    shape.closePath();
-    return shape;
-  }, []);
-
-  const stemTexture = useMemo(() => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 128;
-    canvas.height = 512;
-    const ctx = canvas.getContext("2d");
-    if (ctx) {
-      const gradient = ctx.createLinearGradient(0, 0, 128, 0);
-      gradient.addColorStop(0, "#36511a");
-      gradient.addColorStop(0.5, "#253b0f");
-      gradient.addColorStop(1, "#36511a");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, 128, 512);
-      ctx.strokeStyle = "rgba(10, 20, 5, 0.4)";
-      ctx.lineWidth = 1;
-      for (let x = 0; x < 128; x += 6) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x + (pseudoRandom(x + 1) - 0.5) * 8, 512);
-        ctx.stroke();
-      }
-      ctx.fillStyle = "rgba(100, 120, 80, 0.15)";
-      for (let i = 0; i < 400; i += 1) {
-        ctx.fillRect(pseudoRandom(i + 3001) * 128, pseudoRandom(i + 6001) * 512, 2, 3);
-      }
-    }
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.wrapS = THREE.RepeatWrapping;
-    tex.wrapT = THREE.RepeatWrapping;
-    return tex;
-  }, []);
-
-  const leafTexture = useMemo(() => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 256;
-    canvas.height = 256;
-    const ctx = canvas.getContext("2d");
-    if (ctx) {
-      // Base realistic earthy green
-      ctx.fillStyle = "#1e3a10";
-      ctx.fillRect(0, 0, 256, 256);
-      
-      // Mottled noise for organic texture
-      for (let i = 0; i < 3000; i++) {
-        ctx.fillStyle = pseudoRandom(i) > 0.5 ? "rgba(35, 60, 20, 0.2)" : "rgba(10, 25, 5, 0.2)";
-        const r = pseudoRandom(i + 1) * 4 + 1;
-        ctx.beginPath();
-        ctx.arc(pseudoRandom(i + 2) * 256, pseudoRandom(i + 3) * 256, r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Central vein
-      ctx.strokeStyle = "rgba(160, 200, 100, 0.6)"; // Lighter color for veins
-      ctx.lineWidth = 3;
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      ctx.moveTo(128, 250);
-      ctx.bezierCurveTo(126, 196, 132, 96, 128, 8);
-      ctx.stroke();
-
-      // Branching veins
-      ctx.lineWidth = 1.5;
-      for (let i = 0; i < 7; i += 1) {
-        const y = 224 - i * 32;
-        const direction = i % 2 === 0 ? 1 : -1;
-        ctx.beginPath();
-        ctx.moveTo(128, y);
-        // Add random curves to veins
-        const wiggle = pseudoRandom(i) * 10 - 5;
-        ctx.quadraticCurveTo(128 + direction * 40, y - 10 + wiggle, 128 + direction * 90, y - 30 + wiggle);
-        ctx.stroke();
-      }
-    }
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.wrapS = THREE.RepeatWrapping;
-    tex.wrapT = THREE.RepeatWrapping;
-    return tex;
-  }, []);
-
-  const leafGeometry3D = useMemo(() => {
-    const geom = new THREE.ShapeGeometry(leafShape, 16);
-    const pos = geom.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i);
-      const y = pos.getY(i);
-      // Bend along x (cup shape) and curve down along y
-      const z = -Math.abs(x) * 0.3 - (y * y) * 0.15;
-      pos.setZ(i, z);
-    }
-    geom.computeVertexNormals();
-    return geom;
-  }, [leafShape]);
-
-  const cotyledonGeometry3D = useMemo(() => {
-    const geom = new THREE.ShapeGeometry(cotyledonShape, 12);
-    const pos = geom.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i);
-      const y = pos.getY(i);
-      const z = Math.sin(x * Math.PI * 4) * 0.02 - (y * y) * 0.4;
-      pos.setZ(i, z);
-    }
-    geom.computeVertexNormals();
-    return geom;
-  }, [cotyledonShape]);
+  const windStreakGeometry = useMemo(() => new THREE.BoxGeometry(1, 0.045, 0.045), []);
+  const impactRingGeometry = useMemo(() => new THREE.TorusGeometry(0.92, 0.018, 8, 96), []);
+  const dustPuffGeometry = useMemo(() => new THREE.IcosahedronGeometry(0.16, 1), []);
 
   const smallMelonRind = useMemo(() => {
     const canvas = document.createElement("canvas");
@@ -699,7 +529,6 @@ export function Melon({ quality }: MelonProps) {
     transparent: true,
     opacity: 0.8,
   }), []);
-  const pebbleGeometry = useMemo(() => new THREE.SphereGeometry(1, 8, 8), []);
   const seedMatrixDummy = useMemo(() => new THREE.Object3D(), []);
 
   const updateSeedInstance = useCallback((index: number) => {
@@ -743,7 +572,7 @@ export function Melon({ quality }: MelonProps) {
     const ambientWeight = Math.max(introWeight, returnWeight * 0.75);
     const plantWeight =
       clamp((phase - plantPhase) / 0.24, 0, 1) *
-      clamp((returnPhase + 0.08 - phase) / 0.32, 0, 1);
+      clamp((fruitPhase - 0.06 - phase) / 0.32, 0, 1);
     const fruitWeight =
       clamp((phase - fruitPhase) / 0.18, 0, 1) *
       clamp((returnPhase - phase) / 0.18, 0, 1);
@@ -803,7 +632,6 @@ export function Melon({ quality }: MelonProps) {
     }
 
     const dropEase = reducedMotion ? "power2.out" : "back.out(2)";
-    const growthEase = reducedMotion ? "power2.out" : "back.out(1.8)";
     const finalPopEase = reducedMotion ? "power2.out" : "elastic.out(0.9, 0.55)";
     let masterTl: gsap.core.Timeline | null = null;
     let scrollFrameId: number | null = null;
@@ -875,32 +703,49 @@ export function Melon({ quality }: MelonProps) {
       sand.scale.set(0, 0, 0);
       sand.visible = false;
 
-      plantGroup.position.set(0, -1.55, 0.22);
+      plantGroup.position.set(0, -0.86, 0.18);
       plantGroup.rotation.set(0, 0, 0);
       plantGroup.scale.set(1, 1, 1);
       plantGroup.visible = false;
 
-      sprout.scale.set(1, 0, 1);
-      sprout.rotation.set(0, 0, 1.1);
+      sprout.position.set(0, -0.56, 0.1);
+      sprout.scale.set(0, 0, 0);
+      sprout.rotation.set(0, 0, 0);
 
       cotyledon1.scale.set(0, 0, 0);
-      cotyledon1.rotation.set(0.08, 0, -0.28);
+      cotyledon1.position.set(-0.92, 2.04, 0.1);
+      cotyledon1.rotation.set(0, 0, -0.18);
       cotyledon2.scale.set(0, 0, 0);
-      cotyledon2.rotation.set(-0.08, 0, 0.28);
+      cotyledon2.position.set(-0.72, 1.66, 0.08);
+      cotyledon2.rotation.set(0, 0, -0.06);
 
-      plantStem.scale.set(1, 0, 1);
+      plantStem.position.set(0, -0.54, 0.12);
+      plantStem.scale.set(0, 0, 0);
+      plantStem.rotation.set(Math.PI / 2, 0, 0);
       sideVine.scale.set(0, 0, 0);
+      sideVine.position.set(-0.86, 1.32, 0.2);
+      sideVine.rotation.set(0, 0, 0.08);
       fruitStem.scale.set(0, 0, 0);
+      fruitStem.position.set(-1.12, 2.34, 0.12);
+      fruitStem.rotation.set(0, 0, -0.32);
+      fruitCalyx.position.set(0, -0.42, 0.28);
       fruitCalyx.scale.set(0, 0, 0);
       tendrilLeft.scale.set(0, 0, 0);
+      tendrilLeft.position.set(-0.62, 1.66, 0.14);
       tendrilRight.scale.set(0, 0, 0);
+      tendrilRight.position.set(0.22, 1.82, 0.14);
 
       plantLeaf1.scale.set(0, 0, 0);
+      plantLeaf1.position.set(-0.72, -0.5, 0.4);
       plantLeaf2.scale.set(0, 0, 0);
+      plantLeaf2.position.set(0.72, -0.54, 0.36);
       plantLeaf3.scale.set(0, 0, 0);
+      plantLeaf3.position.set(-1.24, -0.64, 0.18);
       plantLeaf4.scale.set(0, 0, 0);
+      plantLeaf4.position.set(1.22, -0.66, 0.2);
       smallMelon.scale.set(0, 0, 0);
       smallMelon.rotation.set(0, 0, 0);
+      smallMelon.position.set(-0.12, 5.85, 0.16);
       smallMelon.visible = false;
 
       pluckMelon.position.set(0.68, 0.19, 0.26);
@@ -1113,8 +958,6 @@ export function Melon({ quality }: MelonProps) {
 
       seedFallData.forEach((fall, index) => {
         const fallingMesh = fallingSeedsRefs.current[index];
-        const isLandingSeed = index === landingSeedIndex;
-        const impactAt = fall.releaseAt + fall.slipDuration + fall.fallDuration;
         const originalSeedScale = originalSeedScalesRef.current[index];
 
         if (originalSeedScale) {
@@ -1158,80 +1001,60 @@ export function Melon({ quality }: MelonProps) {
           duration: fall.slipDuration,
           ease: "power1.out",
         }, fall.releaseAt);
+        const floatAt = plantPhase - 0.2 + randomBetween(index + 41001, -0.08, 0.04);
+        const floatDuration = Math.max(0.18, floatAt - (fall.releaseAt + fall.slipDuration));
+        const floatX = fall.land[0] * 0.72 + randomBetween(index + 42001, -0.2, 0.2);
+        const floatY = 0.34 + randomBetween(index + 43001, -0.12, 0.36);
+        const floatZ = fall.land[2] * 0.58 + randomBetween(index + 44001, -0.18, 0.18);
+        const windAt = plantPhase + randomBetween(index + 45001, 0.02, 0.22);
         timeline.to(fallingMesh.position, {
-          x: fall.land[0],
-          y: fall.land[1],
-          z: fall.land[2],
-          duration: fall.fallDuration,
-          ease: "power2.in",
+          x: floatX,
+          y: floatY,
+          z: floatZ,
+          duration: floatDuration,
+          ease: "sine.out",
         }, fall.releaseAt + fall.slipDuration);
         timeline.to(fallingMesh.rotation, {
           x: fall.endRotation[0],
           y: fall.endRotation[1],
           z: fall.endRotation[2],
-          duration: fall.slipDuration + fall.fallDuration + fall.bounceDuration + fall.settleDuration,
+          duration: floatDuration + 0.12,
           ease: "none",
         }, fall.releaseAt);
         timeline.to(fallingMesh.scale, {
-          x: fall.impactScale[0],
-          y: fall.impactScale[1],
-          z: fall.impactScale[2],
-          duration: 0.06,
-          ease: "power1.in",
-        }, impactAt);
-        timeline.to(fallingMesh.position, {
-          x: fall.bounce[0],
-          y: fall.bounce[1],
-          z: fall.bounce[2],
-          duration: fall.bounceDuration,
-          ease: "power1.out",
-        }, impactAt + 0.02);
-        timeline.to(fallingMesh.position, {
-          x: fall.settle[0],
-          y: fall.settle[1],
-          z: fall.settle[2],
-          duration: fall.settleDuration,
-          ease: "power1.in",
-        }, impactAt + 0.02 + fall.bounceDuration);
-        timeline.to(fallingMesh.scale, {
-          x: fall.restScale[0],
-          y: fall.restScale[1],
-          z: fall.restScale[2],
-          duration: 0.14,
-          ease: "power2.out",
-        }, impactAt + 0.02);
-
-        // A little bit of moving/rolling in the sand (wind nudge)
-        const settleEnd = impactAt + 0.02 + fall.bounceDuration + fall.settleDuration;
-        timeline.to(fallingMesh.position, {
-          x: fall.settle[0] + (index % 2 === 0 ? 0.03 : -0.02),
-          z: fall.settle[2] + (index % 3 === 0 ? 0.03 : -0.02),
-          duration: plantPhase - settleEnd,
+          x: fall.restScale[0] * 0.9,
+          y: fall.restScale[1] * 0.9,
+          z: fall.restScale[2] * 0.9,
+          duration: 0.18,
           ease: "sine.inOut",
-        }, settleEnd);
+        }, fall.releaseAt + fall.slipDuration + 0.08);
+        timeline.to(fallingMesh.position, {
+          x: 6.6 + randomBetween(index + 46001, 0, 1.6),
+          y: floatY + randomBetween(index + 47001, -0.8, 1.25),
+          z: floatZ + randomBetween(index + 48001, -0.7, 0.5),
+          duration: 0.5 + randomBetween(index + 49001, 0, 0.18),
+          ease: "power4.in",
+        }, windAt);
         timeline.to(fallingMesh.rotation, {
-          x: fall.endRotation[0] + 0.15,
-          y: fall.endRotation[1] + 0.2,
-          z: fall.endRotation[2] + 0.1,
-          duration: plantPhase - settleEnd,
-          ease: "sine.inOut",
-        }, settleEnd);
-
-        if (!isLandingSeed) {
-          timeline.to(fallingMesh.scale, {
-            x: 0,
-            y: 0,
-            z: 0,
-            duration: fall.fadeDuration,
-            ease: "power1.in",
-          }, fall.fadeAt);
-        }
+          x: fall.endRotation[0] + Math.PI * 2.4,
+          y: fall.endRotation[1] + Math.PI * 1.7,
+          z: fall.endRotation[2] + Math.PI * 2.1,
+          duration: 0.52,
+          ease: "power3.in",
+        }, windAt);
+        timeline.to(fallingMesh.scale, {
+          x: 0,
+          y: 0,
+          z: 0,
+          duration: 0.16,
+          ease: "power2.in",
+        }, windAt + 0.38);
       });
 
       const firstSeedReleaseAt = Math.min(...seedFallData.map((fall) => fall.releaseAt));
       const finalSeedFadeAt = Math.max(
-        ...seedFallData.map((fall) => fall.fadeAt + fall.fadeDuration),
-        plantPhase + 0.2,
+        ...seedFallData.map((_, index) => plantPhase + 0.58 + index * 0.006),
+        plantPhase + 0.68,
       );
       timeline.set(fallingSeedsGroup, { visible: true }, firstSeedReleaseAt - 0.04);
       timeline.set(fallingSeedsGroup, { visible: false }, finalSeedFadeAt + 0.02);
@@ -1259,202 +1082,185 @@ export function Melon({ quality }: MelonProps) {
       }, sandPhase - 0.06);
       timeline.set(group, { visible: false }, sandPhase + 0.16);
 
-      timeline.set(plantGroup, { visible: true }, plantPhase - 0.02);
-      timeline.to(fallingSeedsRefs.current[landingSeedIndex]!.scale, {
+      timeline.set(plantGroup, { visible: true }, plantPhase - 0.16);
+
+      [cotyledon1, cotyledon2, sideVine, fruitStem].forEach((gust, index) => {
+        const startAt = plantPhase - 0.08 + index * 0.045;
+        timeline.to(gust.scale, {
+          x: 0.18 + index * 0.04,
+          y: 1,
+          z: 1,
+          duration: 0.14,
+          ease: "power4.out",
+        }, startAt);
+        timeline.to(gust.position, {
+          x: 0.58 + index * 0.18,
+          duration: 0.46,
+          ease: "power3.inOut",
+        }, startAt);
+        timeline.to(gust.scale, {
+          x: 0,
+          y: 0,
+          z: 0,
+          duration: 0.16,
+          ease: "power2.in",
+        }, startAt + 0.34);
+      });
+
+      timeline.to(tendrilLeft.scale, {
+        x: 0.2,
+        y: 1,
+        z: 1,
+        duration: 0.14,
+        ease: "power3.out",
+      }, plantPhase + 0.08);
+      timeline.to(tendrilRight.scale, {
+        x: 0.2,
+        y: 1,
+        z: 1,
+        duration: 0.14,
+        ease: "power3.out",
+      }, plantPhase + 0.12);
+      timeline.to([tendrilLeft.position, tendrilRight.position], {
+        x: "+=0.82",
+        duration: 0.42,
+        ease: "power3.inOut",
+      }, plantPhase + 0.12);
+      timeline.to([tendrilLeft.scale, tendrilRight.scale], {
         x: 0,
         y: 0,
         z: 0,
-        duration: 0.12,
-      }, plantPhase + 0.04);
+        duration: 0.16,
+        ease: "power2.in",
+      }, plantPhase + 0.46);
+
+      timeline.set(smallMelon, { visible: true }, fruitPhase - 0.62);
+      timeline.set(smallMelon.position, { x: -0.12, y: 5.85, z: 0.16 }, fruitPhase - 0.62);
+      timeline.set(smallMelon.scale, { x: 0.82, y: 0.82, z: 0.82 }, fruitPhase - 0.62);
+      timeline.to(smallMelon.position, {
+        x: 0.05,
+        y: -0.1,
+        z: 0.12,
+        duration: 0.38,
+        ease: "power4.in",
+      }, fruitPhase - 0.52);
+      timeline.to(smallMelon.rotation, {
+        x: Math.PI * 1.1,
+        y: Math.PI * 0.42,
+        z: -Math.PI * 0.18,
+        duration: 0.38,
+        ease: "power2.in",
+      }, fruitPhase - 0.52);
+      timeline.to(smallMelon.scale, {
+        x: 1.06,
+        y: 0.62,
+        z: 1.06,
+        duration: 0.08,
+        ease: "power2.out",
+      }, fruitPhase - 0.14);
+      timeline.to(smallMelon.scale, {
+        x: 0.88,
+        y: 1.02,
+        z: 0.88,
+        duration: 0.16,
+        ease: reducedMotion ? "power2.out" : "back.out(2.2)",
+      }, fruitPhase - 0.06);
+      timeline.to(smallMelon.position, {
+        y: 0.2,
+        duration: 0.16,
+        ease: "power2.out",
+      }, fruitPhase - 0.06);
+      timeline.to(smallMelon.position, {
+        y: 0.08,
+        duration: 0.18,
+        ease: "bounce.out",
+      }, fruitPhase + 0.08);
+      timeline.to(smallMelon.scale, {
+        x: 0.92 * fruitScale,
+        y: 0.92 * fruitScale,
+        z: 0.92 * fruitScale,
+        duration: 0.24,
+        ease: "power2.out",
+      }, fruitPhase + 0.06);
 
       timeline.to(sprout.scale, {
-        y: 1,
+        x: 1.28,
+        y: 0.08,
+        z: 0.78,
         duration: 0.18,
         ease: "power2.out",
-      }, plantPhase + 0.05);
-      timeline.to(sprout.rotation, {
+      }, fruitPhase - 0.22);
+      timeline.to(plantStem.scale, {
+        x: 0.1,
+        y: 0.1,
+        z: 0.1,
+        duration: 0.01,
+      }, fruitPhase - 0.18);
+      timeline.to(plantStem.scale, {
+        x: 1.82,
+        y: 1.82,
+        z: 1.82,
+        duration: 0.36,
+        ease: "power3.out",
+      }, fruitPhase - 0.14);
+      timeline.to(plantStem.scale, {
+        x: 0,
+        y: 0,
         z: 0,
-        duration: 0.16,
-        ease: "power2.inOut",
-      }, plantPhase + 0.1);
-
-      timeline.to(cotyledon1.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 0.16,
-        ease: growthEase,
-      }, plantPhase + 0.15);
-      timeline.to(cotyledon2.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 0.16,
-        ease: growthEase,
-      }, plantPhase + 0.18);
-      timeline.to(cotyledon1.rotation, {
-        z: -0.8,
-        duration: 0.14,
-      }, plantPhase + 0.2);
-      timeline.to(cotyledon2.rotation, {
-        z: 0.8,
-        duration: 0.14,
-      }, plantPhase + 0.22);
-
-      timeline.to(plantStem.scale, {
-        y: 0.38,
         duration: 0.18,
-        ease: "power1.out",
-      }, plantPhase + 0.25);
-      timeline.to(plantStem.scale, {
-        y: 0.7,
-        duration: 0.18,
-        ease: "power1.out",
-      }, plantPhase + 0.55);
-      timeline.to(plantStem.scale, {
-        y: 1,
-        duration: 0.22,
-        ease: "power2.out",
-      }, plantPhase + 0.8);
+        ease: "power2.in",
+      }, fruitPhase + 0.04);
 
-      timeline.to(plantLeaf1.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 0.18,
-        ease: growthEase,
-      }, plantPhase + 0.35);
-
-      timeline.to(sideVine.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 0.18,
-        ease: growthEase,
-      }, plantPhase + 0.45);
-
-      timeline.to(plantLeaf2.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 0.18,
-        ease: growthEase,
-      }, plantPhase + 0.50);
-
-      timeline.to(tendrilLeft.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 0.16,
-        ease: growthEase,
-      }, plantPhase + 0.65);
-      timeline.to(tendrilRight.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 0.16,
-        ease: growthEase,
-      }, plantPhase + 0.70);
-
-      timeline.to(plantLeaf3.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 0.18,
-        ease: growthEase,
-      }, plantPhase + 0.75);
-
-      timeline.to(fruitStem.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 0.2,
-        ease: "power2.out",
-      }, plantPhase + 0.85);
-
-      timeline.to(plantLeaf4.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 0.18,
-        ease: growthEase,
-      }, plantPhase + 0.90);
+      [plantLeaf1, plantLeaf2, plantLeaf3, plantLeaf4].forEach((puff, index) => {
+        timeline.to(puff.scale, {
+          x: 1 + index * 0.12,
+          y: 0.74,
+          z: 1 + index * 0.08,
+          duration: 0.14,
+          ease: "back.out(1.6)",
+        }, fruitPhase - 0.14 + index * 0.03);
+        timeline.to(puff.position, {
+          x: `${index % 2 === 0 ? "-" : "+"}=0.42`,
+          y: `+=${0.12 + index * 0.02}`,
+          duration: 0.28,
+          ease: "power2.out",
+        }, fruitPhase - 0.1 + index * 0.03);
+        timeline.to(puff.scale, {
+          x: 0,
+          y: 0,
+          z: 0,
+          duration: 0.18,
+          ease: "power2.in",
+        }, fruitPhase + 0.04 + index * 0.02);
+      });
 
       timeline.to(fruitCalyx.scale, {
         x: 1,
         y: 1,
         z: 1,
-        duration: 0.18,
-        ease: growthEase,
-      }, plantPhase + 0.95);
-
-      weedsRefs.current.forEach((weed, index) => {
-        if (weed) {
-          timeline.to(weed.scale, {
-            x: 1 + pseudoRandom(index) * 0.5,
-            y: 1 + pseudoRandom(index) * 1,
-            z: 1 + pseudoRandom(index) * 0.5,
-            duration: 0.25,
-            ease: "back.out(1.5)",
-          }, plantPhase + 0.1 + pseudoRandom(index) * 0.7);
-        }
-      });
-
-      // Organic nutation (spiraling/wobbling as it grows)
-      timeline.to(plantGroup.rotation, {
-        y: Math.PI * 0.1,
-        duration: 0.3,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: 3,
-      }, plantPhase + 0.3);
-      timeline.to(plantStem.rotation, {
-        z: 0.05,
-        duration: 0.25,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: 4,
-      }, plantPhase + 0.3);
-      timeline.to([plantLeaf1.rotation, plantLeaf2.rotation, plantLeaf3.rotation, plantLeaf4.rotation], {
-        x: "+=0.1",
-        z: "+=0.1",
-        duration: 0.2,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: 4,
-        stagger: 0.1,
-      }, plantPhase + 0.5);
-
-      timeline.set(smallMelon, { visible: true }, fruitPhase);
-      timeline.to(smallMelon.scale, {
-        x: 0.16,
-        y: 0.16,
-        z: 0.16,
-        duration: 0.14,
+        duration: 0.16,
+        ease: "back.out(1.4)",
+      }, fruitPhase - 0.1);
+      timeline.to(fruitCalyx.position, {
+        y: -0.08,
+        duration: 0.26,
         ease: "power2.out",
-      }, fruitPhase + 0.02);
-      timeline.to(smallMelon.position, {
-        x: 0.68,
-        y: 1.74,
-        z: 0.04,
-        duration: 0.56,
-        ease: "power2.out",
+      }, fruitPhase - 0.08);
+      timeline.to(fruitCalyx.scale, {
+        x: 0,
+        y: 0,
+        z: 0,
+        duration: 0.16,
+        ease: "power2.in",
       }, fruitPhase + 0.08);
-      timeline.to(smallMelon.scale, {
-        x: fruitScale,
-        y: fruitScale,
-        z: fruitScale,
-        duration: 0.5,
-        ease: reducedMotion ? "power2.out" : "back.out(1.18)",
-      }, fruitPhase + 0.14);
 
       timeline.set(pluckMelon, { visible: true }, returnPhase);
       timeline.set(pluckMelon.position, { x: 0.68, y: 0.19, z: 0.26 }, returnPhase);
-      timeline.set(pluckMelon.scale, { x: 0.42, y: 0.42, z: 0.42 }, returnPhase);
+      timeline.set(pluckMelon.scale, { x: 0.62, y: 0.62, z: 0.62 }, returnPhase);
       timeline.to(smallMelon.scale, {
-        x: 1.04 * fruitScale,
-        y: 1.04 * fruitScale,
-        z: 1.04 * fruitScale,
+        x: 0.94 * fruitScale,
+        y: 0.94 * fruitScale,
+        z: 0.94 * fruitScale,
         duration: 0.08,
         ease: "power2.out",
       }, returnPhase - 0.02);
@@ -1474,9 +1280,9 @@ export function Melon({ quality }: MelonProps) {
         ease: "power2.out",
       }, returnPhase);
       timeline.to(pluckMelon.scale, {
-        x: 0.54,
-        y: 0.54,
-        z: 0.54,
+        x: 0.72,
+        y: 0.72,
+        z: 0.72,
         duration: 0.26,
         ease: "power3.out",
       }, returnPhase);
@@ -1709,22 +1515,10 @@ export function Melon({ quality }: MelonProps) {
       <group ref={sandRef} position={[0, -4.7, 0]} scale={0}>
         <mesh scale={[4.2, 0.82, 4.2]} receiveShadow>
           <sphereGeometry args={[2, 28, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
-          <meshStandardMaterial color="#d4b473" roughness={1} metalness={0.08} />
-        </mesh>
-        <mesh position={[1.22, 1.66, 0.84]} scale={0.1} geometry={pebbleGeometry} receiveShadow castShadow>
-          <meshStandardMaterial color="#8a7660" roughness={0.8} emissive="#4a3a28" emissiveIntensity={0.3} />
-        </mesh>
-        <mesh position={[-1.4, 1.62, 0.5]} scale={0.08} geometry={pebbleGeometry} receiveShadow castShadow>
-          <meshStandardMaterial color="#6e5f4a" roughness={0.9} emissive="#3a2818" emissiveIntensity={0.3} />
-        </mesh>
-        <mesh position={[0.34, 1.68, -1.02]} scale={0.12} geometry={pebbleGeometry} receiveShadow castShadow>
-          <meshStandardMaterial color="#9b8a70" roughness={0.85} emissive="#4a3a20" emissiveIntensity={0.28} />
-        </mesh>
-        <mesh position={[-0.84, 1.64, 1.24]} scale={0.09} geometry={pebbleGeometry} receiveShadow castShadow>
-          <meshStandardMaterial color="#7a6a55" roughness={0.9} emissive="#3a2818" emissiveIntensity={0.28} />
+          <meshStandardMaterial color="#111111" roughness={0.86} metalness={0.34} emissive="#21070b" emissiveIntensity={0.12} />
         </mesh>
 
-        {Array.from({ length: 24 }).map((_, i) => (
+        {Array.from({ length: 0 }).map((_, i) => (
           <mesh 
             key={`weed-${i}`}
             ref={(el) => { weedsRefs.current[i] = el; }}
@@ -1761,73 +1555,80 @@ export function Melon({ quality }: MelonProps) {
         ))}
       </group>
 
-      <group ref={plantGroupRef} position={[0, -1.55, 0.22]}>
-        <mesh ref={sproutRef} position={[0.04, 0.09, 0]} rotation={[0, 0, 1.1]} scale={[1, 0, 1]}>
-          <cylinderGeometry args={[0.013, 0.02, 0.22, 7]} />
-          <meshStandardMaterial color="#c8e89c" roughness={0.72} emissive="#253d0f" emissiveIntensity={0.28} />
+      <group ref={plantGroupRef} position={[0, -0.86, 0.18]}>
+        <mesh ref={sproutRef} position={[0, -0.56, 0.1]} rotation={[-Math.PI / 2, 0, 0]} scale={0} receiveShadow>
+          <circleGeometry args={[1, 48]} />
+          <meshStandardMaterial color="#050505" roughness={0.9} transparent opacity={0.52} />
         </mesh>
 
-        <mesh ref={cotyledon1Ref} position={[0.12, 0.21, 0.02]} rotation={[0.08, 0, -0.28]} scale={0}>
-          <primitive object={cotyledonGeometry3D} attach="geometry" />
-          <meshStandardMaterial color="#688c3a" roughness={0.8} bumpMap={leafTexture} bumpScale={0.02} side={2} emissive="#15210a" emissiveIntensity={0.1} />
+        <mesh ref={cotyledon1Ref} position={[-0.92, 2.04, 0.1]} rotation={[0, 0, -0.18]} scale={0}>
+          <primitive object={windStreakGeometry} attach="geometry" />
+          <meshStandardMaterial color="#ffffff" roughness={0.42} emissive="#ffffff" emissiveIntensity={0.12} transparent opacity={0.32} toneMapped={false} />
         </mesh>
-        <mesh ref={cotyledon2Ref} position={[-0.12, 0.2, -0.01]} rotation={[-0.08, 0, 0.28]} scale={0}>
-          <primitive object={cotyledonGeometry3D} attach="geometry" />
-          <meshStandardMaterial color="#5d8032" roughness={0.8} bumpMap={leafTexture} bumpScale={0.02} side={2} emissive="#15210a" emissiveIntensity={0.1} />
+        <mesh ref={cotyledon2Ref} position={[-0.72, 1.66, 0.08]} rotation={[0, 0, -0.06]} scale={0}>
+          <primitive object={windStreakGeometry} attach="geometry" />
+          <meshStandardMaterial color="#ffffff" roughness={0.42} emissive="#ffffff" emissiveIntensity={0.12} transparent opacity={0.3} toneMapped={false} />
+        </mesh>
+        <mesh ref={sideVineRef} position={[-0.86, 1.32, 0.2]} rotation={[0, 0, 0.08]} scale={0}>
+          <primitive object={windStreakGeometry} attach="geometry" />
+          <meshStandardMaterial color="#ffffff" roughness={0.42} emissive="#ffffff" emissiveIntensity={0.12} transparent opacity={0.28} toneMapped={false} />
+        </mesh>
+        <mesh ref={fruitStemRef} position={[-1.12, 2.34, 0.12]} rotation={[0, 0, -0.32]} scale={0}>
+          <primitive object={windStreakGeometry} attach="geometry" />
+          <meshStandardMaterial color="#ffffff" roughness={0.42} emissive="#ffffff" emissiveIntensity={0.12} transparent opacity={0.3} toneMapped={false} />
         </mesh>
 
-        <mesh ref={plantStemRef} scale={[1, 0, 1]}>
-          <tubeGeometry args={[stemCurve, 42, 0.024, 8, false]} />
-          <meshStandardMaterial map={stemTexture} bumpMap={stemTexture} bumpScale={0.01} roughness={0.9} emissive="#0a1204" emissiveIntensity={0.1} />
+        <mesh ref={tendrilLeftRef} position={[-0.62, 1.66, 0.14]} rotation={[0, 0, 0.12]} scale={0}>
+          <primitive object={windStreakGeometry} attach="geometry" />
+          <meshStandardMaterial color="#ffffff" roughness={0.4} emissive="#ffffff" emissiveIntensity={0.12} transparent opacity={0.26} toneMapped={false} />
         </mesh>
-        <mesh ref={sideVineRef} scale={0}>
-          <tubeGeometry args={[sideVineCurve, 28, 0.014, 6, false]} />
-          <meshStandardMaterial map={stemTexture} bumpMap={stemTexture} bumpScale={0.01} roughness={0.9} emissive="#0a1204" emissiveIntensity={0.1} />
+        <mesh ref={tendrilRightRef} position={[0.22, 1.82, 0.14]} rotation={[0, 0, -0.08]} scale={0}>
+          <primitive object={windStreakGeometry} attach="geometry" />
+          <meshStandardMaterial color="#ffffff" roughness={0.4} emissive="#ffffff" emissiveIntensity={0.12} transparent opacity={0.24} toneMapped={false} />
         </mesh>
-        <mesh ref={fruitStemRef} scale={0}>
-          <tubeGeometry args={[fruitStemCurve, 28, 0.018, 6, false]} />
-          <meshStandardMaterial map={stemTexture} bumpMap={stemTexture} bumpScale={0.01} roughness={0.9} emissive="#0a1204" emissiveIntensity={0.1} />
+
+        <mesh ref={plantStemRef} position={[0, -0.54, 0.12]} rotation={[Math.PI / 2, 0, 0]} scale={0}>
+          <primitive object={impactRingGeometry} attach="geometry" />
+          <meshStandardMaterial color="#ff5c71" roughness={0.3} metalness={0.18} emissive="#ff5c71" emissiveIntensity={0.5} toneMapped={false} />
         </mesh>
-        <group ref={fruitCalyxRef} position={[0.68, 1.58, 0.03]} scale={0}>
-          {Array.from({ length: 5 }).map((_, index) => (
+
+        <group ref={fruitCalyxRef} position={[0, -0.42, 0.28]} scale={0}>
+          {Array.from({ length: 6 }).map((_, index) => (
             <mesh
-              key={`calyx-${index}`}
-              rotation={[0.2, 0, (index / 5) * Math.PI * 2]}
+              key={`impact-pop-${index}`}
+              position={[
+                Math.cos((index / 6) * Math.PI * 2) * 0.42,
+                Math.sin((index / 6) * Math.PI * 2) * 0.22,
+                0,
+              ]}
+              rotation={[0.12, 0, (index / 6) * Math.PI * 2]}
             >
-              <shapeGeometry args={[calyxShape]} />
-              <meshStandardMaterial color="#3a6117" roughness={0.8} side={2} emissive="#0b1404" emissiveIntensity={0.1} />
+              <boxGeometry args={[0.24, 0.06, 0.05]} />
+              <meshStandardMaterial color={index % 2 === 0 ? "#ff5c71" : "#7fff5e"} emissive={index % 2 === 0 ? "#ff5c71" : "#7fff5e"} emissiveIntensity={0.4} toneMapped={false} />
             </mesh>
           ))}
         </group>
-        <mesh ref={tendrilLeftRef} scale={0}>
-          <tubeGeometry args={[tendrilLeftCurve, 22, 0.008, 5, false]} />
-          <meshStandardMaterial color="#477a1c" roughness={0.8} emissive="#0b1404" emissiveIntensity={0.1} />
+
+        <mesh ref={plantLeaf1Ref} position={[-0.72, -0.5, 0.4]} scale={0} castShadow>
+          <primitive object={dustPuffGeometry} attach="geometry" />
+          <meshStandardMaterial color="#ff8d9a" roughness={0.7} emissive="#ff5c71" emissiveIntensity={0.12} />
         </mesh>
-        <mesh ref={tendrilRightRef} scale={0}>
-          <tubeGeometry args={[tendrilRightCurve, 22, 0.008, 5, false]} />
-          <meshStandardMaterial color="#477a1c" roughness={0.8} emissive="#0b1404" emissiveIntensity={0.1} />
+        <mesh ref={plantLeaf2Ref} position={[0.72, -0.54, 0.36]} scale={0} castShadow>
+          <primitive object={dustPuffGeometry} attach="geometry" />
+          <meshStandardMaterial color="#e0f2dc" roughness={0.72} emissive="#7fff5e" emissiveIntensity={0.1} />
+        </mesh>
+        <mesh ref={plantLeaf3Ref} position={[-1.24, -0.64, 0.18]} scale={0} castShadow>
+          <primitive object={dustPuffGeometry} attach="geometry" />
+          <meshStandardMaterial color="#ff5c71" roughness={0.74} emissive="#ff5c71" emissiveIntensity={0.12} />
+        </mesh>
+        <mesh ref={plantLeaf4Ref} position={[1.22, -0.66, 0.2]} scale={0} castShadow>
+          <primitive object={dustPuffGeometry} attach="geometry" />
+          <meshStandardMaterial color="#7fff5e" roughness={0.74} emissive="#7fff5e" emissiveIntensity={0.1} />
         </mesh>
 
-        <mesh ref={plantLeaf1Ref} position={[0.36, 0.64, 0.08]} rotation={[0.4, 0.3, -0.72]} scale={0} castShadow>
-          <primitive object={leafGeometry3D} attach="geometry" />
-          <meshStandardMaterial map={leafTexture} bumpMap={leafTexture} bumpScale={0.03} roughness={0.8} side={2} emissive="#050a02" emissiveIntensity={0.1} />
-        </mesh>
-        <mesh ref={plantLeaf2Ref} position={[-0.46, 0.98, -0.12]} rotation={[-0.32, -0.28, 0.76]} scale={0} castShadow>
-          <primitive object={leafGeometry3D} attach="geometry" />
-          <meshStandardMaterial map={leafTexture} bumpMap={leafTexture} bumpScale={0.03} roughness={0.8} side={2} emissive="#050a02" emissiveIntensity={0.1} />
-        </mesh>
-        <mesh ref={plantLeaf3Ref} position={[0.06, 1.54, 0.18]} rotation={[0.26, 0.14, -0.08]} scale={0} castShadow>
-          <primitive object={leafGeometry3D} attach="geometry" />
-          <meshStandardMaterial map={leafTexture} bumpMap={leafTexture} bumpScale={0.03} roughness={0.8} side={2} emissive="#050a02" emissiveIntensity={0.1} />
-        </mesh>
-        <mesh ref={plantLeaf4Ref} position={[0.56, 1.7, 0]} rotation={[0.34, 0.38, -0.7]} scale={0} castShadow>
-          <primitive object={leafGeometry3D} attach="geometry" />
-          <meshStandardMaterial map={leafTexture} bumpMap={leafTexture} bumpScale={0.03} roughness={0.8} side={2} emissive="#050a02" emissiveIntensity={0.1} />
-        </mesh>
-
-        <mesh ref={smallMelonRef} position={[0.68, 1.72, 0.04]} scale={0} castShadow>
-          <sphereGeometry args={[0.28, 24, 20]} />
-          <meshStandardMaterial map={smallMelonRind} bumpMap={smallMelonRind} bumpScale={0.02} roughness={0.7} emissive="#0d1405" emissiveIntensity={0.1} />
+        <mesh ref={smallMelonRef} position={[-0.12, 5.85, 0.16]} scale={0} castShadow>
+          <sphereGeometry args={[0.82, segments, segments / 2]} />
+          <meshStandardMaterial map={texture} roughness={0.62} metalness={0.1} />
         </mesh>
       </group>
 

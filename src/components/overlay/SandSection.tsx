@@ -1,117 +1,107 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 const TICKER_ITEMS = [
-  "GSAP Physics", "React Three Fiber", "Lenis Scroll", "ScrollTrigger",
-  "Spring Elastics", "SVG Stroke", "WebGL Particles", "3D Transforms",
-  "Magnetic Fields", "Blur Reveal", "Scramble Text", "Morph Clips",
+  "install",
+  "preview",
+  "copy",
+  "theme",
+  "ship",
+  "remix",
+  "upgrade later",
+  "stay weird",
+];
+
+const CODE_LINES = [
+  "npx @melonui/cli add seed-burst-button",
+  "npx @melonui/cli add magnetic-nav",
+  "npx @melonui/cli add particle-field --pro",
 ];
 
 export function SandSection() {
   const tickerRef = useRef<HTMLDivElement>(null);
-  const codeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!tickerRef.current) return;
-    const inner = tickerRef.current;
-    // Duplicate for seamless loop
-    inner.innerHTML += inner.innerHTML;
-    const totalWidth = inner.scrollWidth / 2;
-    gsap.to(inner, {
-      x: -totalWidth,
-      duration: 28,
+
+    const tween = gsap.to(tickerRef.current, {
+      xPercent: -50,
+      duration: 22,
       ease: "none",
       repeat: -1,
     });
+
+    return () => {
+      tween.kill();
+    };
   }, []);
 
   return (
     <section
       id="sand-section"
-      className="snap-start relative w-full h-screen z-10 flex flex-col overflow-hidden"
+      className="snap-start relative z-10 flex h-screen w-full flex-col overflow-hidden"
       style={{ scrollSnapStop: "always" }}
     >
-      {/* TOP: Full-width heading */}
-      <div className="flex-none pt-[12vh] px-8">
-        <div className="flex items-baseline gap-6">
-          <h2
-            className="text-[clamp(3rem,10vw,9rem)] font-black uppercase leading-none tracking-tighter"
-            style={{ fontFamily: "var(--font-londrina-solid)" }}
-          >
-            <span className="text-white">How It</span>
-          </h2>
-          <span className="font-mono text-xs text-white/20 uppercase tracking-[0.3em] self-end pb-4">
-            under the hood
-          </span>
-        </div>
+      <div className="flex-none px-6 pt-[12vh] md:px-10">
+        <p className="mb-3 font-mono text-xs uppercase text-[#ff5c71]" style={{ letterSpacing: 0 }}>
+          Chapter 03 / Seeds hit code
+        </p>
         <h2
-          className="text-[clamp(3rem,10vw,9rem)] font-black uppercase leading-none tracking-tighter text-[#ff5c71] -mt-3"
-          style={{ fontFamily: "var(--font-londrina-solid)" }}
+          className="font-black uppercase leading-[0.82] text-white text-[clamp(3rem,9vw,8.5rem)]"
+          style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
         >
-          Works
+          Drop It
+          <span className="block text-[#ff5c71]">Into Your Repo</span>
         </h2>
       </div>
 
-      {/* MIDDLE: Full-bleed ticker */}
-      <div className="flex-none mt-8 overflow-hidden border-t border-b border-white/5 py-3 bg-[#ff5c71]/5">
-        <div ref={tickerRef} className="flex gap-12 whitespace-nowrap will-change-transform">
-          {TICKER_ITEMS.map((item, i) => (
-            <span key={i} className="flex items-center gap-12 font-mono text-xs uppercase tracking-[0.25em] text-white/30">
-              {item}
-              <span className="text-[#ff5c71]">·</span>
+      <div className="mt-7 flex-none overflow-hidden border-y border-white/8 bg-[#ff5c71]/8 py-3">
+        <div ref={tickerRef} className="flex w-max gap-10 whitespace-nowrap will-change-transform">
+          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, index) => (
+            <span key={`${item}-${index}`} className="font-mono text-xs uppercase text-white/38" style={{ letterSpacing: 0 }}>
+              {item} <span className="text-[#ff5c71]">/</span>
             </span>
           ))}
         </div>
       </div>
 
-      {/* BOTTOM: Two-col layout */}
-      <div className="flex-1 flex items-end px-8 pb-10 gap-0">
-        {/* Left code block */}
-        <div
-          ref={codeRef}
-          className="flex-1 font-mono text-xs leading-6 border border-white/5 bg-[#0a0a0a] p-6 mr-8"
-        >
-          <div className="text-[10px] text-white/20 uppercase tracking-widest mb-4 pb-2 border-b border-white/5">
-            burst-button.tsx
-          </div>
-          <div className="text-[#7fff5e]">{"import"}{" "}
-            <span className="text-white">{"{ gsap }"}</span>
-            <span className="text-white/30">{" from "}</span>
-            <span className="text-[#ff5c71]">{'"gsap"'}</span>
-          </div>
-          <br />
-          <div className="text-white/50">{"// Seeds burst on click"}</div>
-          <div className="text-[#7fff5e]">{"const "}<span className="text-white">handleClick</span><span className="text-white/50">{" = (e) => {"}</span></div>
-          <div className="pl-4 text-white/50">{"seeds.forEach((seed, i) => {"}</div>
-          <div className="pl-8 text-[#7fff5e]">gsap<span className="text-white">.to</span><span className="text-white/50">(seed, {"{"}</span></div>
-          <div className="pl-12 text-white">x<span className="text-white/50">:</span> Math.cos<span className="text-white/50">(angle) * </span><span className="text-[#ff5c71]">80</span>,</div>
-          <div className="pl-12 text-white">ease<span className="text-white/50">:</span> <span className="text-[#ff5c71]">&quot;power2.out&quot;</span></div>
-          <div className="pl-8 text-white/50">{"});"}</div>
-          <div className="pl-4 text-white/50">{"});"}</div>
-          <div className="text-white/50">{"}"}</div>
-        </div>
-
-        {/* Right — vertical stat list */}
-        <div className="flex flex-col gap-5 min-w-[180px]">
-          {[
-            ["GSAP", "Animation engine"],
-            ["R3F", "3D renderer"],
-            ["Lenis", "Smooth scroll"],
-          ].map(([title, desc]) => (
-            <div key={title} className="flex flex-col gap-0.5">
-              <span
-                className="font-black text-2xl text-white"
-                style={{ fontFamily: "var(--font-anton)" }}
-              >
-                {title}
+      <div className="grid flex-1 grid-cols-12 items-end gap-5 px-6 pb-10 md:px-10">
+        <div className="col-span-12 lg:col-span-7">
+          <div className="rounded-[8px] border border-white/10 bg-black/62 p-5 font-mono text-sm text-white/72 backdrop-blur-md">
+            <div className="mb-4 flex items-center justify-between border-b border-white/8 pb-3">
+              <span className="text-xs uppercase text-white/35" style={{ letterSpacing: 0 }}>
+                terminal
               </span>
-              <span className="font-mono text-[10px] text-white/25 uppercase tracking-widest">
-                {desc}
+              <span className="rounded-full bg-[#e0f2dc] px-2.5 py-1 text-xs font-bold text-black">
+                copy ready
               </span>
             </div>
-          ))}
+            {CODE_LINES.map((line, index) => (
+              <div key={line} className="flex gap-3 py-2">
+                <span className="text-[#ff5c71]">$</span>
+                <span className={index === 2 ? "text-white/45" : "text-white"}>{line}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="col-span-12 lg:col-span-5">
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            {[
+              ["Free core", "Buttons, inputs, navs, cards"],
+              ["Paid later", "Big WebGL scenes and packs"],
+              ["No lock-in", "Source-first components"],
+            ].map(([title, body]) => (
+              <div key={title} className="rounded-[8px] border border-white/10 bg-white/7 p-4 backdrop-blur-md">
+                <p className="text-xl font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}>
+                  {title}
+                </p>
+                <p className="mt-2 text-sm font-semibold leading-6 text-white/55">{body}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

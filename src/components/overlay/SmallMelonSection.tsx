@@ -1,104 +1,76 @@
 "use client";
 
-import { useRef } from "react";
-import gsap from "gsap";
+import Link from "next/link";
 
-const QUOTES = [
-  { text: "Animations that feel alive", author: "GSAP Spring Physics" },
-  { text: "WebGL when you need the extra dimension", author: "React Three Fiber" },
-  { text: "Smooth scrolling without the jank", author: "Lenis" },
+const PLANS = [
+  {
+    name: "Core Drops",
+    price: "$0",
+    note: "Most components stay free: buttons, inputs, cards, navs, cursors, and text effects.",
+    accent: "#e0f2dc",
+    href: "/community",
+  },
+  {
+    name: "Pro Vault",
+    price: "Later",
+    note: "Bigger cinematic sections, WebGL kits, templates, and launch packs when the library expands.",
+    accent: "#ff5c71",
+    href: "/community#backgrounds",
+  },
+  {
+    name: "Team Harvest",
+    price: "Soon",
+    note: "Licensing and packaged drops for teams that want the weird without hand-wiring everything.",
+    accent: "#7fff5e",
+    href: "/community",
+  },
 ];
 
 export function SmallMelonSection() {
-  const quoteRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  const handleEnter = (i: number) => {
-    if (!quoteRefs.current[i]) return;
-    gsap.to(quoteRefs.current[i], {
-      x: 10,
-      duration: 0.35,
-      ease: "power2.out",
-    });
-  };
-  const handleLeave = (i: number) => {
-    if (!quoteRefs.current[i]) return;
-    gsap.to(quoteRefs.current[i], {
-      x: 0,
-      duration: 0.5,
-      ease: "elastic.out(1, 0.5)",
-    });
-  };
-
   return (
     <section
       id="small-melon-section"
-      className="snap-start relative w-full h-screen z-10 flex flex-col overflow-hidden"
+      className="snap-start relative z-10 flex h-screen w-full flex-col overflow-hidden"
       style={{ scrollSnapStop: "always" }}
     >
-      {/* TOP strip */}
-      <div className="flex-none h-1 bg-[#ff5c71]" />
-
-      <div className="flex-1 flex flex-col md:flex-row">
-        {/* LEFT — tall heading */}
-        <div className="flex-none md:w-[45%] flex flex-col justify-end p-8 md:p-12 border-r border-white/5">
-          <span className="font-mono text-[9px] text-white/20 uppercase tracking-[0.3em] mb-4">Philosophy</span>
+      <div className="grid flex-1 grid-cols-12 items-center gap-5 px-6 md:px-10">
+        <div className="col-span-12 lg:col-span-4">
+          <p className="mb-3 font-mono text-xs uppercase text-[#ff5c71]" style={{ letterSpacing: 0 }}>
+            Chapter 05 / Access model
+          </p>
           <h2
-            className="font-black uppercase leading-[0.85] tracking-tighter"
-            style={{
-              fontFamily: "var(--font-londrina-solid)",
-              fontSize: "clamp(3rem, 7vw, 6.5rem)",
-            }}
+            className="font-black uppercase leading-[0.84] text-white text-[clamp(3rem,7vw,7rem)]"
+            style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
           >
-            <span className="text-white">Less</span>
-            <br />
-            <span className="text-[#7fff5e]">Config</span>
-            <br />
-            <span className="text-white">More</span>
-            <br />
-            <span className="text-[#ff5c71]">Motion</span>
+            Free
+            <span className="block text-[#ff5c71]">First</span>
+            <span className="block text-[#e0f2dc]">Paid Later</span>
           </h2>
-          <p className="font-mono text-xs text-white/25 uppercase tracking-widest mt-6 max-w-xs leading-relaxed">
-            Every component is a self-contained unit of animation logic.
-            Grab what you need. Skip the rest.
+          <p className="mt-5 max-w-sm text-base font-semibold leading-7 text-white/58">
+            The business model should not choke the library. Free components build trust; paid drops fund the heavier cinematic pieces.
           </p>
         </div>
 
-        {/* RIGHT — Manifesto quotes */}
-        <div className="flex-1 flex flex-col justify-center gap-0 p-8 md:p-12">
-          {QUOTES.map((q, i) => (
-            <div
-              key={q.author}
-              ref={(el) => { quoteRefs.current[i] = el; }}
-              className="group py-6 border-b border-white/[0.04] cursor-default"
-              onMouseEnter={() => handleEnter(i)}
-              onMouseLeave={() => handleLeave(i)}
+        <div className="col-span-12 grid gap-3 md:grid-cols-3 lg:col-span-8">
+          {PLANS.map((plan) => (
+            <Link
+              key={plan.name}
+              href={plan.href}
+              className="group relative min-h-72 overflow-hidden rounded-[8px] border border-white/10 bg-black/52 p-5 backdrop-blur-md transition-transform hover:-translate-y-1"
             >
-              <p
-                className="text-xl md:text-2xl font-black uppercase tracking-tight text-white mb-1 group-hover:text-[#ff5c71] transition-colors"
-                style={{ fontFamily: "var(--font-anton)" }}
-              >
-                &quot;{q.text}&quot;
+              <div className="absolute left-5 right-5 top-0 h-1" style={{ background: plan.accent }} />
+              <p className="text-sm font-black uppercase text-white/64" style={{ letterSpacing: 0 }}>
+                {plan.name}
               </p>
-              <p className="font-mono text-[10px] text-white/20 uppercase tracking-[0.2em]">
-                — {q.author}
+              <p className="mt-7 text-6xl font-black uppercase leading-none text-white" style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}>
+                {plan.price}
               </p>
-            </div>
+              <p className="mt-5 text-sm font-semibold leading-6 text-white/56">{plan.note}</p>
+              <span className="absolute bottom-5 left-5 rounded-full border border-white/12 px-4 py-2 text-xs font-bold text-white/58 transition-colors group-hover:text-white">
+                View access
+              </span>
+            </Link>
           ))}
-
-          {/* Color palette row */}
-          <div className="flex items-center gap-3 pt-8">
-            {["#ff5c71", "#7fff5e", "#e8d5b7", "#050505", "#f4f4f4"].map((color) => (
-              <div
-                key={color}
-                className="w-6 h-6 rounded-sm"
-                style={{ background: color, outline: "1px solid rgba(255,255,255,0.08)" }}
-                title={color}
-              />
-            ))}
-            <span className="font-mono text-[9px] text-white/20 uppercase tracking-widest ml-2">
-              System palette
-            </span>
-          </div>
         </div>
       </div>
     </section>

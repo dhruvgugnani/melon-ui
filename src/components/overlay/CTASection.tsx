@@ -4,105 +4,79 @@ import { useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 
+const GITHUB_URL = "https://github.com/dhruvgugnani/melon-ui";
+
 export function CTASection() {
-  const btnRef = useRef<HTMLAnchorElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
 
   const handleEnter = () => {
-    gsap.to(glowRef.current, { opacity: 1, scale: 1.3, duration: 0.4, ease: "power2.out" });
-    gsap.to(btnRef.current, { scale: 1.04, duration: 0.3, ease: "power2.out" });
+    gsap.to(glowRef.current, { opacity: 1, scale: 1.18, duration: 0.35, ease: "power2.out" });
   };
+
   const handleLeave = () => {
-    gsap.to(glowRef.current, { opacity: 0, scale: 1, duration: 0.4, ease: "power2.in" });
-    gsap.to(btnRef.current, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.5)" });
+    gsap.to(glowRef.current, { opacity: 0, scale: 1, duration: 0.35, ease: "power2.in" });
   };
 
   return (
     <section
-      className="snap-start relative w-full h-screen z-10 flex flex-col overflow-hidden"
+      className="snap-start relative z-10 flex h-screen w-full flex-col overflow-hidden"
       style={{ scrollSnapStop: "always" }}
     >
-      {/* Chaotic background text — intentional noise */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden" aria-hidden>
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden" aria-hidden>
         <span
-          className="font-black uppercase text-[25vw] leading-none tracking-tighter text-white/[0.018]"
-          style={{ fontFamily: "var(--font-londrina-solid)" }}
+          className="text-[28vw] font-black uppercase leading-none text-white/[0.018]"
+          style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
         >
-          GO
+          Ship
         </span>
       </div>
 
-      {/* TOP — breadcrumb */}
-      <div className="flex-none flex items-center justify-between px-8 pt-8">
-        <span className="font-mono text-[10px] text-white/20 uppercase tracking-[0.3em]">
+      <div className="flex flex-none items-center justify-between px-6 pt-8 md:px-10">
+        <span className="font-mono text-xs uppercase text-white/25" style={{ letterSpacing: 0 }}>
           Final stop
         </span>
-        <div className="h-px flex-1 mx-8 bg-white/5" />
-        <span className="font-mono text-[10px] text-[#ff5c71] uppercase tracking-[0.3em]">
+        <span className="font-mono text-xs uppercase text-[#ff5c71]" style={{ letterSpacing: 0 }}>
           07 / 07
         </span>
       </div>
 
-      {/* MIDDLE — CTA content */}
-      <div className="flex-1 flex flex-col items-center justify-center gap-8 px-8">
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-7 px-6 text-center md:px-10">
         <h2
-          className="font-black uppercase leading-[0.85] tracking-tighter text-center"
-          style={{
-            fontFamily: "var(--font-londrina-solid)",
-            fontSize: "clamp(3.5rem, 11vw, 10rem)",
-          }}
+          className="font-black uppercase leading-[0.82] text-white text-[clamp(4rem,11vw,10rem)]"
+          style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
         >
-          <span className="text-white block">Ready to</span>
-          <span className="text-[#ff5c71] block">Build</span>
-          <span className="text-[#7fff5e] block" style={{ fontFamily: "var(--font-londrina-sketch)" }}>
-            Something?
-          </span>
+          <span className="block">Steal</span>
+          <span className="block text-[#ff5c71]">Good</span>
+          <span className="block text-[#e0f2dc]">Taste</span>
         </h2>
+        <p className="max-w-xl text-lg font-semibold leading-7 text-white/58">
+          Browse the real demos, copy the free pieces, and keep the pro vault for the expensive cinematic drops.
+        </p>
 
-        {/* CTA button */}
-        <div className="relative">
-          {/* Glow */}
-          <div
-            ref={glowRef}
-            className="absolute inset-0 rounded-none opacity-0 blur-xl"
-            style={{ background: "#ff5c71", transform: "scale(1)" }}
-          />
+        <div className="relative mt-2 flex flex-wrap justify-center gap-3">
+          <div ref={glowRef} className="absolute inset-0 rounded-full bg-[#ff5c71] opacity-0 blur-2xl" />
           <Link
-            ref={btnRef}
             href="/community"
-            className="relative inline-flex items-center gap-4 px-10 py-5 bg-[#ff5c71] text-[#050505] font-black uppercase tracking-widest hover:bg-white transition-colors"
-            style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(1rem, 2vw, 1.4rem)" }}
             onMouseEnter={handleEnter}
             onMouseLeave={handleLeave}
+            className="relative rounded-full bg-[#ff5c71] px-7 py-4 text-base font-black text-black transition-colors hover:bg-white"
           >
-            Enter the Store
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
+            Enter the store
           </Link>
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="relative rounded-full border border-white/14 bg-black/36 px-7 py-4 text-base font-black text-white/74 backdrop-blur-md transition-colors hover:text-white"
+          >
+            Star on GitHub
+          </a>
         </div>
-
-        <p className="font-mono text-xs text-white/20 uppercase tracking-[0.2em] text-center max-w-sm">
-          Free to use · Community driven · Submit your own components
-        </p>
       </div>
 
-      {/* BOTTOM footer */}
-      <div className="flex-none flex items-center justify-between px-8 pb-8">
-        <span className="font-mono text-[9px] text-white/15 uppercase tracking-widest">
-          © 2026 MelonUI
-        </span>
-        <div className="flex items-center gap-6">
-          {["GitHub", "Twitter", "Discord"].map((link) => (
-            <a
-              key={link}
-              href="#"
-              className="font-mono text-[9px] text-white/15 hover:text-white/40 uppercase tracking-widest transition-colors"
-            >
-              {link}
-            </a>
-          ))}
-        </div>
+      <div className="flex flex-none items-center justify-between px-6 pb-8 text-xs font-bold uppercase text-white/25 md:px-10" style={{ letterSpacing: 0 }}>
+        <span>MelonUI 2026</span>
+        <span>Core free / Pro when it earns it</span>
       </div>
     </section>
   );
