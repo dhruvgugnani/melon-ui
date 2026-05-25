@@ -40,3 +40,5 @@ dev-server*.log
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+cli/node_modules
+apps/web/.next
