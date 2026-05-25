@@ -1,0 +1,20 @@
+{
+  "holo-ticket": {
+    "name": "Holo Ticket",
+    "description": "Premium holographic ticket component",
+    "category": "cards",
+    "dependencies": [
+      "framer-motion",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "files": [
+      {
+        "name": "holo-ticket.tsx",
+        "path": "components/holo-ticket.tsx"
+      }
+    ],
+    "tags": ["ticket", "glassmorphism", "holographic"],
+    "preview": "/preview/holo-ticket.png"
+  }
+}
