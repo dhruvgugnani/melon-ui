@@ -5,5 +5,11 @@
   "workspaces": [
     "apps/*",
     "cli"
-  ]
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "start": "npm run start -w melonui-web",
+    "dev": "npm run dev -w melonui-web",
+    "lint": "npm run lint --workspaces --if-present"
+  }
 }
