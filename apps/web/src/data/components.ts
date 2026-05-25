@@ -101,6 +101,17 @@ export const componentsData: ComponentData[] = [
     componentPath: "FlipCard",
   },
   {
+    id: "holo-ticket",
+    slug: "holo-ticket",
+    title: "Holo Ticket",
+    description: "Premium holographic ticket component with 3D pointer-tracking reflection, dynamic CSS clipping, and elastic tearing physics.",
+    category: "Cards",
+    tags: ["GSAP", "Clip", "Glassmorphism", "Holographic"],
+    cliCommand: "npx @melonui-dev/cli add holo-ticket",
+    codeSnippet: `const handleMouseMove = (e) => {\n  const rect = ticketRef.current.getBoundingClientRect();\n  const x = e.clientX - rect.left;\n  const y = e.clientY - rect.top;\n  const rotateX = ((y - centerY) / centerY) * -15;\n  const rotateY = ((x - centerX) / centerX) * 15;\n  gsap.to(ticketRef.current, { rotateX, rotateY, duration: 0.4 });\n};`,
+    componentPath: "HoloTicket",
+  },
+  {
     id: "grow-input",
     slug: "grow-input",
     title: "Grow Input",

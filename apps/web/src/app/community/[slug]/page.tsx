@@ -29,6 +29,7 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   ScrambleText: dynamic(() => import('@/components/community/demos/ScrambleText').then(m => m.ScrambleText)),
   RindWipeTransition: dynamic(() => import('@/components/community/demos/RindWipeTransition').then(m => m.RindWipeTransition)),
   MorphTransition: dynamic(() => import('@/components/community/demos/MorphTransition').then(m => m.MorphTransition)),
+  HoloTicket: dynamic(() => import('@/components/community/demos/HoloTicket').then(m => m.HoloTicket)),
 };
 
 export async function generateStaticParams() {
