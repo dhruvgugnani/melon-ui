@@ -8,7 +8,7 @@ interface ComponentShowcaseProps {
   title: string;
   description: string;
   component: React.ReactNode;
-  codeSnippet: string;
+  codeSnippet: string; // Will hold the full source code passed from the server
   cliCommand?: string;
   tags?: string[];
   /** If true, the preview area will be scrollable so scroll-triggered demos work */
@@ -23,6 +23,7 @@ export function ComponentShowcase({
   title,
   description,
   component,
+  codeSnippet,
   cliCommand,
   tags = [],
   scrollable = false,
@@ -32,19 +33,45 @@ export function ComponentShowcase({
   componentPath,
 }: ComponentShowcaseProps) {
   const [activeTab, setActiveTab] = useState<"preview" | "installation">("preview");
+  const [installMethod, setInstallMethod] = useState<"cli" | "manual">("cli");
   const [copiedCli, setCopiedCli] = useState(false);
+  const [copiedDeps, setCopiedDeps] = useState(false);
   const [copiedUsage, setCopiedUsage] = useState(false);
+  const [copiedSource, setCopiedSource] = useState(false);
   const [copiedPrompt, setCopiedPrompt] = useState(false);
 
   const previewPanelRef = useRef<HTMLDivElement>(null);
   const installPanelRef = useRef<HTMLDivElement>(null);
 
-  // Dynamic values generator if not provided explicitly in componentsData
   const compSlug = slug || title.replace(/\s+/g, "-").toLowerCase();
   const compName = componentPath || title.replace(/\s+/g, "");
   const resolvedCliCommand = cliCommand || `npx @melonui-dev/cli add ${compSlug}`;
 
-  const resolvedUsageCode = usageCode || `import { ${compName} } from "@/components/community/demos/${compName}";
+  // Dynamically calculate dependencies based on tags
+  const getDependencies = (tagsList: string[]) => {
+    const deps = ["clsx", "tailwind-merge"];
+    const tagsLower = tagsList.map(t => t.toLowerCase());
+    
+    if (tagsLower.some(t => t.includes("gsap"))) {
+      deps.push("gsap", "@gsap/react");
+    }
+    if (tagsLower.some(t => t.includes("three") || t.includes("r3f"))) {
+      deps.push("three", "@react-three/fiber", "@react-three/drei");
+    }
+    if (tagsLower.some(t => t.includes("framer") || t.includes("motion"))) {
+      deps.push("framer-motion");
+    }
+    if (tagsLower.some(t => t.includes("lenis"))) {
+      deps.push("lenis");
+    }
+    return Array.from(new Set(deps));
+  };
+
+  const dependenciesList = getDependencies(tags);
+  const installDepsCommand = `npm install ${dependenciesList.join(" ")}`;
+
+  // Correct import path for the user's project
+  const resolvedUsageCode = usageCode || `import { ${compName} } from "@/components/${compSlug}";
 
 export default function Page() {
   return (
@@ -60,7 +87,7 @@ CLI Installation command: \`${resolvedCliCommand}\`
 Tags/Technologies used: ${tags.join(", ")}
 
 Please write a premium, responsive React page component in Next.js that:
-1. Imports \`${compName}\` from \`@/components/community/demos/${compName}\`.
+1. Imports \`${compName}\` from \`@/components/${compSlug}\`.
 2. Places it inside a visually stunning layout matching a dark-mode, glassmorphism design system.
 3. Outlines its props and options with clean code structure and comments.`;
 
@@ -70,9 +97,7 @@ Please write a premium, responsive React page component in Next.js that:
 
     if (activeTab === "preview") {
       gsap.killTweensOf([previewEl, installEl]);
-      // Hide installation panel
       gsap.set(installEl, { display: "none", opacity: 0, y: 10 });
-      // Fade in preview panel
       gsap.set(previewEl, { display: "flex" });
       gsap.to(previewEl, {
         opacity: 1,
@@ -82,9 +107,7 @@ Please write a premium, responsive React page component in Next.js that:
       });
     } else {
       gsap.killTweensOf([previewEl, installEl]);
-      // Hide preview panel
       gsap.set(previewEl, { display: "none", opacity: 0 });
-      // Fade in installation panel
       gsap.set(installEl, { display: "block" });
       gsap.to(installEl, {
         opacity: 1,
@@ -95,19 +118,11 @@ Please write a premium, responsive React page component in Next.js that:
     }
   }, [activeTab]);
 
-  const handleCopy = async (text: string, type: "cli" | "usage" | "prompt") => {
+  const handleCopy = async (text: string, setCopiedState: React.Dispatch<React.SetStateAction<boolean>>) => {
     try {
       await navigator.clipboard.writeText(text);
-      if (type === "cli") {
-        setCopiedCli(true);
-        setTimeout(() => setCopiedCli(false), 2000);
-      } else if (type === "usage") {
-        setCopiedUsage(true);
-        setTimeout(() => setCopiedUsage(false), 2000);
-      } else if (type === "prompt") {
-        setCopiedPrompt(true);
-        setTimeout(() => setCopiedPrompt(false), 2000);
-      }
+      setCopiedState(true);
+      setTimeout(() => setCopiedState(false), 2000);
     } catch (err) {
       console.error("Failed to copy text: ", err);
     }
@@ -219,63 +234,142 @@ Please write a premium, responsive React page component in Next.js that:
         >
           <div className="max-w-4xl mx-auto space-y-8">
             
-            {/* Step 1: CLI Add Command */}
-            <section className="space-y-3">
-              <h4 className="font-mono text-xs text-[#ff5c71] uppercase tracking-wider flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#ff5c71]" />
-                Step 1: Install via CLI
-              </h4>
-              <div className="flex items-center justify-between p-4 bg-[#0a0a0a] border border-[#1a1a1a] rounded-[6px] font-mono text-sm group">
-                <span className="text-[#7fff5e] select-all">$ {resolvedCliCommand}</span>
-                <button
-                  onClick={() => handleCopy(resolvedCliCommand, "cli")}
-                  className="px-3 py-1.5 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer"
-                >
-                  {copiedCli ? "Copied!" : "Copy"}
-                </button>
-              </div>
-            </section>
-
-            {/* Step 2: Usage / Demo Code */}
-            <section className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h4 className="font-mono text-xs text-[#ff5c71] uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#ff5c71]" />
-                  Step 2: Import & Use
+            {/* Method Choice Selector */}
+            <div className="border-b border-[#111] pb-4 flex items-center justify-between">
+              <div>
+                <h4 className="text-lg font-black uppercase text-white" style={{ fontFamily: "var(--font-anton)" }}>
+                  Choose Installation Method
                 </h4>
+                <p className="text-xs font-mono text-[#555] mt-1">Select how you want to add this component to your project</p>
+              </div>
+              <div className="flex bg-[#0a0a0a] border border-[#1a1a1a] p-1 rounded-[6px]">
                 <button
-                  onClick={() => handleCopy(resolvedUsageCode, "usage")}
-                  className="px-3 py-1 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer"
+                  onClick={() => setInstallMethod("cli")}
+                  className={`px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-all rounded-[4px] cursor-pointer ${
+                    installMethod === "cli"
+                      ? "bg-[#ff5c71] text-[#050505] font-bold"
+                      : "text-[#555] hover:text-[#ccc]"
+                  }`}
                 >
-                  {copiedUsage ? "Copied Code" : "Copy Code"}
+                  CLI (npx)
+                </button>
+                <button
+                  onClick={() => setInstallMethod("manual")}
+                  className={`px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-all rounded-[4px] cursor-pointer ${
+                    installMethod === "manual"
+                      ? "bg-[#ff5c71] text-[#050505] font-bold"
+                      : "text-[#555] hover:text-[#ccc]"
+                  }`}
+                >
+                  Manual (Code)
                 </button>
               </div>
-              <div className="relative bg-[#080808] border border-[#1a1a1a] rounded-[6px] overflow-hidden">
-                <div className="px-4 py-2 border-b border-[#111] bg-[#0c0c0c] flex items-center justify-between">
-                  <span className="font-mono text-[11px] text-[#444]">demo-usage.tsx</span>
-                </div>
-                <pre className="p-4 overflow-x-auto text-xs font-mono text-white/70 leading-relaxed max-h-[220px]">
-                  <code>{resolvedUsageCode}</code>
-                </pre>
-              </div>
-            </section>
+            </div>
 
-            {/* Step 3: AI Prompt Automation */}
-            <section className="space-y-3">
+            {/* --- CLI INSTALLATION VIEW --- */}
+            {installMethod === "cli" && (
+              <div className="space-y-6">
+                {/* CLI Command */}
+                <div className="space-y-2.5">
+                  <span className="font-mono text-[10px] text-[#ff5c71] uppercase tracking-wider">
+                    Run command in your project root
+                  </span>
+                  <div className="flex items-center justify-between p-4 bg-[#0a0a0a] border border-[#1a1a1a] rounded-[6px] font-mono text-sm">
+                    <span className="text-[#7fff5e] select-all">$ {resolvedCliCommand}</span>
+                    <button
+                      onClick={() => handleCopy(resolvedCliCommand, setCopiedCli)}
+                      className="px-3 py-1.5 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer"
+                    >
+                      {copiedCli ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Helping Code (Usage) */}
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[10px] text-[#ff5c71] uppercase tracking-wider">
+                      How to import and use
+                    </span>
+                    <button
+                      onClick={() => handleCopy(resolvedUsageCode, setCopiedUsage)}
+                      className="px-3 py-1 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer"
+                    >
+                      {copiedUsage ? "Copied Code" : "Copy Code"}
+                    </button>
+                  </div>
+                  <div className="relative bg-[#080808] border border-[#1a1a1a] rounded-[6px] overflow-hidden">
+                    <div className="px-4 py-2 border-b border-[#111] bg-[#0c0c0c] flex items-center justify-between">
+                      <span className="font-mono text-[11px] text-[#444]">app/page.tsx</span>
+                    </div>
+                    <pre className="p-4 overflow-x-auto text-xs font-mono text-white/70 leading-relaxed max-h-[220px]">
+                      <code>{resolvedUsageCode}</code>
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* --- MANUAL INSTALLATION VIEW --- */}
+            {installMethod === "manual" && (
+              <div className="space-y-6">
+                {/* Step 1: Install Dependencies */}
+                <div className="space-y-2.5">
+                  <span className="font-mono text-[10px] text-[#ff5c71] uppercase tracking-wider">
+                    1. Install NPM dependencies
+                  </span>
+                  <div className="flex items-center justify-between p-4 bg-[#0a0a0a] border border-[#1a1a1a] rounded-[6px] font-mono text-sm">
+                    <span className="text-[#7fff5e] select-all">$ {installDepsCommand}</span>
+                    <button
+                      onClick={() => handleCopy(installDepsCommand, setCopiedDeps)}
+                      className="px-3 py-1.5 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer"
+                    >
+                      {copiedDeps ? "Copied!" : "Copy"}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Step 2: Create File & Paste Code */}
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[10px] text-[#ff5c71] uppercase tracking-wider">
+                      2. Create file at <code className="text-[#ff5c71]">components/{compSlug}.tsx</code> and paste source code
+                    </span>
+                    <button
+                      onClick={() => handleCopy(codeSnippet, setCopiedSource)}
+                      className="px-3 py-1 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer"
+                    >
+                      {copiedSource ? "Source Copied!" : "Copy Source Code"}
+                    </button>
+                  </div>
+                  <div className="relative bg-[#080808] border border-[#1a1a1a] rounded-[6px] overflow-hidden">
+                    <div className="px-4 py-2 border-b border-[#111] bg-[#0c0c0c] flex items-center justify-between">
+                      <span className="font-mono text-[11px] text-[#444]">components/{compSlug}.tsx</span>
+                    </div>
+                    <pre className="p-4 overflow-x-auto text-xs font-mono text-white/50 leading-relaxed max-h-[320px] overflow-y-auto">
+                      <code>{codeSnippet}</code>
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* AI Prompt Section (Shared) */}
+            <section className="space-y-3 pt-4 border-t border-[#111]">
               <div className="flex items-center justify-between">
                 <h4 className="font-mono text-xs text-[#7fff5e] uppercase tracking-wider flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#7fff5e]" />
-                  Step 3: Automate integration with AI
+                  AI Automation Agent Prompt
                 </h4>
                 <button
-                  onClick={() => handleCopy(resolvedAiPrompt, "prompt")}
+                  onClick={() => handleCopy(resolvedAiPrompt, setCopiedPrompt)}
                   className="px-3 py-1 bg-[#111] hover:bg-[#7fff5e] text-[#555] hover:text-[#050505] transition-all border border-[#1a1a1a] hover:border-[#7fff5e] font-mono text-[10px] uppercase tracking-wider cursor-pointer"
                 >
                   {copiedPrompt ? "Prompt Copied!" : "Copy AI Prompt"}
                 </button>
               </div>
               <p className="text-xs font-mono text-[#555] leading-relaxed">
-                Copy this prompt and paste it into Claude, ChatGPT, or Gemini to generate a complete custom layout, dynamic page styling, or prop variations for this component automatically.
+                Feed this prompt to Claude, ChatGPT, or Gemini to quickly write custom integrations, layouts, or configure props for this component on your system.
               </p>
               <div className="p-4 bg-[#0a0a0a] border border-[#7fff5e]/10 rounded-[6px] font-mono text-[11px] text-white/50 leading-relaxed bg-gradient-to-br from-[#0a0a0a] to-[#040404] select-all max-h-[160px] overflow-y-auto">
                 {resolvedAiPrompt}
