@@ -9,6 +9,8 @@ export interface ComponentData {
   codeSnippet: string;
   componentPath: string;
   scrollable?: boolean;
+  usageCode?: string;
+  aiPrompt?: string;
 }
 
 export const componentsData: ComponentData[] = [
