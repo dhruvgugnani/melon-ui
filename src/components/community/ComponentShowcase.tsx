@@ -3,6 +3,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 
+import Link from "next/link";
+
 interface ComponentShowcaseProps {
   title: string;
   description: string;
@@ -12,6 +14,7 @@ interface ComponentShowcaseProps {
   tags?: string[];
   /** If true, the preview area will be scrollable so scroll-triggered demos work */
   scrollable?: boolean;
+  slug?: string;
 }
 
 export function ComponentShowcase({
@@ -22,6 +25,7 @@ export function ComponentShowcase({
   cliCommand,
   tags = [],
   scrollable = false,
+  slug,
 }: ComponentShowcaseProps) {
   const [showCode, setShowCode] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
@@ -76,16 +80,27 @@ export function ComponentShowcase({
   };
 
   return (
-    <div className="relative w-full mb-24">
+    <article className="relative w-full mb-24">
       {/* Header */}
-      <div className="mb-5 flex flex-col md:flex-row md:items-end justify-between gap-3">
+      <header className="mb-5 flex flex-col md:flex-row md:items-end justify-between gap-3">
         <div>
-          <h3
-            className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-[#f4f4f4] leading-none mb-1.5"
-            style={{ fontFamily: "var(--font-anton)" }}
-          >
-            {title}
-          </h3>
+          {slug ? (
+            <Link href={`/community/${slug}`} className="group inline-block">
+              <h3
+                className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-[#f4f4f4] group-hover:text-[#ff5c71] transition-colors leading-none mb-1.5"
+                style={{ fontFamily: "var(--font-anton)" }}
+              >
+                {title}
+              </h3>
+            </Link>
+          ) : (
+            <h3
+              className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-[#f4f4f4] leading-none mb-1.5"
+              style={{ fontFamily: "var(--font-anton)" }}
+            >
+              {title}
+            </h3>
+          )}
           <p className="text-[#555] max-w-xl text-sm font-mono leading-relaxed">
             {description}
           </p>
@@ -101,14 +116,17 @@ export function ComponentShowcase({
             </span>
           ))}
         </div>
-      </div>
+      </header>
 
       {/* Main Container */}
       <div className="relative border border-[#ff5c71]/15 bg-[#080808]">
         {/* Toolbar */}
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#ff5c71]/10 bg-[#0a0a0a]">
-          <div className="flex gap-1">
+        <nav aria-label={`${title} component toolbar`} className="flex items-center justify-between px-4 py-2.5 border-b border-[#ff5c71]/10 bg-[#0a0a0a]">
+          <div className="flex gap-1" role="tablist">
             <button
+              role="tab"
+              aria-selected={!showCode}
+              aria-controls={`preview-${title.replace(/\s+/g, '-').toLowerCase()}`}
               onClick={() => setShowCode(false)}
               className={`px-3 py-1 font-mono text-xs uppercase tracking-widest transition-colors ${
                 !showCode
@@ -119,6 +137,9 @@ export function ComponentShowcase({
               Preview
             </button>
             <button
+              role="tab"
+              aria-selected={showCode}
+              aria-controls={`code-${title.replace(/\s+/g, '-').toLowerCase()}`}
               onClick={() => setShowCode(true)}
               className={`px-3 py-1 font-mono text-xs uppercase tracking-widest transition-colors ${
                 showCode
@@ -142,6 +163,7 @@ export function ComponentShowcase({
               <button
                 onClick={() => copyToClipboard(cliCommand, true)}
                 className="flex items-center gap-1.5 group/cli"
+                aria-label="Copy CLI command"
               >
                 <span className="font-mono text-[10px] text-[#444] group-hover/cli:text-[#ff5c71] transition-colors">
                   $ {cliCommand}
@@ -161,10 +183,13 @@ export function ComponentShowcase({
               </button>
             )}
           </div>
-        </div>
+        </nav>
 
         {/* Live Preview Area */}
         <div
+          id={`preview-${title.replace(/\s+/g, '-').toLowerCase()}`}
+          role="tabpanel"
+          aria-labelledby={`tab-preview-${title.replace(/\s+/g, '-').toLowerCase()}`}
           ref={previewContainerRef}
           className={`relative w-full flex items-center justify-center p-8 bg-[#080808] ${
             scrollable ? "overflow-y-auto" : "overflow-hidden"
@@ -176,6 +201,9 @@ export function ComponentShowcase({
 
         {/* Code Drawer */}
         <div
+          id={`code-${title.replace(/\s+/g, '-').toLowerCase()}`}
+          role="tabpanel"
+          aria-labelledby={`tab-code-${title.replace(/\s+/g, '-').toLowerCase()}`}
           ref={codeDrawerRef}
           className="overflow-hidden bg-[#040404] border-t border-[#ff5c71]/10"
           style={{ height: 0, opacity: 0 }}
@@ -187,6 +215,7 @@ export function ComponentShowcase({
             <button
               onClick={() => copyToClipboard(codeSnippet, false)}
               className="flex items-center gap-1.5 px-2.5 py-1 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-white transition-colors border border-[#1a1a1a] hover:border-[#ff5c71]"
+              aria-label="Copy code snippet"
             >
               <span className="font-mono text-[10px] uppercase tracking-widest">
                 {copiedCode ? "Copied!" : "Copy"}
@@ -208,6 +237,6 @@ export function ComponentShowcase({
           </pre>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
