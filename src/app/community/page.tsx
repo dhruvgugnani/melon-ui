@@ -15,6 +15,7 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   RippleButton: dynamic(() => import("@/components/community/demos/RippleButton").then(m => m.RippleButton)),
   MagneticNav: dynamic(() => import("@/components/community/demos/MagneticNav").then(m => m.MagneticNav)),
   BreadcrumbTrail: dynamic(() => import("@/components/community/demos/BreadcrumbTrail").then(m => m.BreadcrumbTrail)),
+  HoloTicket: dynamic(() => import("@/components/community/demos/HoloTicket").then(m => m.HoloTicket)),
   RindPeelCard: dynamic(() => import("@/components/community/demos/RindPeelCard").then(m => m.RindPeelCard)),
   FlipCard: dynamic(() => import("@/components/community/demos/FlipCard").then(m => m.FlipCard)),
   VineInput: dynamic(() => import("@/components/community/demos/VineInput").then(m => m.VineInput)),
