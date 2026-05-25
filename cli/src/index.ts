@@ -24,7 +24,7 @@ console.log(MELON_BANNER);
 const program = new Command();
 
 program
-  .name("@melonui/cli")
+  .name("@melonui-dev/cli")
   .description("Premium UI distribution ecosystem for modern frontend developers")
   .version(version);
 

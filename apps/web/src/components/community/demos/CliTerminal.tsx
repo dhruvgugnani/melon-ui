@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 const LINES = [
-  { text: "$ npx @melonui/cli init", delay: 0 },
+  { text: "$ npx @melonui-dev/cli init", delay: 0 },
   { text: "✔ Detected Next.js 15 project", delay: 1.2 },
   { text: "✔ Installing dependencies...", delay: 2.0 },
   { text: "✔ Copying component registry...", delay: 3.0 },

@@ -1,5 +1,5 @@
 {
-  "name": "@melonui/cli",
+  "name": "@melonui-dev/cli",
   "version": "0.1.0",
   "description": "Premium UI distribution ecosystem for modern frontend developers",
   "main": "dist/index.js",

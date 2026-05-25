@@ -15,9 +15,9 @@ const TICKER_ITEMS = [
 ];
 
 const CODE_LINES = [
-  "npx @melonui/cli add seed-burst-button",
-  "npx @melonui/cli add magnetic-nav",
-  "npx @melonui/cli add particle-field --pro",
+  "npx @melonui-dev/cli add seed-burst-button",
+  "npx @melonui-dev/cli add magnetic-nav",
+  "npx @melonui-dev/cli add particle-field --pro",
 ];
 
 export function SandSection() {

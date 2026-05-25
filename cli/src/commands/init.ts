@@ -51,7 +51,7 @@ export async function initCommand() {
 
     spinner.succeed("MelonUI initialized successfully!");
     logger.melon("\\n✨ Ready to add premium components! Run:");
-    logger.green("npx @melonui/cli add <component>");
+    logger.green("npx @melonui-dev/cli add <component>");
 
   } catch (error: any) {
     spinner.fail(`Initialization failed: ${error.message}`);
