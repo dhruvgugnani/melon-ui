@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
+import prompts from "prompts";
 import { initCommand } from "./commands/init";
 import { addCommand } from "./commands/add";
 import { MELON_BANNER } from "./utils/logger";
@@ -36,7 +37,34 @@ program
 program
   .command("add")
   .description("Add a component from the remote registry")
-  .argument("<component>", "The component to add")
+  .argument("[component]", "The component to add")
   .action(addCommand);
 
-program.parse(process.argv);
+async function runMainMenu() {
+  const choices = [
+    { title: "Initialize MelonUI Project", value: "init", description: "Set up utils, paths, and core dependencies" },
+    { title: "Add/Install Components", value: "add", description: "Search, select, and install components dynamically" },
+    { title: "Exit", value: "exit", description: "Close the interactive CLI" }
+  ];
+
+  const response = await prompts({
+    type: "select",
+    name: "action",
+    message: "What would you like to do?",
+    choices
+  });
+
+  if (response.action === "init") {
+    await initCommand();
+  } else if (response.action === "add") {
+    await addCommand();
+  } else {
+    console.log("Goodbye!");
+  }
+}
+
+if (process.argv.length <= 2) {
+  runMainMenu();
+} else {
+  program.parse(process.argv);
+}
