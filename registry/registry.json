@@ -1,10 +1,173 @@
 {
+  "cli-terminal": {
+    "name": "CLI Terminal",
+    "description": "Live animated terminal showing the installation flow. Drop it in your docs.",
+    "category": "Getting Started",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "cli-terminal.tsx",
+        "path": "components/cli-terminal.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Timeline"
+    ],
+    "preview": "/preview/cli-terminal.png"
+  },
+  "changelog": {
+    "name": "Changelog",
+    "description": "Accordion-style versioned release list with smooth GSAP height animation.",
+    "category": "Getting Started",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "changelog.tsx",
+        "path": "components/changelog.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Accordion"
+    ],
+    "preview": "/preview/changelog.png"
+  },
+  "burst-button": {
+    "name": "Burst Button",
+    "description": "Seeds physically burst from the click point with GSAP staggered physics.",
+    "category": "Buttons",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "burst-button.tsx",
+        "path": "components/burst-button.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Physics"
+    ],
+    "preview": "/preview/burst-button.png"
+  },
+  "ripple-button": {
+    "name": "Ripple Button",
+    "description": "Click-origin radial ripple expands from the exact cursor position.",
+    "category": "Buttons",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "ripple-button.tsx",
+        "path": "components/ripple-button.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Ripple"
+    ],
+    "preview": "/preview/ripple-button.png"
+  },
+  "magnetic-nav": {
+    "name": "Magnetic Nav",
+    "description": "Nav links magnetically attract the cursor; elastic spring snaps back on leave.",
+    "category": "Navigations",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "magnetic-nav.tsx",
+        "path": "components/magnetic-nav.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Elastic"
+    ],
+    "preview": "/preview/magnetic-nav.png"
+  },
+  "step-trail": {
+    "name": "Step Trail",
+    "description": "Animated step breadcrumb with GSAP-driven progress bar between stages.",
+    "category": "Navigations",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "step-trail.tsx",
+        "path": "components/step-trail.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Progress"
+    ],
+    "preview": "/preview/step-trail.png"
+  },
+  "peel-card": {
+    "name": "Peel Card",
+    "description": "Card front retracts on hover revealing vibrant content underneath.",
+    "category": "Cards",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "peel-card.tsx",
+        "path": "components/peel-card.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Transform"
+    ],
+    "preview": "/preview/peel-card.png"
+  },
+  "flip-card": {
+    "name": "Flip Card",
+    "description": "3D rotateY flip using CSS preserve-3d and GSAP for precise control.",
+    "category": "Cards",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "flip-card.tsx",
+        "path": "components/flip-card.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "3D",
+      "CSS"
+    ],
+    "preview": "/preview/flip-card.png"
+  },
   "holo-ticket": {
     "name": "Holo Ticket",
-    "description": "Premium holographic ticket component",
-    "category": "cards",
+    "description": "Premium holographic ticket component with 3D pointer-tracking reflection, dynamic CSS clipping, and elastic tearing physics.",
+    "category": "Cards",
     "dependencies": [
       "framer-motion",
+      "gsap",
+      "@gsap/react",
       "clsx",
       "tailwind-merge"
     ],
@@ -14,7 +177,254 @@
         "path": "components/holo-ticket.tsx"
       }
     ],
-    "tags": ["ticket", "glassmorphism", "holographic"],
+    "tags": [
+      "GSAP",
+      "Clip",
+      "Glassmorphism",
+      "Holographic"
+    ],
     "preview": "/preview/holo-ticket.png"
+  },
+  "grow-input": {
+    "name": "Grow Input",
+    "description": "SVG stroke dashoffset vine grows along the bottom border on focus.",
+    "category": "Inputs",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "grow-input.tsx",
+        "path": "components/grow-input.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "SVG"
+    ],
+    "preview": "/preview/grow-input.png"
+  },
+  "tag-input": {
+    "name": "Tag Input",
+    "description": "Animated tag management — press Enter or comma to add, backspace to remove.",
+    "category": "Inputs",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "tag-input.tsx",
+        "path": "components/tag-input.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Input"
+    ],
+    "preview": "/preview/tag-input.png"
+  },
+  "particle-field": {
+    "name": "Particle Field",
+    "description": "R3F particle cloud in melon palette colors reacting to mouse movement.",
+    "category": "3D Backgrounds",
+    "dependencies": [
+      "three",
+      "@react-three/fiber",
+      "@react-three/drei"
+    ],
+    "files": [
+      {
+        "name": "particle-field.tsx",
+        "path": "components/particle-field.tsx"
+      }
+    ],
+    "tags": [
+      "Three.js",
+      "R3F"
+    ],
+    "preview": "/preview/particle-field.png"
+  },
+  "floating-orbs": {
+    "name": "Floating Orbs",
+    "description": "Sinusoidal floating spheres with dynamic colored point lighting.",
+    "category": "3D Backgrounds",
+    "dependencies": [
+      "three",
+      "@react-three/fiber",
+      "@react-three/drei"
+    ],
+    "files": [
+      {
+        "name": "floating-orbs.tsx",
+        "path": "components/floating-orbs.tsx"
+      }
+    ],
+    "tags": [
+      "Three.js",
+      "R3F"
+    ],
+    "preview": "/preview/floating-orbs.png"
+  },
+  "blob-cursor": {
+    "name": "Blob Cursor",
+    "description": "Velocity-based squash and stretch blob with elastic trailing ring.",
+    "category": "Cursors",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "blob-cursor.tsx",
+        "path": "components/blob-cursor.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Cursor"
+    ],
+    "preview": "/preview/blob-cursor.png"
+  },
+  "crosshair": {
+    "name": "Crosshair",
+    "description": "Precision crosshair with live coordinate readout and a grid overlay.",
+    "category": "Cursors",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "crosshair.tsx",
+        "path": "components/crosshair.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Cursor"
+    ],
+    "preview": "/preview/crosshair.png"
+  },
+  "char-reveal": {
+    "name": "Char Reveal",
+    "description": "Characters blur-in with stagger tied to ScrollTrigger scroll position.",
+    "category": "Scroll Effects",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "char-reveal.tsx",
+        "path": "components/char-reveal.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "ScrollTrigger"
+    ],
+    "preview": "/preview/char-reveal.png"
+  },
+  "parallax-strips": {
+    "name": "Parallax Strips",
+    "description": "Depth strips that scroll at different speeds creating a parallax illusion.",
+    "category": "Scroll Effects",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "parallax-strips.tsx",
+        "path": "components/parallax-strips.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Parallax"
+    ],
+    "preview": "/preview/parallax-strips.png"
+  },
+  "drip-text": {
+    "name": "Drip Text",
+    "description": "Letters drip down on hover with random skew offsets, spring back on leave.",
+    "category": "GSAP Text",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "drip-text.tsx",
+        "path": "components/drip-text.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Elastic"
+    ],
+    "preview": "/preview/drip-text.png"
+  },
+  "scramble-text": {
+    "name": "Scramble Text",
+    "description": "Characters cycle through random glyphs before resolving back on hover.",
+    "category": "GSAP Text",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "scramble-text.tsx",
+        "path": "components/scramble-text.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Text"
+    ],
+    "preview": "/preview/scramble-text.png"
+  },
+  "stripe-wipe": {
+    "name": "Stripe Wipe",
+    "description": "A colored stripe sweeps across the viewport to mask route changes.",
+    "category": "Page Transitions",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "stripe-wipe.tsx",
+        "path": "components/stripe-wipe.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Timeline"
+    ],
+    "preview": "/preview/stripe-wipe.png"
+  },
+  "morph-transition": {
+    "name": "Morph Transition",
+    "description": "Circular clip expands from center masking the page swap between routes.",
+    "category": "Page Transitions",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "morph-transition.tsx",
+        "path": "components/morph-transition.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "Clip"
+    ],
+    "preview": "/preview/morph-transition.png"
   }
 }
