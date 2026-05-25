@@ -11,6 +11,7 @@ import { MagneticNav } from "@/components/community/demos/MagneticNav";
 import { BreadcrumbTrail } from "@/components/community/demos/BreadcrumbTrail";
 import { RindPeelCard } from "@/components/community/demos/RindPeelCard";
 import { FlipCard } from "@/components/community/demos/FlipCard";
+import { HoloTicket } from "@/components/community/demos/HoloTicket";
 import { VineInput } from "@/components/community/demos/VineInput";
 import { TagInput } from "@/components/community/demos/TagInput";
 import { JuicyCursor } from "@/components/community/demos/JuicyCursor";
@@ -89,6 +90,22 @@ const BREADCRUMB_CODE = `const go = (i) => {
     width: \`\${(i / (steps.length - 1)) * 100}%\`,
     duration: 0.5, ease: "power2.out",
   });
+};`.trim();
+
+const TICKET_CODE = `const tearTicket = () => {
+  setIsTorn(true);
+  if (bottomRef.current) {
+    gsap.to(bottomRef.current, {
+      y: currentY.current + 200,
+      rotateZ: (Math.random() - 0.5) * 40,
+      opacity: 0, duration: 0.8, ease: "power2.in"
+    });
+  }
+  if (topRef.current) {
+    gsap.timeline()
+      .to(topRef.current, { scale: 1.05, duration: 0.1 })
+      .to(topRef.current, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.4)" });
+  }
 };`.trim();
 
 const PEEL_CODE = `const handleEnter = () =>
@@ -310,6 +327,9 @@ export default function CommunityPage() {
 
       {/* ── CARDS ── */}
       <SectionLabel id="cards" label="Cards" count="03" />
+      <ComponentShowcase title="Holo Ticket" description="Interactive 3D holographic ticket. Drag the bottom stub to stretch and tear it."
+        tags={["GSAP", "Physics", "Interactive"]} cliCommand="npx @melonui/cli add holo-ticket" codeSnippet={TICKET_CODE}
+        component={<HoloTicket />} />
       <ComponentShowcase title="Peel Card" description="Card front retracts on hover revealing vibrant content underneath."
         tags={["GSAP", "Transform"]} cliCommand="npx @melonui/cli add peel-card" codeSnippet={PEEL_CODE}
         component={<RindPeelCard />} />
