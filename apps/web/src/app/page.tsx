@@ -67,6 +67,16 @@ export default function Home() {
 
     let isDrawing = false;
     let points: { x: number; y: number }[] = [];
+    let juiceParticles: {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      radius: number;
+      alpha: number;
+      decay: number;
+      color: string;
+    }[] = [];
     let startX = 0;
     let startY = 0;
 
@@ -82,6 +92,77 @@ export default function Home() {
       return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
     };
 
+    // Animation render loop
+    let animId: number;
+    const tick = () => {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 1. Decay slash trail points
+        if (points.length > 0) {
+          points.shift();
+        }
+
+        // 2. Update and draw 2D juice particles
+        juiceParticles = juiceParticles.filter((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.22; // gravity pull
+          p.alpha -= p.decay; // fade
+
+          if (p.alpha <= 0) return false;
+
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          return true;
+        });
+
+        // 3. Draw tapering blade slash trail
+        if (points.length >= 2) {
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+
+          // Outer Glow Layer
+          for (let i = 1; i < points.length; i++) {
+            const ratio = i / points.length;
+            ctx.save();
+            ctx.shadowBlur = 18;
+            ctx.shadowColor = "#ff5c71";
+            ctx.strokeStyle = `rgba(255, 92, 113, ${ratio})`;
+            ctx.lineWidth = 1 + ratio * 10; // Tapers to 11px
+            
+            ctx.beginPath();
+            ctx.moveTo(points[i - 1].x, points[i - 1].y);
+            ctx.lineTo(points[i].x, points[i].y);
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          // Hot Inner Core Layer
+          ctx.shadowBlur = 0;
+          for (let i = 1; i < points.length; i++) {
+            const ratio = i / points.length;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${ratio})`;
+            ctx.lineWidth = 0.5 + ratio * 3.0; // Tapers to 3.5px
+
+            ctx.beginPath();
+            ctx.moveTo(points[i - 1].x, points[i - 1].y);
+            ctx.lineTo(points[i].x, points[i].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      animId = requestAnimationFrame(tick);
+    };
+    animId = requestAnimationFrame(tick);
+
     const handleMouseDown = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       // Skip drawing if clicking a button or anchor
@@ -92,37 +173,27 @@ export default function Home() {
       startX = e.clientX;
       startY = e.clientY;
       points = [{ x: startX, y: startY }];
-      canvas.style.opacity = "1";
     };
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDrawing) return;
       points.push({ x: e.clientX, y: e.clientY });
+      if (points.length > 15) {
+        points.shift();
+      }
 
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if (points.length >= 2) {
-          ctx.shadowBlur = 18;
-          ctx.shadowColor = "#ff5c71";
-          ctx.strokeStyle = "#ff5c71";
-          ctx.lineWidth = 6;
-          ctx.lineCap = "round";
-          ctx.lineJoin = "round";
-          
-          ctx.beginPath();
-          ctx.moveTo(points[0].x, points[0].y);
-          for (let i = 1; i < points.length; i++) {
-            ctx.lineTo(points[i].x, points[i].y);
-          }
-          ctx.stroke();
-
-          // Hot inner laser core
-          ctx.shadowBlur = 0;
-          ctx.strokeStyle = "#ffffff";
-          ctx.lineWidth = 2.5;
-          ctx.stroke();
-        }
+      // Spawn 2D juice droplets along the drag trail
+      for (let i = 0; i < 3; i++) {
+        juiceParticles.push({
+          x: e.clientX,
+          y: e.clientY,
+          vx: (Math.random() - 0.5) * 6,
+          vy: (Math.random() - 0.5) * 6 - 2.0, // upward spray
+          radius: 1.5 + Math.random() * 3.5,
+          alpha: 1.0,
+          decay: 0.02 + Math.random() * 0.03,
+          color: Math.random() > 0.25 ? "#ff5c71" : "#7fff5e",
+        });
       }
     };
 
@@ -155,15 +226,6 @@ export default function Home() {
           window.dispatchEvent(new CustomEvent("melon-slice", { detail: { angle } }));
         }
       }
-
-      gsap.to(canvas, {
-        opacity: 0,
-        duration: 0.25,
-        onComplete: () => {
-          const ctx = canvas.getContext("2d");
-          ctx?.clearRect(0, 0, canvas.width, canvas.height);
-        }
-      });
     };
 
     // Touch Support
@@ -176,36 +238,29 @@ export default function Home() {
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
       points = [{ x: startX, y: startY }];
-      canvas.style.opacity = "1";
     };
 
     const handleTouchMove = (e: TouchEvent) => {
       if (!isDrawing) return;
-      points.push({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+      const tx = e.touches[0].clientX;
+      const ty = e.touches[0].clientY;
+      points.push({ x: tx, y: ty });
+      if (points.length > 15) {
+        points.shift();
+      }
 
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if (points.length >= 2) {
-          ctx.shadowBlur = 18;
-          ctx.shadowColor = "#ff5c71";
-          ctx.strokeStyle = "#ff5c71";
-          ctx.lineWidth = 6;
-          ctx.lineCap = "round";
-          ctx.lineJoin = "round";
-          
-          ctx.beginPath();
-          ctx.moveTo(points[0].x, points[0].y);
-          for (let i = 1; i < points.length; i++) {
-            ctx.lineTo(points[i].x, points[i].y);
-          }
-          ctx.stroke();
-
-          ctx.shadowBlur = 0;
-          ctx.strokeStyle = "#ffffff";
-          ctx.lineWidth = 2.5;
-          ctx.stroke();
-        }
+      // Spawn 2D juice droplets along the touch trail
+      for (let i = 0; i < 3; i++) {
+        juiceParticles.push({
+          x: tx,
+          y: ty,
+          vx: (Math.random() - 0.5) * 6,
+          vy: (Math.random() - 0.5) * 6 - 2.0,
+          radius: 1.5 + Math.random() * 3.5,
+          alpha: 1.0,
+          decay: 0.02 + Math.random() * 0.03,
+          color: Math.random() > 0.25 ? "#ff5c71" : "#7fff5e",
+        });
       }
     };
 
@@ -239,15 +294,6 @@ export default function Home() {
           window.dispatchEvent(new CustomEvent("melon-slice", { detail: { angle } }));
         }
       }
-
-      gsap.to(canvas, {
-        opacity: 0,
-        duration: 0.25,
-        onComplete: () => {
-          const ctx = canvas.getContext("2d");
-          ctx?.clearRect(0, 0, canvas.width, canvas.height);
-        }
-      });
     };
 
     window.addEventListener("mousedown", handleMouseDown);
@@ -265,6 +311,7 @@ export default function Home() {
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
+      cancelAnimationFrame(animId);
     };
   }, []);
 
@@ -277,7 +324,7 @@ export default function Home() {
       {/* Viewport Slice Slash Trail Overlay Canvas */}
       <canvas
         ref={slashCanvasRef}
-        className="pointer-events-none fixed inset-0 z-50 transition-opacity duration-150"
+        className="pointer-events-none fixed inset-0 z-50"
       />
 
       {/* Cyber Grid & Glowing Ambient Backdrop */}
