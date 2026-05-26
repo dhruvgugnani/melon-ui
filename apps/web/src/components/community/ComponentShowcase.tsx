@@ -242,10 +242,8 @@ Please write a premium, responsive React page component in Next.js that:
         <div
           ref={previewPanelRef}
           role="tabpanel"
-          className={`relative w-full flex items-center justify-center p-8 transition-colors duration-300 ${
-            previewTheme === "dark" 
-              ? "bg-[#080808] text-white" 
-              : "bg-[#f4f4f9] text-[#0f0f11] light"
+          className={`relative w-full flex items-center justify-center p-8 bg-[#080808] text-white transition-colors duration-300 ${
+            previewTheme === "light" ? "light" : ""
           } ${
             scrollable ? "overflow-y-auto" : "overflow-hidden"
           }`}

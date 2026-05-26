@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { getComponentsByCategory } from "@/data/components";
 import { ComponentShowcase } from "@/components/community/ComponentShowcase";
-import { ThemeToggle } from "@/components/community/ThemeToggle";
+
 import dynamic from "next/dynamic";
 
 // Dynamically import all components
@@ -93,9 +93,7 @@ export default function CommunityPage() {
             </Link>
           </div>
         </div>
-        <div className="shrink-0 pt-2 z-10">
-          <ThemeToggle />
-        </div>
+
       </header>
 
       {/* ── DYNAMIC CATEGORIES ── */}

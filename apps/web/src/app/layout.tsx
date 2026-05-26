@@ -109,7 +109,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfitFont.variable} ${londrinaSketchFont.variable} ${londrinaSolidFont.variable} ${antonFont.variable} antialiased h-screen w-full overflow-hidden bg-black`}
+      className={`${outfitFont.variable} ${londrinaSketchFont.variable} ${londrinaSolidFont.variable} ${antonFont.variable} antialiased h-screen w-full overflow-hidden`}
     >
       <head>
         <script

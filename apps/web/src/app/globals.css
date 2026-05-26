@@ -211,3 +211,105 @@ h3, h4, h5, h6 {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
+/* --- Showcase Component Light Theme Overrides --- */
+.light {
+  --background: #ffffff;
+  --foreground: #0d0d11;
+  --border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Base style resets inside light showcase components */
+.light select,
+.light input,
+.light textarea {
+  color: #0d0d11 !important;
+  background-color: #f7f7fa !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Background Overrides using robust attribute selectors */
+.light [class*="bg-[#050505]"],
+.light [class*="bg-[#060606]"],
+.light [class*="bg-[#080808]"],
+.light [class*="bg-black"],
+.light [class*="bg-[#040404]"] {
+  background-color: #ffffff !important;
+  color: #0d0d11 !important;
+}
+
+.light [class*="bg-[#0a0a0a]"],
+.light [class*="bg-[#0a0a0c]"],
+.light [class*="bg-[#0d0d0d]"],
+.light [class*="bg-[#111]"],
+.light [class*="bg-[#0f0f0f]"],
+.light [class*="bg-[#0d0d0f]"],
+.light [class*="bg-[#0b0b0d]"] {
+  background-color: #f7f7fa !important;
+  color: #0d0d11 !important;
+}
+
+/* Text Color Overrides */
+.light [class*="text-white"],
+.light [class*="text-[#f4f4f4]"],
+.light [class*="text-[#e5e5e5]"] {
+  color: #0d0d11 !important;
+}
+
+.light [class*="text-white/90"],
+.light [class*="text-white/80"],
+.light [class*="text-white/70"] {
+  color: #1f1f29 !important;
+}
+
+.light [class*="text-white/50"],
+.light [class*="text-[#aaa]"],
+.light [class*="text-[#777]"] {
+  color: #626270 !important;
+}
+
+.light [class*="text-white/30"],
+.light [class*="text-[#555]"],
+.light [class*="text-[#333]"] {
+  color: #90909e !important;
+}
+
+/* Border Overrides */
+.light [class*="border-white/"],
+.light [class*="border-[#1a1a1a]"],
+.light [class*="border-[#1e1e1e]"],
+.light [class*="border-[#222]"] {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.light [class*="border-[#ff5c71]/"] {
+  border-color: rgba(255, 92, 113, 0.18) !important;
+}
+
+/* Specific inline style border override */
+.light [style*="border: 1px solid #1a1a1a"],
+.light [style*="border: 1px solid #1e1e1e"] {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* SVG adjustments inside light showcase components */
+.light svg circle[stroke*="white"],
+.light svg circle[stroke*="#fff"],
+.light svg path[stroke*="white"],
+.light svg path[stroke*="#fff"],
+.light svg line[stroke*="white"],
+.light svg line[stroke*="#fff"] {
+  stroke: #0d0d11 !important;
+}
+
+.light svg circle[fill*="white"],
+.light svg circle[fill*="#fff"],
+.light svg path[fill*="white"],
+.light svg path[fill*="#fff"] {
+  fill: #0d0d11 !important;
+}
+
+.light svg path[fill="rgba(255,255,255,0.15)"] {
+  fill: rgba(0, 0, 0, 0.15) !important;
+}
+

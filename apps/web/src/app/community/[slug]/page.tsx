@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { componentsData, getComponentBySlug } from '@/data/components';
 import { ComponentShowcase } from '@/components/community/ComponentShowcase';
-import { ThemeToggle } from '@/components/community/ThemeToggle';
+
 import dynamic from 'next/dynamic';
 import React from 'react';
 import fs from 'fs';
@@ -152,9 +152,7 @@ export default async function ComponentPage(props: { params: Promise<{ slug: str
             {component.description}
           </p>
         </div>
-        <div className="shrink-0 pt-16 z-10">
-          <ThemeToggle />
-        </div>
+
       </header>
 
       <section aria-labelledby="showcase-heading" className="mb-24">
