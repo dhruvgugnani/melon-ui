@@ -180,7 +180,7 @@ export default async function ComponentPage(props: { params: Promise<{ slug: str
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {relatedComponents.map((related) => (
               <Link key={related.id} href={`/community/${related.slug}`} className="group block p-6 border border-[#1a1a1a] bg-[#0a0a0a] hover:border-[#ff5c71]/50 transition-colors">
-                <h3 className="text-xl font-bold uppercase text-[#e5e5e5] group-hover:text-[#ff5c71] mb-2" style={{ fontFamily: "var(--font-anton)" }}>{related.title}</h3>
+                <h3 className="text-xl font-bold uppercase text-[#e5e5e5] group-hover:text-[#ff5c71] mb-2" style={{ fontFamily: "var(--font-londrina-solid)" }}>{related.title}</h3>
                 <p className="text-xs font-mono text-[#555] line-clamp-2">{related.description}</p>
               </Link>
             ))}

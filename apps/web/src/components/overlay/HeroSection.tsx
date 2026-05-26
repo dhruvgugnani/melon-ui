@@ -33,14 +33,14 @@ export function HeroSection() {
       <div className="pointer-events-none absolute bottom-[18vh] right-[-10vw] h-16 w-[48vw] rotate-[-8deg] border-y border-[#e0f2dc]/30 bg-[#203f18]/30" />
 
       <div ref={navRef} className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-6 py-6 md:px-10">
-        <Link href="/" className="flex items-center gap-3" aria-label="MelonUI home">
-          <span className="relative h-9 w-9 overflow-hidden rounded-full border border-white/15 bg-[#ff5c71]">
+        <Link href="/" className="flex items-center gap-3 group" aria-label="MelonUI home">
+          <span className="relative h-9 w-9 overflow-hidden rounded-full border border-white/15 bg-[#ff5c71] shrink-0 group-hover:scale-105 transition-transform duration-300">
             <span className="absolute inset-x-1 bottom-1 h-5 rounded-b-full bg-[#203f18]" />
             <span className="absolute inset-x-2 bottom-2 h-3 rounded-b-full bg-[#e0f2dc]" />
             <span className="absolute inset-x-3 bottom-3 h-2 rounded-b-full bg-[#ff5c71]" />
             <span className="absolute bottom-3 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-black" />
           </span>
-          <span className="text-sm font-black uppercase text-white" style={{ fontFamily: "var(--font-anton)", letterSpacing: 0 }}>
+          <span className="text-xl font-black uppercase text-white group-hover:text-[#ff5c71] transition-colors" style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}>
             MelonUI
           </span>
         </Link>

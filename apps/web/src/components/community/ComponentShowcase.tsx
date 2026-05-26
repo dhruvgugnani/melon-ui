@@ -138,7 +138,7 @@ Please write a premium, responsive React page component in Next.js that:
             <Link href={`/community/${slug}`} className="group inline-block">
               <h3
                 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-[#f4f4f4] group-hover:text-[#ff5c71] transition-colors leading-none mb-1.5"
-                style={{ fontFamily: "var(--font-anton)" }}
+                style={{ fontFamily: "var(--font-londrina-solid)" }}
               >
                 {title}
               </h3>
@@ -146,7 +146,7 @@ Please write a premium, responsive React page component in Next.js that:
           ) : (
             <h3
               className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-[#f4f4f4] leading-none mb-1.5"
-              style={{ fontFamily: "var(--font-anton)" }}
+              style={{ fontFamily: "var(--font-londrina-solid)" }}
             >
               {title}
             </h3>
@@ -269,7 +269,7 @@ Please write a premium, responsive React page component in Next.js that:
             {/* Method Choice Selector */}
             <div className="border-b border-[#111] pb-4 flex items-center justify-between">
               <div>
-                <h4 className="text-lg font-black uppercase text-white" style={{ fontFamily: "var(--font-anton)" }}>
+                <h4 className="text-lg font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)" }}>
                   Choose Installation Method
                 </h4>
                 <p className="text-xs font-mono text-[#555] mt-1">Select how you want to add this component to your project</p>

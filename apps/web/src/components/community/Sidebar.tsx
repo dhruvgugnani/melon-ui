@@ -127,6 +127,7 @@ export function Sidebar() {
       const width = activeBtn.offsetWidth;
       const left = activeBtn.offsetLeft;
 
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIndicatorStyle({
         opacity: 1,
         transform: `translateY(${top}px)`,
@@ -159,20 +160,17 @@ export function Sidebar() {
     <aside ref={sidebarRef} className="w-60 shrink-0 border-r border-[#ff5c71]/10 bg-[#050505] min-h-full flex-col hidden lg:flex relative z-20">
       {/* Logo */}
       <div className="p-5 border-b border-[#ff5c71]/10 sidebar-logo">
-        <Link href="/" className="block group">
-          <span
-            className="font-black text-xl uppercase tracking-tighter text-[#f4f4f4] group-hover:text-[#ff5c71] transition-colors"
-            style={{ fontFamily: "var(--font-londrina-solid)" }}
-          >
-            Melon
+        <Link href="/" className="flex items-center gap-3 group" aria-label="MelonUI home">
+          <span className="relative h-8 w-8 overflow-hidden rounded-full border border-white/15 bg-[#ff5c71] shrink-0 group-hover:scale-105 transition-transform duration-300">
+            <span className="absolute inset-x-0.5 bottom-0.5 h-4.5 rounded-b-full bg-[#203f18]" />
+            <span className="absolute inset-x-1 bottom-1 h-3.5 rounded-b-full bg-[#e0f2dc]" />
+            <span className="absolute inset-x-2 bottom-2 h-2 rounded-b-full bg-[#ff5c71]" />
+            <span className="absolute bottom-2 left-1/2 h-0.5 w-0.5 -translate-x-1/2 rounded-full bg-black" />
           </span>
-          <span
-            className="font-black text-xl uppercase tracking-tighter text-[#ff5c71]"
-            style={{ fontFamily: "var(--font-londrina-solid)" }}
-          >
-            UI
+          <span className="text-xl font-black uppercase text-white group-hover:text-[#ff5c71] transition-colors" style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}>
+            MelonUI
           </span>
-          <span className="ml-2 font-mono text-[10px] text-[#333] uppercase tracking-widest">/docs</span>
+          <span className="font-mono text-[9px] text-[#333] uppercase tracking-widest shrink-0">/store</span>
         </Link>
       </div>
 

@@ -222,7 +222,7 @@ export function SolarCarousel() {
             height: "480px",
             borderRadius: "50%",
             border: "1.5px dashed rgba(255, 255, 255, 0.08)",
-            transform: `rotateX(${physics.current.tilt}deg)`,
+            transform: "rotateX(65deg)",
             transformStyle: "preserve-3d",
           }}
         >
@@ -237,7 +237,7 @@ export function SolarCarousel() {
               border: "2px solid #ff5c71",
               boxShadow: "0 0 25px 8px rgba(255, 92, 113, 0.15)",
               // Counter-act the parent's X rotation to make the core face us upright
-              transform: `rotateX(${-physics.current.tilt}deg)`,
+              transform: "rotateX(-65deg)",
               transformStyle: "preserve-3d",
             }}
           >

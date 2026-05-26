@@ -47,16 +47,10 @@ html {
 }
 
 /* Typography utilities */
-h1, h2 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-londrina-solid), "Londrina Solid", sans-serif;
   font-weight: 400 !important;
   letter-spacing: 0.02em;
-}
-
-h3, h4, h5, h6 {
-  font-family: var(--font-anton), "Anton", sans-serif;
-  font-weight: 400 !important;
-  letter-spacing: 0.05em;
 }
 
 /* Hero + CTA only: stable watermelon scan treatment without live 3D/CSS projection. */
