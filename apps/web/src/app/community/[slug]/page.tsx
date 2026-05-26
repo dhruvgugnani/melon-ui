@@ -35,6 +35,7 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   HoloTicket: dynamic(() => import('@/components/community/demos/HoloTicket').then(m => m.HoloTicket)),
   SolarCarousel: dynamic(() => import('@/components/community/demos/SolarCarousel').then(m => m.SolarCarousel)),
   KineticMagnet: dynamic(() => import('@/components/community/demos/KineticMagnet').then(m => m.KineticMagnet)),
+  MorphingCyberNode: dynamic(() => import('@/components/community/demos/MorphingCyberNode').then(m => m.MorphingCyberNode)),
 };
 
 export async function generateStaticParams() {

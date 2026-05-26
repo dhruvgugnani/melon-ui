@@ -268,6 +268,17 @@ export const componentsData: ComponentData[] = [
     cliCommand: "npx @melonui-dev/cli add kinetic-magnet",
     codeSnippet: "",
     componentPath: "KineticMagnet",
+  },
+  {
+    id: "morphing-cyber-node",
+    slug: "morphing-cyber-node",
+    title: "Morphing Cyber Node",
+    description: "A multi-state, fluid-morphing interactive widget with magnetic hover physics and dynamic glassmorphism.",
+    category: "Widgets",
+    tags: ["Framer Motion", "Morph", "Glassmorphism", "Interactive"],
+    cliCommand: "npx @melonui-dev/cli add morphing-cyber-node",
+    codeSnippet: `const springConfig = { damping: 20, stiffness: 300, mass: 0.5 };\nconst rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), springConfig);`,
+    componentPath: "MorphingCyberNode",
   }
 ];
 
