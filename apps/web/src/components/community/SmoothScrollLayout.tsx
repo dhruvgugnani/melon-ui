@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 
 export function SmoothScrollLayout({ children }: { children: React.ReactNode }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     if (!wrapperRef.current || !contentRef.current) return;
@@ -18,19 +17,17 @@ export function SmoothScrollLayout({ children }: { children: React.ReactNode }) 
       wheelMultiplier: 1,
     });
 
-    lenis.on("scroll", ({ scroll }: { scroll: number }) => {
-      setScrollY(scroll);
-    });
-
+    let rafId: number;
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
       lenis.destroy();
+      cancelAnimationFrame(rafId);
     };
   }, []);
 
@@ -38,7 +35,6 @@ export function SmoothScrollLayout({ children }: { children: React.ReactNode }) 
     <div
       ref={wrapperRef}
       data-lenis-wrapper
-      data-scroll-y={scrollY}
       className="h-screen w-full overflow-y-auto bg-[#050505]"
     >
       <div ref={contentRef} className="min-h-full">

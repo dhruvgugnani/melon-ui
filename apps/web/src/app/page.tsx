@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import Link from "next/link";
 import { ClientHomeScene } from "@/components/scene/ClientHomeScene";
 import { SmoothCursor } from "@/components/overlay/SmoothCursor";
@@ -13,8 +13,6 @@ export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
   const slashCanvasRef = useRef<HTMLCanvasElement>(null);
   const melonContainerRef = useRef<HTMLDivElement>(null);
-  
-  const [slicedCount, setSlicedCount] = useState(0);
 
   // Staggered GSAP reveal for home page content
   useGSAP(() => {
@@ -36,22 +34,6 @@ export default function Home() {
       ease: "power2.out",
     }, "-=0.35");
   }, { scope: containerRef });
-
-  // Sliced wedges counter window updates
-  useEffect(() => {
-    const handleCount = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      const count = customEvent.detail?.count ?? 0;
-      setSlicedCount(count);
-    };
-    window.addEventListener("melon-sliced-count", handleCount);
-    return () => window.removeEventListener("melon-sliced-count", handleCount);
-  }, []);
-
-  // Dispatch regrow event
-  const handleRegrow = () => {
-    window.dispatchEvent(new Event("melon-regrow"));
-  };
 
   // Viewport drag slash trail tracker
   useEffect(() => {
@@ -77,20 +59,6 @@ export default function Home() {
       decay: number;
       color: string;
     }[] = [];
-    let startX = 0;
-    let startY = 0;
-
-    const distanceToSegment = (px: number, py: number, x1: number, y1: number, x2: number, y2: number) => {
-      const dx = x2 - x1;
-      const dy = y2 - y1;
-      const l2 = dx * dx + dy * dy;
-      if (l2 === 0) return Math.hypot(px - x1, py - y1);
-      
-      let t = ((px - x1) * dx + (py - y1) * dy) / l2;
-      t = Math.max(0, Math.min(1, t));
-      
-      return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
-    };
 
     // Animation render loop
     let animId: number;
@@ -170,9 +138,7 @@ export default function Home() {
         return;
       }
       isDrawing = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      points = [{ x: startX, y: startY }];
+      points = [{ x: e.clientX, y: e.clientY }];
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -197,35 +163,8 @@ export default function Home() {
       }
     };
 
-    const handleMouseUp = (e: MouseEvent) => {
-      if (!isDrawing) return;
+    const handleMouseUp = () => {
       isDrawing = false;
-
-      const melonContainer = melonContainerRef.current;
-      if (melonContainer && points.length >= 2) {
-        const rect = melonContainer.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const r = Math.min(rect.width, rect.height) * 0.35; // 3D collision radius
-
-        let intersected = false;
-        for (let i = 0; i < points.length - 1; i++) {
-          const p1 = points[i];
-          const p2 = points[i + 1];
-          const dist = distanceToSegment(cx, cy, p1.x, p1.y, p2.x, p2.y);
-          if (dist < r) {
-            intersected = true;
-            break;
-          }
-        }
-
-        if (intersected) {
-          const dx = e.clientX - startX;
-          const dy = e.clientY - startY;
-          const angle = Math.atan2(dy, dx);
-          window.dispatchEvent(new CustomEvent("melon-slice", { detail: { angle } }));
-        }
-      }
     };
 
     // Touch Support
@@ -235,9 +174,7 @@ export default function Home() {
         return;
       }
       isDrawing = true;
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      points = [{ x: startX, y: startY }];
+      points = [{ x: e.touches[0].clientX, y: e.touches[0].clientY }];
     };
 
     const handleTouchMove = (e: TouchEvent) => {
@@ -265,35 +202,7 @@ export default function Home() {
     };
 
     const handleTouchEnd = () => {
-      if (!isDrawing) return;
       isDrawing = false;
-
-      const melonContainer = melonContainerRef.current;
-      if (melonContainer && points.length >= 2) {
-        const rect = melonContainer.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const r = Math.min(rect.width, rect.height) * 0.35;
-
-        let intersected = false;
-        for (let i = 0; i < points.length - 1; i++) {
-          const p1 = points[i];
-          const p2 = points[i + 1];
-          const dist = distanceToSegment(cx, cy, p1.x, p1.y, p2.x, p2.y);
-          if (dist < r) {
-            intersected = true;
-            break;
-          }
-        }
-
-        if (intersected) {
-          const lastPoint = points[points.length - 1];
-          const dx = lastPoint.x - startX;
-          const dy = lastPoint.y - startY;
-          const angle = Math.atan2(dy, dx);
-          window.dispatchEvent(new CustomEvent("melon-slice", { detail: { angle } }));
-        }
-      }
     };
 
     window.addEventListener("mousedown", handleMouseDown);
@@ -377,7 +286,38 @@ export default function Home() {
           </div>
 
           <h1 className="text-8xl sm:text-[7.5rem] md:text-[10rem] xl:text-[12rem] font-black uppercase leading-[0.76] tracking-tighter text-white home-reveal-fast" style={{ fontFamily: "var(--font-londrina-solid)" }}>
-            Slice<br />
+            {/* Sliced Text Effect Container */}
+            <span className="relative inline-block group cursor-pointer select-none">
+              <span className="relative block">
+                {/* Top Half */}
+                <span 
+                  className="absolute top-0 left-0 text-white transition-transform duration-300 ease-out group-hover:translate-x-[8px] group-hover:translate-y-[-8px]"
+                  style={{
+                    clipPath: "polygon(0 0, 100% 0, 100% 58%, 0 42%)",
+                  }}
+                >
+                  Slice
+                </span>
+                {/* Bottom Half */}
+                <span 
+                  className="block text-white transition-transform duration-300 ease-out group-hover:translate-x-[-8px] group-hover:translate-y-[8px]"
+                  style={{
+                    clipPath: "polygon(0 42%, 100% 58%, 100% 100%, 0 100%)",
+                  }}
+                >
+                  Slice
+                </span>
+                {/* Neon Red/Green Cut Slash Line */}
+                <span 
+                  className="absolute left-[-10%] top-[49%] w-[120%] h-[3px] bg-[#7fff5e] opacity-0 scale-x-0 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-x-100 shadow-[0_0_12px_#7fff5e] pointer-events-none"
+                  style={{
+                    transform: "rotate(4.5deg)",
+                    transformOrigin: "center",
+                  }}
+                />
+              </span>
+            </span>
+            <br />
             The<br />
             <span className="text-[#ff5c71]">Web</span>
             <span className="text-[#7fff5e]">.</span>
@@ -390,7 +330,7 @@ export default function Home() {
           <div className="flex flex-wrap items-center gap-5 pt-4 home-reveal-slow">
             <Link 
               href="/community" 
-              className="px-10 py-5 bg-[#ff5c71] text-[#050505] font-black uppercase tracking-widest text-base cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg shadow-[#ff5c71]/25 rounded-sm" 
+              className="px-10 py-5 bg-[#ff5c71] text-[#050505] font-black uppercase tracking-widest text-base cursor-pointer hover:scale-105 active:scale-95 transition-transform duration-200 shadow-lg shadow-[#ff5c71]/25 rounded-sm" 
               style={{ fontFamily: "var(--font-londrina-solid)" }}
             >
               Explore Store
@@ -399,7 +339,7 @@ export default function Home() {
               href={GITHUB_URL} 
               target="_blank" 
               rel="noreferrer" 
-              className="px-10 py-5 bg-transparent text-white border border-white/18 hover:border-white font-black uppercase tracking-widest text-base cursor-pointer hover:scale-105 active:scale-95 transition-all duration-200 rounded-sm" 
+              className="px-10 py-5 bg-transparent text-white border border-white/18 hover:border-white font-black uppercase tracking-widest text-base cursor-pointer hover:scale-105 active:scale-95 transition-transform duration-200 rounded-sm" 
               style={{ fontFamily: "var(--font-londrina-solid)" }}
             >
               GitHub Repo
@@ -424,23 +364,10 @@ export default function Home() {
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M15 18l-6-6 6-6" />
             </svg>
-            Drag to rotate • Slash to slice Melon
+            Drag to spin • Click to bounce Melon
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M9 18l6-6-6-6" />
             </svg>
-          </div>
-
-          {/* Regrow button overlays below the scene */}
-          <div className={`absolute bottom-16 z-30 transition-all duration-300 transform ${
-            slicedCount > 0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
-          }`}>
-            <button
-              onClick={handleRegrow}
-              className="px-6 py-3 bg-[#7fff5e] text-[#050505] font-black uppercase tracking-widest text-xs rounded-sm hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg shadow-[#7fff5e]/20 cursor-pointer"
-              style={{ fontFamily: "var(--font-londrina-solid)" }}
-            >
-              Regrow Melon
-            </button>
           </div>
         </div>
 
