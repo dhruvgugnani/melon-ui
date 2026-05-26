@@ -246,6 +246,28 @@ export const componentsData: ComponentData[] = [
     cliCommand: "npx @melonui-dev/cli add morph-transition",
     codeSnippet: `const morph = () => {\n  gsap.timeline()\n    .set(overlay, { display: "block", scale: 0, opacity: 1 })\n    .to(overlay, { scale: 4, duration: 0.55, ease: "power3.in" })\n    .call(() => setPage(p => p === "A" ? "B" : "A"))\n    .to(overlay, { scale: 12, opacity: 0,\n      duration: 0.55, ease: "power3.out" })\n    .set(overlay, { display: "none" });\n};`,
     componentPath: "MorphTransition",
+  },
+  {
+    id: "solar-carousel",
+    slug: "solar-carousel",
+    title: "Solar Carousel",
+    description: "3D orbital carousel where cards rotate in a physical orbit around an interactive central gravity core with inertial drag.",
+    category: "Cards",
+    tags: ["GSAP", "3D", "Perspective"],
+    cliCommand: "npx @melonui-dev/cli add solar-carousel",
+    codeSnippet: "",
+    componentPath: "SolarCarousel",
+  },
+  {
+    id: "kinetic-magnet",
+    slug: "kinetic-magnet",
+    title: "Kinetic Magnet",
+    description: "A mechanical grid of interactive SVG lines/needles that act as magnetic nodes pointing directly at your cursor, emitting elastic spring waves on clicks.",
+    category: "Cursors",
+    tags: ["GSAP", "SVG", "Elastic"],
+    cliCommand: "npx @melonui-dev/cli add kinetic-magnet",
+    codeSnippet: "",
+    componentPath: "KineticMagnet",
   }
 ];
 

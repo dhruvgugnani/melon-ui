@@ -30,6 +30,8 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   ScrambleText: dynamic(() => import("@/components/community/demos/ScrambleText").then(m => m.ScrambleText)),
   RindWipeTransition: dynamic(() => import("@/components/community/demos/RindWipeTransition").then(m => m.RindWipeTransition)),
   MorphTransition: dynamic(() => import("@/components/community/demos/MorphTransition").then(m => m.MorphTransition)),
+  SolarCarousel: dynamic(() => import("@/components/community/demos/SolarCarousel").then(m => m.SolarCarousel)),
+  KineticMagnet: dynamic(() => import("@/components/community/demos/KineticMagnet").then(m => m.KineticMagnet)),
 };
 
 function SectionLabel({ id, label, count }: { id: string; label: string; count: string }) {

@@ -426,5 +426,47 @@
       "Clip"
     ],
     "preview": "/preview/morph-transition.png"
+  },
+  "solar-carousel": {
+    "name": "Solar Carousel",
+    "description": "3D orbital carousel where cards rotate in a physical orbit around an interactive central gravity core with inertial drag.",
+    "category": "Cards",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "solar-carousel.tsx",
+        "path": "components/solar-carousel.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "3D",
+      "Perspective"
+    ],
+    "preview": "/preview/solar-carousel.png"
+  },
+  "kinetic-magnet": {
+    "name": "Kinetic Magnet",
+    "description": "A mechanical grid of interactive SVG lines/needles that act as magnetic nodes pointing directly at your cursor, emitting elastic spring waves on clicks.",
+    "category": "Cursors",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "files": [
+      {
+        "name": "kinetic-magnet.tsx",
+        "path": "components/kinetic-magnet.tsx"
+      }
+    ],
+    "tags": [
+      "GSAP",
+      "SVG",
+      "Elastic"
+    ],
+    "preview": "/preview/kinetic-magnet.png"
   }
 }
