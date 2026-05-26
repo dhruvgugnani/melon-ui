@@ -20,6 +20,7 @@ const SECTIONS = [
       { name: "Navigations", id: "navigations" },
       { name: "Cards", id: "cards" },
       { name: "Inputs", id: "inputs" },
+      { name: "Widgets", id: "widgets" },
     ],
   },
   {
@@ -48,6 +49,7 @@ const SECTION_IDS = [
   "navigations",
   "cards",
   "inputs",
+  "widgets",
   "backgrounds",
   "cursors",
   "scroll-effects",

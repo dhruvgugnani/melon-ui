@@ -34,6 +34,7 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   MorphTransition: dynamic(() => import("@/components/community/demos/MorphTransition").then(m => m.MorphTransition)),
   SolarCarousel: dynamic(() => import("@/components/community/demos/SolarCarousel").then(m => m.SolarCarousel)),
   KineticMagnet: dynamic(() => import("@/components/community/demos/KineticMagnet").then(m => m.KineticMagnet)),
+  MorphingCyberNode: dynamic(() => import("@/components/community/demos/MorphingCyberNode").then(m => m.MorphingCyberNode)),
 };
 
 function SectionLabel({ id, label, count }: { id: string; label: string; count: string }) {
@@ -58,6 +59,7 @@ export default function CommunityPage() {
     { name: "Navigations", id: "navigations" },
     { name: "Cards", id: "cards" },
     { name: "Inputs", id: "inputs" },
+    { name: "Widgets", id: "widgets" },
     { name: "3D Backgrounds", id: "backgrounds" },
     { name: "Cursors", id: "cursors" },
     { name: "Scroll Effects", id: "scroll-effects" },

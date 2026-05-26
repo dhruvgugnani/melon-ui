@@ -52,7 +52,7 @@ export async function generateMetadata(
 
   if (!component) return {};
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://melonui.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://melonui.dev';
 
   return {
     title: `${component.title} | MelonUI Community Components`,

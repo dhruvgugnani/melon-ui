@@ -25,7 +25,7 @@ const antonFont = Anton({
   weight: "400",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://melonui.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://melonui.dev";
 
 export const viewport: Viewport = {
   themeColor: "#000000",

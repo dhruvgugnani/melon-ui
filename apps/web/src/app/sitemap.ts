@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { componentsData } from '@/data/components';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://melonui.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://melonui.dev';
 
   const componentRoutes = componentsData.map((component) => ({
     url: `${siteUrl}/community/${component.slug}`,
