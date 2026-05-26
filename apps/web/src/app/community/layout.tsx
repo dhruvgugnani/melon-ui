@@ -21,9 +21,16 @@ export default function CommunityLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#050505]">
+    <div className="flex h-screen w-full overflow-hidden bg-[#050505] relative">
+      {/* Cyber Grid & Ambient Glows */}
+      <div className="store-backdrop-container">
+        <div className="store-bg-grid" />
+        <div className="store-glow-blob store-glow-pink" />
+        <div className="store-glow-blob store-glow-green" />
+      </div>
+
       <Sidebar />
-      <main className="flex-1 overflow-hidden relative">
+      <main className="flex-1 overflow-hidden relative z-10">
         <SmoothScrollLayout>
           {children}
         </SmoothScrollLayout>

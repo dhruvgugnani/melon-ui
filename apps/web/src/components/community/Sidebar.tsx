@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 const SECTIONS = [
   {
@@ -55,6 +57,34 @@ const SECTION_IDS = [
 
 export function Sidebar() {
   const [activeId, setActiveId] = useState("getting-started");
+  const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({
+    opacity: 0,
+    transform: "translateY(0px)",
+    height: "0px",
+    width: "0px",
+    left: "0px",
+  });
+
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  // GSAP Entrance Animations
+  useGSAP(() => {
+    gsap.from(".sidebar-logo", {
+      opacity: 0,
+      y: -10,
+      duration: 0.5,
+      ease: "power2.out",
+    });
+
+    gsap.from(".sidebar-section", {
+      opacity: 0,
+      x: -20,
+      stagger: 0.08,
+      duration: 0.6,
+      ease: "power2.out",
+      delay: 0.1,
+    });
+  }, { scope: sidebarRef });
 
   useEffect(() => {
     // Use IntersectionObserver on the lenis wrapper's content
@@ -63,10 +93,8 @@ export function Sidebar() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Find the topmost intersecting entry
         const visible = entries.filter((e) => e.isIntersecting);
         if (visible.length > 0) {
-          // Pick the one closest to the top of the viewport
           const topmost = visible.reduce((prev, curr) =>
             prev.boundingClientRect.top < curr.boundingClientRect.top ? prev : curr
           );
@@ -88,12 +116,34 @@ export function Sidebar() {
     return () => observer.disconnect();
   }, []);
 
+  // Sliding Indicator update
+  useEffect(() => {
+    const activeBtn = document.querySelector(`[data-section-id="${activeId}"]`) as HTMLElement | null;
+    const scrollContainer = document.querySelector("[data-sidebar-scroll]") as HTMLElement | null;
+
+    if (activeBtn && scrollContainer) {
+      const top = activeBtn.offsetTop;
+      const height = activeBtn.offsetHeight;
+      const width = activeBtn.offsetWidth;
+      const left = activeBtn.offsetLeft;
+
+      setIndicatorStyle({
+        opacity: 1,
+        transform: `translateY(${top}px)`,
+        left: `${left}px`,
+        width: `${width}px`,
+        height: `${height}px`,
+      });
+    } else {
+      setIndicatorStyle((prev) => ({ ...prev, opacity: 0 }));
+    }
+  }, [activeId]);
+
   const scrollToSection = (id: string) => {
     const wrapper = document.querySelector("[data-lenis-wrapper]") as HTMLElement | null;
     const el = document.getElementById(id);
     if (!wrapper || !el) return;
 
-    // Get offset relative to the scroll container's content
     const contentEl = wrapper.firstElementChild as HTMLElement | null;
     if (!contentEl) return;
 
@@ -106,9 +156,9 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-60 shrink-0 border-r border-[#ff5c71]/10 bg-[#050505] min-h-full flex-col hidden lg:flex">
+    <aside ref={sidebarRef} className="w-60 shrink-0 border-r border-[#ff5c71]/10 bg-[#050505] min-h-full flex-col hidden lg:flex relative z-20">
       {/* Logo */}
-      <div className="p-5 border-b border-[#ff5c71]/10">
+      <div className="p-5 border-b border-[#ff5c71]/10 sidebar-logo">
         <Link href="/" className="block group">
           <span
             className="font-black text-xl uppercase tracking-tighter text-[#f4f4f4] group-hover:text-[#ff5c71] transition-colors"
@@ -127,9 +177,21 @@ export function Sidebar() {
       </div>
 
       {/* Nav tree */}
-      <div className="flex-1 overflow-y-auto py-5 flex flex-col gap-5">
+      <div 
+        data-sidebar-scroll
+        className="flex-1 overflow-y-auto py-5 flex flex-col gap-5 relative"
+      >
+        {/* Dynamic Sliding Pill Indicator */}
+        <div
+          style={{
+            ...indicatorStyle,
+            transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease",
+          }}
+          className="absolute bg-[#ff5c71]/8 rounded-sm pointer-events-none z-0"
+        />
+
         {SECTIONS.map((category) => (
-          <div key={category.name} className="px-5">
+          <div key={category.name} className="px-5 sidebar-section relative z-10">
             <h3 className="font-mono text-[9px] text-[#333] uppercase tracking-[0.25em] mb-2.5 pb-1.5 border-b border-[#111]">
               {category.name}
             </h3>
@@ -139,26 +201,23 @@ export function Sidebar() {
                 return (
                   <li key={item.name}>
                     <button
+                      data-section-id={item.id}
                       onClick={() => scrollToSection(item.id)}
-                      className={`group w-full text-left flex items-center gap-2.5 py-1.5 px-2 rounded-sm font-mono text-[12px] transition-all ${
+                      className={`group w-full text-left flex items-center gap-2.5 py-1.5 px-2 rounded-sm font-mono text-[12px] transition-all duration-300 relative z-10 hover:translate-x-1 ${
                         isActive
-                          ? "text-[#ff5c71] bg-[#ff5c71]/6"
+                          ? "text-[#ff5c71] font-bold"
                           : "text-[#555] hover:text-[#aaa]"
                       }`}
                     >
                       {/* Active indicator dot */}
                       <span
-                        className={`w-1 h-1 rounded-full shrink-0 transition-all duration-300 ${
+                        className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all duration-300 ${
                           isActive
                             ? "bg-[#ff5c71] scale-125"
-                            : "bg-[#333] group-hover:bg-[#555]"
+                            : "bg-[#333] group-hover:bg-[#555] group-hover:scale-110"
                         }`}
                       />
                       {item.name}
-                      {/* Active indicator bar on right */}
-                      {isActive && (
-                        <span className="ml-auto w-0.5 h-3 bg-[#ff5c71] rounded-full" />
-                      )}
                     </button>
                   </li>
                 );
@@ -169,7 +228,7 @@ export function Sidebar() {
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-[#ff5c71]/10">
+      <div className="p-4 border-t border-[#ff5c71]/10 relative z-10">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#7fff5e] animate-pulse" />
           <span className="font-mono text-[9px] text-[#333] uppercase tracking-widest">All systems online</span>

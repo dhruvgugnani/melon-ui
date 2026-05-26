@@ -170,6 +170,11 @@ Please write a premium, responsive React page component in Next.js that:
 
       {/* Main Container */}
       <div className="relative border border-[#ff5c71]/15 bg-[#080808] overflow-hidden">
+        {/* Cyber Corner Brackets */}
+        <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-2 border-l-2 border-[#ff5c71]/35 pointer-events-none z-10" />
+        <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t-2 border-r-2 border-[#ff5c71]/35 pointer-events-none z-10" />
+        <div className="absolute bottom-0 left-0 w-2.5 h-2.5 border-b-2 border-l-2 border-[#ff5c71]/35 pointer-events-none z-10" />
+        <div className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b-2 border-r-2 border-[#ff5c71]/35 pointer-events-none z-10" />
         {/* Navigation Toolbar */}
         <nav
           aria-label={`${title} component toolbar`}
@@ -180,7 +185,7 @@ Please write a premium, responsive React page component in Next.js that:
               role="tab"
               aria-selected={activeTab === "preview"}
               onClick={() => setActiveTab("preview")}
-              className={`px-3 py-1 font-mono text-xs uppercase tracking-widest transition-colors cursor-pointer ${
+              className={`px-3 py-1 font-mono text-xs uppercase tracking-widest transition-all duration-200 cursor-pointer active:scale-95 hover:scale-[1.02] ${
                 activeTab === "preview"
                   ? "bg-[#ff5c71] text-[#050505] font-bold"
                   : "text-[#555] hover:text-[#f4f4f4]"
@@ -192,7 +197,7 @@ Please write a premium, responsive React page component in Next.js that:
               role="tab"
               aria-selected={activeTab === "installation"}
               onClick={() => setActiveTab("installation")}
-              className={`px-3 py-1 font-mono text-xs uppercase tracking-widest transition-colors cursor-pointer ${
+              className={`px-3 py-1 font-mono text-xs uppercase tracking-widest transition-all duration-200 cursor-pointer active:scale-95 hover:scale-[1.02] ${
                 activeTab === "installation"
                   ? "bg-[#ff5c71] text-[#050505] font-bold"
                   : "text-[#555] hover:text-[#f4f4f4]"
@@ -215,7 +220,7 @@ Please write a premium, responsive React page component in Next.js that:
             {activeTab === "preview" && (
               <button
                 onClick={() => setPreviewTheme(t => t === "dark" ? "light" : "dark")}
-                className="p-1 border border-[#ff5c71]/15 hover:border-[#ff5c71] rounded bg-[#0d0d0f] text-[#555] hover:text-[#ff5c71] transition-all cursor-pointer flex items-center justify-center w-6 h-6 z-10"
+                className="p-1 border border-[#ff5c71]/15 hover:border-[#ff5c71] rounded bg-[#0d0d0f] text-[#555] hover:text-[#ff5c71] transition-all cursor-pointer flex items-center justify-center w-6 h-6 z-10 active:scale-90 hover:scale-105 duration-200"
                 aria-label="Toggle Local Preview Theme"
               >
                 {previewTheme === "dark" ? (
@@ -272,7 +277,7 @@ Please write a premium, responsive React page component in Next.js that:
               <div className="flex bg-[#0a0a0a] border border-[#1a1a1a] p-1 rounded-[6px]">
                 <button
                   onClick={() => setInstallMethod("cli")}
-                  className={`px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-all rounded-[4px] cursor-pointer ${
+                  className={`px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-all rounded-[4px] cursor-pointer active:scale-95 hover:scale-[1.02] ${
                     installMethod === "cli"
                       ? "bg-[#ff5c71] text-[#050505] font-bold"
                       : "text-[#555] hover:text-[#ccc]"
@@ -282,7 +287,7 @@ Please write a premium, responsive React page component in Next.js that:
                 </button>
                 <button
                   onClick={() => setInstallMethod("manual")}
-                  className={`px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-all rounded-[4px] cursor-pointer ${
+                  className={`px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-all rounded-[4px] cursor-pointer active:scale-95 hover:scale-[1.02] ${
                     installMethod === "manual"
                       ? "bg-[#ff5c71] text-[#050505] font-bold"
                       : "text-[#555] hover:text-[#ccc]"
@@ -305,7 +310,7 @@ Please write a premium, responsive React page component in Next.js that:
                     <span className="text-[#7fff5e] select-all">$ {resolvedCliCommand}</span>
                     <button
                       onClick={() => handleCopy(resolvedCliCommand, setCopiedCli)}
-                      className="px-3 py-1.5 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer"
+                      className="px-3 py-1.5 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all duration-200 border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer active:scale-95 hover:scale-[1.02]"
                     >
                       {copiedCli ? "Copied!" : "Copy"}
                     </button>
@@ -320,7 +325,7 @@ Please write a premium, responsive React page component in Next.js that:
                     </span>
                     <button
                       onClick={() => handleCopy(resolvedUsageCode, setCopiedUsage)}
-                      className="px-3 py-1 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer"
+                      className="px-3 py-1 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all duration-200 border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer active:scale-95 hover:scale-[1.02]"
                     >
                       {copiedUsage ? "Copied Code" : "Copy Code"}
                     </button>
@@ -349,7 +354,7 @@ Please write a premium, responsive React page component in Next.js that:
                     <span className="text-[#7fff5e] select-all">$ {installDepsCommand}</span>
                     <button
                       onClick={() => handleCopy(installDepsCommand, setCopiedDeps)}
-                      className="px-3 py-1.5 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer"
+                      className="px-3 py-1.5 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all duration-200 border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer active:scale-95 hover:scale-[1.02]"
                     >
                       {copiedDeps ? "Copied!" : "Copy"}
                     </button>
@@ -364,7 +369,7 @@ Please write a premium, responsive React page component in Next.js that:
                     </span>
                     <button
                       onClick={() => handleCopy(codeSnippet, setCopiedSource)}
-                      className="px-3 py-1 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer"
+                      className="px-3 py-1 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all duration-200 border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer active:scale-95 hover:scale-[1.02]"
                     >
                       {copiedSource ? "Source Copied!" : "Copy Source Code"}
                     </button>
@@ -390,7 +395,7 @@ Please write a premium, responsive React page component in Next.js that:
                 </h4>
                 <button
                   onClick={() => handleCopy(resolvedAiPrompt, setCopiedPrompt)}
-                  className="px-3 py-1 bg-[#111] hover:bg-[#7fff5e] text-[#555] hover:text-[#050505] transition-all border border-[#1a1a1a] hover:border-[#7fff5e] font-mono text-[10px] uppercase tracking-wider cursor-pointer"
+                  className="px-3 py-1 bg-[#111] hover:bg-[#7fff5e] text-[#555] hover:text-[#050505] transition-all duration-200 border border-[#1a1a1a] hover:border-[#7fff5e] font-mono text-[10px] uppercase tracking-wider cursor-pointer active:scale-95 hover:scale-[1.02]"
                 >
                   {copiedPrompt ? "Prompt Copied!" : "Copy AI Prompt"}
                 </button>

@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import Link from "next/link";
 import { getComponentsByCategory } from "@/data/components";
 import { ComponentShowcase } from "@/components/community/ComponentShowcase";
-
 import dynamic from "next/dynamic";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 // Dynamically import all components
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,6 +50,8 @@ function SectionLabel({ id, label, count }: { id: string; label: string; count: 
 
 export default function CommunityPage() {
   const categories = getComponentsByCategory();
+  const pageRef = useRef<HTMLDivElement>(null);
+
   const categoryOrder = [
     { name: "Getting Started", id: "getting-started" },
     { name: "Buttons", id: "buttons" },
@@ -62,29 +65,58 @@ export default function CommunityPage() {
     { name: "Page Transitions", id: "gsap-transit" }
   ];
 
+  // Staggered Entrance Reveal Sequence
+  useGSAP(() => {
+    const tl = gsap.timeline();
+
+    tl.from(".hero-reveal", {
+      y: 40,
+      opacity: 0,
+      stagger: 0.1,
+      duration: 0.7,
+      ease: "power3.out",
+    });
+
+    tl.from(".hero-element", {
+      y: 20,
+      opacity: 0,
+      stagger: 0.08,
+      duration: 0.6,
+      ease: "power2.out",
+    }, "-=0.4");
+
+    tl.from(".catalog-section", {
+      y: 35,
+      opacity: 0,
+      stagger: 0.12,
+      duration: 0.7,
+      ease: "power2.out",
+    }, "-=0.3");
+  }, { scope: pageRef });
+
   return (
-    <main className="min-h-screen bg-[#050505] selection:bg-[#ff5c71] selection:text-[#050505] px-6 md:px-10 lg:px-14 pb-32">
+    <div ref={pageRef} className="min-h-screen bg-transparent selection:bg-[#ff5c71] selection:text-[#050505] px-6 md:px-10 lg:px-14 pb-32 relative z-10">
 
       {/* ── Hero ── */}
       <header className="pt-14 pb-20 flex justify-between items-start w-full">
         <div className="max-w-4xl">
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center gap-3 mb-6 hero-reveal">
             <span className="font-mono text-[10px] text-[#333] uppercase tracking-[0.25em]">MelonUI</span>
             <span className="h-px w-8 bg-[#1a1a1a]" />
             <span className="font-mono text-[10px] text-[#ff5c71] uppercase tracking-[0.25em]">Community Store</span>
           </div>
-          <h1 className="text-6xl md:text-9xl font-black uppercase leading-[0.85] tracking-tighter text-[#f4f4f4] mb-8"
+          <h1 className="text-6xl md:text-9xl font-black uppercase leading-[0.85] tracking-tighter text-[#f4f4f4] mb-8 hero-reveal"
             style={{ fontFamily: "var(--font-londrina-solid)" }}>
             Build<br />
             <span className="text-[#ff5c71]">Different</span>
             <span className="text-[#7fff5e]">.</span>
           </h1>
-          <p className="font-mono text-[#555] text-sm max-w-xl leading-relaxed">
+          <p className="font-mono text-[#555] text-sm max-w-xl leading-relaxed hero-element">
             Hand-crafted, GSAP-powered, Three.js-infused components.
             Copy. Paste. Ship. No accounts. No subscriptions.
           </p>
-          <div className="flex items-center gap-4 mt-10">
-            <button className="px-6 py-3 bg-[#ff5c71] text-[#050505] font-black uppercase tracking-widest text-sm"
+          <div className="flex items-center gap-4 mt-10 hero-element">
+            <button className="px-6 py-3 bg-[#ff5c71] text-[#050505] font-black uppercase tracking-widest text-sm cursor-pointer hover:scale-105 active:scale-95 transition-transform"
               style={{ fontFamily: "var(--font-anton)" }}>
               Submit Component
             </button>
@@ -93,7 +125,6 @@ export default function CommunityPage() {
             </Link>
           </div>
         </div>
-
       </header>
 
       {/* ── DYNAMIC CATEGORIES ── */}
@@ -102,7 +133,7 @@ export default function CommunityPage() {
         if (!catComponents) return null;
 
         return (
-          <section key={cat.id} aria-labelledby={cat.id}>
+          <section key={cat.id} aria-labelledby={cat.id} className="catalog-section">
             <SectionLabel id={cat.id} label={cat.name} count={`0${index}`} />
             {catComponents.map(comp => {
               const ComponentToRender = componentsMap[comp.componentPath];
@@ -123,7 +154,6 @@ export default function CommunityPage() {
           </section>
         );
       })}
-
-    </main>
+    </div>
   );
 }
