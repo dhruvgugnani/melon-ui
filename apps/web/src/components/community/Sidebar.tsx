@@ -187,11 +187,11 @@ export function Sidebar() {
             ...indicatorStyle,
             transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease",
           }}
-          className="absolute bg-[#ff5c71]/8 rounded-sm pointer-events-none z-0"
+          className="absolute bg-[#ff5c71]/12 border-l-2 border-[#ff5c71] rounded-r-sm pointer-events-none z-0"
         />
 
         {SECTIONS.map((category) => (
-          <div key={category.name} className="px-5 sidebar-section relative z-10">
+          <div key={category.name} className="px-5 sidebar-section">
             <h3 className="font-mono text-[9px] text-[#333] uppercase tracking-[0.25em] mb-2.5 pb-1.5 border-b border-[#111]">
               {category.name}
             </h3>

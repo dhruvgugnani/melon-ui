@@ -326,9 +326,10 @@ h3, h4, h5, h6 {
   position: absolute;
   inset: 0;
   background-image: 
-    linear-gradient(rgba(255, 92, 113, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 92, 113, 0.015) 1px, transparent 1px);
-  background-size: 50px 50px;
+    radial-gradient(circle at 50% 30%, transparent 20%, #050505 85%),
+    linear-gradient(rgba(255, 92, 113, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 92, 113, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 50px 50px, 50px 50px;
   background-position: center;
 }
 
@@ -341,7 +342,7 @@ h3, h4, h5, h6 {
   height: 250px;
   background: linear-gradient(
     rgba(255, 92, 113, 0),
-    rgba(255, 92, 113, 0.02) 50%,
+    rgba(255, 92, 113, 0.06) 50%,
     rgba(255, 92, 113, 0)
   );
   animation: scan-sweep 16s infinite linear;
@@ -359,25 +360,25 @@ h3, h4, h5, h6 {
 
 .store-glow-blob {
   position: absolute;
-  width: 700px;
-  height: 700px;
+  width: 800px;
+  height: 800px;
   border-radius: 50%;
-  filter: blur(140px);
+  filter: blur(150px);
   mix-blend-mode: screen;
   pointer-events: none;
 }
 
 .store-glow-pink {
-  background: radial-gradient(circle, rgba(255, 92, 113, 0.04) 0%, transparent 70%);
-  top: -200px;
-  right: -100px;
+  background: radial-gradient(circle, rgba(255, 92, 113, 0.18) 0%, transparent 70%);
+  top: -250px;
+  right: -50px;
   animation: pulse-glow-pink 20s infinite ease-in-out alternate;
 }
 
 .store-glow-green {
-  background: radial-gradient(circle, rgba(127, 255, 94, 0.035) 0%, transparent 70%);
-  bottom: -200px;
-  left: -200px;
+  background: radial-gradient(circle, rgba(127, 255, 94, 0.14) 0%, transparent 70%);
+  bottom: -250px;
+  left: -150px;
   animation: pulse-glow-green 25s infinite ease-in-out alternate;
 }
 
@@ -387,11 +388,11 @@ h3, h4, h5, h6 {
     opacity: 0.8;
   }
   50% {
-    transform: translate(-50px, 60px) scale(1.2);
+    transform: translate(-60px, 80px) scale(1.25);
     opacity: 1.2;
   }
   100% {
-    transform: translate(30px, -40px) scale(0.95);
+    transform: translate(40px, -50px) scale(0.9);
     opacity: 0.8;
   }
 }
@@ -402,12 +403,22 @@ h3, h4, h5, h6 {
     opacity: 0.8;
   }
   50% {
-    transform: translate(60px, -50px) scale(0.9);
-    opacity: 1.1;
+    transform: translate(80px, -60px) scale(0.9);
+    opacity: 1.2;
   }
   100% {
-    transform: translate(-30px, 30px) scale(1.15);
+    transform: translate(-40px, 40px) scale(1.2);
     opacity: 0.8;
   }
+}
+
+/* Dynamic Showcase Cards Glow Hover */
+.store-card-glow {
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.store-card-glow:hover {
+  border-color: rgba(255, 92, 113, 0.38) !important;
+  box-shadow: 0 0 40px rgba(255, 92, 113, 0.08);
 }
 

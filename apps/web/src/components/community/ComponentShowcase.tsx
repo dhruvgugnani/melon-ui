@@ -169,7 +169,7 @@ Please write a premium, responsive React page component in Next.js that:
       </header>
 
       {/* Main Container */}
-      <div className="relative border border-[#ff5c71]/15 bg-[#080808] overflow-hidden">
+      <div className="relative border border-[#ff5c71]/15 bg-[#080808] overflow-hidden store-card-glow">
         {/* Cyber Corner Brackets */}
         <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-2 border-l-2 border-[#ff5c71]/35 pointer-events-none z-10" />
         <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t-2 border-r-2 border-[#ff5c71]/35 pointer-events-none z-10" />
