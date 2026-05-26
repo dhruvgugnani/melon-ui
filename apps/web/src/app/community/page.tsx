@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { getComponentsByCategory } from "@/data/components";
 import { ComponentShowcase } from "@/components/community/ComponentShowcase";
+import { ThemeToggle } from "@/components/community/ThemeToggle";
 import dynamic from "next/dynamic";
 
 // Dynamically import all components
@@ -65,30 +66,35 @@ export default function CommunityPage() {
     <main className="min-h-screen bg-[#050505] selection:bg-[#ff5c71] selection:text-[#050505] px-6 md:px-10 lg:px-14 pb-32">
 
       {/* ── Hero ── */}
-      <header className="pt-14 pb-20 max-w-4xl">
-        <div className="flex items-center gap-3 mb-6">
-          <span className="font-mono text-[10px] text-[#333] uppercase tracking-[0.25em]">MelonUI</span>
-          <span className="h-px w-8 bg-[#1a1a1a]" />
-          <span className="font-mono text-[10px] text-[#ff5c71] uppercase tracking-[0.25em]">Community Store</span>
+      <header className="pt-14 pb-20 flex justify-between items-start w-full">
+        <div className="max-w-4xl">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="font-mono text-[10px] text-[#333] uppercase tracking-[0.25em]">MelonUI</span>
+            <span className="h-px w-8 bg-[#1a1a1a]" />
+            <span className="font-mono text-[10px] text-[#ff5c71] uppercase tracking-[0.25em]">Community Store</span>
+          </div>
+          <h1 className="text-6xl md:text-9xl font-black uppercase leading-[0.85] tracking-tighter text-[#f4f4f4] mb-8"
+            style={{ fontFamily: "var(--font-londrina-solid)" }}>
+            Build<br />
+            <span className="text-[#ff5c71]">Different</span>
+            <span className="text-[#7fff5e]">.</span>
+          </h1>
+          <p className="font-mono text-[#555] text-sm max-w-xl leading-relaxed">
+            Hand-crafted, GSAP-powered, Three.js-infused components.
+            Copy. Paste. Ship. No accounts. No subscriptions.
+          </p>
+          <div className="flex items-center gap-4 mt-10">
+            <button className="px-6 py-3 bg-[#ff5c71] text-[#050505] font-black uppercase tracking-widest text-sm"
+              style={{ fontFamily: "var(--font-anton)" }}>
+              Submit Component
+            </button>
+            <Link href="/" className="font-mono text-xs text-[#333] hover:text-[#f4f4f4] transition-colors uppercase tracking-widest">
+              ← Home
+            </Link>
+          </div>
         </div>
-        <h1 className="text-6xl md:text-9xl font-black uppercase leading-[0.85] tracking-tighter text-[#f4f4f4] mb-8"
-          style={{ fontFamily: "var(--font-londrina-solid)" }}>
-          Build<br />
-          <span className="text-[#ff5c71]">Different</span>
-          <span className="text-[#7fff5e]">.</span>
-        </h1>
-        <p className="font-mono text-[#555] text-sm max-w-xl leading-relaxed">
-          Hand-crafted, GSAP-powered, Three.js-infused components.
-          Copy. Paste. Ship. No accounts. No subscriptions.
-        </p>
-        <div className="flex items-center gap-4 mt-10">
-          <button className="px-6 py-3 bg-[#ff5c71] text-[#050505] font-black uppercase tracking-widest text-sm"
-            style={{ fontFamily: "var(--font-anton)" }}>
-            Submit Component
-          </button>
-          <Link href="/" className="font-mono text-xs text-[#333] hover:text-[#f4f4f4] transition-colors uppercase tracking-widest">
-            ← Home
-          </Link>
+        <div className="shrink-0 pt-2 z-10">
+          <ThemeToggle />
         </div>
       </header>
 

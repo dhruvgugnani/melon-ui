@@ -13,6 +13,12 @@
   --accent: #ff5c71;
 }
 
+.light, .light * {
+  --background: #f7f7f9;
+  --foreground: #0f0f11;
+  --border-color: #e2e2e7;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -26,6 +32,7 @@ html, body {
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
 /* Removed fixed border from body, now handled by Frame component */

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { componentsData, getComponentBySlug } from '@/data/components';
 import { ComponentShowcase } from '@/components/community/ComponentShowcase';
+import { ThemeToggle } from '@/components/community/ThemeToggle';
 import dynamic from 'next/dynamic';
 import React from 'react';
 import fs from 'fs';
@@ -133,22 +134,27 @@ export default async function ComponentPage(props: { params: Promise<{ slug: str
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <header className="max-w-4xl mb-16">
-        <nav aria-label="Breadcrumb" className="flex items-center gap-3 mb-6">
-          <Link href="/community" className="font-mono text-[10px] text-[#333] hover:text-[#f4f4f4] transition-colors uppercase tracking-[0.25em]">
-            Community
-          </Link>
-          <span className="text-[#333] text-xs">/</span>
-          <span className="font-mono text-[10px] text-[#ff5c71] uppercase tracking-[0.25em]">{component.category}</span>
-        </nav>
+      <header className="flex justify-between items-start w-full mb-16">
+        <div className="max-w-4xl">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-3 mb-6">
+            <Link href="/community" className="font-mono text-[10px] text-[#333] hover:text-[#f4f4f4] transition-colors uppercase tracking-[0.25em]">
+              Community
+            </Link>
+            <span className="text-[#333] text-xs">/</span>
+            <span className="font-mono text-[10px] text-[#ff5c71] uppercase tracking-[0.25em]">{component.category}</span>
+          </nav>
 
-        <h1 className="text-5xl md:text-8xl font-black uppercase leading-[0.85] tracking-tighter text-[#f4f4f4] mb-6"
-          style={{ fontFamily: "var(--font-londrina-solid)" }}>
-          {component.title}
-        </h1>
-        <p className="font-mono text-[#777] text-sm max-w-2xl leading-relaxed mb-8">
-          {component.description}
-        </p>
+          <h1 className="text-5xl md:text-8xl font-black uppercase leading-[0.85] tracking-tighter text-[#f4f4f4] mb-6"
+            style={{ fontFamily: "var(--font-londrina-solid)" }}>
+            {component.title}
+          </h1>
+          <p className="font-mono text-[#777] text-sm max-w-2xl leading-relaxed mb-8">
+            {component.description}
+          </p>
+        </div>
+        <div className="shrink-0 pt-16 z-10">
+          <ThemeToggle />
+        </div>
       </header>
 
       <section aria-labelledby="showcase-heading" className="mb-24">
