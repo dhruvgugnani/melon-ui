@@ -36,6 +36,7 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   SolarCarousel: dynamic(() => import('@/components/community/demos/SolarCarousel').then(m => m.SolarCarousel)),
   KineticMagnet: dynamic(() => import('@/components/community/demos/KineticMagnet').then(m => m.KineticMagnet)),
   MorphingCyberNode: dynamic(() => import('@/components/community/demos/MorphingCyberNode').then(m => m.MorphingCyberNode)),
+  OrbitalCommandRing: dynamic(() => import('@/components/community/demos/OrbitalCommandRing').then(m => m.OrbitalCommandRing)),
 };
 
 export async function generateStaticParams() {
