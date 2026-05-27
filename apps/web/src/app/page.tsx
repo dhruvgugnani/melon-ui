@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ClientHomeScene } from "@/components/scene/ClientHomeScene";
-import { SmoothCursor } from "@/components/overlay/SmoothCursor";
+
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
@@ -13,6 +13,8 @@ export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
   const slashCanvasRef = useRef<HTMLCanvasElement>(null);
   const melonContainerRef = useRef<HTMLDivElement>(null);
+  
+  const [slicedCount, setSlicedCount] = useState(0);
 
   // Staggered GSAP reveal for home page content
   useGSAP(() => {
@@ -35,7 +37,22 @@ export default function Home() {
     }, "-=0.35");
   }, { scope: containerRef });
 
-  // Viewport drag slash trail tracker
+  // Sliced counter listener
+  useEffect(() => {
+    const handleCount = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const count = customEvent.detail?.count ?? 0;
+      setSlicedCount(count);
+    };
+    window.addEventListener("melon-sliced-count", handleCount);
+    return () => window.removeEventListener("melon-sliced-count", handleCount);
+  }, []);
+
+  const handleRegrow = () => {
+    window.dispatchEvent(new Event("melon-regrow"));
+  };
+
+  // Viewport drag slash trail tracker (Fruit Ninja style sword trail)
   useEffect(() => {
     const canvas = slashCanvasRef.current;
     if (!canvas) return;
@@ -59,6 +76,20 @@ export default function Home() {
       decay: number;
       color: string;
     }[] = [];
+    let startX = 0;
+    let startY = 0;
+
+    const distanceToSegment = (px: number, py: number, x1: number, y1: number, x2: number, y2: number) => {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const l2 = dx * dx + dy * dy;
+      if (l2 === 0) return Math.hypot(px - x1, py - y1);
+      
+      let t = ((px - x1) * dx + (py - y1) * dy) / l2;
+      t = Math.max(0, Math.min(1, t));
+      
+      return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+    };
 
     // Animation render loop
     let animId: number;
@@ -67,16 +98,17 @@ export default function Home() {
       if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 1. Decay slash trail points
+        // 1. Rapid decay for sharp blade trail
         if (points.length > 0) {
           points.shift();
+          if (points.length > 0) points.shift(); // shift twice for double-fast fade
         }
 
         // 2. Update and draw 2D juice particles
         juiceParticles = juiceParticles.filter((p) => {
           p.x += p.vx;
           p.y += p.vy;
-          p.vy += 0.22; // gravity pull
+          p.vy += 0.25; // gravity pull
           p.alpha -= p.decay; // fade
 
           if (p.alpha <= 0) return false;
@@ -96,14 +128,14 @@ export default function Home() {
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
 
-          // Outer Glow Layer
+          // Outer Glow Layer (Vibrant Red)
           for (let i = 1; i < points.length; i++) {
             const ratio = i / points.length;
             ctx.save();
-            ctx.shadowBlur = 18;
+            ctx.shadowBlur = 15;
             ctx.shadowColor = "#ff5c71";
-            ctx.strokeStyle = `rgba(255, 92, 113, ${ratio})`;
-            ctx.lineWidth = 1 + ratio * 10; // Tapers to 11px
+            ctx.strokeStyle = `rgba(255, 92, 113, ${ratio * 0.95})`;
+            ctx.lineWidth = 1 + ratio * 8; // Sharp taper to 9px
             
             ctx.beginPath();
             ctx.moveTo(points[i - 1].x, points[i - 1].y);
@@ -112,12 +144,12 @@ export default function Home() {
             ctx.restore();
           }
 
-          // Hot Inner Core Layer
+          // Hot Inner Core Layer (White)
           ctx.shadowBlur = 0;
           for (let i = 1; i < points.length; i++) {
             const ratio = i / points.length;
-            ctx.strokeStyle = `rgba(255, 255, 255, ${ratio})`;
-            ctx.lineWidth = 0.5 + ratio * 3.0; // Tapers to 3.5px
+            ctx.strokeStyle = `rgba(255, 255, 255, ${ratio * 0.98})`;
+            ctx.lineWidth = 0.5 + ratio * 2.5; // Tapers to 3px
 
             ctx.beginPath();
             ctx.moveTo(points[i - 1].x, points[i - 1].y);
@@ -133,18 +165,20 @@ export default function Home() {
 
     const handleMouseDown = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      // Skip drawing if clicking a button or anchor
+      // Skip drawing if clicking an interactive element
       if (target.tagName === "BUTTON" || target.closest("button") || target.tagName === "A" || target.closest("a")) {
         return;
       }
       isDrawing = true;
-      points = [{ x: e.clientX, y: e.clientY }];
+      startX = e.clientX;
+      startY = e.clientY;
+      points = [{ x: startX, y: startY }];
     };
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDrawing) return;
       points.push({ x: e.clientX, y: e.clientY });
-      if (points.length > 15) {
+      if (points.length > 12) {
         points.shift();
       }
 
@@ -153,18 +187,45 @@ export default function Home() {
         juiceParticles.push({
           x: e.clientX,
           y: e.clientY,
-          vx: (Math.random() - 0.5) * 6,
-          vy: (Math.random() - 0.5) * 6 - 2.0, // upward spray
-          radius: 1.5 + Math.random() * 3.5,
+          vx: (Math.random() - 0.5) * 5,
+          vy: (Math.random() - 0.5) * 5 - 2.5,
+          radius: 1.2 + Math.random() * 3.0,
           alpha: 1.0,
-          decay: 0.02 + Math.random() * 0.03,
-          color: Math.random() > 0.25 ? "#ff5c71" : "#7fff5e",
+          decay: 0.025 + Math.random() * 0.035,
+          color: Math.random() > 0.2 ? "#ff5c71" : "#7fff5e",
         });
       }
     };
 
-    const handleMouseUp = () => {
+    const handleMouseUp = (e: MouseEvent) => {
+      if (!isDrawing) return;
       isDrawing = false;
+
+      // Slice collision detection (centered in screen)
+      if (points.length >= 2) {
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        // Collision radius adapts to viewport
+        const r = Math.min(window.innerWidth, window.innerHeight) * 0.16;
+
+        let intersected = false;
+        for (let i = 0; i < points.length - 1; i++) {
+          const p1 = points[i];
+          const p2 = points[i + 1];
+          const dist = distanceToSegment(cx, cy, p1.x, p1.y, p2.x, p2.y);
+          if (dist < r) {
+            intersected = true;
+            break;
+          }
+        }
+
+        if (intersected) {
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          const angle = Math.atan2(dy, dx);
+          window.dispatchEvent(new CustomEvent("melon-slice", { detail: { angle } }));
+        }
+      }
     };
 
     // Touch Support
@@ -174,7 +235,9 @@ export default function Home() {
         return;
       }
       isDrawing = true;
-      points = [{ x: e.touches[0].clientX, y: e.touches[0].clientY }];
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      points = [{ x: startX, y: startY }];
     };
 
     const handleTouchMove = (e: TouchEvent) => {
@@ -182,27 +245,52 @@ export default function Home() {
       const tx = e.touches[0].clientX;
       const ty = e.touches[0].clientY;
       points.push({ x: tx, y: ty });
-      if (points.length > 15) {
+      if (points.length > 12) {
         points.shift();
       }
 
-      // Spawn 2D juice droplets along the touch trail
       for (let i = 0; i < 3; i++) {
         juiceParticles.push({
           x: tx,
           y: ty,
-          vx: (Math.random() - 0.5) * 6,
-          vy: (Math.random() - 0.5) * 6 - 2.0,
-          radius: 1.5 + Math.random() * 3.5,
+          vx: (Math.random() - 0.5) * 5,
+          vy: (Math.random() - 0.5) * 5 - 2.5,
+          radius: 1.2 + Math.random() * 3.0,
           alpha: 1.0,
-          decay: 0.02 + Math.random() * 0.03,
-          color: Math.random() > 0.25 ? "#ff5c71" : "#7fff5e",
+          decay: 0.025 + Math.random() * 0.035,
+          color: Math.random() > 0.2 ? "#ff5c71" : "#7fff5e",
         });
       }
     };
 
     const handleTouchEnd = () => {
+      if (!isDrawing) return;
       isDrawing = false;
+
+      if (points.length >= 2) {
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        const r = Math.min(window.innerWidth, window.innerHeight) * 0.16;
+
+        let intersected = false;
+        for (let i = 0; i < points.length - 1; i++) {
+          const p1 = points[i];
+          const p2 = points[i + 1];
+          const dist = distanceToSegment(cx, cy, p1.x, p1.y, p2.x, p2.y);
+          if (dist < r) {
+            intersected = true;
+            break;
+          }
+        }
+
+        if (intersected) {
+          const lastPoint = points[points.length - 1];
+          const dx = lastPoint.x - startX;
+          const dy = lastPoint.y - startY;
+          const angle = Math.atan2(dy, dx);
+          window.dispatchEvent(new CustomEvent("melon-slice", { detail: { angle } }));
+        }
+      }
     };
 
     window.addEventListener("mousedown", handleMouseDown);
@@ -227,8 +315,7 @@ export default function Home() {
   return (
     <main ref={containerRef} className="relative min-h-screen w-full overflow-x-hidden bg-[#050505] text-white select-none">
       
-      {/* Custom Smooth Cursor trail */}
-      <SmoothCursor />
+
 
       {/* Viewport Slice Slash Trail Overlay Canvas */}
       <canvas
@@ -241,6 +328,11 @@ export default function Home() {
         <div className="store-bg-grid" />
         <div className="store-glow-blob store-glow-pink" />
         <div className="store-glow-blob store-glow-green" />
+      </div>
+
+      {/* 3D Background Canvas Backdrop (Full Screen) */}
+      <div ref={melonContainerRef} className="fixed inset-0 z-0 pointer-events-auto">
+        <ClientHomeScene />
       </div>
 
       {/* Brand Navigation Header */}
@@ -275,19 +367,19 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content Layout */}
-      <div className="relative z-10 grid grid-cols-12 min-h-screen w-full items-center px-6 md:px-10 lg:px-16 pt-24 pb-12 gap-8">
+      {/* Main Content Layout (pointer-events-none to let drags pass to background canvas) */}
+      <div className="relative z-10 flex min-h-screen w-full items-center px-6 md:px-10 lg:px-16 pt-24 pb-12 pointer-events-none">
         
         {/* Left Column: Copy & Actions */}
-        <div className="col-span-12 lg:col-span-7 flex flex-col justify-center space-y-6">
+        <div className="flex flex-col justify-center space-y-6 max-w-4xl">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#ff5c71]/10 border border-[#ff5c71]/20 rounded-sm w-fit home-reveal-fast">
             <span className="w-1.5 h-1.5 rounded-full bg-[#7fff5e] animate-pulse" />
             <span className="font-mono text-[10px] text-[#ff5c71] uppercase tracking-[0.2em]">Fresh Component Laboratory</span>
           </div>
 
-          <h1 className="text-8xl sm:text-[7.5rem] md:text-[10rem] xl:text-[12rem] font-black uppercase leading-[0.76] tracking-tighter text-white home-reveal-fast" style={{ fontFamily: "var(--font-londrina-solid)" }}>
+          <h1 className="text-8xl sm:text-[7.5rem] md:text-[10rem] xl:text-[12rem] font-black uppercase leading-[0.76] tracking-tighter text-white home-reveal-fast select-none" style={{ fontFamily: "var(--font-londrina-solid)" }}>
             {/* Sliced Text Effect Container */}
-            <span className="relative inline-block group cursor-pointer select-none">
+            <span className="relative inline-block group cursor-pointer pointer-events-auto">
               <span className="relative block">
                 {/* Top Half */}
                 <span 
@@ -307,7 +399,7 @@ export default function Home() {
                 >
                   Slice
                 </span>
-                {/* Neon Red/Green Cut Slash Line */}
+                {/* Neon Green Cut Slash Line */}
                 <span 
                   className="absolute left-[-10%] top-[49%] w-[120%] h-[3px] bg-[#7fff5e] opacity-0 scale-x-0 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-x-100 shadow-[0_0_12px_#7fff5e] pointer-events-none"
                   style={{
@@ -323,11 +415,11 @@ export default function Home() {
             <span className="text-[#7fff5e]">.</span>
           </h1>
 
-          <p className="font-mono text-zinc-400 text-base md:text-lg max-w-2xl leading-relaxed home-reveal-slow">
+          <p className="font-mono text-zinc-400 text-base md:text-lg max-w-2xl leading-relaxed home-reveal-slow select-none">
             A premium, futuristic 3D component laboratory for fresh, internet-native user interface pieces. Copy, paste, and ship beautifully animated components powered by GSAP & WebGL.
           </p>
 
-          <div className="flex flex-wrap items-center gap-5 pt-4 home-reveal-slow">
+          <div className="flex flex-wrap items-center gap-5 pt-4 home-reveal-slow pointer-events-auto">
             <Link 
               href="/community" 
               className="px-10 py-5 bg-[#ff5c71] text-[#050505] font-black uppercase tracking-widest text-base cursor-pointer hover:scale-105 active:scale-95 transition-transform duration-200 shadow-lg shadow-[#ff5c71]/25 rounded-sm" 
@@ -352,26 +444,32 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        
-        {/* Right Column: Standalone 3D Interactive Melon */}
-        <div className="col-span-12 lg:col-span-5 h-[400px] lg:h-[600px] w-full relative flex flex-col items-center justify-center">
-          <div ref={melonContainerRef} className="absolute inset-0 z-0 pointer-events-auto">
-            <ClientHomeScene />
-          </div>
-          
-          {/* Mouse drag instruction indicator */}
-          <div className="absolute bottom-4 font-mono text-[9px] uppercase tracking-widest text-zinc-500 pointer-events-none select-none flex items-center gap-1.5">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-            Drag to spin • Click to bounce Melon
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </div>
-        </div>
-
       </div>
+
+      {/* Floating Drag/Slash Help Instruction Indicator */}
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 font-mono text-[9px] uppercase tracking-widest text-zinc-600 pointer-events-none select-none flex items-center gap-1.5 z-20">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+        Drag anywhere to slash • Slice the Watermelon
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M9 18l6-6-6-6" />
+        </svg>
+      </div>
+
+      {/* Regrow button overlays below the scene */}
+      <div className={`fixed bottom-14 left-1/2 -translate-x-1/2 z-30 transition-all duration-300 transform ${
+        slicedCount > 0 ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"
+      }`}>
+        <button
+          onClick={handleRegrow}
+          className="px-6 py-3 bg-[#7fff5e] text-[#050505] font-black uppercase tracking-widest text-xs rounded-sm hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg shadow-[#7fff5e]/20 cursor-pointer"
+          style={{ fontFamily: "var(--font-londrina-solid)" }}
+        >
+          Regrow Melon
+        </button>
+      </div>
+
     </main>
   );
 }
