@@ -279,6 +279,17 @@ export const componentsData: ComponentData[] = [
     cliCommand: "npx @melonui-dev/cli add morphing-cyber-node",
     codeSnippet: `const springConfig = { damping: 20, stiffness: 300, mass: 0.5 };\nconst rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), springConfig);`,
     componentPath: "MorphingCyberNode",
+  },
+  {
+    id: "orbital-command-ring",
+    slug: "orbital-command-ring",
+    title: "Orbital Command Ring",
+    description: "A futuristic radial menu summoned by drag with elastic joystick tether physics and cinematic execution flashes.",
+    category: "Widgets",
+    tags: ["Framer Motion", "Spring", "Radial Menu", "Interactive"],
+    cliCommand: "npx @melonui-dev/cli add orbital-command-ring",
+    codeSnippet: `const joystickX = useSpring(dragX, springConfig);\nconst joystickY = useSpring(dragY, springConfig);\n\n// Derived absolute position for the joystick\nconst joystickAbsX = useTransform(() => originX.get() + joystickX.get());\nconst joystickAbsY = useTransform(() => originY.get() + joystickY.get());`,
+    componentPath: "OrbitalCommandRing",
   }
 ];
 
