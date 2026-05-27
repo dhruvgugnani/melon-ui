@@ -18,6 +18,7 @@ function createRandom(seed: number) {
 }
 
 export function HomeMelon() {
+  const parentGroupRef = useRef<THREE.Group>(null);
   const group1Ref = useRef<THREE.Group>(null); // Left half group
   const group2Ref = useRef<THREE.Group>(null); // Right half group
   const particleRefs = useRef<(THREE.Mesh | null)[]>([]);
@@ -52,7 +53,7 @@ export function HomeMelon() {
       vx: 0, vy: 0, vz: 0,
       scale: 0.1,
       opacity: 0,
-      color: "#ff5c71",
+      color: "#ff4f66",
     }))
   );
 
@@ -148,11 +149,9 @@ export function HomeMelon() {
     const rng = createRandom(99887);
 
     if (ctx) {
-      // Base vibrant red
       ctx.fillStyle = "#ff4f66";
       ctx.fillRect(0, 0, 512, 512);
 
-      // Pulp grain details
       for (let i = 0; i < 5000; i++) {
         const x = rng() * 512;
         const y = rng() * 512;
@@ -163,7 +162,6 @@ export function HomeMelon() {
         ctx.fill();
       }
 
-      // Watermelon Seeds
       ctx.fillStyle = "#1c100f";
       for (let i = 0; i < 16; i++) {
         const x = 80 + rng() * 352;
@@ -197,15 +195,15 @@ export function HomeMelon() {
 
         const theta = rng() * Math.PI * 2;
         const phi = rng() * Math.PI;
-        const speed = 4 + rng() * 8;
+        const speed = 3.5 + rng() * 6.5;
 
         p.vx = Math.cos(theta) * Math.sin(phi) * speed;
-        p.vy = Math.sin(theta) * Math.sin(phi) * speed + 3.0; // spray upward
+        p.vy = Math.sin(theta) * Math.sin(phi) * speed + 2.5; // spray upward
         p.vz = Math.cos(phi) * speed;
 
         p.opacity = 1.0;
-        p.scale = 0.35 + rng() * 0.85;
-        p.color = rng() > 0.18 ? "#ff4f66" : "#1c100f"; // Pulp or seed color
+        p.scale = 0.2 + rng() * 0.45; // smaller particles
+        p.color = rng() > 0.18 ? "#ff4f66" : "#1c100f";
 
         const mesh = particleRefs.current[idx];
         if (mesh) {
@@ -240,29 +238,34 @@ export function HomeMelon() {
       // Slicing velocities perpendicular to the slash angle
       const perpAngle1 = angle + Math.PI / 2;
       const perpAngle2 = angle - Math.PI / 2;
-      const ejectSpeed = 4.5 + Math.random() * 1.5;
+      const ejectSpeed = 4.0 + Math.random() * 1.2;
+
+      // Calculate starting position relative to group offset
+      const startX = parentGroupRef.current ? parentGroupRef.current.position.x : 0;
+
+      h1Phys.current.px = startX;
+      h2Phys.current.px = startX;
 
       h1Phys.current.vx = Math.cos(perpAngle1) * ejectSpeed;
-      h1Phys.current.vy = Math.sin(perpAngle1) * ejectSpeed + 3.0; // add slight pop up
-      h1Phys.current.vz = (Math.random() - 0.5) * 2;
+      h1Phys.current.vy = Math.sin(perpAngle1) * ejectSpeed + 2.5;
+      h1Phys.current.vz = (Math.random() - 0.5) * 1.5;
 
       h2Phys.current.vx = Math.cos(perpAngle2) * ejectSpeed;
-      h2Phys.current.vy = Math.sin(perpAngle2) * ejectSpeed + 3.0;
-      h2Phys.current.vz = (Math.random() - 0.5) * 2;
+      h2Phys.current.vy = Math.sin(perpAngle2) * ejectSpeed + 2.5;
+      h2Phys.current.vz = (Math.random() - 0.5) * 1.5;
 
       // Add tumble rotations
-      h1Phys.current.vrx = (Math.random() - 0.5) * 6;
-      h1Phys.current.vry = (Math.random() - 0.5) * 6;
-      h1Phys.current.vrz = (Math.random() - 0.5) * 6;
+      h1Phys.current.vrx = (Math.random() - 0.5) * 5;
+      h1Phys.current.vry = (Math.random() - 0.5) * 5;
+      h1Phys.current.vrz = (Math.random() - 0.5) * 5;
 
-      h2Phys.current.vrx = (Math.random() - 0.5) * 6;
-      h2Phys.current.vry = (Math.random() - 0.5) * 6;
-      h2Phys.current.vrz = (Math.random() - 0.5) * 6;
+      h2Phys.current.vrx = (Math.random() - 0.5) * 5;
+      h2Phys.current.vry = (Math.random() - 0.5) * 5;
+      h2Phys.current.vrz = (Math.random() - 0.5) * 5;
 
-      // Spawn juicy particles
-      spawnParticles(0, 0, 0);
+      // Spawn particles at center
+      spawnParticles(startX, 0, 0);
 
-      // Trigger "Regrow" UI visibility on page
       window.dispatchEvent(new CustomEvent("melon-sliced-count", { detail: { count: 1 } }));
     };
 
@@ -270,10 +273,8 @@ export function HomeMelon() {
       if (!isSlicedRef.current || regrowingRef.current) return;
       regrowingRef.current = true;
 
-      // Reset local positions and rotations smoothly using GSAP
       const timeline = gsap.timeline({
         onComplete: () => {
-          // Hard reset properties
           h1Phys.current = { px: 0, py: 0, pz: 0, vx: 0, vy: 0, vz: 0, rx: 0, ry: 0, rz: 0, vrx: 0, vry: 0, vrz: 0 };
           h2Phys.current = { px: 0, py: 0, pz: 0, vx: 0, vy: 0, vz: 0, rx: 0, ry: 0, rz: 0, vrx: 0, vry: 0, vrz: 0 };
           
@@ -283,19 +284,18 @@ export function HomeMelon() {
         }
       });
 
-      // Smoothly fade-in halves back
       setHalvesOpacity(1.0);
       halvesOpacityRef.current = 1.0;
 
       if (group1Ref.current && group2Ref.current) {
         timeline.to([group1Ref.current.position, group2Ref.current.position], {
           x: 0, y: 0, z: 0,
-          duration: 0.65,
+          duration: 0.6,
           ease: "power2.inOut",
         }, 0);
         timeline.to([group1Ref.current.rotation, group2Ref.current.rotation], {
           x: 0, y: 0, z: 0,
-          duration: 0.65,
+          duration: 0.6,
           ease: "power2.inOut",
         }, 0);
       }
@@ -313,6 +313,11 @@ export function HomeMelon() {
   useFrame((state, delta) => {
     const t = state.clock.getElapsedTime();
     const dt = Math.min(delta, 0.1);
+    const { viewport } = state;
+
+    // Responsive X-position offset on desktop, center on mobile
+    const isDesktop = window.innerWidth > 1024;
+    const targetX = isDesktop ? (viewport.width * 0.22) : 0;
 
     // Particle Physics update
     particlesData.current.forEach((p, idx) => {
@@ -339,18 +344,17 @@ export function HomeMelon() {
       }
     });
 
-    // Melon Halves Physics solver
     if (isSlicedRef.current && !regrowingRef.current) {
       // 1. Apply gravity and velocities
       h1Phys.current.px += h1Phys.current.vx * dt;
       h1Phys.current.py += h1Phys.current.vy * dt;
       h1Phys.current.pz += h1Phys.current.vz * dt;
-      h1Phys.current.vy -= 12 * dt; // gravity
+      h1Phys.current.vy -= 10 * dt; // gravity
 
       h2Phys.current.px += h2Phys.current.vx * dt;
       h2Phys.current.py += h2Phys.current.vy * dt;
       h2Phys.current.pz += h2Phys.current.vz * dt;
-      h2Phys.current.vy -= 12 * dt;
+      h2Phys.current.vy -= 10 * dt;
 
       // 2. Apply tumbles
       h1Phys.current.rx += h1Phys.current.vrx * dt;
@@ -378,19 +382,22 @@ export function HomeMelon() {
         setHalvesOpacity(nextOpacity);
       }
     } else if (!isSlicedRef.current && !regrowingRef.current) {
+      // Whole Melon position offset
+      if (parentGroupRef.current) {
+        parentGroupRef.current.position.x = THREE.MathUtils.lerp(parentGroupRef.current.position.x, targetX, 0.1);
+      }
+
       // Whole Melon Idle Animations
       if (group1Ref.current && group2Ref.current) {
-        // Slow rotation
         const baseRotY = t * 0.16;
         group1Ref.current.rotation.y = baseRotY;
         group2Ref.current.rotation.y = baseRotY;
 
-        // float height
         const floatY = Math.sin(t * 1.4) * 0.15;
         group1Ref.current.position.y = floatY;
         group2Ref.current.position.y = floatY;
 
-        // Reset X and Z
+        // Reset positions
         group1Ref.current.position.x = 0;
         group1Ref.current.position.z = 0;
         group2Ref.current.position.x = 0;
@@ -406,71 +413,73 @@ export function HomeMelon() {
 
   return (
     <>
-      {/* Group 1: Left/Right Half 1 */}
-      <group ref={group1Ref}>
-        <group scale={[2.4, 2.7, 2.4]}>
-          {/* Half Sphere outer rind */}
-          <mesh castShadow receiveShadow>
-            <sphereGeometry args={[1, 64, 32, -Math.PI / 2, Math.PI]} />
-            <meshPhysicalMaterial
-              map={rindTexture}
-              bumpMap={bumpTexture}
-              bumpScale={0.016}
-              roughness={0.8}
-              metalness={0.02}
-              clearcoat={0}
-              transparent
-              opacity={halvesOpacity}
-            />
-          </mesh>
+      <group ref={parentGroupRef}>
+        {/* Group 1: Left Half */}
+        <group ref={group1Ref}>
+          <group scale={[1.3, 1.6, 1.3]}>
+            {/* Half Sphere outer rind */}
+            <mesh castShadow receiveShadow>
+              <sphereGeometry args={[1, 64, 32, -Math.PI / 2, Math.PI]} />
+              <meshPhysicalMaterial
+                map={rindTexture}
+                bumpMap={bumpTexture}
+                bumpScale={0.016}
+                roughness={0.8}
+                metalness={0.02}
+                clearcoat={0}
+                transparent
+                opacity={halvesOpacity}
+              />
+            </mesh>
 
-          {/* Inner pulp flat cut face */}
-          <mesh rotation={[0, -Math.PI / 2, 0]}>
-            <circleGeometry args={[1, 64]} />
-            <meshPhysicalMaterial
-              map={pulpTexture}
-              roughness={0.7}
-              metalness={0.0}
-              clearcoat={0}
-              side={THREE.DoubleSide}
-              transparent
-              opacity={halvesOpacity}
-            />
-          </mesh>
+            {/* Inner pulp flat cut face */}
+            <mesh rotation={[0, -Math.PI / 2, 0]}>
+              <circleGeometry args={[1, 64]} />
+              <meshPhysicalMaterial
+                map={pulpTexture}
+                roughness={0.7}
+                metalness={0.0}
+                clearcoat={0}
+                side={THREE.DoubleSide}
+                transparent
+                opacity={halvesOpacity}
+              />
+            </mesh>
+          </group>
         </group>
-      </group>
 
-      {/* Group 2: Left/Right Half 2 */}
-      <group ref={group2Ref}>
-        <group scale={[2.4, 2.7, 2.4]}>
-          {/* Other Half Sphere outer rind */}
-          <mesh castShadow receiveShadow>
-            <sphereGeometry args={[1, 64, 32, Math.PI / 2, Math.PI]} />
-            <meshPhysicalMaterial
-              map={rindTexture}
-              bumpMap={bumpTexture}
-              bumpScale={0.016}
-              roughness={0.8}
-              metalness={0.02}
-              clearcoat={0}
-              transparent
-              opacity={halvesOpacity}
-            />
-          </mesh>
+        {/* Group 2: Right Half */}
+        <group ref={group2Ref}>
+          <group scale={[1.3, 1.6, 1.3]}>
+            {/* Other Half Sphere outer rind */}
+            <mesh castShadow receiveShadow>
+              <sphereGeometry args={[1, 64, 32, Math.PI / 2, Math.PI]} />
+              <meshPhysicalMaterial
+                map={rindTexture}
+                bumpMap={bumpTexture}
+                bumpScale={0.016}
+                roughness={0.8}
+                metalness={0.02}
+                clearcoat={0}
+                transparent
+                opacity={halvesOpacity}
+              />
+            </mesh>
 
-          {/* Inner pulp flat cut face */}
-          <mesh rotation={[0, Math.PI / 2, 0]}>
-            <circleGeometry args={[1, 64]} />
-            <meshPhysicalMaterial
-              map={pulpTexture}
-              roughness={0.7}
-              metalness={0.0}
-              clearcoat={0}
-              side={THREE.DoubleSide}
-              transparent
-              opacity={halvesOpacity}
-            />
-          </mesh>
+            {/* Inner pulp flat cut face */}
+            <mesh rotation={[0, Math.PI / 2, 0]}>
+              <circleGeometry args={[1, 64]} />
+              <meshPhysicalMaterial
+                map={pulpTexture}
+                roughness={0.7}
+                metalness={0.0}
+                clearcoat={0}
+                side={THREE.DoubleSide}
+                transparent
+                opacity={halvesOpacity}
+              />
+            </mesh>
+          </group>
         </group>
       </group>
 
@@ -481,7 +490,7 @@ export function HomeMelon() {
           ref={(el) => { particleRefs.current[idx] = el; }}
           visible={false}
         >
-          <sphereGeometry args={[0.07, 8, 8]} />
+          <sphereGeometry args={[0.04, 8, 8]} />
           <meshBasicMaterial color="#ff4f66" transparent opacity={0} />
         </mesh>
       ))}

@@ -3,7 +3,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ClientHomeScene } from "@/components/scene/ClientHomeScene";
-
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
@@ -98,10 +97,9 @@ export default function Home() {
       if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 1. Rapid decay for sharp blade trail
+        // 1. Decay slash trail points (shift 1 point per frame for smooth visible trail)
         if (points.length > 0) {
           points.shift();
-          if (points.length > 0) points.shift(); // shift twice for double-fast fade
         }
 
         // 2. Update and draw 2D juice particles
@@ -178,7 +176,7 @@ export default function Home() {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDrawing) return;
       points.push({ x: e.clientX, y: e.clientY });
-      if (points.length > 12) {
+      if (points.length > 15) {
         points.shift();
       }
 
@@ -201,12 +199,13 @@ export default function Home() {
       if (!isDrawing) return;
       isDrawing = false;
 
-      // Slice collision detection (centered in screen)
+      // Responsive slice collision detection
       if (points.length >= 2) {
-        const cx = window.innerWidth / 2;
+        const isDesktop = window.innerWidth > 1024;
+        // Shift collision center to the right on desktop, center on mobile
+        const cx = isDesktop ? (window.innerWidth * 0.72) : (window.innerWidth / 2);
         const cy = window.innerHeight / 2;
-        // Collision radius adapts to viewport
-        const r = Math.min(window.innerWidth, window.innerHeight) * 0.16;
+        const r = Math.min(window.innerWidth, window.innerHeight) * 0.08;
 
         let intersected = false;
         for (let i = 0; i < points.length - 1; i++) {
@@ -245,10 +244,11 @@ export default function Home() {
       const tx = e.touches[0].clientX;
       const ty = e.touches[0].clientY;
       points.push({ x: tx, y: ty });
-      if (points.length > 12) {
+      if (points.length > 15) {
         points.shift();
       }
 
+      // Spawn 2D juice droplets along the touch trail
       for (let i = 0; i < 3; i++) {
         juiceParticles.push({
           x: tx,
@@ -268,9 +268,10 @@ export default function Home() {
       isDrawing = false;
 
       if (points.length >= 2) {
-        const cx = window.innerWidth / 2;
+        const isDesktop = window.innerWidth > 1024;
+        const cx = isDesktop ? (window.innerWidth * 0.72) : (window.innerWidth / 2);
         const cy = window.innerHeight / 2;
-        const r = Math.min(window.innerWidth, window.innerHeight) * 0.16;
+        const r = Math.min(window.innerWidth, window.innerHeight) * 0.08;
 
         let intersected = false;
         for (let i = 0; i < points.length - 1; i++) {
@@ -315,8 +316,6 @@ export default function Home() {
   return (
     <main ref={containerRef} className="relative min-h-screen w-full overflow-x-hidden bg-[#050505] text-white select-none">
       
-
-
       {/* Viewport Slice Slash Trail Overlay Canvas */}
       <canvas
         ref={slashCanvasRef}
