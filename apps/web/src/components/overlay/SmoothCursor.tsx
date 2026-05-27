@@ -34,11 +34,11 @@ export function SmoothCursor() {
       gsap.set(dot, { x: mouse.x, y: mouse.y });
     };
 
-    // Smooth physics LERP loop for the outer trailing ring
+    // Smooth physics LERP loop for the outer trailing ring (snappy 0.28 coefficient)
     let animFrameId: number;
     const tick = () => {
-      ringPos.x += (mouse.x - ringPos.x) * 0.15;
-      ringPos.y += (mouse.y - ringPos.y) * 0.15;
+      ringPos.x += (mouse.x - ringPos.x) * 0.28;
+      ringPos.y += (mouse.y - ringPos.y) * 0.28;
 
       gsap.set(ring, { x: ringPos.x, y: ringPos.y });
       animFrameId = requestAnimationFrame(tick);

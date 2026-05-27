@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ClientHomeScene } from "@/components/scene/ClientHomeScene";
+import { SmoothCursor } from "@/components/overlay/SmoothCursor";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
@@ -316,6 +317,9 @@ export default function Home() {
   return (
     <main ref={containerRef} className="relative min-h-screen w-full overflow-x-hidden bg-[#050505] text-white select-none">
       
+      {/* Snappy trailing ring custom cursor */}
+      <SmoothCursor />
+
       {/* Viewport Slice Slash Trail Overlay Canvas */}
       <canvas
         ref={slashCanvasRef}
@@ -329,8 +333,8 @@ export default function Home() {
         <div className="store-glow-blob store-glow-green" />
       </div>
 
-      {/* 3D Background Canvas Backdrop (Full Screen) */}
-      <div ref={melonContainerRef} className="fixed inset-0 z-0 pointer-events-auto">
+      {/* 3D Background Canvas Backdrop (absolute inside main z-0 so it receives mouse drags) */}
+      <div ref={melonContainerRef} className="absolute inset-0 z-0 pointer-events-auto">
         <ClientHomeScene />
       </div>
 

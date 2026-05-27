@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useEffect, useState } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { OrbitControls } from "@react-three/drei";
 import gsap from "gsap";
@@ -18,6 +18,7 @@ function createRandom(seed: number) {
 }
 
 export function HomeMelon() {
+  const { viewport } = useThree();
   const parentGroupRef = useRef<THREE.Group>(null);
   const group1Ref = useRef<THREE.Group>(null); // Left half group
   const group2Ref = useRef<THREE.Group>(null); // Right half group
@@ -30,6 +31,10 @@ export function HomeMelon() {
   // Slicing state
   const isSlicedRef = useRef(false);
   const regrowingRef = useRef(false);
+
+  // Responsive X offset to keep text readable on desktop
+  const isDesktop = typeof window !== "undefined" ? window.innerWidth > 1024 : false;
+  const targetX = isDesktop ? (viewport.width * 0.22) : 0;
 
   // Physics vectors for the two halves
   const h1Phys = useRef({
@@ -202,7 +207,7 @@ export function HomeMelon() {
         p.vz = Math.cos(phi) * speed;
 
         p.opacity = 1.0;
-        p.scale = 0.2 + rng() * 0.45; // smaller particles
+        p.scale = 0.2 + rng() * 0.45;
         p.color = rng() > 0.18 ? "#ff4f66" : "#1c100f";
 
         const mesh = particleRefs.current[idx];
@@ -240,11 +245,9 @@ export function HomeMelon() {
       const perpAngle2 = angle - Math.PI / 2;
       const ejectSpeed = 4.0 + Math.random() * 1.2;
 
-      // Calculate starting position relative to group offset
-      const startX = parentGroupRef.current ? parentGroupRef.current.position.x : 0;
-
-      h1Phys.current.px = startX;
-      h2Phys.current.px = startX;
+      // Physics start at local (0, 0, 0) relative to parentGroup
+      h1Phys.current.px = 0;
+      h2Phys.current.px = 0;
 
       h1Phys.current.vx = Math.cos(perpAngle1) * ejectSpeed;
       h1Phys.current.vy = Math.sin(perpAngle1) * ejectSpeed + 2.5;
@@ -263,8 +266,8 @@ export function HomeMelon() {
       h2Phys.current.vry = (Math.random() - 0.5) * 5;
       h2Phys.current.vrz = (Math.random() - 0.5) * 5;
 
-      // Spawn particles at center
-      spawnParticles(startX, 0, 0);
+      // Spawn particles at local center inside parentGroup
+      spawnParticles(0, 0, 0);
 
       window.dispatchEvent(new CustomEvent("melon-sliced-count", { detail: { count: 1 } }));
     };
@@ -313,11 +316,11 @@ export function HomeMelon() {
   useFrame((state, delta) => {
     const t = state.clock.getElapsedTime();
     const dt = Math.min(delta, 0.1);
-    const { viewport } = state;
 
-    // Responsive X-position offset on desktop, center on mobile
-    const isDesktop = window.innerWidth > 1024;
-    const targetX = isDesktop ? (viewport.width * 0.22) : 0;
+    // Keep parentGroupRef position synchronized to targetX ALWAYS (sliced or unsliced)
+    if (parentGroupRef.current) {
+      parentGroupRef.current.position.x = THREE.MathUtils.lerp(parentGroupRef.current.position.x, targetX, 0.1);
+    }
 
     // Particle Physics update
     particlesData.current.forEach((p, idx) => {
@@ -382,11 +385,6 @@ export function HomeMelon() {
         setHalvesOpacity(nextOpacity);
       }
     } else if (!isSlicedRef.current && !regrowingRef.current) {
-      // Whole Melon position offset
-      if (parentGroupRef.current) {
-        parentGroupRef.current.position.x = THREE.MathUtils.lerp(parentGroupRef.current.position.x, targetX, 0.1);
-      }
-
       // Whole Melon Idle Animations
       if (group1Ref.current && group2Ref.current) {
         const baseRotY = t * 0.16;
@@ -481,25 +479,26 @@ export function HomeMelon() {
             </mesh>
           </group>
         </group>
-      </group>
 
-      {/* 3D Pre-allocated Juice Splatter Particles */}
-      {Array.from({ length: NUM_PARTICLES }).map((_, idx) => (
-        <mesh
-          key={idx}
-          ref={(el) => { particleRefs.current[idx] = el; }}
-          visible={false}
-        >
-          <sphereGeometry args={[0.04, 8, 8]} />
-          <meshBasicMaterial color="#ff4f66" transparent opacity={0} />
-        </mesh>
-      ))}
+        {/* 3D Pre-allocated Juice Splatter Particles (nested inside parentGroup) */}
+        {Array.from({ length: NUM_PARTICLES }).map((_, idx) => (
+          <mesh
+            key={idx}
+            ref={(el) => { particleRefs.current[idx] = el; }}
+            visible={false}
+          >
+            <sphereGeometry args={[0.04, 8, 8]} />
+            <meshBasicMaterial color="#ff4f66" transparent opacity={0} />
+          </mesh>
+        ))}
+      </group>
 
       <OrbitControls
         enableZoom={false}
         enablePan={false}
         minPolarAngle={Math.PI / 3}
         maxPolarAngle={Math.PI * 2 / 3}
+        target={[targetX, 0, 0]}
       />
     </>
   );
