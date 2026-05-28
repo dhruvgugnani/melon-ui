@@ -216,7 +216,11 @@ function StaticPlaceholder({ slug, color }: { slug: string; color: string }) {
 const getScale = (slug: string) => {
   if (slug === "solar-carousel" || slug === "orbital-command-ring") return "scale-[0.45]";
   if (slug === "signal-loom") return "scale-[0.52]";
-  if (slug === "chromatic-melt-text" || slug === "rind-scanner-text" || slug === "sticker-stack-text" || slug === "glyph-orbit-text" || slug === "seedwave-text") return "scale-[0.62]";
+  if (slug === "chromatic-melt-text") return "scale-[0.3]";
+  if (slug === "rind-scanner-text") return "scale-[0.48]";
+  if (slug === "sticker-stack-text") return "scale-[0.34]";
+  if (slug === "glyph-orbit-text") return "scale-[0.32]";
+  if (slug === "seedwave-text") return "scale-[0.34]";
   if (slug === "kinetic-glass-grid" || slug === "kinetic-magnet" || slug === "morphing-cyber-node" || slug === "particle-field" || slug === "floating-orbs") return "scale-[0.5]";
   if (slug === "holo-ticket" || slug === "rind-peel-card" || slug === "flip-card" || slug === "changelog") return "scale-[0.65]";
   if (slug === "parallax-strips" || slug === "harvest-reveal" || slug === "stripe-wipe" || slug === "morph-transition") return "scale-[0.6]";
@@ -234,11 +238,6 @@ const STATIC_PREVIEW_SLUGS = new Set([
   "kinetic-magnet",
   "morphing-cyber-node",
   "signal-loom",
-  "chromatic-melt-text",
-  "rind-scanner-text",
-  "sticker-stack-text",
-  "glyph-orbit-text",
-  "seedwave-text",
 ]);
 
 function CardPreview({ comp, color }: { comp: typeof componentsData[number]; color: string }) {
