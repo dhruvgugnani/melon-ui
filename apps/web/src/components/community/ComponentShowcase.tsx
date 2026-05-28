@@ -310,7 +310,10 @@ Please write a premium, responsive React page component in Next.js that:
           }`}
           style={{ minHeight: scrollable ? "500px" : "380px", maxHeight: scrollable ? "500px" : undefined }}
         >
-          {React.isValidElement(component) ? React.cloneElement(component, playgroundProps) : component}
+          {React.isValidElement(component) ? React.cloneElement(component, {
+            ...playgroundProps,
+            key: JSON.stringify(playgroundProps)
+          }) : component}
         </div>
 
         {/* --- Panel 2: Installation & AI --- */}

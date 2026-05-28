@@ -147,6 +147,30 @@ export function Sidebar() {
           </Link>
         </div>
 
+        {/* Blog Link */}
+        <div className="sidebar-section-container border-t border-white/5 pt-4">
+          <Link
+            href="/blog"
+            className={`group w-full flex items-center gap-2 py-1.5 px-2 rounded-sm font-mono text-[12px] transition-all duration-200 hover:translate-x-1 ${
+              pathname?.startsWith("/blog") ? "text-[#7fff5e] font-bold" : "text-white/60 hover:text-white/95"
+            }`}
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              className="shrink-0"
+            >
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+              <path d="M6 6h10M6 10h10" />
+            </svg>
+            Blog & Guides
+          </Link>
+        </div>
+
         {/* Components categories list */}
         {categoryNames.map((catName) => {
           if (catName === "Getting Started") return null; // Already handled above

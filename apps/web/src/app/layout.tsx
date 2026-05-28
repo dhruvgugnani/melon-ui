@@ -37,19 +37,34 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "MelonUI | Premium Gen-Z Component Lab",
+    default: "MelonUI | Creative React UI Components & Web Animation Library",
     template: "%s | MelonUI",
   },
-  description: "A premium, futuristic 3D component lab for fresh, internet-native interface pieces. Copy, paste, and ship beautifully animated components.",
-  keywords: ["MelonUI", "UI Components", "Next.js", "React Components", "GSAP", "Three.js", "Gen-Z Design", "Premium UI", "Frontend", "Animations"],
+  description: "MelonUI is a premium, open-source library of customizable React components, UI components, and web components featuring advanced GSAP and Framer Motion animations. Boost your website's aesthetic and interaction rates today.",
+  keywords: [
+    "React components",
+    "UI components",
+    "Web components",
+    "Tailwind CSS React components",
+    "customizable React components",
+    "GSAP React animations",
+    "Framer Motion components",
+    "best React UI libraries",
+    "creative web design",
+    "interactive UI elements",
+    "animated button React",
+    "scroll triggered animations",
+    "Next.js component library",
+    "TypeScript UI kit"
+  ],
   authors: [{ name: "MelonUI" }],
   creator: "MelonUI",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: siteUrl,
-    title: "MelonUI | Premium Gen-Z Component Lab",
-    description: "A premium, futuristic 3D component lab for fresh, internet-native interface pieces.",
+    title: "MelonUI | Creative React UI Components & Web Animation Library",
+    description: "MelonUI is a premium, open-source library of customizable React components, UI components, and web components featuring advanced GSAP and Framer Motion animations.",
     siteName: "MelonUI",
     images: [
       {
