@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { CSSProperties, useMemo, useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -9,7 +9,26 @@ import {
   useTransform,
 } from "framer-motion";
 
-const THREADS = [
+export interface SignalLoomThread {
+  id: string;
+  title: string;
+  meta: string;
+  value: string;
+  color: string;
+  copy: string;
+}
+
+export interface SignalLoomProps {
+  title?: string;
+  eyebrow?: string;
+  statusLabel?: string;
+  lensLabel?: string;
+  threads?: SignalLoomThread[];
+  className?: string;
+  style?: CSSProperties;
+}
+
+const DEFAULT_THREADS: SignalLoomThread[] = [
   {
     id: "brief",
     title: "Brief",
@@ -38,7 +57,15 @@ const THREADS = [
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
-export function SignalLoom() {
+export function SignalLoom({
+  title = "Weave the next action",
+  eyebrow = "Signal Loom",
+  statusLabel = "Live",
+  lensLabel = "Inspection Lens",
+  threads = DEFAULT_THREADS,
+  className = "",
+  style,
+}: SignalLoomProps) {
   const [active, setActive] = useState(1);
   const [hovered, setHovered] = useState<number | null>(null);
   const [pressed, setPressed] = useState(false);
@@ -59,17 +86,19 @@ export function SignalLoom() {
   const lensX = useTransform(smoothX, [0, 100], [-26, 26]);
   const lensY = useTransform(smoothY, [0, 100], [-22, 22]);
 
-  const activeThread = THREADS[hovered ?? active];
+  const safeThreads = threads.length > 0 ? threads : DEFAULT_THREADS;
+  const activeIndex = Math.min(hovered ?? active, safeThreads.length - 1);
+  const activeThread = safeThreads[activeIndex] ?? safeThreads[0];
   const pathData = useMemo(() => {
-    const center = hovered ?? active;
-    return THREADS.map((_, index) => {
-      const startX = 22 + index * 28;
+    const center = Math.min(hovered ?? active, safeThreads.length - 1);
+    return safeThreads.map((_, index) => {
+      const startX = safeThreads.length === 1 ? 50 : 18 + index * (64 / (safeThreads.length - 1));
       const pull = center === index ? 10 : center > index ? 5 : -5;
       const waist = clamp(startX + pull, 16, 84);
       const lower = clamp(startX - pull * 0.75, 16, 84);
       return `M ${startX} 6 C ${waist} 28, ${waist} 48, ${startX} 56 C ${lower} 70, ${lower} 84, ${startX} 96`;
     });
-  }, [active, hovered]);
+  }, [active, hovered, safeThreads]);
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -91,16 +120,15 @@ export function SignalLoom() {
       onPointerLeave={resetPointer}
       onPointerDown={() => setPressed(true)}
       onPointerUp={() => setPressed(false)}
-      className="relative flex min-h-[360px] w-full items-center justify-center overflow-hidden bg-[#050505] px-3 py-4 text-white sm:min-h-[440px] sm:px-5"
+      className={`relative flex w-full items-center justify-center overflow-visible px-0 py-0 text-white ${className}`}
+      style={style}
     >
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,92,113,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(127,255,94,0.028)_1px,transparent_1px)] bg-[size:38px_38px]" />
       <motion.div
-        className="absolute inset-0 opacity-70"
+        className="pointer-events-none absolute -inset-6 opacity-70 blur-2xl"
         style={{
           background: ambientGlow,
         }}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_110%,rgba(255,92,113,0.18),transparent_42%),radial-gradient(circle_at_10%_0%,rgba(127,255,94,0.14),transparent_34%)]" />
 
       <motion.div
         className="relative z-10 grid w-full max-w-5xl gap-3 rounded-[8px] border border-white/10 bg-black/45 p-3 shadow-[0_35px_90px_rgba(0,0,0,0.55)] backdrop-blur-2xl md:grid-cols-[1.08fr_0.92fr] md:p-4"
@@ -129,13 +157,13 @@ export function SignalLoom() {
               </filter>
             </defs>
             {pathData.map((d, index) => {
-              const isActive = index === (hovered ?? active);
+              const isActive = index === activeIndex;
               return (
                 <motion.path
-                  key={THREADS[index].id}
+                  key={safeThreads[index].id}
                   d={d}
                   fill="none"
-                  stroke={THREADS[index].color}
+                  stroke={safeThreads[index].color}
                   strokeLinecap="round"
                   strokeWidth={isActive ? 1.55 : 0.7}
                   strokeDasharray={isActive ? "1 3" : "0"}
@@ -152,23 +180,23 @@ export function SignalLoom() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#ff5c71]">
-                  Signal Loom
+                  {eyebrow}
                 </p>
                 <h3
                   className="mt-2 max-w-[10ch] text-4xl uppercase leading-[0.82] text-white sm:text-6xl"
                   style={{ fontFamily: "var(--font-londrina-solid)" }}
                 >
-                  Weave the next action
+                  {title}
                 </h3>
               </div>
               <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
-                Live
+                {statusLabel}
               </div>
             </div>
 
             <div className="grid gap-2 sm:grid-cols-3">
-              {THREADS.map((thread, index) => {
-                const isActive = index === (hovered ?? active);
+              {safeThreads.map((thread, index) => {
+                const isActive = index === activeIndex;
                 return (
                   <button
                     key={thread.id}
@@ -218,7 +246,7 @@ export function SignalLoom() {
           <div className="relative z-10 flex h-full min-h-[320px] flex-col sm:min-h-[380px]">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-white/35">
-                Inspection Lens
+                {lensLabel}
               </span>
               <span
                 className="h-2 w-2 rounded-full shadow-[0_0_20px_currentColor]"

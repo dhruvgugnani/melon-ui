@@ -471,7 +471,7 @@
   },
   "signal-loom": {
     "name": "Signal Loom",
-    "description": "A pointer-reactive glass command surface where luminous workflow threads bend toward the cursor and layered inspection wafers morph into focus.",
+    "description": "A transparent pointer-reactive glass command surface where luminous workflow threads bend toward the cursor and layered inspection wafers morph into focus.",
     "category": "Widgets",
     "dependencies": [
       "framer-motion"
@@ -492,7 +492,7 @@
   },
   "chromatic-melt-text": {
     "name": "Chromatic Melt Text",
-    "description": "Pointer-reactive ink typography where chunky MelonUI letters liquify with chromatic under-drips and tactile hover deformation.",
+    "description": "A transparent, reusable text effect where chunky MelonUI letters liquify with chromatic under-drips and tactile hover deformation.",
     "category": "GSAP Text",
     "dependencies": [
       "framer-motion"
@@ -513,7 +513,7 @@
   },
   "rind-scanner-text": {
     "name": "Rind Scanner Text",
-    "description": "A sliced headline scanner with offset typography bands, neon rind sweeps, and click-to-pin glitch motion.",
+    "description": "A transparent sliced headline scanner with offset typography bands, neon rind sweeps, and click-to-pin glitch motion.",
     "category": "GSAP Text",
     "dependencies": [
       "framer-motion"
@@ -534,7 +534,7 @@
   },
   "sticker-stack-text": {
     "name": "Sticker Stack Text",
-    "description": "Layered sticker-style type cards that fan open with springy Gen-Z poster energy and bold MelonUI color blocking.",
+    "description": "Transparent layered sticker-style type cards that fan open with springy Gen-Z poster energy and bold MelonUI color blocking.",
     "category": "GSAP Text",
     "dependencies": [
       "framer-motion"
@@ -555,7 +555,7 @@
   },
   "glyph-orbit-text": {
     "name": "Glyph Orbit Text",
-    "description": "A central headline surrounded by orbiting character tiles that unlock into a kinetic typographic halo.",
+    "description": "A transparent central headline surrounded by orbiting character tiles that unlock into a kinetic typographic halo.",
     "category": "GSAP Text",
     "dependencies": [
       "framer-motion"
@@ -576,7 +576,7 @@
   },
   "seedwave-text": {
     "name": "Seedwave Text",
-    "description": "Click-born particle typography that compresses the headline and throws melon-colored seed sparks from the exact press point.",
+    "description": "Transparent click-born particle typography that compresses the headline and throws melon-colored seed sparks from the exact press point.",
     "category": "GSAP Text",
     "dependencies": [
       "framer-motion"

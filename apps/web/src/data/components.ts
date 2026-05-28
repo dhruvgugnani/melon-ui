@@ -388,7 +388,7 @@ export const componentsData: ComponentData[] = [
     id: "chromatic-melt-text",
     slug: "chromatic-melt-text",
     title: "Chromatic Melt Text",
-    description: "Pointer-reactive ink typography where chunky MelonUI letters liquify with chromatic under-drips and tactile hover deformation.",
+    description: "A transparent, reusable text effect where chunky MelonUI letters liquify with chromatic under-drips and tactile hover deformation.",
     category: "GSAP Text",
     tags: ["Framer Motion", "Typography", "Pointer Physics", "Gradient"],
     cliCommand: "npx @melonui-dev/cli add chromatic-melt-text",
@@ -396,12 +396,19 @@ export const componentsData: ComponentData[] = [
 
 // Pointer position drives the radial ink glow while each glyph springs and melts on hover.`,
     componentPath: "ChromaticMeltText",
+    props: [
+      { name: "text", type: "string", defaultValue: `"MELT MODE"`, description: "Headline text to render.", control: { type: "text" } },
+      { name: "kicker", type: "string", defaultValue: `"Pointer reactive ink"`, description: "Optional small label above the text.", control: { type: "text" } },
+      { name: "primaryColor", type: "string", defaultValue: `"#ffffff"`, description: "Main glyph color.", control: { type: "color" } },
+      { name: "secondaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Glow and under-drip color.", control: { type: "color" } },
+      { name: "accentColor", type: "string", defaultValue: `"#7fff5e"`, description: "Hover and alternate drip color.", control: { type: "color" } }
+    ],
   },
   {
     id: "rind-scanner-text",
     slug: "rind-scanner-text",
     title: "Rind Scanner Text",
-    description: "A sliced headline scanner with offset typography bands, neon rind sweeps, and click-to-pin glitch motion.",
+    description: "A transparent sliced headline scanner with offset typography bands, neon rind sweeps, and click-to-pin glitch motion.",
     category: "GSAP Text",
     tags: ["Framer Motion", "Typography", "Scanner", "Glitch"],
     cliCommand: "npx @melonui-dev/cli add rind-scanner-text",
@@ -409,12 +416,19 @@ export const componentsData: ComponentData[] = [
 
 // Each duplicate headline is clipped into a different band and animated independently.`,
     componentPath: "RindScannerText",
+    props: [
+      { name: "text", type: "string", defaultValue: `"SCAN THE RIND"`, description: "Headline text to slice and scan.", control: { type: "text" } },
+      { name: "label", type: "string", defaultValue: `"Typography scanner"`, description: "Optional accessibility and eyebrow label.", control: { type: "text" } },
+      { name: "baseColor", type: "string", defaultValue: `"#f4f4f4"`, description: "Base text color.", control: { type: "color" } },
+      { name: "scanColor", type: "string", defaultValue: `"#7fff5e"`, description: "Scanner beam and highlighted slice color.", control: { type: "color" } },
+      { name: "accentColor", type: "string", defaultValue: `"#ff5c71"`, description: "Secondary glow color.", control: { type: "color" } }
+    ],
   },
   {
     id: "sticker-stack-text",
     slug: "sticker-stack-text",
     title: "Sticker Stack Text",
-    description: "Layered sticker-style type cards that fan open with springy Gen-Z poster energy and bold MelonUI color blocking.",
+    description: "Transparent layered sticker-style type cards that fan open with springy Gen-Z poster energy and bold MelonUI color blocking.",
     category: "GSAP Text",
     tags: ["Framer Motion", "Typography", "Stickers", "Spring"],
     cliCommand: "npx @melonui-dev/cli add sticker-stack-text",
@@ -426,12 +440,15 @@ export const componentsData: ComponentData[] = [
 
 // Hover expands each text sticker into an offset editorial stack.`,
     componentPath: "StickerStackText",
+    props: [
+      { name: "hint", type: "string", defaultValue: `"Hover to fan"`, description: "Optional helper label shown under the sticker stack.", control: { type: "text" } }
+    ],
   },
   {
     id: "glyph-orbit-text",
     slug: "glyph-orbit-text",
     title: "Glyph Orbit Text",
-    description: "A central headline surrounded by orbiting character tiles that unlock into a kinetic typographic halo.",
+    description: "A transparent central headline surrounded by orbiting character tiles that unlock into a kinetic typographic halo.",
     category: "GSAP Text",
     tags: ["Framer Motion", "Typography", "Orbit", "Glyphs"],
     cliCommand: "npx @melonui-dev/cli add glyph-orbit-text",
@@ -441,12 +458,17 @@ const y = Math.sin(angle) * radius;
 
 // Glyph tiles spring from a tight lockup into a circular orbit.`,
     componentPath: "GlyphOrbitText",
+    props: [
+      { name: "text", type: "string", defaultValue: `"ORBIT"`, description: "Central headline text.", control: { type: "text" } },
+      { name: "primaryColor", type: "string", defaultValue: `"#ffffff"`, description: "Central headline color.", control: { type: "color" } },
+      { name: "accentColor", type: "string", defaultValue: `"#7fff5e"`, description: "Primary orbit glyph color.", control: { type: "color" } }
+    ],
   },
   {
     id: "seedwave-text",
     slug: "seedwave-text",
     title: "Seedwave Text",
-    description: "Click-born particle typography that compresses the headline and throws melon-colored seed sparks from the exact press point.",
+    description: "Transparent click-born particle typography that compresses the headline and throws melon-colored seed sparks from the exact press point.",
     category: "GSAP Text",
     tags: ["Framer Motion", "Typography", "Particles", "Click"],
     cliCommand: "npx @melonui-dev/cli add seedwave-text",
@@ -457,6 +479,12 @@ const y = Math.sin(angle) * radius;
   // Create seed particles from the press point.
 };`,
     componentPath: "SeedwaveText",
+    props: [
+      { name: "topText", type: "string", defaultValue: `"Seed"`, description: "First line of the headline.", control: { type: "text" } },
+      { name: "bottomText", type: "string", defaultValue: `"Wave"`, description: "Second line of the headline.", control: { type: "text" } },
+      { name: "seedCount", type: "number", defaultValue: "18", description: "Number of seed particles emitted per press.", control: { type: "slider", min: 6, max: 36, step: 1 } },
+      { name: "primaryColor", type: "string", defaultValue: `"#ffffff"`, description: "Headline text color.", control: { type: "color" } }
+    ],
   },
   {
     id: "stripe-wipe",
@@ -539,7 +567,7 @@ const y = Math.sin(angle) * radius;
     id: "signal-loom",
     slug: "signal-loom",
     title: "Signal Loom",
-    description: "A pointer-reactive glass command surface where luminous workflow threads bend toward the cursor and layered inspection wafers morph into focus.",
+    description: "A transparent pointer-reactive glass command surface where luminous workflow threads bend toward the cursor and layered inspection wafers morph into focus.",
     category: "Widgets",
     tags: ["Framer Motion", "Glassmorphism", "Pointer Physics", "Workflow"],
     cliCommand: "npx @melonui-dev/cli add signal-loom",
@@ -550,6 +578,12 @@ const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
 
 // Curved SVG loom paths, radial glare, and inspection lens all derive from pointer motion.`,
     componentPath: "SignalLoom",
+    props: [
+      { name: "title", type: "string", defaultValue: `"Weave the next action"`, description: "Main command-surface headline.", control: { type: "text" } },
+      { name: "eyebrow", type: "string", defaultValue: `"Signal Loom"`, description: "Small label above the headline.", control: { type: "text" } },
+      { name: "statusLabel", type: "string", defaultValue: `"Live"`, description: "Status pill text.", control: { type: "text" } },
+      { name: "lensLabel", type: "string", defaultValue: `"Inspection Lens"`, description: "Right panel label.", control: { type: "text" } }
+    ],
   }
 ];
 
