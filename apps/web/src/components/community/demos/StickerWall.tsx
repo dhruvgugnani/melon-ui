@@ -3,7 +3,14 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 
+export interface StickerItemInput {
+  label: string;
+  emoji?: string;
+  color?: string;
+}
+
 export interface StickerWallProps {
+  stickers?: StickerItemInput[];
   stickerDensity?: number;
   scaleOnHover?: number;
   stickerTheme?: "melon" | "tech" | "mixed";
@@ -16,7 +23,6 @@ interface StickerItem {
   x: number; // percentage
   y: number; // percentage
   color: string;
-  shadowColor: string;
   rotation: number;
 }
 
@@ -45,6 +51,7 @@ const TECH_STICKERS = [
 const MIXED_STICKERS = [...MELON_STICKERS, ...TECH_STICKERS];
 
 export function StickerWall({
+  stickers: customStickers,
   stickerDensity = 12,
   scaleOnHover = 1.15,
   stickerTheme = "melon",
@@ -52,35 +59,54 @@ export function StickerWall({
   const stickers = useMemo(() => {
     const list: StickerItem[] = [];
     const source =
-      stickerTheme === "melon"
+      customStickers && customStickers.length > 0
+        ? customStickers
+        : stickerTheme === "melon"
         ? MELON_STICKERS
         : stickerTheme === "tech"
         ? TECH_STICKERS
         : MIXED_STICKERS;
 
-    // Use a simple pseudo-random generator based on index to keep positions stable
+    // Use a stable pseudo-random generator
     const pseudoRand = (seed: number) => {
       const x = Math.sin(seed * 9821.123 + 4381.54) * 10000;
       return x - Math.floor(x);
     };
 
-    for (let i = 0; i < stickerDensity; i++) {
+    const count = customStickers && customStickers.length > 0 ? customStickers.length : stickerDensity;
+
+    for (let i = 0; i < count; i++) {
       const item = source[i % source.length];
       
-      // Calculate coordinates to avoid overlapping too heavily in the center
-      const angle = (i / stickerDensity) * Math.PI * 2;
-      const radiusX = 15 + pseudoRand(i + 1) * 30; // 15% to 45% radius
-      const radiusY = 15 + pseudoRand(i + 2) * 25;
-      
-      const x = 50 + Math.cos(angle) * radiusX - 8; // center + polar offset
-      const y = 50 + Math.sin(angle) * radiusY - 8;
+      // Determine which border edge to scatter the sticker along to keep the center clear
+      const edge = i % 4; // 0: Top, 1: Right, 2: Bottom, 3: Left
+      let x = 0;
+      let y = 0;
 
-      const colors = ["#ff5c71", "#7fff5e", "#e8d5b7", "#0a0a0a"];
-      const shadowColors = ["rgba(255,92,113,0.35)", "rgba(127,255,94,0.35)", "rgba(232,213,183,0.25)"];
-      
+      const randomVal = pseudoRand(i + 1);
+      const insetVal = 5 + pseudoRand(i + 2) * 8; // 5% to 13% inset from the edge
+
+      if (edge === 0) {
+        // Top edge
+        x = 5 + randomVal * 90; // spread horizontally
+        y = insetVal;
+      } else if (edge === 1) {
+        // Right edge
+        x = 100 - insetVal - 12;
+        y = 10 + randomVal * 80; // spread vertically
+      } else if (edge === 2) {
+        // Bottom edge
+        x = 5 + randomVal * 90;
+        y = 100 - insetVal - 10;
+      } else {
+        // Left edge
+        x = insetVal;
+        y = 10 + randomVal * 80;
+      }
+
+      const colors = ["#ff5c71", "#7fff5e", "#e8d5b7", "#1f1f1f"];
       const color = item.color || colors[Math.floor(pseudoRand(i + 3) * colors.length)];
-      const shadowColor = shadowColors[Math.floor(pseudoRand(i + 4) * shadowColors.length)];
-      const rotation = (pseudoRand(i + 5) - 0.5) * 35; // -17.5 to 17.5 degrees
+      const rotation = (pseudoRand(i + 5) - 0.5) * 28; // -14 to 14 degrees rotation
 
       list.push({
         id: i,
@@ -89,26 +115,37 @@ export function StickerWall({
         x,
         y,
         color,
-        shadowColor,
         rotation,
       });
     }
     return list;
-  }, [stickerDensity, stickerTheme]);
+  }, [customStickers, stickerDensity, stickerTheme]);
 
   return (
-    <div className="w-full h-full min-h-[300px] bg-[#050505] relative overflow-hidden p-6 select-none" style={{ border: "1px solid #111" }}>
-      {/* Background Grid Pattern */}
+    <div className="w-full h-full min-h-[350px] bg-[#050505] relative overflow-hidden p-6 select-none" style={{ border: "1px solid #111" }}>
+      {/* Editorial Grid Backing */}
       <div 
         className="absolute inset-0 opacity-[0.02] pointer-events-none" 
         style={{
-          backgroundImage: `radial-gradient(#ffffff 1px, transparent 1px)`,
-          backgroundSize: "20px 20px"
+          backgroundImage: `
+            linear-gradient(to right, #fff 1px, transparent 1px),
+            linear-gradient(to bottom, #fff 1px, transparent 1px)
+          `,
+          backgroundSize: "40px 40px"
         }}
       />
       
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#333]">Sticker Wall Playground</span>
+      {/* Clean central area placeholder indicator */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-12 text-center">
+        <h1 
+          className="text-2xl md:text-4xl font-black uppercase tracking-tight text-white/10" 
+          style={{ fontFamily: "var(--font-Outfit), sans-serif" }}
+        >
+          Your Hero Title Goes Here
+        </h1>
+        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#333] mt-2">
+          Stickers scattered along border bounds to preserve content layout
+        </p>
       </div>
 
       {stickers.map((s) => (
@@ -118,7 +155,6 @@ export function StickerWall({
           style={{
             left: `${s.x}%`,
             top: `${s.y}%`,
-            backgroundColor: "#0d0d0d",
             boxShadow: `5px 5px 0px 0px ${s.color}`,
           }}
           initial={{ scale: 0, rotate: 0 }}
@@ -127,13 +163,13 @@ export function StickerWall({
             type: "spring",
             stiffness: 260,
             damping: 20,
-            delay: s.id * 0.03,
+            delay: s.id * 0.02,
           }}
           whileHover={{
             scale: scaleOnHover,
-            rotate: s.rotation + (s.rotation > 0 ? 5 : -5),
+            rotate: s.rotation + (s.rotation > 0 ? 4 : -4),
             zIndex: 50,
-            boxShadow: `8px 8px 0px 0px ${s.color}`,
+            boxShadow: `7px 7px 0px 0px ${s.color}`,
           }}
         >
           {s.emoji && <span className="text-sm">{s.emoji}</span>}

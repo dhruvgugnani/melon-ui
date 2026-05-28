@@ -265,6 +265,7 @@ export const componentsData: ComponentData[] = [
     codeSnippet: `// StickerWall.tsx`,
     componentPath: "StickerWall",
     props: [
+      { name: "stickers", type: "array", defaultValue: "[]", description: "Custom array of stickers: { label: string, emoji?: string, color?: string }[]" },
       { name: "stickerDensity", type: "number", defaultValue: "12", description: "Number of stickers scattered on the wall.", control: { type: "slider", min: 4, max: 24, step: 1 } },
       { name: "scaleOnHover", type: "number", defaultValue: "1.15", description: "Scale enlargement factor on hover.", control: { type: "slider", min: 1.0, max: 1.4, step: 0.05 } },
       { name: "stickerTheme", type: "string", defaultValue: `"melon"`, description: "Sticker label presets: 'melon', 'tech', or 'mixed'.", control: { type: "text" } }
