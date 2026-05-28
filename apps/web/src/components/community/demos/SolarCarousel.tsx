@@ -27,6 +27,9 @@ export function SolarCarousel() {
 
   const [activeCard, setActiveCard] = useState<CarouselItem | null>(null);
 
+  const baseRadiusRef = useRef(200);
+  const scaleFactorRef = useRef(1.0);
+
   // Orbital physics state
   const physics = useRef({
     rotation: 0,
@@ -42,6 +45,24 @@ export function SolarCarousel() {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    const handleResize = () => {
+      const width = container.clientWidth;
+      // Calculate a scale factor based on container width (mobile responsive)
+      const scale = Math.min(1.0, Math.max(0.55, (width - 24) / 500));
+      scaleFactorRef.current = scale;
+      baseRadiusRef.current = 190 * scale;
+
+      // Maintain core hover state proportions
+      const isCoreHovered = physics.current.targetRadius < baseRadiusRef.current * 0.9;
+      physics.current.targetRadius = isCoreHovered ? baseRadiusRef.current * 0.75 : baseRadiusRef.current;
+      
+      if (trackRef.current) {
+        const size = baseRadiusRef.current * 2.3;
+        trackRef.current.style.width = `${size}px`;
+        trackRef.current.style.height = `${size}px`;
+      }
+    };
 
     // Continuous orbit loop
     const tick = () => {
@@ -62,7 +83,6 @@ export function SolarCarousel() {
         if (!card) return;
 
         const totalItems = ITEMS.length;
-        // Distribute items evenly around the circle
         const angle = physics.current.rotation + (index / totalItems) * Math.PI * 2;
 
         // Elliptical coordinate calculations
@@ -70,23 +90,25 @@ export function SolarCarousel() {
         const z = Math.sin(angle) * physics.current.radius;
         
         // Depth-based sorting & scaling
-        const depth = (z + physics.current.radius) / (physics.current.radius * 2); // 0 (back) to 1 (front)
-        const scale = 0.65 + depth * 0.35;
+        const depth = (z + physics.current.radius) / (physics.current.radius * 2 || 1); // 0 (back) to 1 (front)
+        // Shrink card scale proportionally on mobile screens using scaleFactorRef
+        const scale = (0.65 + depth * 0.35) * scaleFactorRef.current;
         const opacity = 0.3 + depth * 0.7;
 
-        // Apply 3D transform: translate cards, tilt them back so they stay vertical (billboarding)
+        // Apply 3D transform: translate cards, tilt them back upright (billboarding)
         gsap.set(card, {
           x,
           z,
           scale,
           opacity,
           zIndex: Math.round(depth * 100),
-          // We counter-act the track's X-rotation tilt (e.g. 65deg) so cards face the screen upright
           rotationX: -physics.current.tilt,
         });
       });
     };
 
+    handleResize();
+    window.addEventListener("resize", handleResize);
     gsap.ticker.add(tick);
 
     // Mouse/Touch Drag Handlers
@@ -101,7 +123,6 @@ export function SolarCarousel() {
       const deltaX = clientX - lastX;
       lastX = clientX;
       
-      // Convert pixel movement to angular velocity
       const sensitivity = 0.007;
       physics.current.velocity = deltaX * sensitivity;
       physics.current.rotation += physics.current.velocity;
@@ -111,7 +132,6 @@ export function SolarCarousel() {
       physics.current.isDragging = false;
     };
 
-    // Listeners
     const onMouseDown = (e: MouseEvent) => handleDown(e.clientX);
     const onMouseMove = (e: MouseEvent) => handleMove(e.clientX);
     const onMouseUp = () => handleUp();
@@ -124,12 +144,13 @@ export function SolarCarousel() {
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
 
-    container.addEventListener("touchstart", onTouchStart);
-    container.addEventListener("touchmove", onTouchMove);
+    container.addEventListener("touchstart", onTouchStart, { passive: true });
+    container.addEventListener("touchmove", onTouchMove, { passive: true });
     container.addEventListener("touchend", onTouchEnd);
 
     return () => {
       gsap.ticker.remove(tick);
+      window.removeEventListener("resize", handleResize);
       container.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
@@ -140,21 +161,21 @@ export function SolarCarousel() {
     };
   }, []);
 
-  // Increase gravitational pull (draw cards in) when hovering core
+  // Hover core triggers core gravity pull
   const handleCoreEnter = () => {
-    physics.current.targetRadius = 150; // Pull closer
+    physics.current.targetRadius = baseRadiusRef.current * 0.75;
     if (coreRef.current) {
       gsap.to(coreRef.current, {
-        scale: 1.25,
+        scale: 1.2,
         backgroundColor: "rgba(255, 92, 113, 0.4)",
-        boxShadow: "0 0 40px 20px rgba(255, 92, 113, 0.3)",
+        boxShadow: "0 0 35px 15px rgba(255, 92, 113, 0.3)",
         duration: 0.4,
       });
     }
   };
 
   const handleCoreLeave = () => {
-    physics.current.targetRadius = 200; // Return to orbit
+    physics.current.targetRadius = baseRadiusRef.current;
     if (coreRef.current) {
       gsap.to(coreRef.current, {
         scale: 1,
@@ -165,15 +186,13 @@ export function SolarCarousel() {
     }
   };
 
-  // Card Hover animations
   const handleCardEnter = (card: HTMLDivElement | null, item: CarouselItem) => {
     if (!card) return;
     setActiveCard(item);
-    // Slow down rotation speed on focus
     physics.current.velocity *= 0.1;
 
     gsap.to(card, {
-      y: -30, // Lift item vertically
+      y: -25,
       borderColor: item.color,
       boxShadow: `0 15px 30px rgba(${item.color === "#7fff5e" ? "127, 255, 94" : item.color === "#ff5c71" ? "255, 92, 113" : "0, 240, 255"}, 0.25)`,
       duration: 0.3,
@@ -192,12 +211,12 @@ export function SolarCarousel() {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center w-full min-h-[500px] overflow-hidden select-none bg-[#050505] rounded-xl border border-white/5">
-      {/* Dynamic Ambient Background Nebula Glow */}
+    <div className="relative flex flex-col items-center justify-center w-full min-h-[480px] overflow-hidden select-none bg-[#050505] rounded-xl border border-white/5 p-4">
+      {/* Nebula Glow Background */}
       <div 
-        className="absolute w-[400px] h-[400px] rounded-full blur-[100px] pointer-events-none opacity-20 transition-colors duration-500"
+        className="absolute w-[300px] h-[300px] rounded-full blur-[90px] pointer-events-none opacity-15 transition-colors duration-500"
         style={{
-          background: activeCard ? activeCard.color : "rgba(255, 92, 113, 0.4)",
+          background: activeCard ? activeCard.color : "rgba(255, 92, 113, 0.35)",
           transform: "translate(-50%, -50%)",
           left: "50%",
           top: "50%"
@@ -207,75 +226,74 @@ export function SolarCarousel() {
       {/* Orbit Space Container */}
       <div 
         ref={containerRef}
-        className="relative flex items-center justify-center w-[500px] h-[340px] cursor-grab active:cursor-grabbing"
+        className="relative flex items-center justify-center w-full max-w-[500px] h-[330px] cursor-grab active:cursor-grabbing"
         style={{ 
           perspective: "900px", 
           transformStyle: "preserve-3d" 
         }}
       >
-        {/* Tilting Orbital Ring Grid */}
+        {/* Tilting Orbital Track */}
         <div 
           ref={trackRef}
           className="absolute flex items-center justify-center pointer-events-none"
           style={{
-            width: "480px",
-            height: "480px",
+            width: "440px",
+            height: "440px",
             borderRadius: "50%",
             border: "1.5px dashed rgba(255, 255, 255, 0.08)",
             transform: "rotateX(65deg)",
             transformStyle: "preserve-3d",
           }}
         >
-          {/* Gravitational Singularity Core */}
+          {/* Gravitational Core */}
           <div 
             ref={coreRef}
             onMouseEnter={handleCoreEnter}
             onMouseLeave={handleCoreLeave}
-            className="absolute w-20 h-20 rounded-full flex items-center justify-center cursor-pointer pointer-events-auto transition-all"
+            className="absolute w-16 h-16 rounded-full flex items-center justify-center cursor-pointer pointer-events-auto transition-all"
             style={{
               background: "rgba(255, 92, 113, 0.15)",
               border: "2px solid #ff5c71",
               boxShadow: "0 0 25px 8px rgba(255, 92, 113, 0.15)",
-              // Counter-act the parent's X rotation to make the core face us upright
               transform: "rotateX(-65deg)",
               transformStyle: "preserve-3d",
             }}
           >
-            <div className="w-10 h-10 rounded-full bg-[#ff5c71] flex items-center justify-center font-bold text-[#050505] text-[10px] animate-pulse">
+            <div className="w-9 h-9 rounded-full bg-[#ff5c71] flex items-center justify-center font-bold text-[#050505] text-[9px] animate-pulse">
               GRAV
             </div>
           </div>
 
-          {/* Cards Orbiting inside Track */}
+          {/* Orbiting cards */}
           {ITEMS.map((item, index) => (
             <div
               key={item.id}
               ref={(el) => { cardRefs.current[index] = el; }}
               onMouseEnter={() => handleCardEnter(cardRefs.current[index], item)}
               onMouseLeave={() => handleCardLeave(cardRefs.current[index])}
-              className="absolute w-44 p-4 rounded-xl border border-white/8 bg-[#0b0b0d]/80 backdrop-blur-md cursor-pointer pointer-events-auto transition-all flex flex-col justify-between"
+              className="absolute w-40 p-3.5 rounded-xl border border-white/8 bg-[#0b0b0d]/85 backdrop-blur-md cursor-pointer pointer-events-auto transition-all flex flex-col justify-between"
               style={{
-                height: "150px",
+                height: "135px",
                 boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
               }}
             >
               <div>
-                <div className="flex justify-between items-center mb-2">
+                <div className="flex justify-between items-center mb-1.5">
                   <span 
-                    className="text-[9px] font-mono uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/60 tracking-wider"
+                    className="text-[8px] font-mono uppercase px-2 py-0.5 rounded-full bg-white/5 text-white/50 tracking-wider"
                   >
                     {item.tag}
                   </span>
                   <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
                 </div>
                 <h4 
-                  className="text-lg font-black tracking-tight text-white leading-tight uppercase"
+                  className="text-base font-black tracking-tight text-white leading-tight uppercase"
                   style={{ fontFamily: "var(--font-anton)" }}
                 >
                   {item.title}
                 </h4>
               </div>
-              <p className="text-[10px] font-mono text-white/50 leading-relaxed">
+              <p className="text-[9px] font-mono text-white/50 leading-relaxed line-clamp-3">
                 {item.description}
               </p>
             </div>
@@ -283,9 +301,8 @@ export function SolarCarousel() {
         </div>
       </div>
 
-      {/* Orbit Helper Indicators */}
-      <footer className="z-10 text-center pointer-events-none mt-2">
-        <span className="text-[10px] font-mono uppercase tracking-widest text-white/30">
+      <footer className="z-10 text-center pointer-events-none mt-1">
+        <span className="text-[9px] font-mono uppercase tracking-widest text-white/25">
           ◀ drag space to orbit • hover gravitational core ▶
         </span>
       </footer>

@@ -38,6 +38,8 @@ export function ComponentShowcase({
   const ComponentToRender = componentPath ? componentsRegistry[componentPath] : null;
   const [installMethod, setInstallMethod] = useState<"cli" | "manual">("cli");
   const [previewTheme, setPreviewTheme] = useState<"dark" | "light">("dark");
+  const [previewWidth, setPreviewWidth] = useState<string>("100%");
+  const [sliderVal, setSliderVal] = useState<number>(100);
   const [copiedCli, setCopiedCli] = useState(false);
   const [copiedDeps, setCopiedDeps] = useState(false);
   const [copiedUsage, setCopiedUsage] = useState(false);
@@ -276,27 +278,109 @@ Please write a premium, responsive React page component in Next.js that:
             )}
 
             {activeTab === "preview" && (
-              <button
-                onClick={() => setPreviewTheme(t => t === "dark" ? "light" : "dark")}
-                className="p-1 border border-[#ff5c71]/15 hover:border-[#ff5c71] rounded bg-[#0d0d0f] text-[#555] hover:text-[#ff5c71] transition-all cursor-pointer flex items-center justify-center w-6 h-6 z-10 active:scale-90 hover:scale-105 duration-200"
-                aria-label="Toggle Local Preview Theme"
-              >
-                {previewTheme === "dark" ? (
-                  // Moon icon
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              <div className="flex items-center gap-2 border-l border-[#ff5c71]/10 pl-3">
+                {/* Theme Toggle */}
+                <button
+                  onClick={() => setPreviewTheme(t => t === "dark" ? "light" : "dark")}
+                  className="p-1 border border-[#ff5c71]/15 hover:border-[#ff5c71] rounded bg-[#0d0d0f] text-[#555] hover:text-[#ff5c71] transition-all cursor-pointer flex items-center justify-center w-6 h-6 z-10 active:scale-90 hover:scale-105 duration-200"
+                  aria-label="Toggle Local Preview Theme"
+                  title="Toggle Theme"
+                >
+                  {previewTheme === "dark" ? (
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    </svg>
+                  ) : (
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <circle cx="12" cy="12" r="5" />
+                      <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
+                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                      <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
+                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                    </svg>
+                  )}
+                </button>
+
+                {/* Desktop Preview */}
+                <button
+                  onClick={() => {
+                    setPreviewWidth("100%");
+                    setSliderVal(100);
+                  }}
+                  className={`p-1 border rounded bg-[#0d0d0f] transition-all cursor-pointer flex items-center justify-center w-6 h-6 z-10 active:scale-90 hover:scale-105 duration-200 ${
+                    previewWidth === "100%"
+                      ? "border-[#ff5c71] text-[#ff5c71]"
+                      : "border-[#ff5c71]/15 text-[#555] hover:text-[#ccc]"
+                  }`}
+                  title="Desktop View (100%)"
+                  aria-label="Desktop Preview"
+                >
+                  <svg width="13" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <rect x="2" y="3" width="20" height="14" rx="2" />
+                    <line x1="8" y1="21" x2="16" y2="21" />
+                    <line x1="12" y1="17" x2="12" y2="21" />
                   </svg>
-                ) : (
-                  // Sun icon
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <circle cx="12" cy="12" r="5" />
-                    <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                    <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </button>
+
+                {/* Tablet Preview */}
+                <button
+                  onClick={() => {
+                    setPreviewWidth("768px");
+                    setSliderVal(76);
+                  }}
+                  className={`p-1 border rounded bg-[#0d0d0f] transition-all cursor-pointer flex items-center justify-center w-6 h-6 z-10 active:scale-90 hover:scale-105 duration-200 ${
+                    previewWidth === "768px"
+                      ? "border-[#ff5c71] text-[#ff5c71]"
+                      : "border-[#ff5c71]/15 text-[#555] hover:text-[#ccc]"
+                  }`}
+                  title="Tablet View (768px)"
+                  aria-label="Tablet Preview"
+                >
+                  <svg width="11" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <rect x="4" y="2" width="16" height="20" rx="2" />
+                    <line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="3" />
                   </svg>
-                )}
-              </button>
+                </button>
+
+                {/* Phone Preview */}
+                <button
+                  onClick={() => {
+                    setPreviewWidth("375px");
+                    setSliderVal(37);
+                  }}
+                  className={`p-1 border rounded bg-[#0d0d0f] transition-all cursor-pointer flex items-center justify-center w-6 h-6 z-10 active:scale-90 hover:scale-105 duration-200 ${
+                    previewWidth === "375px"
+                      ? "border-[#ff5c71] text-[#ff5c71]"
+                      : "border-[#ff5c71]/15 text-[#555] hover:text-[#ccc]"
+                  }`}
+                  title="Phone View (375px)"
+                  aria-label="Phone Preview"
+                >
+                  <svg width="9" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <rect x="5" y="2" width="14" height="20" rx="2" />
+                    <line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="3" />
+                  </svg>
+                </button>
+
+                {/* Manual Width Slider */}
+                <div className="flex items-center gap-2 pl-2 border-l border-[#ff5c71]/10 hidden sm:flex">
+                  <span className="font-mono text-[9px] uppercase tracking-wider text-[#444] shrink-0">Width:</span>
+                  <input
+                    type="range"
+                    min="30"
+                    max="100"
+                    value={sliderVal}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      setSliderVal(val);
+                      setPreviewWidth(`${val}%`);
+                    }}
+                    className="w-16 sm:w-20 md:w-24 h-1 bg-[#151515] rounded-lg appearance-none cursor-pointer accent-[#ff5c71]"
+                    title="Drag to resize preview width"
+                  />
+                  <span className="font-mono text-[9px] text-[#ff5c71]/80 w-8 text-right shrink-0">{sliderVal}%</span>
+                </div>
+              </div>
             )}
           </div>
         </nav>
@@ -312,16 +396,30 @@ Please write a premium, responsive React page component in Next.js that:
           }`}
           style={{ minHeight: scrollable ? "500px" : "380px", maxHeight: scrollable ? "500px" : undefined }}
         >
-          {ComponentToRender ? (
-            <ComponentToRender {...playgroundProps} key={JSON.stringify(playgroundProps)} />
-          ) : React.isValidElement(component) ? (
-            React.cloneElement(component, {
-              ...playgroundProps,
-              key: JSON.stringify(playgroundProps)
-            })
-          ) : (
-            component
-          )}
+          {/* Responsive Preview Wrapper Frame */}
+          <div
+            className={`h-full w-full mx-auto relative transition-all duration-300 ease-out flex items-center justify-center ${
+              previewWidth !== "100%" 
+                ? "border-2 border-dashed border-[#ff5c71]/30 rounded-xl overflow-hidden shadow-2xl shadow-[#ff5c71]/5 bg-[#030303]" 
+                : ""
+            }`}
+            style={{ 
+              width: previewWidth, 
+              maxWidth: "100%",
+              height: "100%"
+            }}
+          >
+            {ComponentToRender ? (
+              <ComponentToRender {...playgroundProps} key={JSON.stringify(playgroundProps)} />
+            ) : React.isValidElement(component) ? (
+              React.cloneElement(component, {
+                ...playgroundProps,
+                key: JSON.stringify(playgroundProps)
+              })
+            ) : (
+              component
+            )}
+          </div>
         </div>
 
         {/* --- Panel 2: Installation & AI --- */}
