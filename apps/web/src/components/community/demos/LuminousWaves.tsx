@@ -55,14 +55,14 @@ export function LuminousWaves({
     window.addEventListener("resize", resizeCanvas);
 
     // Initialize stardust particles
-    const particleCount = 40;
+    const particleCount = 45;
     for (let i = 0; i < particleCount; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        size: 0.5 + Math.random() * 1.5,
-        speedX: (Math.random() - 0.5) * 0.2,
-        speedY: -0.1 - Math.random() * 0.3,
+        size: 0.4 + Math.random() * 1.4,
+        speedX: (Math.random() - 0.5) * 0.15,
+        speedY: -0.08 - Math.random() * 0.25,
         opacity: 0.1 + Math.random() * 0.5,
       });
     }
@@ -93,7 +93,7 @@ export function LuminousWaves({
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      time += 0.008 * speed;
+      time += 0.007 * speed;
 
       // Update and draw particles
       particles.forEach((p) => {
@@ -109,7 +109,7 @@ export function LuminousWaves({
           p.x = Math.random() * canvas.width;
         }
 
-        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity * 0.3})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity * 0.25})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
@@ -133,37 +133,41 @@ export function LuminousWaves({
       }
 
       // Render Aurora Siri-style Waves
+      // Enable screen blending composite for high-fidelity glowing overlapping colors
+      ctx.globalCompositeOperation = "screen";
+
       for (let w = 0; w < waveCount; w++) {
         const progress = w / (waveCount - 1 || 1);
         const waveRGB = blendColors(waveColor, secondaryColor, progress);
 
-        // Center line height of this specific wave
-        const baseHeight = canvas.height * 0.45 + (canvas.height * 0.3) * progress;
+        // Position waves close to the vertical center so they overlap and morph together
+        const baseHeight = canvas.height * 0.5 + (progress - 0.5) * canvas.height * 0.08;
         const points: { x: number; y: number }[] = [];
 
-        // Step 1: Calculate wave points
-        for (let x = 0; x <= canvas.width; x += 15) {
+        // 2px steps for vector-smooth lines without linear segments
+        for (let x = 0; x <= canvas.width; x += 2) {
+          // Combining multiple sine and cosine waves for an organic ribbon flow
           let y = baseHeight + 
-                  Math.sin(x * frequency + time + w * 2.3) * amplitude * (0.6 + Math.sin(time * 0.4 + w) * 0.4) +
-                  Math.cos(x * frequency * 2.3 - time * 0.7 + w * 1.5) * (amplitude * 0.2);
+                  Math.sin(x * frequency + time + w * 2.3) * amplitude * (0.65 + Math.sin(time * 0.4 + w) * 0.35) +
+                  Math.cos(x * frequency * 2.5 - time * 0.6 + w * 1.2) * (amplitude * 0.22);
 
-          // Proximity warp (soft spring gravity pulling to cursor)
+          // Proximity mouse attraction/warp
           if (currentMouse.x !== -1000) {
             const dist = Math.abs(x - currentMouse.x);
-            if (dist < 260) {
-              const strength = Math.pow(1 - dist / 260, 2);
+            if (dist < 280) {
+              const strength = Math.pow(1 - dist / 280, 2);
               const dy = currentMouse.y - baseHeight;
-              y += dy * strength * 0.38; // pull wave vertically
+              y += dy * strength * 0.42; // pull wave vertically
             }
           }
 
           points.push({ x, y });
         }
 
-        // Step 2: Render fill (No side/bottom border lines)
-        const fillGrad = ctx.createLinearGradient(0, baseHeight - amplitude, 0, canvas.height);
-        fillGrad.addColorStop(0, `rgba(${waveRGB.r}, ${waveRGB.g}, ${waveRGB.b}, ${0.03 + (1 - progress) * 0.08})`);
-        fillGrad.addColorStop(0.5, `rgba(${waveRGB.r}, ${waveRGB.g}, ${waveRGB.b}, 0.01)`);
+        // Draw fill (smooth gradient fading into background, zero side border strokes)
+        const fillGrad = ctx.createLinearGradient(0, baseHeight - amplitude * 1.5, 0, canvas.height);
+        fillGrad.addColorStop(0, `rgba(${waveRGB.r}, ${waveRGB.g}, ${waveRGB.b}, ${0.015 + (1 - progress) * 0.045})`);
+        fillGrad.addColorStop(0.5, `rgba(${waveRGB.r}, ${waveRGB.g}, ${waveRGB.b}, 0.005)`);
         fillGrad.addColorStop(1, "transparent");
 
         ctx.fillStyle = fillGrad;
@@ -176,26 +180,29 @@ export function LuminousWaves({
         ctx.closePath();
         ctx.fill();
 
-        // Step 3: Render stroke (Top edge line ONLY)
-        ctx.strokeStyle = `rgba(${waveRGB.r}, ${waveRGB.g}, ${waveRGB.b}, ${0.08 + (1 - progress) * 0.16})`;
-        ctx.lineWidth = 1.0 + (1 - progress) * 1.5;
-        
-        // Dynamic neon glow
-        ctx.shadowBlur = w === waveCount - 1 ? 10 : 4;
-        ctx.shadowColor = `rgb(${waveRGB.r}, ${waveRGB.g}, ${waveRGB.b})`;
-
+        // High-Performance Double-Draw Stroke System
+        // Draw 1: Thick low-opacity bloom stroke
+        ctx.strokeStyle = `rgba(${waveRGB.r}, ${waveRGB.g}, ${waveRGB.b}, ${0.018 + (1 - progress) * 0.038})`;
+        ctx.lineWidth = 14 + (1 - progress) * 8;
         ctx.beginPath();
         points.forEach((pt, idx) => {
-          if (idx === 0) {
-            ctx.moveTo(pt.x, pt.y);
-          } else {
-            ctx.lineTo(pt.x, pt.y);
-          }
+          if (idx === 0) ctx.moveTo(pt.x, pt.y);
+          else ctx.lineTo(pt.x, pt.y);
+        });
+        ctx.stroke();
+
+        // Draw 2: Thin higher-opacity core stroke
+        ctx.strokeStyle = `rgba(${waveRGB.r}, ${waveRGB.g}, ${waveRGB.b}, ${0.12 + (1 - progress) * 0.22})`;
+        ctx.lineWidth = 1.0 + (1 - progress) * 1.2;
+        ctx.beginPath();
+        points.forEach((pt, idx) => {
+          if (idx === 0) ctx.moveTo(pt.x, pt.y);
+          else ctx.lineTo(pt.x, pt.y);
         });
         ctx.stroke();
       }
 
-      ctx.shadowBlur = 0; // Reset shadow glow
+      ctx.globalCompositeOperation = "source-over"; // Reset composite
       animationFrameId = requestAnimationFrame(draw);
     };
 
