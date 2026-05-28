@@ -52,8 +52,8 @@ const ORBS = [
 
 export function FloatingOrbs() {
   return (
-    <div className="w-full h-[360px] bg-[#040404]" style={{ border: "1px solid #1a1a1a" }}>
-      <Canvas camera={{ position: [0, 0, 4], fov: 55 }}>
+    <div className="w-full h-full min-h-[180px] bg-[#040404] relative" style={{ border: "1px solid #1a1a1a" }}>
+      <Canvas camera={{ position: [0, 0, 4], fov: 55 }} style={{ width: "100%", height: "100%" }}>
         <ambientLight intensity={0.4} />
         <pointLight position={[3, 3, 3]} intensity={1.5} color="#ff5c71" />
         <pointLight position={[-3, -2, 2]} intensity={1} color="#7fff5e" />

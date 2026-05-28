@@ -82,14 +82,11 @@ function ParticleField() {
 
 export function ParticleBackground() {
   return (
-    <div className="w-full h-[360px] bg-[#060606]" style={{ border: "1px solid #1a1a1a" }}>
-      <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
+    <div className="w-full h-full min-h-[180px] bg-[#060606] relative" style={{ border: "1px solid #1a1a1a" }}>
+      <Canvas camera={{ position: [0, 0, 5], fov: 60 }} style={{ width: "100%", height: "100%" }}>
         <ambientLight intensity={0.5} />
         <ParticleField />
       </Canvas>
-      <p className="text-center font-mono text-xs text-[#444] -mt-7 relative z-10 pb-4">
-        Move your mouse to interact
-      </p>
     </div>
   );
 }

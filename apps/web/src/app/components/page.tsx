@@ -151,27 +151,41 @@ const getScale = (slug: string) => {
   return "scale-95";
 };
 
+// Components that are too GPU-heavy for grid previews — use static placeholder always
+const STATIC_PREVIEW_SLUGS = new Set([
+  "particle-field",
+  "floating-orbs",
+  "solar-carousel",
+  "orbital-command-ring",
+  "kinetic-glass-grid",
+  "kinetic-magnet",
+  "morphing-cyber-node",
+]);
+
 function CardPreview({ comp, color }: { comp: typeof componentsData[number]; color: string }) {
   const [isHovered, setIsHovered] = useState(false);
   const ComponentToRender = componentsMap[comp.componentPath];
   const isCursor = comp.category === "Cursors";
+  const useStatic = STATIC_PREVIEW_SLUGS.has(comp.slug) || (isCursor && !isHovered);
 
   return (
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative h-44 w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center p-3 select-none transition-all duration-300 group-hover:border-[#ff5c71]/20"
+      className="relative h-44 w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] select-none transition-all duration-300 group-hover:border-[#ff5c71]/20"
     >
-      {ComponentToRender && (!isCursor || isHovered) ? (
-        <div 
-          className={`w-full h-full flex items-center justify-center transition-all duration-300 ${getScale(comp.slug)} origin-center ${
+      {!useStatic && ComponentToRender ? (
+        <div
+          className={`absolute inset-0 flex items-center justify-center overflow-hidden transition-all duration-300 ${getScale(comp.slug)} origin-center ${
             isHovered ? "pointer-events-auto" : "pointer-events-none"
           }`}
         >
           <ComponentToRender />
         </div>
       ) : (
-        <StaticPlaceholder slug={comp.slug} color={color} />
+        <div className="absolute inset-0">
+          <StaticPlaceholder slug={comp.slug} color={color} />
+        </div>
       )}
     </div>
   );
