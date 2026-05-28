@@ -56,7 +56,7 @@ function getSceneQuality(): SceneQualityConfig {
   const deviceMemory = getDeviceMemory();
   const lowMemory = typeof deviceMemory === "number" && deviceMemory <= 4;
   const constrainedDevice = narrowViewport || coarsePointer || lowThreadCount || lowMemory;
-  const isBrave = typeof navigator !== "undefined" && ((navigator as any).brave !== undefined);
+  const isBrave = typeof navigator !== "undefined" && ((navigator as Navigator & { brave?: unknown }).brave !== undefined);
 
   if (reducedMotion) {
     return {

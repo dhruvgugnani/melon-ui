@@ -114,17 +114,24 @@ export function ShowcaseSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(titleRef.current?.children ?? [], { y: 48, opacity: 0, duration: 0.65, stagger: 0.08, ease: "power3.out" });
+      gsap.fromTo(titleRef.current?.children ?? [], { y: 48, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, stagger: 0.08, ease: "power3.out" });
       cardsRef.current.forEach((card, index) => {
         if (!card) return;
-        gsap.from(card, {
-          y: index % 2 === 0 ? 30 : -30,
-          rotate: index % 2 === 0 ? -2 : 2,
-          opacity: 0,
-          duration: 0.55,
-          delay: index * 0.06,
-          ease: "power2.out",
-        });
+        gsap.fromTo(card, 
+          {
+            y: index % 2 === 0 ? 30 : -30,
+            rotate: index % 2 === 0 ? -2 : 2,
+            opacity: 0,
+          },
+          {
+            y: 0,
+            rotate: 0,
+            opacity: 1,
+            duration: 0.55,
+            delay: index * 0.06,
+            ease: "power2.out",
+          }
+        );
       });
     });
 
