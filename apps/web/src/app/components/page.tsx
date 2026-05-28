@@ -145,6 +145,7 @@ function StaticPlaceholder({ slug, color }: { slug: string; color: string }) {
 function CardPreview({ comp, color }: { comp: typeof componentsData[number]; color: string }) {
   const [isHovered, setIsHovered] = useState(false);
   const ComponentToRender = componentsMap[comp.componentPath];
+  const isCursor = comp.category === "Cursors";
 
   return (
     <div
@@ -152,7 +153,7 @@ function CardPreview({ comp, color }: { comp: typeof componentsData[number]; col
       onMouseLeave={() => setIsHovered(false)}
       className="relative h-44 w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center p-3 select-none transition-all duration-300 group-hover:border-[#ff5c71]/20"
     >
-      {isHovered && ComponentToRender ? (
+      {ComponentToRender && (!isCursor || isHovered) ? (
         <div className="w-full h-full flex items-center justify-center pointer-events-auto scale-90 origin-center transition-all duration-300">
           <ComponentToRender />
         </div>
