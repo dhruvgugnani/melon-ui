@@ -18,6 +18,7 @@ export interface SceneQualityConfig {
   enableEnvironment: boolean;
   seedCount: number;
   dropletCount: number;
+  shadowMapSize: number;
 }
 
 const DEFAULT_QUALITY: SceneQualityConfig = {
@@ -30,6 +31,7 @@ const DEFAULT_QUALITY: SceneQualityConfig = {
   enableEnvironment: true,
   seedCount: 28,
   dropletCount: 36,
+  shadowMapSize: 1024,
 };
 
 function getDeviceMemory() {
@@ -54,6 +56,7 @@ function getSceneQuality(): SceneQualityConfig {
   const deviceMemory = getDeviceMemory();
   const lowMemory = typeof deviceMemory === "number" && deviceMemory <= 4;
   const constrainedDevice = narrowViewport || coarsePointer || lowThreadCount || lowMemory;
+  const isBrave = typeof navigator !== "undefined" && ((navigator as any).brave !== undefined);
 
   if (reducedMotion) {
     return {
@@ -66,6 +69,22 @@ function getSceneQuality(): SceneQualityConfig {
       enableEnvironment: false,
       seedCount: constrainedDevice ? 12 : 16,
       dropletCount: 0,
+      shadowMapSize: 256,
+    };
+  }
+
+  if (isBrave) {
+    return {
+      deviceTier: constrainedDevice ? "mobile" : "desktop",
+      motion: "full",
+      dpr: [1, 1.25], // Clamp DPR to reduce fingerprinting intercept overhead
+      sceneScale: narrowViewport ? 0.7 : 1,
+      segments: constrainedDevice ? 28 : 44, // Moderate segment count
+      environmentResolution: constrainedDevice ? 64 : 128,
+      enableEnvironment: true,
+      seedCount: constrainedDevice ? 12 : 24,
+      dropletCount: constrainedDevice ? 12 : 24,
+      shadowMapSize: 512, // Lower shadow map size to avoid Brave's depth-buffer fingerprinting intercept lag
     };
   }
 
@@ -80,6 +99,7 @@ function getSceneQuality(): SceneQualityConfig {
       enableEnvironment: true,
       seedCount: 20,
       dropletCount: 20,
+      shadowMapSize: 512,
     };
   }
 

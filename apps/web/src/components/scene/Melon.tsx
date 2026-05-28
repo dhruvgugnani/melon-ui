@@ -42,9 +42,7 @@ export function Melon({ quality }: MelonProps) {
   const bottomHalfRef = useRef<THREE.Group>(null);
   const katanaRef = useRef<THREE.Group>(null);
   const splashGroupRef = useRef<THREE.Group>(null);
-  const originalSeedsRef = useRef<THREE.InstancedMesh>(null);
-  const originalSeedScalesRef = useRef<{ x: number; y: number; z: number }[]>([]);
-  const originalSeedsResetRef = useRef(false);
+  const originalSeedMeshesRef = useRef<(THREE.Mesh | null)[]>([]);
   const fallingSeedsGroupRef = useRef<THREE.Group>(null);
   const fallingSeedsRefs = useRef<(THREE.Mesh | null)[]>([]);
   const sandRef = useRef<THREE.Group>(null);
@@ -529,37 +527,7 @@ export function Melon({ quality }: MelonProps) {
     transparent: true,
     opacity: 0.8,
   }), []);
-  const seedMatrixDummy = useMemo(() => new THREE.Object3D(), []);
-
-  const updateSeedInstance = useCallback((index: number) => {
-    const mesh = originalSeedsRef.current;
-    const seed = seeds3D[index];
-    const scaleState = originalSeedScalesRef.current[index];
-
-    if (!mesh || !seed || !scaleState) {
-      return;
-    }
-
-    seedMatrixDummy.position.set(...seed.position);
-    seedMatrixDummy.rotation.set(...seed.rotation);
-    seedMatrixDummy.scale.set(scaleState.x, scaleState.y, scaleState.z);
-    seedMatrixDummy.updateMatrix();
-    mesh.setMatrixAt(index, seedMatrixDummy.matrix);
-    mesh.instanceMatrix.needsUpdate = true;
-  }, [seedMatrixDummy, seeds3D]);
-
-  const resetOriginalSeeds = useCallback(() => {
-    const mesh = originalSeedsRef.current;
-    if (!mesh) {
-      return;
-    }
-
-    mesh.visible = true;
-    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    originalSeedScalesRef.current = seeds3D.map(() => ({ x: 1, y: 1.8, z: 0.4 }));
-    seeds3D.forEach((_, index) => updateSeedInstance(index));
-    originalSeedsResetRef.current = true;
-  }, [seeds3D, updateSeedInstance]);
+  // Removed instanced matrix updates to improve performance on Brave
 
   useFrame((state) => {
     if (reducedMotion) {
@@ -608,7 +576,6 @@ export function Melon({ quality }: MelonProps) {
       !bottomHalfRef.current ||
       !katanaRef.current ||
       !splashGroupRef.current ||
-      !originalSeedsRef.current ||
       !fallingSeedsGroupRef.current ||
       !sandRef.current ||
       !plantGroupRef.current ||
@@ -636,11 +603,13 @@ export function Melon({ quality }: MelonProps) {
     let masterTl: gsap.core.Timeline | null = null;
     let scrollFrameId: number | null = null;
     let cleanupScroll: (() => void) | null = null;
+    let setupId: number;
 
-    const setupId = window.setTimeout(() => {
+    const setupScrollBinding = () => {
       const scroller = document.getElementById("snap-container");
       const trigger = document.getElementById("scroll-content");
       if (!scroller || !trigger) {
+        setupId = window.setTimeout(setupScrollBinding, 50);
         return;
       }
 
@@ -753,8 +722,6 @@ export function Melon({ quality }: MelonProps) {
       pluckMelon.rotation.set(0, 0, 0);
       pluckMelon.visible = false;
 
-      resetOriginalSeeds();
-
       fallingSeedsRefs.current.forEach((mesh, index) => {
         if (!mesh) {
           return;
@@ -789,6 +756,14 @@ export function Melon({ quality }: MelonProps) {
 
       timeline.set(katana.position, { x: 15, y: 6.9, z: 0 }, 0);
       timeline.set(katana.rotation, { x: 0, y: 0, z: Math.PI / 5.4 }, 0);
+
+      seeds3D.forEach((_, index) => {
+        const seedMesh = originalSeedMeshesRef.current[index];
+        if (seedMesh) {
+          timeline.set(seedMesh.scale, { x: 1, y: 1.8, z: 0.4 }, 0);
+          timeline.set(seedMesh, { visible: true }, 0);
+        }
+      });
 
       timeline.to(group.rotation, {
         x: Math.PI / 2,
@@ -958,20 +933,17 @@ export function Melon({ quality }: MelonProps) {
 
       seedFallData.forEach((fall, index) => {
         const fallingMesh = fallingSeedsRefs.current[index];
-        const originalSeedScale = originalSeedScalesRef.current[index];
+        const seedMesh = originalSeedMeshesRef.current[index];
 
-        if (originalSeedScale) {
-          timeline.to(originalSeedScale, {
+        if (seedMesh) {
+          timeline.to(seedMesh.scale, {
             x: 0,
             y: 0,
             z: 0,
             duration: 0.05,
             ease: "power1.out",
-            onUpdate: () => {
-              originalSeedsResetRef.current = false;
-              updateSeedInstance(index);
-            },
           }, fall.releaseAt);
+          timeline.set(seedMesh, { visible: false }, fall.releaseAt + 0.05);
         }
         if (!fallingMesh) {
           return;
@@ -1335,6 +1307,14 @@ export function Melon({ quality }: MelonProps) {
       timeline.set(pluckMelon, { visible: false }, returnPhase + 0.18);
       timeline.set(plantGroup, { visible: false }, returnPhase + 0.28);
 
+      seeds3D.forEach((_, index) => {
+        const seedMesh = originalSeedMeshesRef.current[index];
+        if (seedMesh) {
+          timeline.set(seedMesh.scale, { x: 1, y: 1.8, z: 0.4 }, returnPhase + 0.16);
+          timeline.set(seedMesh, { visible: true }, returnPhase + 0.16);
+        }
+      });
+
       timeline.to(group.position, {
         x: 0,
         y: 0,
@@ -1402,7 +1382,9 @@ export function Melon({ quality }: MelonProps) {
         scroller.removeEventListener("scroll", handleScroll);
         window.removeEventListener("resize", handleScroll);
       };
-    }, 0);
+    };
+
+    setupId = window.setTimeout(setupScrollBinding, 0);
 
     return () => {
       window.clearTimeout(setupId);
@@ -1420,9 +1402,7 @@ export function Melon({ quality }: MelonProps) {
     fruitScale,
     landingSeedIndex,
     reducedMotion,
-    resetOriginalSeeds,
     seedFallData,
-    updateSeedInstance,
   ]);
 
   return (
@@ -1476,10 +1456,19 @@ export function Melon({ quality }: MelonProps) {
               <mesh rotation-x={-Math.PI / 2} position-y={-0.005}>
                 <circleGeometry args={[2, segments]} />
                 <meshStandardMaterial map={innerTexture} bumpMap={innerTexture} bumpScale={0.1} roughness={0.7} />
-                <instancedMesh
-                  ref={originalSeedsRef}
-                  args={[seedGeometry, originalSeedMaterial, seeds3D.length]}
-                />
+                {seeds3D.map((seed, index) => (
+                  <mesh
+                    key={`original-seed-${index}`}
+                    ref={(element) => {
+                      originalSeedMeshesRef.current[index] = element;
+                    }}
+                    position={seed.position}
+                    rotation={seed.rotation}
+                    scale={[1, 1.8, 0.4]}
+                    geometry={seedGeometry}
+                    material={originalSeedMaterial}
+                  />
+                ))}
               </mesh>
             </group>
           </group>
@@ -1507,8 +1496,8 @@ export function Melon({ quality }: MelonProps) {
           intensity={0}
           castShadow
           color="#ffd6a5"
-          shadow-mapSize-width={1024}
-          shadow-mapSize-height={1024}
+          shadow-mapSize-width={quality.shadowMapSize}
+          shadow-mapSize-height={quality.shadowMapSize}
         />
       </group>
 

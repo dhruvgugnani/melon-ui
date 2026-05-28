@@ -2,6 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
+import * as THREE from "three";
 import { Melon } from "./Melon";
 import { useSceneQuality } from "./runtime";
 
@@ -11,7 +12,7 @@ export function Scene() {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
       <Canvas
-        shadows
+        shadows={{ type: THREE.PCFShadowMap }}
         camera={{ position: [0, 0, 8], fov: 45 }}
         dpr={quality.dpr}
         frameloop={quality.motion === "full" ? "always" : "demand"}
