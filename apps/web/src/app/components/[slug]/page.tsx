@@ -57,14 +57,14 @@ export async function generateMetadata(
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://melonui.dev';
 
   return {
-    title: `${component.title} | MelonUI Community Components`,
+    title: `${component.title} | MelonUI Components`,
     description: component.description,
     keywords: [...component.tags, component.title, "UI Component", "MelonUI", component.category],
     openGraph: {
       title: `${component.title} | MelonUI`,
       description: component.description,
       type: "article",
-      url: `${siteUrl}/community/${component.slug}`,
+      url: `${siteUrl}/components/${component.slug}`,
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(component.title)}&category=${encodeURIComponent(component.category)}`,
@@ -81,7 +81,7 @@ export async function generateMetadata(
       images: [`/api/og?title=${encodeURIComponent(component.title)}&category=${encodeURIComponent(component.category)}`],
     },
     alternates: {
-      canonical: `/community/${component.slug}`,
+      canonical: `/components/${component.slug}`,
     },
   };
 }
@@ -140,8 +140,8 @@ export default async function ComponentPage(props: { params: Promise<{ slug: str
       <header className="flex justify-between items-start w-full mb-16">
         <div className="max-w-4xl">
           <nav aria-label="Breadcrumb" className="flex items-center gap-3 mb-6">
-            <Link href="/community" className="font-mono text-[10px] text-[#333] hover:text-[#f4f4f4] transition-colors uppercase tracking-[0.25em]">
-              Community
+            <Link href="/components" className="font-mono text-[10px] text-[#333] hover:text-[#f4f4f4] transition-colors uppercase tracking-[0.25em]">
+              Components
             </Link>
             <span className="text-[#333] text-xs">/</span>
             <span className="font-mono text-[10px] text-[#ff5c71] uppercase tracking-[0.25em]">{component.category}</span>
@@ -182,7 +182,7 @@ export default async function ComponentPage(props: { params: Promise<{ slug: str
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {relatedComponents.map((related) => (
-              <Link key={related.id} href={`/community/${related.slug}`} className="group block p-6 border border-[#1a1a1a] bg-[#0a0a0a] hover:border-[#ff5c71]/50 transition-colors">
+              <Link key={related.id} href={`/components/${related.slug}`} className="group block p-6 border border-[#1a1a1a] bg-[#0a0a0a] hover:border-[#ff5c71]/50 transition-colors">
                 <h3 className="text-xl font-bold uppercase text-[#e5e5e5] group-hover:text-[#ff5c71] mb-2" style={{ fontFamily: "var(--font-londrina-solid)" }}>{related.title}</h3>
                 <p className="text-xs font-mono text-[#555] line-clamp-2">{related.description}</p>
               </Link>

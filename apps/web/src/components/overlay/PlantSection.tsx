@@ -125,7 +125,7 @@ export function PlantSection() {
                 Next beat
               </button>
               <Link
-                href="/community"
+                href="/components"
                 className="rounded-full bg-[#ff5c71] px-5 py-3 text-sm font-black text-black transition-colors hover:bg-white"
               >
                 Open store

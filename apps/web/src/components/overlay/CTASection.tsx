@@ -56,7 +56,7 @@ export function CTASection() {
         <div className="relative mt-2 flex flex-wrap justify-center gap-3">
           <div ref={glowRef} className="absolute inset-0 rounded-full bg-[#ff5c71] opacity-0 blur-2xl" />
           <Link
-            href="/community"
+            href="/components"
             onMouseEnter={handleEnter}
             onMouseLeave={handleLeave}
             className="relative rounded-full bg-[#ff5c71] px-7 py-4 text-base font-black text-black transition-colors hover:bg-white"

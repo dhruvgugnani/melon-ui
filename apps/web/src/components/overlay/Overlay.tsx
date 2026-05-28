@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { Navbar } from "./Navbar";
+import { SpotlightSearch } from "../layout/SpotlightSearch";
 import { HeroSection } from "./HeroSection";
 import { ShowcaseSection } from "./ShowcaseSection";
 import { FeaturesSection } from "./FeaturesSection";
@@ -13,6 +15,8 @@ import { ScrollHud } from "./ScrollHud";
 export function Overlay() {
   return (
     <>
+      <Navbar />
+      <SpotlightSearch />
       <div
         id="snap-container"
         className="absolute inset-0 z-10 h-screen w-full snap-y snap-mandatory overflow-y-auto overflow-x-hidden overscroll-y-contain no-scrollbar"

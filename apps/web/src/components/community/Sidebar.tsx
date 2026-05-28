@@ -1,237 +1,223 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { componentsData, getComponentsByCategory } from "@/data/components";
 
-const SECTIONS = [
-  {
-    name: "Getting Started",
-    items: [
-      { name: "Installation", id: "getting-started" },
-      { name: "CLI Tool", id: "getting-started" },
-    ],
-  },
-  {
-    name: "Components",
-    items: [
-      { name: "Buttons", id: "buttons" },
-      { name: "Navigations", id: "navigations" },
-      { name: "Cards", id: "cards" },
-      { name: "Inputs", id: "inputs" },
-      { name: "Widgets", id: "widgets" },
-    ],
-  },
-  {
-    name: "3D & WebGL",
-    items: [
-      { name: "Backgrounds", id: "backgrounds" },
-      { name: "Models", id: "backgrounds" },
-      { name: "Shaders", id: "backgrounds" },
-    ],
-  },
-  {
-    name: "Interactions",
-    items: [
-      { name: "Cursors", id: "cursors" },
-      { name: "Scroll Effects", id: "scroll-effects" },
-      { name: "GSAP Text", id: "gsap-text" },
-      { name: "Page Transitions", id: "gsap-transit" },
-    ],
-  },
-];
-
-// All unique section IDs in scroll order
-const SECTION_IDS = [
-  "getting-started",
-  "buttons",
-  "navigations",
-  "cards",
-  "inputs",
-  "widgets",
-  "backgrounds",
-  "cursors",
-  "scroll-effects",
-  "gsap-text",
-  "gsap-transit",
+const GETTING_STARTED = [
+  { name: "Introduction", slug: "introduction", href: "/docs/introduction" },
+  { name: "Installation", slug: "installation", href: "/docs/installation" },
+  { name: "CLI Tool", slug: "cli", href: "/docs/cli" },
 ];
 
 export function Sidebar() {
-  const [activeId, setActiveId] = useState("getting-started");
-  const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({
-    opacity: 0,
-    transform: "translateY(0px)",
-    height: "0px",
-    width: "0px",
-    left: "0px",
+  const pathname = usePathname();
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({
+    "Getting Started": true,
   });
 
-  const sidebarRef = useRef<HTMLDivElement>(null);
+  const categories = getComponentsByCategory();
+  const categoryNames = Object.keys(categories);
 
-  // GSAP Entrance Animations
-  useGSAP(() => {
-    gsap.from(".sidebar-logo", {
-      opacity: 0,
-      y: -10,
-      duration: 0.5,
-      ease: "power2.out",
-    });
+  // Determine active item and category from URL
+  let activeSlug = "";
+  let activeCategory = "";
 
-    gsap.from(".sidebar-section", {
-      opacity: 0,
-      x: -20,
-      stagger: 0.08,
-      duration: 0.6,
-      ease: "power2.out",
-      delay: 0.1,
-    });
-  }, { scope: sidebarRef });
-
-  useEffect(() => {
-    // Use IntersectionObserver on the lenis wrapper's content
-    const wrapper = document.querySelector("[data-lenis-wrapper]");
-    if (!wrapper) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (visible.length > 0) {
-          const topmost = visible.reduce((prev, curr) =>
-            prev.boundingClientRect.top < curr.boundingClientRect.top ? prev : curr
-          );
-          setActiveId(topmost.target.id);
-        }
-      },
-      {
-        root: wrapper,
-        rootMargin: "-20% 0px -60% 0px",
-        threshold: 0,
-      }
-    );
-
-    SECTION_IDS.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  // Sliding Indicator update
-  useEffect(() => {
-    const activeBtn = document.querySelector(`[data-section-id="${activeId}"]`) as HTMLElement | null;
-    const scrollContainer = document.querySelector("[data-sidebar-scroll]") as HTMLElement | null;
-
-    if (activeBtn && scrollContainer) {
-      const top = activeBtn.offsetTop;
-      const height = activeBtn.offsetHeight;
-      const width = activeBtn.offsetWidth;
-      const left = activeBtn.offsetLeft;
-
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIndicatorStyle({
-        opacity: 1,
-        transform: `translateY(${top}px)`,
-        left: `${left}px`,
-        width: `${width}px`,
-        height: `${height}px`,
-      });
-    } else {
-      setIndicatorStyle((prev) => ({ ...prev, opacity: 0 }));
+  if (pathname?.startsWith("/docs/")) {
+    activeSlug = pathname.replace("/docs/", "");
+    activeCategory = "Getting Started";
+  } else if (pathname?.startsWith("/components/")) {
+    activeSlug = pathname.replace("/components/", "");
+    const matchedComp = componentsData.find((c) => c.slug === activeSlug);
+    if (matchedComp) {
+      activeCategory = matchedComp.category;
     }
-  }, [activeId]);
+  }
 
-  const scrollToSection = (id: string) => {
-    const wrapper = document.querySelector("[data-lenis-wrapper]") as HTMLElement | null;
-    const el = document.getElementById(id);
-    if (!wrapper || !el) return;
+  // Auto-expand category containing active item
+  useEffect(() => {
+    if (activeCategory) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setExpanded((prev) => ({ ...prev, [activeCategory]: true }));
+    }
+  }, [activeCategory]);
 
-    const contentEl = wrapper.firstElementChild as HTMLElement | null;
-    if (!contentEl) return;
-
-    const elRect = el.getBoundingClientRect();
-    const wrapperRect = wrapper.getBoundingClientRect();
-    const scrollTop = wrapper.scrollTop;
-    const targetY = scrollTop + elRect.top - wrapperRect.top - 100;
-
-    wrapper.scrollTo({ top: targetY, behavior: "smooth" });
+  const toggleCategory = (catName: string) => {
+    setExpanded((prev) => ({ ...prev, [catName]: !prev[catName] }));
   };
 
+  // GSAP Entrance Animations
+  useGSAP(
+    () => {
+      gsap.from(".sidebar-section-container", {
+        opacity: 0,
+        x: -15,
+        stagger: 0.05,
+        duration: 0.5,
+        ease: "power2.out",
+      });
+    },
+    { scope: sidebarRef }
+  );
+
   return (
-    <aside ref={sidebarRef} className="w-60 shrink-0 border-r border-[#ff5c71]/10 bg-[#050505] min-h-full flex-col hidden lg:flex relative z-20">
-      {/* Logo */}
-      <div className="p-5 border-b border-[#ff5c71]/10 sidebar-logo">
-        <Link href="/" className="flex items-center gap-3 group" aria-label="MelonUI home">
-          <span className="relative h-8 w-8 overflow-hidden rounded-full border border-white/15 bg-[#ff5c71] shrink-0 group-hover:scale-105 transition-transform duration-300">
-            <span className="absolute inset-x-0.5 bottom-0.5 h-4.5 rounded-b-full bg-[#203f18]" />
-            <span className="absolute inset-x-1 bottom-1 h-3.5 rounded-b-full bg-[#e0f2dc]" />
-            <span className="absolute inset-x-2 bottom-2 h-2 rounded-b-full bg-[#ff5c71]" />
-            <span className="absolute bottom-2 left-1/2 h-0.5 w-0.5 -translate-x-1/2 rounded-full bg-black" />
-          </span>
-          <span className="text-xl font-black uppercase text-white group-hover:text-[#ff5c71] transition-colors" style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}>
-            MelonUI
-          </span>
-          <span className="font-mono text-[9px] text-[#333] uppercase tracking-widest shrink-0">/store</span>
-        </Link>
-      </div>
-
-      {/* Nav tree */}
-      <div 
-        data-sidebar-scroll
-        className="flex-1 overflow-y-auto py-5 flex flex-col gap-5 relative"
-      >
-        {/* Dynamic Sliding Pill Indicator */}
-        <div
-          style={{
-            ...indicatorStyle,
-            transition: "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease",
-          }}
-          className="absolute bg-[#ff5c71]/12 border-l-2 border-[#ff5c71] rounded-r-sm pointer-events-none z-0"
-        />
-
-        {SECTIONS.map((category) => (
-          <div key={category.name} className="px-5 sidebar-section">
-            <h3 className="font-mono text-[9px] text-[#333] uppercase tracking-[0.25em] mb-2.5 pb-1.5 border-b border-[#111]">
-              {category.name}
-            </h3>
-            <ul className="flex flex-col gap-0.5">
-              {category.items.map((item) => {
-                const isActive = activeId === item.id;
-                return (
-                  <li key={item.name}>
-                    <button
-                      data-section-id={item.id}
-                      onClick={() => scrollToSection(item.id)}
-                      className={`group w-full text-left flex items-center gap-2.5 py-1.5 px-2 rounded-sm font-mono text-[12px] transition-all duration-300 relative z-10 hover:translate-x-1 ${
-                        isActive
-                          ? "text-[#ff5c71] font-bold"
-                          : "text-[#555] hover:text-[#aaa]"
+    <aside
+      ref={sidebarRef}
+      className="w-64 shrink-0 border-r border-white/5 bg-zinc-950/20 backdrop-blur-sm min-h-full flex flex-col hidden lg:flex relative z-20 pt-20 overflow-hidden"
+    >
+      {/* Scrollable nav tree */}
+      <div className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-6 no-scrollbar">
+        {/* Getting Started Category */}
+        <div className="sidebar-section-container">
+          <button
+            onClick={() => toggleCategory("Getting Started")}
+            className="w-full flex items-center justify-between py-1 text-left font-mono text-[10px] text-[#ff5c71] uppercase tracking-[0.2em] hover:text-white transition-colors cursor-pointer"
+          >
+            <span>Getting Started</span>
+            <svg
+              width="8"
+              height="8"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3.5"
+              className={`transition-transform duration-200 ${
+                expanded["Getting Started"] ? "rotate-90" : ""
+              }`}
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+          
+          <ul
+            className={`mt-2 flex flex-col gap-0.5 border-l border-white/5 pl-2.5 transition-all duration-300 overflow-hidden ${
+              expanded["Getting Started"] ? "max-h-40 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+            }`}
+          >
+            {GETTING_STARTED.map((item) => {
+              const isActive = activeCategory === "Getting Started" && activeSlug === item.slug;
+              return (
+                <li key={item.slug}>
+                  <Link
+                    href={item.href}
+                    className={`group w-full flex items-center gap-2 py-1.5 px-2 rounded-sm font-mono text-[12px] transition-all duration-200 hover:translate-x-1 ${
+                      isActive ? "text-[#7fff5e] font-bold" : "text-white/40 hover:text-white/80"
+                    }`}
+                  >
+                    <span
+                      className={`w-1 h-1 rounded-full shrink-0 transition-all duration-200 ${
+                        isActive ? "bg-[#7fff5e] scale-125" : "bg-white/10 group-hover:bg-white/30"
                       }`}
-                    >
-                      {/* Active indicator dot */}
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all duration-300 ${
-                          isActive
-                            ? "bg-[#ff5c71] scale-125"
-                            : "bg-[#333] group-hover:bg-[#555] group-hover:scale-110"
+                    />
+                    {item.name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        {/* Index Page Link */}
+        <div className="sidebar-section-container border-t border-white/5 pt-4">
+          <Link
+            href="/components"
+            className={`group w-full flex items-center gap-2 py-1.5 px-2 rounded-sm font-mono text-[12px] transition-all duration-200 hover:translate-x-1 ${
+              pathname === "/components" ? "text-[#7fff5e] font-bold" : "text-white/40 hover:text-white/80"
+            }`}
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              className="shrink-0"
+            >
+              <rect x="3" y="3" width="7" height="9" />
+              <rect x="14" y="3" width="7" height="5" />
+              <rect x="14" y="12" width="7" height="9" />
+              <rect x="3" y="16" width="7" height="5" />
+            </svg>
+            Component Index
+          </Link>
+        </div>
+
+        {/* Components categories list */}
+        {categoryNames.map((catName) => {
+          if (catName === "Getting Started") return null; // Already handled above
+          const catComponents = categories[catName];
+          const isCatExpanded = !!expanded[catName];
+          const isCatActive = activeCategory === catName;
+
+          return (
+            <div key={catName} className="sidebar-section-container">
+              <button
+                onClick={() => toggleCategory(catName)}
+                className={`w-full flex items-center justify-between py-1 text-left font-mono text-[10px] uppercase tracking-[0.2em] transition-colors cursor-pointer ${
+                  isCatActive ? "text-[#ff5c71]" : "text-white/30 hover:text-white/70"
+                }`}
+              >
+                <span>{catName}</span>
+                <svg
+                  width="8"
+                  height="8"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3.5"
+                  className={`transition-transform duration-200 ${
+                    isCatExpanded ? "rotate-90" : ""
+                  }`}
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </button>
+
+              <ul
+                className={`mt-2 flex flex-col gap-0.5 border-l border-white/5 pl-2.5 transition-all duration-300 overflow-hidden ${
+                  isCatExpanded
+                    ? "max-h-[300px] opacity-100"
+                    : "max-h-0 opacity-0 pointer-events-none"
+                }`}
+              >
+                {catComponents.map((comp) => {
+                  const isActive = activeSlug === comp.slug;
+                  return (
+                    <li key={comp.slug}>
+                      <Link
+                        href={`/components/${comp.slug}`}
+                        className={`group w-full flex items-center gap-2 py-1.5 px-2 rounded-sm font-mono text-[12px] transition-all duration-200 hover:translate-x-1 ${
+                          isActive ? "text-[#7fff5e] font-bold" : "text-white/40 hover:text-white/80"
                         }`}
-                      />
-                      {item.name}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+                      >
+                        <span
+                          className={`w-1 h-1 rounded-full shrink-0 transition-all duration-200 ${
+                            isActive ? "bg-[#7fff5e] scale-125" : "bg-white/10 group-hover:bg-white/30"
+                          }`}
+                        />
+                        {comp.title}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-[#ff5c71]/10 relative z-10">
+      <div className="p-4 border-t border-white/5 relative z-10 shrink-0">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#7fff5e] animate-pulse" />
-          <span className="font-mono text-[9px] text-[#333] uppercase tracking-widest">All systems online</span>
+          <span className="font-mono text-[9px] text-white/30 uppercase tracking-widest">
+            All systems online
+          </span>
         </div>
       </div>
     </aside>

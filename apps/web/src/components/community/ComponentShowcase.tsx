@@ -135,7 +135,7 @@ Please write a premium, responsive React page component in Next.js that:
       <header className="mb-5 flex flex-col md:flex-row md:items-end justify-between gap-3">
         <div>
           {slug ? (
-            <Link href={`/community/${slug}`} className="group inline-block">
+            <Link href={`/components/${slug}`} className="group inline-block">
               <h3
                 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-[#f4f4f4] group-hover:text-[#ff5c71] transition-colors leading-none mb-1.5"
                 style={{ fontFamily: "var(--font-londrina-solid)" }}

@@ -8,21 +8,21 @@ const PLANS = [
     price: "$0",
     note: "Most components stay free: buttons, inputs, cards, navs, cursors, and text effects.",
     accent: "#e0f2dc",
-    href: "/community",
+    href: "/components",
   },
   {
     name: "Pro Vault",
     price: "Later",
     note: "Bigger cinematic sections, WebGL kits, templates, and launch packs when the library expands.",
     accent: "#ff5c71",
-    href: "/community#backgrounds",
+    href: "/components#backgrounds",
   },
   {
     name: "Team Harvest",
     price: "Soon",
     note: "Licensing and packaged drops for teams that want the weird without hand-wiring everything.",
     accent: "#7fff5e",
-    href: "/community",
+    href: "/components",
   },
 ];
 

@@ -5,10 +5,10 @@ import Link from "next/link";
 import gsap from "gsap";
 
 const DROPS = [
-  { name: "Seed Burst", type: "press / particles", access: "Free", href: "/community#buttons", color: "#ff5c71", preview: "burst" },
-  { name: "Rind Peel", type: "hover card", access: "Free", href: "/community#cards", color: "#e0f2dc", preview: "peel" },
-  { name: "Magnet Dock", type: "sticky nav", access: "Free", href: "/community#navigations", color: "#7fff5e", preview: "dock" },
-  { name: "Pulp Field", type: "WebGL-ish bg", access: "Pro later", href: "/community#backgrounds", color: "#ff8d9a", preview: "field" },
+  { name: "Seed Burst", type: "press / particles", access: "Free", href: "/components#buttons", color: "#ff5c71", preview: "burst" },
+  { name: "Rind Peel", type: "hover card", access: "Free", href: "/components#cards", color: "#e0f2dc", preview: "peel" },
+  { name: "Magnet Dock", type: "sticky nav", access: "Free", href: "/components#navigations", color: "#7fff5e", preview: "dock" },
+  { name: "Pulp Field", type: "WebGL-ish bg", access: "Pro later", href: "/components#backgrounds", color: "#ff8d9a", preview: "field" },
 ] as const;
 
 type PreviewKind = (typeof DROPS)[number]["preview"];
