@@ -1,8 +1,12 @@
 
-> melonui-web@0.1.0 start
-> next start
+> melonui-web@0.1.0 dev
+> next dev
 
-▲ Next.js 16.2.4
+▲ Next.js 16.2.4 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 187ms
+✓ Ready in 516ms
+
+○ Compiling /community/[slug] ...
+ GET /community/kinetic-glass-grid 200 in 10.3s (next.js: 9.2s, generate-params: 1197ms, application-code: 1135ms)
+ GET /community/kinetic-glass-grid 200 in 241ms (next.js: 31ms, generate-params: 25ms, application-code: 210ms)
