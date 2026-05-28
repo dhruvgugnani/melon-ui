@@ -290,6 +290,17 @@ export const componentsData: ComponentData[] = [
     cliCommand: "npx @melonui-dev/cli add orbital-command-ring",
     codeSnippet: `const joystickX = useSpring(dragX, springConfig);\nconst joystickY = useSpring(dragY, springConfig);\n\n// Derived absolute position for the joystick\nconst joystickAbsX = useTransform(() => originX.get() + joystickX.get());\nconst joystickAbsY = useTransform(() => originY.get() + joystickY.get());`,
     componentPath: "OrbitalCommandRing",
+  },
+  {
+    id: "kinetic-glass-grid",
+    slug: "kinetic-glass-grid",
+    title: "Kinetic Glass Grid",
+    description: "A physical, reactive glass grid that elevates and glows intelligently based on cursor proximity, using complex distance-based spring physics.",
+    category: "Widgets",
+    tags: ["Framer Motion", "Physics", "Glassmorphism", "Interactive Grid"],
+    cliCommand: "npx @melonui-dev/cli add kinetic-glass-grid",
+    codeSnippet: `const distance = useTransform([mouseX, mouseY], ([latestX, latestY]) => {\n  // Distance calculation logic\n});\nconst scale = useSpring(useTransform(distance, [0, MAX_DISTANCE], [1.3, 1]), springConfig);`,
+    componentPath: "KineticGlassGrid",
   }
 ];
 
