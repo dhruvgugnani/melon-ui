@@ -222,23 +222,123 @@ export const componentsData: ComponentData[] = [
     id: "particle-field",
     slug: "particle-field",
     title: "Particle Field",
-    description: "R3F particle cloud in melon palette colors reacting to mouse movement.",
+    description: "Interactive 2D Canvas particle constellation network connecting nearby nodes on cursor proximity.",
     category: "3D Backgrounds",
-    tags: ["Three.js", "R3F"],
+    tags: ["Canvas", "Interactive"],
     cliCommand: "npx @melonui-dev/cli add particle-field",
-    codeSnippet: `useFrame((state) => {\n  const t = state.clock.getElapsedTime();\n  points.current.rotation.y = Math.sin(t / 4);\n  points.current.rotation.x = Math.cos(t / 4);\n});`,
+    codeSnippet: `// High performance HTML5 Canvas 2D constellation background.`,
     componentPath: "ParticleBackground",
+    props: [
+      { name: "particleCount", type: "number", defaultValue: "100", description: "Number of floating particles.", control: { type: "slider", min: 20, max: 250, step: 5 } },
+      { name: "speed", type: "number", defaultValue: "1.0", description: "Movement speed multiplier.", control: { type: "slider", min: 0.2, max: 4.0, step: 0.1 } },
+      { name: "particleColor", type: "string", defaultValue: `"#ff5c71"`, description: "Color of the particle dots.", control: { type: "color" } },
+      { name: "lineColor", type: "string", defaultValue: `"#7fff5e"`, description: "Color of the connecting constellation lines.", control: { type: "color" } },
+      { name: "linkDistance", type: "number", defaultValue: "100", description: "Maximum linking distance threshold.", control: { type: "slider", min: 50, max: 200, step: 5 } }
+    ]
   },
   {
     id: "floating-orbs",
     slug: "floating-orbs",
     title: "Floating Orbs",
-    description: "Sinusoidal floating spheres with dynamic colored point lighting.",
+    description: "Organic fluid-morphing custom glass shader mesh floating slowly and reacting to cursor hover.",
     category: "3D Backgrounds",
-    tags: ["Three.js", "R3F"],
+    tags: ["Three.js", "R3F", "Glassmorphism"],
     cliCommand: "npx @melonui-dev/cli add floating-orbs",
-    codeSnippet: `useFrame(({ clock }) => {\n  mesh.current.position.y = Math.sin(clock.getElapsedTime() + offset) * 0.5;\n});`,
+    codeSnippet: `// Custom glass morphing orbs utilizing MeshDistortionMaterial from Drei.`,
     componentPath: "FloatingOrbs",
+    props: [
+      { name: "orbCount", type: "number", defaultValue: "5", description: "Number of floating glass orbs.", control: { type: "slider", min: 1, max: 10, step: 1 } },
+      { name: "speed", type: "number", defaultValue: "1.5", description: "Speed of floating and vertex morphing.", control: { type: "slider", min: 0.2, max: 4.0, step: 0.1 } },
+      { name: "distort", type: "number", defaultValue: "0.45", description: "Amount of liquid mesh distortion.", control: { type: "slider", min: 0.1, max: 1.0, step: 0.05 } },
+      { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Primary orb color.", control: { type: "color" } },
+      { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Secondary orb color.", control: { type: "color" } }
+    ]
+  },
+  {
+    id: "sticker-wall",
+    slug: "sticker-wall",
+    title: "Sticker Wall",
+    description: "Interactive Gen-Z editorial sticker grid that fans out, scales, and tilts dynamically on pointer hover.",
+    category: "3D Backgrounds",
+    tags: ["Framer Motion", "Stickers", "Brutalist"],
+    cliCommand: "npx @melonui-dev/cli add sticker-wall",
+    codeSnippet: `// StickerWall.tsx`,
+    componentPath: "StickerWall",
+    props: [
+      { name: "stickerDensity", type: "number", defaultValue: "12", description: "Number of stickers scattered on the wall.", control: { type: "slider", min: 4, max: 24, step: 1 } },
+      { name: "scaleOnHover", type: "number", defaultValue: "1.15", description: "Scale enlargement factor on hover.", control: { type: "slider", min: 1.0, max: 1.4, step: 0.05 } },
+      { name: "stickerTheme", type: "string", defaultValue: `"melon"`, description: "Sticker label presets: 'melon', 'tech', or 'mixed'.", control: { type: "text" } }
+    ]
+  },
+  {
+    id: "luminous-waves",
+    slug: "luminous-waves",
+    title: "Luminous Waves",
+    description: "Canvas-based glowing sine wave threads running horizontally and bending dynamically to track cursor position.",
+    category: "3D Backgrounds",
+    tags: ["Canvas", "Glow", "Sine Wave"],
+    cliCommand: "npx @melonui-dev/cli add luminous-waves",
+    codeSnippet: `// LuminousWaves.tsx`,
+    componentPath: "LuminousWaves",
+    props: [
+      { name: "waveCount", type: "number", defaultValue: "4", description: "Number of horizontal wave threads.", control: { type: "slider", min: 1, max: 10, step: 1 } },
+      { name: "amplitude", type: "number", defaultValue: "35", description: "Peak vertical displacement amplitude.", control: { type: "slider", min: 10, max: 100, step: 5 } },
+      { name: "frequency", type: "number", defaultValue: "0.008", description: "Wave cycle horizontal frequency spacing.", control: { type: "slider", min: 0.002, max: 0.02, step: 0.001 } },
+      { name: "waveColor", type: "string", defaultValue: `"#7fff5e"`, description: "Neon hex color of the glowing waves.", control: { type: "color" } },
+      { name: "speed", type: "number", defaultValue: "1.0", description: "Velocity of horizontal wave flow.", control: { type: "slider", min: 0.2, max: 3.0, step: 0.1 } }
+    ]
+  },
+  {
+    id: "retro-grid",
+    slug: "retro-grid",
+    title: "Retro Grid",
+    description: "A neon 3D perspective grid extending to the horizon that moves forward and tilts on cursor coordinates.",
+    category: "3D Backgrounds",
+    tags: ["CSS 3D", "Perspective", "Parallax"],
+    cliCommand: "npx @melonui-dev/cli add retro-grid",
+    codeSnippet: `// RetroGrid.tsx`,
+    componentPath: "RetroGrid",
+    props: [
+      { name: "gridColor", type: "string", defaultValue: `"#ff5c71"`, description: "Hex color code for perspective grid lines.", control: { type: "color" } },
+      { name: "speed", type: "number", defaultValue: "1.5", description: "Forward velocity of grid movement.", control: { type: "slider", min: 0.5, max: 4.0, step: 0.1 } },
+      { name: "horizonColor", type: "string", defaultValue: `"#7fff5e"`, description: "Laser line and horizon glow hex color.", control: { type: "color" } },
+      { name: "tiltMultiplier", type: "number", defaultValue: "1.0", description: "Strength of pointer parallax grid tilt.", control: { type: "slider", min: 0.0, max: 2.0, step: 0.1 } }
+    ]
+  },
+  {
+    id: "noise-blob",
+    slug: "noise-blob",
+    title: "Noise Blob",
+    description: "Organic liquid morphing blobs using SVG color matrix and blur filters to create a gooey lava lamp visual.",
+    category: "3D Backgrounds",
+    tags: ["SVG Filter", "Gooey", "Liquid"],
+    cliCommand: "npx @melonui-dev/cli add noise-blob",
+    codeSnippet: `// NoiseBlob.tsx`,
+    componentPath: "NoiseBlob",
+    props: [
+      { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Main color of gooey blobs.", control: { type: "color" } },
+      { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Secondary color of gooey blobs.", control: { type: "color" } },
+      { name: "blobSize", type: "number", defaultValue: "120", description: "Pixel diameter of individual blobs.", control: { type: "slider", min: 60, max: 240, step: 10 } },
+      { name: "speed", type: "number", defaultValue: "1.0", description: "Floating and morphing speed.", control: { type: "slider", min: 0.2, max: 3.0, step: 0.1 } },
+      { name: "gooeyness", type: "number", defaultValue: "10", description: "Intensity of gooey blending threshold.", control: { type: "slider", min: 2, max: 20, step: 1 } }
+    ]
+  },
+  {
+    id: "matrix-rain",
+    slug: "matrix-rain",
+    title: "Matrix Rain",
+    description: "Digital cascading streams of custom alphanumeric glyphs and seeds in neon-green and coral-red.",
+    category: "3D Backgrounds",
+    tags: ["Canvas", "Matrix", "Retro"],
+    cliCommand: "npx @melonui-dev/cli add matrix-rain",
+    codeSnippet: `// MatrixRain.tsx`,
+    componentPath: "MatrixRain",
+    props: [
+      { name: "rainSpeed", type: "number", defaultValue: "1.2", description: "Drop rate speed multiplier.", control: { type: "slider", min: 0.2, max: 3.0, step: 0.1 } },
+      { name: "fontSize", type: "number", defaultValue: "14", description: "Font size in pixels for characters.", control: { type: "slider", min: 10, max: 24, step: 1 } },
+      { name: "rainColor", type: "string", defaultValue: `"#7fff5e"`, description: "Base drop stream color.", control: { type: "color" } },
+      { name: "accentColor", type: "string", defaultValue: `"#ff5c71"`, description: "Occasional spark character color.", control: { type: "color" } }
+    ]
   },
   {
     id: "blob-cursor",

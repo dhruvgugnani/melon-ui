@@ -1,92 +1,157 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import * as THREE from "three";
+import { useEffect, useRef } from "react";
 
-const PARTICLE_COUNT = 1200;
-const PARTICLE_PALETTE = [
-  [0.5, 1.0, 0.37],
-  [1.0, 0.36, 0.44],
-  [0.91, 0.84, 0.72],
-];
-
-function pseudoRandom(seed: number) {
-  const value = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
-  return value - Math.floor(value);
+export interface ParticleBackgroundProps {
+  particleCount?: number;
+  speed?: number;
+  particleColor?: string;
+  lineColor?: string;
+  linkDistance?: number;
 }
 
-function createParticlePositions() {
-  const arr = new Float32Array(PARTICLE_COUNT * 3);
-  for (let i = 0; i < PARTICLE_COUNT * 3; i += 1) {
-    arr[i] = (pseudoRandom(i + 1) - 0.5) * 8;
-  }
-  return arr;
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
 }
 
-function createParticleColors() {
-  const arr = new Float32Array(PARTICLE_COUNT * 3);
-  for (let i = 0; i < PARTICLE_COUNT; i += 1) {
-    const c = PARTICLE_PALETTE[Math.floor(pseudoRandom(i + 4001) * PARTICLE_PALETTE.length)];
-    arr[i * 3] = c[0];
-    arr[i * 3 + 1] = c[1];
-    arr[i * 3 + 2] = c[2];
-  }
-  return arr;
-}
-
-function ParticleField() {
-  const meshRef = useRef<THREE.Points>(null);
-  const mouse = useRef({ x: 0, y: 0 });
-  const positions = useMemo(() => createParticlePositions(), []);
-  const colors = useMemo(() => createParticleColors(), []);
+export function ParticleBackground({
+  particleCount = 100,
+  speed = 1.0,
+  particleColor = "#ff5c71",
+  lineColor = "#7fff5e",
+  linkDistance = 100,
+}: ParticleBackgroundProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: -1000, y: -1000 });
 
   useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      mouse.current.x = (e.clientX / window.innerWidth - 0.5) * 2;
-      mouse.current.y = -(e.clientY / window.innerHeight - 0.5) * 2;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let particles: Particle[] = [];
+
+    const resizeCanvas = () => {
+      const parent = canvas.parentElement;
+      if (parent) {
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight || 300;
+      }
     };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, []);
 
-  useFrame(({ clock }) => {
-    if (!meshRef.current) return;
-    const t = clock.getElapsedTime();
-    meshRef.current.rotation.y = t * 0.04 + mouse.current.x * 0.3;
-    meshRef.current.rotation.x = t * 0.02 + mouse.current.y * 0.1;
-  });
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    // Initialize particles
+    const initParticles = () => {
+      particles = [];
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.8 * speed,
+          vy: (Math.random() - 0.5) * 0.8 * speed,
+          radius: 1.5 + Math.random() * 2,
+        });
+      }
+    };
+
+    initParticles();
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw and update particles
+      particles.forEach((p) => {
+        // Move
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Bounce on boundaries
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = particleColor;
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = particleColor;
+        ctx.fill();
+        ctx.shadowBlur = 0; // reset
+      });
+
+      // Draw connections
+      ctx.lineWidth = 0.7;
+      for (let i = 0; i < particles.length; i++) {
+        const p1 = particles[i];
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+
+          if (dist < linkDistance) {
+            const alpha = (1 - dist / linkDistance) * 0.45;
+            ctx.strokeStyle = lineColor;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.globalAlpha = alpha;
+            ctx.stroke();
+            ctx.globalAlpha = 1.0;
+          }
+        }
+
+        // Mouse connections
+        const distMouse = Math.hypot(p1.x - mouseRef.current.x, p1.y - mouseRef.current.y);
+        if (distMouse < linkDistance * 1.5) {
+          const alpha = (1 - distMouse / (linkDistance * 1.5)) * 0.6;
+          ctx.strokeStyle = lineColor;
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(mouseRef.current.x, mouseRef.current.y);
+          ctx.globalAlpha = alpha;
+          ctx.stroke();
+          ctx.globalAlpha = 1.0;
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current.x = e.clientX - rect.left;
+      mouseRef.current.y = e.clientY - rect.top;
+    };
+
+    const handleMouseLeave = () => {
+      mouseRef.current.x = -1000;
+      mouseRef.current.y = -1000;
+    };
+
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", resizeCanvas);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, [particleCount, speed, particleColor, lineColor, linkDistance]);
 
   return (
-    <points ref={meshRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
-        <bufferAttribute
-          attach="attributes-color"
-          args={[colors, 3]}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.04}
-        vertexColors
-        transparent
-        opacity={0.85}
-        sizeAttenuation
-      />
-    </points>
-  );
-}
-
-export function ParticleBackground() {
-  return (
-    <div className="w-full h-full min-h-[180px] bg-[#060606] relative" style={{ border: "1px solid #1a1a1a" }}>
-      <Canvas camera={{ position: [0, 0, 5], fov: 60 }} style={{ width: "100%", height: "100%" }}>
-        <ambientLight intensity={0.5} />
-        <ParticleField />
-      </Canvas>
+    <div className="w-full h-full min-h-[300px] bg-[#050505] relative overflow-hidden" style={{ border: "1px solid #111" }}>
+      <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full" />
     </div>
   );
 }

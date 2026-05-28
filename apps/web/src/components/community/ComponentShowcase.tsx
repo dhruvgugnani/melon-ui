@@ -4,11 +4,12 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import gsap from "gsap";
 import Link from "next/link";
 import { getComponentBySlug } from "@/data/components";
+import { componentsRegistry } from "./componentsRegistry";
 
 interface ComponentShowcaseProps {
   title: string;
   description: string;
-  component: React.ReactNode;
+  component?: React.ReactNode;
   codeSnippet: string; // Will hold the full source code passed from the server
   cliCommand?: string;
   tags?: string[];
@@ -34,6 +35,7 @@ export function ComponentShowcase({
   componentPath,
 }: ComponentShowcaseProps) {
   const [activeTab, setActiveTab] = useState<"preview" | "installation">("preview");
+  const ComponentToRender = componentPath ? componentsRegistry[componentPath] : null;
   const [installMethod, setInstallMethod] = useState<"cli" | "manual">("cli");
   const [previewTheme, setPreviewTheme] = useState<"dark" | "light">("dark");
   const [copiedCli, setCopiedCli] = useState(false);
@@ -310,10 +312,16 @@ Please write a premium, responsive React page component in Next.js that:
           }`}
           style={{ minHeight: scrollable ? "500px" : "380px", maxHeight: scrollable ? "500px" : undefined }}
         >
-          {React.isValidElement(component) ? React.cloneElement(component, {
-            ...playgroundProps,
-            key: JSON.stringify(playgroundProps)
-          }) : component}
+          {ComponentToRender ? (
+            <ComponentToRender {...playgroundProps} key={JSON.stringify(playgroundProps)} />
+          ) : React.isValidElement(component) ? (
+            React.cloneElement(component, {
+              ...playgroundProps,
+              key: JSON.stringify(playgroundProps)
+            })
+          ) : (
+            component
+          )}
         </div>
 
         {/* --- Panel 2: Installation & AI --- */}

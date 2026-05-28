@@ -3,46 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { componentsData, getComponentBySlug } from '@/data/components';
 import { ComponentShowcase } from '@/components/community/ComponentShowcase';
-
-import dynamic from 'next/dynamic';
 import React from 'react';
-
-// Dynamically import all components
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const componentsMap: Record<string, React.ComponentType<any>> = {
-  CliTerminal: dynamic(() => import('@/components/community/demos/CliTerminal').then(m => m.CliTerminal)),
-  ChangelogCard: dynamic(() => import('@/components/community/demos/ChangelogCard').then(m => m.ChangelogCard)),
-  SeedBurstButton: dynamic(() => import('@/components/community/demos/SeedBurstButton').then(m => m.SeedBurstButton)),
-  RippleButton: dynamic(() => import('@/components/community/demos/RippleButton').then(m => m.RippleButton)),
-  MagneticNav: dynamic(() => import('@/components/community/demos/MagneticNav').then(m => m.MagneticNav)),
-  BreadcrumbTrail: dynamic(() => import('@/components/community/demos/BreadcrumbTrail').then(m => m.BreadcrumbTrail)),
-  RindPeelCard: dynamic(() => import('@/components/community/demos/RindPeelCard').then(m => m.RindPeelCard)),
-  FlipCard: dynamic(() => import('@/components/community/demos/FlipCard').then(m => m.FlipCard)),
-  VineInput: dynamic(() => import('@/components/community/demos/VineInput').then(m => m.VineInput)),
-  TagInput: dynamic(() => import('@/components/community/demos/TagInput').then(m => m.TagInput)),
-  ParticleBackground: dynamic(() => import('@/components/community/demos/ClientParticleBackground').then(m => m.ParticleBackground)),
-  FloatingOrbs: dynamic(() => import('@/components/community/demos/ClientFloatingOrbs').then(m => m.FloatingOrbs)),
-  JuicyCursor: dynamic(() => import('@/components/community/demos/JuicyCursor').then(m => m.JuicyCursor)),
-  CrosshairCursor: dynamic(() => import('@/components/community/demos/CrosshairCursor').then(m => m.CrosshairCursor)),
-  HarvestReveal: dynamic(() => import('@/components/community/demos/HarvestReveal').then(m => m.HarvestReveal)),
-  ParallaxStrips: dynamic(() => import('@/components/community/demos/ParallaxStrips').then(m => m.ParallaxStrips)),
-  MelonDripText: dynamic(() => import('@/components/community/demos/MelonDripText').then(m => m.MelonDripText)),
-  ScrambleText: dynamic(() => import('@/components/community/demos/ScrambleText').then(m => m.ScrambleText)),
-  RindWipeTransition: dynamic(() => import('@/components/community/demos/RindWipeTransition').then(m => m.RindWipeTransition)),
-  MorphTransition: dynamic(() => import('@/components/community/demos/MorphTransition').then(m => m.MorphTransition)),
-  HoloTicket: dynamic(() => import('@/components/community/demos/HoloTicket').then(m => m.HoloTicket)),
-  SolarCarousel: dynamic(() => import('@/components/community/demos/SolarCarousel').then(m => m.SolarCarousel)),
-  KineticMagnet: dynamic(() => import('@/components/community/demos/KineticMagnet').then(m => m.KineticMagnet)),
-  MorphingCyberNode: dynamic(() => import('@/components/community/demos/MorphingCyberNode').then(m => m.MorphingCyberNode)),
-  OrbitalCommandRing: dynamic(() => import('@/components/community/demos/OrbitalCommandRing').then(m => m.OrbitalCommandRing)),
-  KineticGlassGrid: dynamic(() => import('@/components/community/demos/KineticGlassGrid').then(m => m.KineticGlassGrid)),
-  SignalLoom: dynamic(() => import('@/components/community/demos/SignalLoom').then(m => m.SignalLoom)),
-  ChromaticMeltText: dynamic(() => import('@/components/community/demos/ChromaticMeltText').then(m => m.ChromaticMeltText)),
-  RindScannerText: dynamic(() => import('@/components/community/demos/RindScannerText').then(m => m.RindScannerText)),
-  StickerStackText: dynamic(() => import('@/components/community/demos/StickerStackText').then(m => m.StickerStackText)),
-  GlyphOrbitText: dynamic(() => import('@/components/community/demos/GlyphOrbitText').then(m => m.GlyphOrbitText)),
-  SeedwaveText: dynamic(() => import('@/components/community/demos/SeedwaveText').then(m => m.SeedwaveText)),
-};
 
 export async function generateStaticParams() {
   return componentsData.map((component) => ({
@@ -98,8 +59,6 @@ export default async function ComponentPage(props: { params: Promise<{ slug: str
     notFound();
   }
 
-  const ComponentToRender = componentsMap[component.componentPath];
-
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
@@ -138,7 +97,6 @@ export default async function ComponentPage(props: { params: Promise<{ slug: str
             {component.description}
           </p>
         </div>
-
       </header>
 
       <section aria-labelledby="showcase-heading" className="mb-24">
@@ -154,7 +112,6 @@ export default async function ComponentPage(props: { params: Promise<{ slug: str
           componentPath={component.componentPath}
           scrollable={component.scrollable}
           slug={component.slug}
-          component={ComponentToRender ? <ComponentToRender /> : <div>Component Not Found</div>}
         />
       </section>
 

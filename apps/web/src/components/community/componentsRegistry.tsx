@@ -1,0 +1,45 @@
+"use client";
+
+import dynamic from 'next/dynamic';
+import React from 'react';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const componentsRegistry: Record<string, React.ComponentType<any>> = {
+  CliTerminal: dynamic(() => import('./demos/CliTerminal').then(m => m.CliTerminal), { ssr: false }),
+  ChangelogCard: dynamic(() => import('./demos/ChangelogCard').then(m => m.ChangelogCard), { ssr: false }),
+  SeedBurstButton: dynamic(() => import('./demos/SeedBurstButton').then(m => m.SeedBurstButton), { ssr: false }),
+  RippleButton: dynamic(() => import('./demos/RippleButton').then(m => m.RippleButton), { ssr: false }),
+  MagneticNav: dynamic(() => import('./demos/MagneticNav').then(m => m.MagneticNav), { ssr: false }),
+  BreadcrumbTrail: dynamic(() => import('./demos/BreadcrumbTrail').then(m => m.BreadcrumbTrail), { ssr: false }),
+  RindPeelCard: dynamic(() => import('./demos/RindPeelCard').then(m => m.RindPeelCard), { ssr: false }),
+  FlipCard: dynamic(() => import('./demos/FlipCard').then(m => m.FlipCard), { ssr: false }),
+  VineInput: dynamic(() => import('./demos/VineInput').then(m => m.VineInput), { ssr: false }),
+  TagInput: dynamic(() => import('./demos/TagInput').then(m => m.TagInput), { ssr: false }),
+  ParticleBackground: dynamic(() => import('./demos/ClientParticleBackground').then(m => m.ParticleBackground), { ssr: false }),
+  FloatingOrbs: dynamic(() => import('./demos/ClientFloatingOrbs').then(m => m.FloatingOrbs), { ssr: false }),
+  StickerWall: dynamic(() => import('./demos/ClientStickerWall').then(m => m.StickerWall), { ssr: false }),
+  LuminousWaves: dynamic(() => import('./demos/ClientLuminousWaves').then(m => m.LuminousWaves), { ssr: false }),
+  RetroGrid: dynamic(() => import('./demos/ClientRetroGrid').then(m => m.RetroGrid), { ssr: false }),
+  NoiseBlob: dynamic(() => import('./demos/ClientNoiseBlob').then(m => m.NoiseBlob), { ssr: false }),
+  MatrixRain: dynamic(() => import('./demos/ClientMatrixRain').then(m => m.MatrixRain), { ssr: false }),
+  JuicyCursor: dynamic(() => import('./demos/JuicyCursor').then(m => m.JuicyCursor), { ssr: false }),
+  CrosshairCursor: dynamic(() => import('./demos/CrosshairCursor').then(m => m.CrosshairCursor), { ssr: false }),
+  HarvestReveal: dynamic(() => import('./demos/HarvestReveal').then(m => m.HarvestReveal), { ssr: false }),
+  ParallaxStrips: dynamic(() => import('./demos/ParallaxStrips').then(m => m.ParallaxStrips), { ssr: false }),
+  MelonDripText: dynamic(() => import('./demos/MelonDripText').then(m => m.MelonDripText), { ssr: false }),
+  ScrambleText: dynamic(() => import('./demos/ScrambleText').then(m => m.ScrambleText), { ssr: false }),
+  RindWipeTransition: dynamic(() => import('./demos/RindWipeTransition').then(m => m.RindWipeTransition), { ssr: false }),
+  MorphTransition: dynamic(() => import('./demos/MorphTransition').then(m => m.MorphTransition), { ssr: false }),
+  HoloTicket: dynamic(() => import('./demos/HoloTicket').then(m => m.HoloTicket), { ssr: false }),
+  SolarCarousel: dynamic(() => import('./demos/SolarCarousel').then(m => m.SolarCarousel), { ssr: false }),
+  KineticMagnet: dynamic(() => import('./demos/KineticMagnet').then(m => m.KineticMagnet), { ssr: false }),
+  MorphingCyberNode: dynamic(() => import('./demos/MorphingCyberNode').then(m => m.MorphingCyberNode), { ssr: false }),
+  OrbitalCommandRing: dynamic(() => import('./demos/OrbitalCommandRing').then(m => m.OrbitalCommandRing), { ssr: false }),
+  KineticGlassGrid: dynamic(() => import('./demos/KineticGlassGrid').then(m => m.KineticGlassGrid), { ssr: false }),
+  SignalLoom: dynamic(() => import('./demos/SignalLoom').then(m => m.SignalLoom), { ssr: false }),
+  ChromaticMeltText: dynamic(() => import('./demos/ChromaticMeltText').then(m => m.ChromaticMeltText), { ssr: false }),
+  RindScannerText: dynamic(() => import('./demos/RindScannerText').then(m => m.RindScannerText), { ssr: false }),
+  StickerStackText: dynamic(() => import('./demos/StickerStackText').then(m => m.StickerStackText), { ssr: false }),
+  GlyphOrbitText: dynamic(() => import('./demos/GlyphOrbitText').then(m => m.GlyphOrbitText), { ssr: false }),
+  SeedwaveText: dynamic(() => import('./demos/SeedwaveText').then(m => m.SeedwaveText), { ssr: false }),
+};
