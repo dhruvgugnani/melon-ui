@@ -420,15 +420,15 @@ Please write a premium, responsive React page component in Next.js that:
                 {/* Tablet Preview */}
                 <button
                   onClick={() => {
-                    setPreviewWidth("768px");
+                    setPreviewWidth("680px");
                     setShowResizer(true);
                   }}
                   className={`p-1 border rounded bg-[#0d0d0f] transition-all cursor-pointer flex items-center justify-center w-6 h-6 z-10 active:scale-90 hover:scale-105 duration-200 ${
-                    previewWidth === "768px"
+                    previewWidth === "680px"
                       ? "border-[#ff5c71] text-[#ff5c71]"
                       : "border-[#ff5c71]/15 text-[#555] hover:text-[#ccc]"
                   }`}
-                  title="Tablet View (768px)"
+                  title="Tablet View (680px)"
                   aria-label="Tablet Preview"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -441,15 +441,15 @@ Please write a premium, responsive React page component in Next.js that:
                 {/* Phone Preview */}
                 <button
                   onClick={() => {
-                    setPreviewWidth("375px");
+                    setPreviewWidth("320px");
                     setShowResizer(true);
                   }}
                   className={`p-1 border rounded bg-[#0d0d0f] transition-all cursor-pointer flex items-center justify-center w-6 h-6 z-10 active:scale-90 hover:scale-105 duration-200 ${
-                    previewWidth === "375px"
+                    previewWidth === "320px"
                       ? "border-[#ff5c71] text-[#ff5c71]"
                       : "border-[#ff5c71]/15 text-[#555] hover:text-[#ccc]"
                   }`}
-                  title="Phone View (375px)"
+                  title="Phone View (320px)"
                   aria-label="Phone Preview"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -475,7 +475,7 @@ Please write a premium, responsive React page component in Next.js that:
         <div
           ref={previewPanelRef}
           role="tabpanel"
-          className={`relative w-full flex items-center justify-center p-8 bg-[#080808] text-white transition-colors duration-300 ${
+          className={`relative w-full flex items-center justify-center p-4 sm:p-6 md:p-8 bg-[#080808] text-white transition-colors duration-300 ${
             previewTheme === "light" ? "light" : ""
           } ${
             scrollable ? "overflow-y-auto" : "overflow-hidden"
@@ -491,7 +491,7 @@ Please write a premium, responsive React page component in Next.js that:
               previewWidth === "100%" ? "w-full" : ""
             } ${
               showResizer 
-                ? "border-2 border-dashed border-[#ff5c71]/30 rounded-xl shadow-2xl shadow-[#ff5c71]/5 bg-[#030303]" 
+                ? "border-2 border-dashed border-[#ff5c71]/30 rounded-xl shadow-2xl shadow-[#ff5c71]/5 bg-[#030303] overflow-hidden p-2 md:p-3" 
                 : ""
             }`}
             style={{ 
