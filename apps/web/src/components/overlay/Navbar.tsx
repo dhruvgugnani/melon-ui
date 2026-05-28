@@ -25,8 +25,8 @@ export function Navbar() {
   };
 
   const navLinks = [
-    { name: "Components", href: "/components" },
     { name: "Docs", href: "/docs" },
+    { name: "Components", href: "/components" },
     { name: "Blog", href: "/blog" },
     { name: "Community", href: "/community" },
   ];
