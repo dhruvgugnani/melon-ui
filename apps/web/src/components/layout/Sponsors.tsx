@@ -2,71 +2,42 @@
 
 import React from "react";
 
-const DIAMOND_SPONSORS = [
-  { name: "Shadcnblocks.com", note: "2000+ UI blocks", link: "https://shadcnblocks.com" },
-  { name: "shadcnstudio.com", note: "next-gen templates", link: "https://shadcnstudio.com" },
-];
-
-const PLATINUM_SPONSORS = [
-  { name: "tailark", link: "https://tailark.com" },
-];
-
 export function Sponsors() {
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <div className="flex items-center justify-between border-b border-white/5 pb-2">
         <h5
           className="text-xs font-black uppercase text-white/50 tracking-wider"
           style={{ fontFamily: "var(--font-outfit)" }}
         >
-          Sponsors
+          Sponsor Node
         </h5>
+      </div>
+
+      <div className="p-4 rounded-[8px] border border-dashed border-[#7fff5e]/25 bg-zinc-950/40 backdrop-blur-sm relative overflow-hidden group select-none flex flex-col justify-between h-44">
+        {/* Glow grid background */}
+        <div className="absolute inset-0 pointer-events-none opacity-5 group-hover:opacity-10 transition-opacity">
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:10px_10px]" />
+        </div>
+
+        <div className="space-y-2 relative z-10">
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ff5c71] animate-pulse" />
+            <span className="font-mono text-[8px] text-[#ff5c71] uppercase tracking-widest font-bold">PORTAL OPEN</span>
+          </div>
+          <h6 className="font-mono text-[11px] text-white/70 uppercase tracking-wide leading-relaxed">
+            Your logo could be here, supporting the curation of high-fidelity Gen-Z interfaces.
+          </h6>
+        </div>
+
         <a
           href="https://github.com/sponsors/dhruvgugnani"
           target="_blank"
           rel="noreferrer"
-          className="font-mono text-[9px] text-[#ff5c71] hover:text-white transition-colors uppercase tracking-widest"
+          className="w-full py-2 bg-zinc-900 border border-white/10 hover:border-[#7fff5e]/50 hover:bg-[#7fff5e]/10 text-white hover:text-[#7fff5e] font-mono text-[10px] uppercase tracking-wider rounded-md text-center transition-all duration-200 relative z-10"
         >
-          Become a sponsor &rarr;
+          CLAIM THIS NODE &rarr;
         </a>
-      </div>
-
-      {/* Diamond Tier */}
-      <div className="space-y-2">
-        <p className="font-mono text-[9px] text-white/20 uppercase tracking-[0.2em]">Diamond</p>
-        <div className="grid gap-2">
-          {DIAMOND_SPONSORS.map((sp) => (
-            <a
-              key={sp.name}
-              href={sp.link}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-between p-3 rounded-[6px] border border-white/5 bg-zinc-950/40 hover:bg-zinc-950/80 hover:border-white/10 hover:scale-[1.01] active:scale-98 transition-all duration-200"
-            >
-              <span className="text-xs font-bold text-white/80">{sp.name}</span>
-              <span className="font-mono text-[9px] text-white/30">{sp.note}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      {/* Platinum Tier */}
-      <div className="space-y-2">
-        <p className="font-mono text-[9px] text-white/20 uppercase tracking-[0.2em]">Platinum</p>
-        <div className="grid gap-2">
-          {PLATINUM_SPONSORS.map((sp) => (
-            <a
-              key={sp.name}
-              href={sp.link}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-between p-3 rounded-[6px] border border-white/5 bg-zinc-950/40 hover:bg-zinc-950/80 hover:border-white/10 hover:scale-[1.01] active:scale-98 transition-all duration-200"
-            >
-              <span className="text-xs font-bold text-white/80">{sp.name}</span>
-              <span className="font-mono text-[9px] text-white/30">sponsor</span>
-            </a>
-          ))}
-        </div>
       </div>
     </div>
   );

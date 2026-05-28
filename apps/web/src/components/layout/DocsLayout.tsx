@@ -87,7 +87,7 @@ export function DocsLayout({ children }: DocsLayoutProps) {
         </main>
 
         {/* Right Column: Table of Contents & Promos */}
-        <aside className="w-64 shrink-0 border-l border-white/5 bg-zinc-950/20 backdrop-blur-sm min-h-full flex-col hidden xl:flex relative z-20 pt-24 pb-10 px-5 gap-8 overflow-y-auto no-scrollbar">
+        <aside className="w-80 shrink-0 border-l border-white/5 bg-zinc-950/20 backdrop-blur-sm min-h-full flex-col hidden xl:flex relative z-20 pt-24 pb-10 px-5 gap-8 overflow-y-auto no-scrollbar">
           {isIndexPage ? (
             <>
               <ProPoster />

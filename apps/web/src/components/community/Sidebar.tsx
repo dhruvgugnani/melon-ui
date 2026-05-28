@@ -105,7 +105,7 @@ export function Sidebar() {
                   <Link
                     href={item.href}
                     className={`group w-full flex items-center gap-2 py-1.5 px-2 rounded-sm font-mono text-[12px] transition-all duration-200 hover:translate-x-1 ${
-                      isActive ? "text-[#7fff5e] font-bold" : "text-white/40 hover:text-white/80"
+                      isActive ? "text-[#7fff5e] font-bold" : "text-white/60 hover:text-white/95"
                     }`}
                   >
                     <span
@@ -126,7 +126,7 @@ export function Sidebar() {
           <Link
             href="/components"
             className={`group w-full flex items-center gap-2 py-1.5 px-2 rounded-sm font-mono text-[12px] transition-all duration-200 hover:translate-x-1 ${
-              pathname === "/components" ? "text-[#7fff5e] font-bold" : "text-white/40 hover:text-white/80"
+              pathname === "/components" ? "text-[#7fff5e] font-bold" : "text-white/60 hover:text-white/95"
             }`}
           >
             <svg
@@ -159,7 +159,7 @@ export function Sidebar() {
               <button
                 onClick={() => toggleCategory(catName)}
                 className={`w-full flex items-center justify-between py-1 text-left font-mono text-[10px] uppercase tracking-[0.2em] transition-colors cursor-pointer ${
-                  isCatActive ? "text-[#ff5c71]" : "text-white/30 hover:text-white/70"
+                  isCatActive ? "text-[#ff5c71]" : "text-white/50 hover:text-white/90"
                 }`}
               >
                 <span>{catName}</span>
@@ -192,7 +192,7 @@ export function Sidebar() {
                       <Link
                         href={`/components/${comp.slug}`}
                         className={`group w-full flex items-center gap-2 py-1.5 px-2 rounded-sm font-mono text-[12px] transition-all duration-200 hover:translate-x-1 ${
-                          isActive ? "text-[#7fff5e] font-bold" : "text-white/40 hover:text-white/80"
+                          isActive ? "text-[#7fff5e] font-bold" : "text-white/60 hover:text-white/95"
                         }`}
                       >
                         <span
@@ -215,7 +215,7 @@ export function Sidebar() {
       <div className="p-4 border-t border-white/5 relative z-10 shrink-0">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#7fff5e] animate-pulse" />
-          <span className="font-mono text-[9px] text-white/30 uppercase tracking-widest">
+          <span className="font-mono text-[9px] text-white/50 uppercase tracking-widest">
             All systems online
           </span>
         </div>
