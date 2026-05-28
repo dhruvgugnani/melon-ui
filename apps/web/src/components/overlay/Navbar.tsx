@@ -39,12 +39,11 @@ export function Navbar() {
       >
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group" aria-label="MelonUI home">
-          <span className="relative h-7 w-7 md:h-8 md:w-8 overflow-hidden rounded-full border border-white/15 bg-[#ff5c71] shrink-0 group-hover:scale-105 transition-transform duration-300">
-            <span className="absolute inset-x-1 bottom-1 h-3.5 md:h-4 rounded-b-full bg-[#203f18]" />
-            <span className="absolute inset-x-2 bottom-2 h-2 md:h-2.5 rounded-b-full bg-[#e0f2dc]" />
-            <span className="absolute inset-x-3 bottom-3 h-1 md:h-1.5 rounded-b-full bg-[#ff5c71]" />
-            <span className="absolute bottom-2.5 left-1/2 h-0.5 w-0.5 md:h-1 md:w-1 -translate-x-1/2 rounded-full bg-black" />
-          </span>
+          <img
+            src="/logo.png"
+            alt="MelonUI Logo"
+            className="h-7 w-7 md:h-8 md:w-8 object-contain shrink-0 group-hover:scale-105 transition-transform duration-300"
+          />
           <span
             className="text-base md:text-lg font-black uppercase text-white group-hover:text-[#ff5c71] transition-colors"
             style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}

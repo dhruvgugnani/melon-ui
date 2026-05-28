@@ -40,7 +40,7 @@ export default function BlogLandingPage() {
   };
 
   return (
-    <article className="min-h-screen bg-[#050505] selection:bg-[#ff5c71] selection:text-[#050505] px-6 md:px-10 lg:px-14 pb-32 pt-20">
+    <div className="w-full max-w-6xl mx-auto selection:bg-[#ff5c71]/20 selection:text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -54,7 +54,7 @@ export default function BlogLandingPage() {
           MelonUI Blog
         </h1>
         <p className="font-mono text-[#777] text-sm max-w-2xl leading-relaxed">
-          Deep dives, technical guides, and best practices on building customizable **React UI components**, **GSAP animations**, and responsive **Tailwind CSS design systems**.
+          Deep dives, technical guides, and best practices on building customizable <strong className="text-white">React UI components</strong>, <strong className="text-white">GSAP animations</strong>, and responsive <strong className="text-white">Tailwind CSS design systems</strong>.
         </p>
       </header>
 
@@ -103,6 +103,6 @@ export default function BlogLandingPage() {
           </article>
         ))}
       </section>
-    </article>
+    </div>
   );
 }

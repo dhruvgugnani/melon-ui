@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
 import { blogPosts, getPostBySlug } from "@/data/blog";
+import { CodeBlock } from "@/components/blog/CodeBlock";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -56,6 +57,80 @@ export async function generateMetadata(
   };
 }
 
+// Simple inline formatting parser (bold and code backticks)
+const parseInline = (text: string): React.ReactNode => {
+  const parts = text.split(/(\*\*.*?\*\*|`.*?`)/g);
+  return (
+    <>
+      {parts.map((part, index) => {
+        if (part.startsWith("**") && part.endsWith("**")) {
+          return (
+            <strong key={index} className="font-bold text-white">
+              {part.slice(2, -2)}
+            </strong>
+          );
+        }
+        if (part.startsWith("`") && part.endsWith("`")) {
+          return (
+            <code
+              key={index}
+              className="px-1.5 py-0.5 rounded bg-zinc-950/60 border border-white/5 font-mono text-[#7fff5e] text-[10px] mx-0.5"
+            >
+              {part.slice(1, -1)}
+            </code>
+          );
+        }
+        return part;
+      })}
+    </>
+  );
+};
+
+// Markdown table renderer
+const renderTable = (block: string, key: number) => {
+  const lines = block.trim().split("\n");
+  const rows = lines
+    .map((line) => {
+      // Remove leading and trailing pipe
+      const trimmedLine = line.trim().replace(/^\||\|$/g, "");
+      return trimmedLine.split("|").map((cell) => cell.trim());
+    })
+    // Filter out divider row (e.g., contains '---')
+    .filter((row) => !row.some((cell) => cell.includes("---")));
+
+  if (rows.length === 0) return null;
+
+  const headers = rows[0];
+  const dataRows = rows.slice(1);
+
+  return (
+    <div key={key} className="overflow-x-auto my-8 border border-white/10 rounded-lg bg-zinc-950/20 backdrop-blur-sm">
+      <table className="w-full text-left border-collapse text-xs font-mono">
+        <thead>
+          <tr className="border-b border-[#ff5c71]/20 bg-[#ff5c71]/5">
+            {headers.map((cell, idx) => (
+              <th key={idx} className="p-4 uppercase text-[#ff5c71] font-bold tracking-wider">
+                {parseInline(cell)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-white/5">
+          {dataRows.map((row, rowIdx) => (
+            <tr key={rowIdx} className="hover:bg-white/[0.01] transition-colors">
+              {row.map((cell, cellIdx) => (
+                <td key={cellIdx} className="p-4 text-white/80 leading-relaxed">
+                  {parseInline(cell)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 export default async function BlogPostPage(props: BlogPostPageProps) {
   const params = await props.params;
   const post = getPostBySlug(params.slug);
@@ -99,10 +174,10 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
         return (
           <h1 
             key={idx}
-            className="text-4xl md:text-6xl font-black uppercase text-[#f4f4f4] tracking-tight mb-8 mt-12"
+            className="text-3xl md:text-5xl font-black uppercase text-white tracking-tight mb-8 mt-12"
             style={{ fontFamily: "var(--font-londrina-solid)" }}
           >
-            {trimmed.slice(2)}
+            {parseInline(trimmed.slice(2))}
           </h1>
         );
       }
@@ -115,7 +190,7 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
             className="text-2xl md:text-3xl font-black uppercase text-[#ff5c71] tracking-tight mb-6 mt-10"
             style={{ fontFamily: "var(--font-londrina-solid)" }}
           >
-            {trimmed.slice(3)}
+            {parseInline(trimmed.slice(3))}
           </h2>
         );
       }
@@ -128,7 +203,7 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
             className="text-xl md:text-2xl font-bold uppercase text-[#e5e5e5] tracking-tight mb-4 mt-8"
             style={{ fontFamily: "var(--font-londrina-solid)" }}
           >
-            {trimmed.slice(4)}
+            {parseInline(trimmed.slice(4))}
           </h3>
         );
       }
@@ -136,23 +211,18 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
       // Code Block
       if (trimmed.startsWith("```")) {
         const lines = trimmed.split("\n");
+        const language = lines[0].replace("```", "").trim();
         const code = lines.slice(1, -1).join("\n");
-        return (
-          <div key={idx} className="relative bg-[#080808] border border-[#ff5c71]/15 rounded-lg overflow-hidden my-6">
-            <pre className="p-4 overflow-x-auto text-xs font-mono text-[#7fff5e] leading-relaxed">
-              <code>{code}</code>
-            </pre>
-          </div>
-        );
+        return <CodeBlock key={idx} code={code} language={language} />;
       }
 
       // Bullet points
-      if (trimmed.startsWith("* ")) {
+      if (trimmed.startsWith("* ") || trimmed.startsWith("- ")) {
         return (
           <ul key={idx} className="list-disc pl-6 space-y-2 mb-6 font-mono text-xs text-[#bbb] leading-relaxed">
             {trimmed.split("\n").map((line, lIdx) => (
               <li key={lIdx}>
-                {line.replace(/^\*\s+/, "")}
+                {parseInline(line.replace(/^(\*|-)\s+/, ""))}
               </li>
             ))}
           </ul>
@@ -165,24 +235,29 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
           <ol key={idx} className="list-decimal pl-6 space-y-2 mb-6 font-mono text-xs text-[#bbb] leading-relaxed">
             {trimmed.split("\n").map((line, lIdx) => (
               <li key={lIdx}>
-                {line.replace(/^\d+\.\s+/, "")}
+                {parseInline(line.replace(/^\d+\.\s+/, ""))}
               </li>
             ))}
           </ol>
         );
       }
 
+      // Table
+      if (trimmed.startsWith("|")) {
+        return renderTable(trimmed, idx);
+      }
+
       // Paragraph text
       return (
         <p key={idx} className="font-mono text-xs text-[#aaa] leading-relaxed mb-6">
-          {trimmed}
+          {parseInline(trimmed)}
         </p>
       );
     });
   };
 
   return (
-    <article className="min-h-screen bg-[#050505] selection:bg-[#ff5c71] selection:text-[#050505] px-6 md:px-10 lg:px-14 pb-32 pt-20">
+    <div className="w-full max-w-4xl mx-auto selection:bg-[#ff5c71]/20 selection:text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -232,6 +307,6 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
           ← Back to Blog
         </Link>
       </footer>
-    </article>
+    </div>
   );
 }

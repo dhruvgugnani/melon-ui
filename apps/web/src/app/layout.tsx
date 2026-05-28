@@ -37,10 +37,10 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "MelonUI | Creative React UI Components & Web Animation Library",
+    default: "MelonUI | Premium React Components & Web Animation Library",
     template: "%s | MelonUI",
   },
-  description: "MelonUI is a premium, open-source library of customizable React components, UI components, and web components featuring advanced GSAP and Framer Motion animations. Boost your website's aesthetic and interaction rates today.",
+  description: "MelonUI is a premium, open-source library of copy-paste React components, Tailwind CSS styles, and web animations built with GSAP and Framer Motion. Ship modern UI fast.",
   keywords: [
     "React components",
     "UI components",
@@ -59,26 +59,31 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "MelonUI" }],
   creator: "MelonUI",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: siteUrl,
-    title: "MelonUI | Creative React UI Components & Web Animation Library",
-    description: "MelonUI is a premium, open-source library of customizable React components, UI components, and web components featuring advanced GSAP and Framer Motion animations.",
+    title: "MelonUI | Premium React Components & Web Animation Library",
+    description: "MelonUI is a premium, open-source library of copy-paste React components, Tailwind CSS styles, and web animations built with GSAP and Framer Motion.",
     siteName: "MelonUI",
     images: [
       {
         url: "/api/og?title=MelonUI&category=Premium%20Component%20Lab",
         width: 1200,
         height: 630,
-        alt: "MelonUI - Premium UI Component Lab",
+        alt: "MelonUI - Premium React Component Lab",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MelonUI | Premium Gen-Z Component Lab",
-    description: "A premium, futuristic 3D component lab for fresh, internet-native interface pieces.",
+    title: "MelonUI | Premium React Components & Web Animation Library",
+    description: "MelonUI is a premium, open-source library of copy-paste React components, Tailwind CSS styles, and web animations built with GSAP and Framer Motion. Ship modern UI fast.",
     images: ["/api/og?title=MelonUI&category=Premium%20Component%20Lab"],
     creator: "@melonui",
   },
@@ -102,8 +107,9 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "MelonUI",
+  alternateName: ["melon-ui", "Melon-UI", "Melon-Ui"],
   url: siteUrl,
-  description: "A premium, futuristic 3D component lab for fresh, internet-native interface pieces.",
+  description: "MelonUI is a premium, open-source library of copy-paste React components, Tailwind CSS styles, and web animations built with GSAP and Framer Motion.",
   publisher: {
     "@type": "Organization",
     name: "MelonUI",
