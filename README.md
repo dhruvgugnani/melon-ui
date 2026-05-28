@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍉 MelonUI
 
-## Getting Started
+> Premium, chaotic, and highly-animated components for the modern web. Built with production taste.
 
-First, run the development server:
+MelonUI is an open-source, hand-crafted collection of premium interactive components and layouts. Designed for developers who value visual excellence, MelonUI drops custom WebGL, Three.js, GSAP, and Framer Motion code straight into your React & Tailwind CSS v4 codebase.
 
+[Explore Components Storefront](https://melonui.dev) | [Become a Sponsor](https://github.com/sponsors/dhruvgugnani)
+
+---
+
+## ✨ Features
+
+- **Copy. Paste. Ship.** – Copy components directly from the web or pull them straight into your local workspace.
+- **Dynamic Local CLI** – Add components to your directories with a single command.
+- **Advanced Animations** – High-performance timelines with GSAP, interactive 3D physics with Three.js (React Three Fiber), and smooth spring physics with Framer Motion.
+- **Resource Optimized** – WebGL canvases and heavy renders unmount and pause automatically when not in view to preserve system resources.
+- **Tailwind CSS v4** – Built on clean configurations utilizing CSS-first design tokens.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Initialize the CLI
+Run the initialization command at the root of your project:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx @melonui-dev/cli init
 ```
+This command queries your directory preferences (e.g., components folders, global CSS filepaths) and generates a local configuration file `melonui.json`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Add Components
+Pull any component from our registry directly into your codebase:
+```bash
+npx @melonui-dev/cli add burst-button
+```
+The CLI automatically reads the component's registry record, installs missing npm packages, handles local imports, and drops the raw TSX component file straight into your workspace.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Repository Architecture
 
-## Learn More
+This codebase is a monorepo managed via npm workspaces:
+- `apps/web`: The Next.js 16 storefront, containing all documentation guides, component pages, spotlight search palettes, and interactive timelines.
+- `cli`: The TypeScript CLI package (`@melonui-dev/cli`) distributed on npm to pull registry assets.
+- `registry`: Stores the raw component definitions, metadata, and files distributed to clients.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 💻 Development
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To run the codebase locally:
 
-## Deploy on Vercel
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Start Local Development**:
+   ```bash
+   npm run dev
+   ```
+   Runs the Next.js dev server for the web app storefront (on `http://localhost:3000`).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Check Code Quality**:
+   - Run typecheckers: `npm run lint`
+   - Test TypeScript compile safety: `npx tsc --noEmit`
+
+4. **Production Build**:
+   ```bash
+   npm run build
+   ```
+   Builds the workspaces for the Next.js production build and bundles the CLI package via `tsup`.
+
+---
+
+## 📄 License
+
+This repository is open-sourced under the terms of the **MIT License**. Check out [LICENSE](./LICENSE) for details.
