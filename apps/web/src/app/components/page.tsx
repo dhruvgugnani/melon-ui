@@ -35,6 +35,11 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   OrbitalCommandRing: dynamic(() => import('@/components/community/demos/OrbitalCommandRing').then(m => m.OrbitalCommandRing), { ssr: false }),
   KineticGlassGrid: dynamic(() => import('@/components/community/demos/KineticGlassGrid').then(m => m.KineticGlassGrid), { ssr: false }),
   SignalLoom: dynamic(() => import('@/components/community/demos/SignalLoom').then(m => m.SignalLoom), { ssr: false }),
+  ChromaticMeltText: dynamic(() => import('@/components/community/demos/ChromaticMeltText').then(m => m.ChromaticMeltText), { ssr: false }),
+  RindScannerText: dynamic(() => import('@/components/community/demos/RindScannerText').then(m => m.RindScannerText), { ssr: false }),
+  StickerStackText: dynamic(() => import('@/components/community/demos/StickerStackText').then(m => m.StickerStackText), { ssr: false }),
+  GlyphOrbitText: dynamic(() => import('@/components/community/demos/GlyphOrbitText').then(m => m.GlyphOrbitText), { ssr: false }),
+  SeedwaveText: dynamic(() => import('@/components/community/demos/SeedwaveText').then(m => m.SeedwaveText), { ssr: false }),
 };
 
 // Beautiful custom preview placeholders for the cards (to avoid heavy WebGL contexts)
@@ -136,6 +141,39 @@ function StaticPlaceholder({ slug, color }: { slug: string; color: string }) {
     );
   }
 
+  if (slug === "chromatic-melt-text" || slug === "rind-scanner-text" || slug === "sticker-stack-text" || slug === "glyph-orbit-text" || slug === "seedwave-text") {
+    const labels: Record<string, string> = {
+      "chromatic-melt-text": "MELT",
+      "rind-scanner-text": "SCAN",
+      "sticker-stack-text": "LOUD",
+      "glyph-orbit-text": "ORBIT",
+      "seedwave-text": "SEED",
+    };
+    return (
+      <div className="relative h-full w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] p-4 select-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_26%,rgba(255,92,113,0.26),transparent_34%),radial-gradient(circle_at_78%_70%,rgba(127,255,94,0.2),transparent_40%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:28px_28px]" />
+        <div className="relative z-10 flex h-full items-center justify-center">
+          <div className="relative">
+            <span
+              className="block text-6xl uppercase leading-none text-white"
+              style={{
+                fontFamily: "var(--font-londrina-solid)",
+                textShadow: "0 0 28px rgba(255,92,113,0.32)",
+              }}
+            >
+              {labels[slug]}
+            </span>
+            <span className="absolute -bottom-2 left-0 h-1.5 w-2/3 rounded-full bg-[#7fff5e]" />
+            <span className="absolute -right-6 -top-4 rounded border border-[#ff5c71]/35 bg-[#ff5c71]/12 px-2 py-1 font-mono text-[8px] uppercase tracking-[0.2em] text-[#ff5c71]">
+              Text
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (slug === "grow-input" || slug === "tag-input") {
     return (
       <div className="relative h-full w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center p-4 select-none">
@@ -178,6 +216,7 @@ function StaticPlaceholder({ slug, color }: { slug: string; color: string }) {
 const getScale = (slug: string) => {
   if (slug === "solar-carousel" || slug === "orbital-command-ring") return "scale-[0.45]";
   if (slug === "signal-loom") return "scale-[0.52]";
+  if (slug === "chromatic-melt-text" || slug === "rind-scanner-text" || slug === "sticker-stack-text" || slug === "glyph-orbit-text" || slug === "seedwave-text") return "scale-[0.62]";
   if (slug === "kinetic-glass-grid" || slug === "kinetic-magnet" || slug === "morphing-cyber-node" || slug === "particle-field" || slug === "floating-orbs") return "scale-[0.5]";
   if (slug === "holo-ticket" || slug === "rind-peel-card" || slug === "flip-card" || slug === "changelog") return "scale-[0.65]";
   if (slug === "parallax-strips" || slug === "harvest-reveal" || slug === "stripe-wipe" || slug === "morph-transition") return "scale-[0.6]";
@@ -195,6 +234,11 @@ const STATIC_PREVIEW_SLUGS = new Set([
   "kinetic-magnet",
   "morphing-cyber-node",
   "signal-loom",
+  "chromatic-melt-text",
+  "rind-scanner-text",
+  "sticker-stack-text",
+  "glyph-orbit-text",
+  "seedwave-text",
 ]);
 
 function CardPreview({ comp, color }: { comp: typeof componentsData[number]; color: string }) {

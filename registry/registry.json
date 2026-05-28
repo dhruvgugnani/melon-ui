@@ -489,5 +489,110 @@
       "Workflow"
     ],
     "preview": "/preview/signal-loom.png"
+  },
+  "chromatic-melt-text": {
+    "name": "Chromatic Melt Text",
+    "description": "Pointer-reactive ink typography where chunky MelonUI letters liquify with chromatic under-drips and tactile hover deformation.",
+    "category": "GSAP Text",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "chromatic-melt-text.tsx",
+        "path": "components/chromatic-melt-text.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Typography",
+      "Pointer Physics",
+      "Gradient"
+    ],
+    "preview": "/preview/chromatic-melt-text.png"
+  },
+  "rind-scanner-text": {
+    "name": "Rind Scanner Text",
+    "description": "A sliced headline scanner with offset typography bands, neon rind sweeps, and click-to-pin glitch motion.",
+    "category": "GSAP Text",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "rind-scanner-text.tsx",
+        "path": "components/rind-scanner-text.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Typography",
+      "Scanner",
+      "Glitch"
+    ],
+    "preview": "/preview/rind-scanner-text.png"
+  },
+  "sticker-stack-text": {
+    "name": "Sticker Stack Text",
+    "description": "Layered sticker-style type cards that fan open with springy Gen-Z poster energy and bold MelonUI color blocking.",
+    "category": "GSAP Text",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "sticker-stack-text.tsx",
+        "path": "components/sticker-stack-text.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Typography",
+      "Stickers",
+      "Spring"
+    ],
+    "preview": "/preview/sticker-stack-text.png"
+  },
+  "glyph-orbit-text": {
+    "name": "Glyph Orbit Text",
+    "description": "A central headline surrounded by orbiting character tiles that unlock into a kinetic typographic halo.",
+    "category": "GSAP Text",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "glyph-orbit-text.tsx",
+        "path": "components/glyph-orbit-text.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Typography",
+      "Orbit",
+      "Glyphs"
+    ],
+    "preview": "/preview/glyph-orbit-text.png"
+  },
+  "seedwave-text": {
+    "name": "Seedwave Text",
+    "description": "Click-born particle typography that compresses the headline and throws melon-colored seed sparks from the exact press point.",
+    "category": "GSAP Text",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "seedwave-text.tsx",
+        "path": "components/seedwave-text.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Typography",
+      "Particles",
+      "Click"
+    ],
+    "preview": "/preview/seedwave-text.png"
   }
 }

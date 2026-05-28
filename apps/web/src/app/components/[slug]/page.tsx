@@ -37,6 +37,11 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   OrbitalCommandRing: dynamic(() => import('@/components/community/demos/OrbitalCommandRing').then(m => m.OrbitalCommandRing)),
   KineticGlassGrid: dynamic(() => import('@/components/community/demos/KineticGlassGrid').then(m => m.KineticGlassGrid)),
   SignalLoom: dynamic(() => import('@/components/community/demos/SignalLoom').then(m => m.SignalLoom)),
+  ChromaticMeltText: dynamic(() => import('@/components/community/demos/ChromaticMeltText').then(m => m.ChromaticMeltText)),
+  RindScannerText: dynamic(() => import('@/components/community/demos/RindScannerText').then(m => m.RindScannerText)),
+  StickerStackText: dynamic(() => import('@/components/community/demos/StickerStackText').then(m => m.StickerStackText)),
+  GlyphOrbitText: dynamic(() => import('@/components/community/demos/GlyphOrbitText').then(m => m.GlyphOrbitText)),
+  SeedwaveText: dynamic(() => import('@/components/community/demos/SeedwaveText').then(m => m.SeedwaveText)),
 };
 
 export async function generateStaticParams() {

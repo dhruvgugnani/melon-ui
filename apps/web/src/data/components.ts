@@ -385,6 +385,80 @@ export const componentsData: ComponentData[] = [
     ]
   },
   {
+    id: "chromatic-melt-text",
+    slug: "chromatic-melt-text",
+    title: "Chromatic Melt Text",
+    description: "Pointer-reactive ink typography where chunky MelonUI letters liquify with chromatic under-drips and tactile hover deformation.",
+    category: "GSAP Text",
+    tags: ["Framer Motion", "Typography", "Pointer Physics", "Gradient"],
+    cliCommand: "npx @melonui-dev/cli add chromatic-melt-text",
+    codeSnippet: `const [spot, setSpot] = useState({ x: 48, y: 42 });
+
+// Pointer position drives the radial ink glow while each glyph springs and melts on hover.`,
+    componentPath: "ChromaticMeltText",
+  },
+  {
+    id: "rind-scanner-text",
+    slug: "rind-scanner-text",
+    title: "Rind Scanner Text",
+    description: "A sliced headline scanner with offset typography bands, neon rind sweeps, and click-to-pin glitch motion.",
+    category: "GSAP Text",
+    tags: ["Framer Motion", "Typography", "Scanner", "Glitch"],
+    cliCommand: "npx @melonui-dev/cli add rind-scanner-text",
+    codeSnippet: `const slices = ["inset(0 0 78% 0)", "inset(24% 0 48% 0)", "inset(54% 0 18% 0)"];
+
+// Each duplicate headline is clipped into a different band and animated independently.`,
+    componentPath: "RindScannerText",
+  },
+  {
+    id: "sticker-stack-text",
+    slug: "sticker-stack-text",
+    title: "Sticker Stack Text",
+    description: "Layered sticker-style type cards that fan open with springy Gen-Z poster energy and bold MelonUI color blocking.",
+    category: "GSAP Text",
+    tags: ["Framer Motion", "Typography", "Stickers", "Spring"],
+    cliCommand: "npx @melonui-dev/cli add sticker-stack-text",
+    codeSnippet: `const layers = [
+  { label: "LOUD", color: "#ff5c71" },
+  { label: "SOFT", color: "#f7f0d2" },
+  { label: "TYPE", color: "#7fff5e" },
+];
+
+// Hover expands each text sticker into an offset editorial stack.`,
+    componentPath: "StickerStackText",
+  },
+  {
+    id: "glyph-orbit-text",
+    slug: "glyph-orbit-text",
+    title: "Glyph Orbit Text",
+    description: "A central headline surrounded by orbiting character tiles that unlock into a kinetic typographic halo.",
+    category: "GSAP Text",
+    tags: ["Framer Motion", "Typography", "Orbit", "Glyphs"],
+    cliCommand: "npx @melonui-dev/cli add glyph-orbit-text",
+    codeSnippet: `const angle = (index / glyphs.length) * Math.PI * 2;
+const x = Math.cos(angle) * radius;
+const y = Math.sin(angle) * radius;
+
+// Glyph tiles spring from a tight lockup into a circular orbit.`,
+    componentPath: "GlyphOrbitText",
+  },
+  {
+    id: "seedwave-text",
+    slug: "seedwave-text",
+    title: "Seedwave Text",
+    description: "Click-born particle typography that compresses the headline and throws melon-colored seed sparks from the exact press point.",
+    category: "GSAP Text",
+    tags: ["Framer Motion", "Typography", "Particles", "Click"],
+    cliCommand: "npx @melonui-dev/cli add seedwave-text",
+    codeSnippet: `const burst = (event) => {
+  const rect = event.currentTarget.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  // Create seed particles from the press point.
+};`,
+    componentPath: "SeedwaveText",
+  },
+  {
     id: "stripe-wipe",
     slug: "stripe-wipe",
     title: "Stripe Wipe",
