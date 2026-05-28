@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import dynamic from "next/dynamic";
 import { componentsData } from "@/data/components";
 
@@ -192,7 +192,6 @@ function CardPreview({ comp, color }: { comp: typeof componentsData[number]; col
 }
 
 export default function ComponentsIndexPage() {
-  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -295,13 +294,9 @@ export default function ComponentsIndexPage() {
                   : "#ff8d9a";
 
             return (
-              <div
+              <Link
                 key={comp.id}
-                onClickCapture={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  router.push(`/components/${comp.slug}`);
-                }}
+                href={`/components/${comp.slug}`}
                 className="group relative flex flex-col p-4 rounded-[8px] border border-white/5 bg-zinc-950/20 hover:border-[#ff5c71]/40 hover:bg-zinc-950/50 hover:shadow-[0_8px_24px_rgba(255,92,113,0.03)] transition-all duration-300 cursor-pointer select-none"
               >
                 {/* Visual Preview */}
@@ -328,8 +323,8 @@ export default function ComponentsIndexPage() {
                 {/* Footer tags */}
                 <div className="mt-4 pt-3 border-t border-white/5 flex flex-wrap gap-1">
                   {comp.tags.slice(0, 3).map((tag) => (
-                    <span 
-                      key={tag} 
+                    <span
+                      key={tag}
                       className="px-1.5 py-0.5 rounded font-mono text-[8px] uppercase tracking-wider text-white/20 bg-white/1 border border-white/3"
                     >
                       {tag}
@@ -339,7 +334,7 @@ export default function ComponentsIndexPage() {
                     View &rarr;
                   </span>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
