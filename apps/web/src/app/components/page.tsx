@@ -1,15 +1,47 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { componentsData } from "@/data/components";
 
+// Dynamically import all components with ssr: false to prevent node/hydration canvas issues
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const componentsMap: Record<string, React.ComponentType<any>> = {
+  CliTerminal: dynamic(() => import('@/components/community/demos/CliTerminal').then(m => m.CliTerminal), { ssr: false }),
+  ChangelogCard: dynamic(() => import('@/components/community/demos/ChangelogCard').then(m => m.ChangelogCard), { ssr: false }),
+  SeedBurstButton: dynamic(() => import('@/components/community/demos/SeedBurstButton').then(m => m.SeedBurstButton), { ssr: false }),
+  RippleButton: dynamic(() => import('@/components/community/demos/RippleButton').then(m => m.RippleButton), { ssr: false }),
+  MagneticNav: dynamic(() => import('@/components/community/demos/MagneticNav').then(m => m.MagneticNav), { ssr: false }),
+  BreadcrumbTrail: dynamic(() => import('@/components/community/demos/BreadcrumbTrail').then(m => m.BreadcrumbTrail), { ssr: false }),
+  RindPeelCard: dynamic(() => import('@/components/community/demos/RindPeelCard').then(m => m.RindPeelCard), { ssr: false }),
+  FlipCard: dynamic(() => import('@/components/community/demos/FlipCard').then(m => m.FlipCard), { ssr: false }),
+  VineInput: dynamic(() => import('@/components/community/demos/VineInput').then(m => m.VineInput), { ssr: false }),
+  TagInput: dynamic(() => import('@/components/community/demos/TagInput').then(m => m.TagInput), { ssr: false }),
+  ParticleBackground: dynamic(() => import('@/components/community/demos/ClientParticleBackground').then(m => m.ParticleBackground), { ssr: false }),
+  FloatingOrbs: dynamic(() => import('@/components/community/demos/ClientFloatingOrbs').then(m => m.FloatingOrbs), { ssr: false }),
+  JuicyCursor: dynamic(() => import('@/components/community/demos/JuicyCursor').then(m => m.JuicyCursor), { ssr: false }),
+  CrosshairCursor: dynamic(() => import('@/components/community/demos/CrosshairCursor').then(m => m.CrosshairCursor), { ssr: false }),
+  HarvestReveal: dynamic(() => import('@/components/community/demos/HarvestReveal').then(m => m.HarvestReveal), { ssr: false }),
+  ParallaxStrips: dynamic(() => import('@/components/community/demos/ParallaxStrips').then(m => m.ParallaxStrips), { ssr: false }),
+  MelonDripText: dynamic(() => import('@/components/community/demos/MelonDripText').then(m => m.MelonDripText), { ssr: false }),
+  ScrambleText: dynamic(() => import('@/components/community/demos/ScrambleText').then(m => m.ScrambleText), { ssr: false }),
+  RindWipeTransition: dynamic(() => import('@/components/community/demos/RindWipeTransition').then(m => m.RindWipeTransition), { ssr: false }),
+  MorphTransition: dynamic(() => import('@/components/community/demos/MorphTransition').then(m => m.MorphTransition), { ssr: false }),
+  HoloTicket: dynamic(() => import('@/components/community/demos/HoloTicket').then(m => m.HoloTicket), { ssr: false }),
+  SolarCarousel: dynamic(() => import('@/components/community/demos/SolarCarousel').then(m => m.SolarCarousel), { ssr: false }),
+  KineticMagnet: dynamic(() => import('@/components/community/demos/KineticMagnet').then(m => m.KineticMagnet), { ssr: false }),
+  MorphingCyberNode: dynamic(() => import('@/components/community/demos/MorphingCyberNode').then(m => m.MorphingCyberNode), { ssr: false }),
+  OrbitalCommandRing: dynamic(() => import('@/components/community/demos/OrbitalCommandRing').then(m => m.OrbitalCommandRing), { ssr: false }),
+  KineticGlassGrid: dynamic(() => import('@/components/community/demos/KineticGlassGrid').then(m => m.KineticGlassGrid), { ssr: false }),
+};
+
 // Beautiful custom preview placeholders for the cards (to avoid heavy WebGL contexts)
-function CardPreview({ slug, color }: { slug: string; color: string }) {
+function StaticPlaceholder({ slug, color }: { slug: string; color: string }) {
   // Styles for different components
   if (slug === "cli-terminal") {
     return (
-      <div className="relative h-32 w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] p-3 font-mono text-[9px] text-[#7fff5e]/70 flex flex-col justify-between select-none">
+      <div className="relative h-full w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] p-3 font-mono text-[9px] text-[#7fff5e]/70 flex flex-col justify-between select-none">
         <div className="space-y-1">
           <p className="text-white/20">&gt; npx @melonui-dev/cli init</p>
           <p className="text-white/40">✓ Configuration complete</p>
@@ -22,7 +54,7 @@ function CardPreview({ slug, color }: { slug: string; color: string }) {
 
   if (slug === "burst-button" || slug === "ripple-button") {
     return (
-      <div className="relative h-32 w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center select-none">
+      <div className="relative h-full w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center select-none">
         <button 
           className="px-4 py-1.5 text-[10px] font-black uppercase text-black rounded-full select-none cursor-default"
           style={{ backgroundColor: color || "#ff5c71" }}
@@ -35,7 +67,7 @@ function CardPreview({ slug, color }: { slug: string; color: string }) {
 
   if (slug === "magnetic-nav" || slug === "step-trail") {
     return (
-      <div className="relative h-32 w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center gap-1.5 select-none">
+      <div className="relative h-full w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center gap-1.5 select-none">
         {["Index", "Docs", "Vault"].map((n, i) => (
           <span 
             key={n} 
@@ -51,7 +83,7 @@ function CardPreview({ slug, color }: { slug: string; color: string }) {
 
   if (slug === "peel-card" || slug === "flip-card" || slug === "holo-ticket" || slug === "solar-carousel") {
     return (
-      <div className="relative h-32 w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center p-3 select-none">
+      <div className="relative h-full w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center p-3 select-none">
         <div 
           className="h-20 w-32 border border-white/10 rounded-[6px] p-2 flex flex-col justify-end relative overflow-hidden"
           style={{ 
@@ -73,7 +105,7 @@ function CardPreview({ slug, color }: { slug: string; color: string }) {
 
   if (slug === "grow-input" || slug === "tag-input") {
     return (
-      <div className="relative h-32 w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center p-4 select-none">
+      <div className="relative h-full w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center p-4 select-none">
         <div className="w-full max-w-[150px] space-y-1.5">
           <div className="h-6 w-full rounded border border-white/10 bg-white/3 flex items-center px-2">
             <span className="h-2.5 w-16 bg-white/20 rounded-full" />
@@ -89,7 +121,7 @@ function CardPreview({ slug, color }: { slug: string; color: string }) {
 
   // Fallback pattern (abstract vector or particles)
   return (
-    <div className="relative h-32 w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center select-none">
+    <div className="relative h-full w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center select-none">
       {/* Decorative patterns */}
       <div className="absolute inset-0 opacity-15 flex flex-wrap gap-2 p-3 overflow-hidden justify-center items-center">
         {Array.from({ length: 15 }).map((_, i) => (
@@ -110,7 +142,29 @@ function CardPreview({ slug, color }: { slug: string; color: string }) {
   );
 }
 
+function CardPreview({ comp, color }: { comp: typeof componentsData[number]; color: string }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const ComponentToRender = componentsMap[comp.componentPath];
+
+  return (
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative h-44 w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center p-3 select-none transition-all duration-300 group-hover:border-[#ff5c71]/20"
+    >
+      {isHovered && ComponentToRender ? (
+        <div className="w-full h-full flex items-center justify-center pointer-events-auto scale-90 origin-center transition-all duration-300">
+          <ComponentToRender />
+        </div>
+      ) : (
+        <StaticPlaceholder slug={comp.slug} color={color} />
+      )}
+    </div>
+  );
+}
+
 export default function ComponentsIndexPage() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -213,13 +267,27 @@ export default function ComponentsIndexPage() {
                   : "#ff8d9a";
 
             return (
-              <Link
+              <div
                 key={comp.id}
-                href={`/components/${comp.slug}`}
-                className="group relative flex flex-col p-4 rounded-[8px] border border-white/5 bg-zinc-950/20 hover:border-[#ff5c71]/40 hover:bg-zinc-950/50 hover:shadow-[0_8px_24px_rgba(255,92,113,0.03)] transition-all duration-300"
+                onClick={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (
+                    target.closest("button") || 
+                    target.closest("input") || 
+                    target.closest("select") || 
+                    target.closest("a") ||
+                    target.closest("textarea") ||
+                    target.closest("canvas") ||
+                    target.closest("[data-prevent-card-click]")
+                  ) {
+                    return;
+                  }
+                  router.push(`/components/${comp.slug}`);
+                }}
+                className="group relative flex flex-col p-4 rounded-[8px] border border-white/5 bg-zinc-950/20 hover:border-[#ff5c71]/40 hover:bg-zinc-950/50 hover:shadow-[0_8px_24px_rgba(255,92,113,0.03)] transition-all duration-300 cursor-pointer select-none"
               >
                 {/* Visual Preview */}
-                <CardPreview slug={comp.slug} color={color} />
+                <CardPreview comp={comp} color={color} />
 
                 {/* Info Header */}
                 <div className="mt-4 flex items-start justify-between gap-4">
@@ -253,7 +321,7 @@ export default function ComponentsIndexPage() {
                     View &rarr;
                   </span>
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>

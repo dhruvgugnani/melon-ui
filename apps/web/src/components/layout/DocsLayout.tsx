@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/overlay/Navbar";
 import { Sidebar } from "@/components/community/Sidebar";
@@ -8,6 +8,7 @@ import { ProPoster } from "./ProPoster";
 import { Sponsors } from "./Sponsors";
 import { TableOfContents } from "./TableOfContents";
 import { SpotlightSearch } from "./SpotlightSearch";
+import Lenis from "lenis";
 
 interface DocsLayoutProps {
   children: React.ReactNode;
@@ -15,6 +16,32 @@ interface DocsLayoutProps {
 
 export function DocsLayout({ children }: DocsLayoutProps) {
   const pathname = usePathname();
+  const scrollWrapperRef = useRef<HTMLElement>(null);
+  const scrollContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!scrollWrapperRef.current || !scrollContentRef.current) return;
+
+    const lenis = new Lenis({
+      wrapper: scrollWrapperRef.current,
+      content: scrollContentRef.current,
+      lerp: 0.1,
+      wheelMultiplier: 1,
+    });
+
+    let rafId: number;
+    function raf(time: number) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   // Determine what to show in the right column
   const isIndexPage = pathname === "/components";
@@ -50,10 +77,11 @@ export function DocsLayout({ children }: DocsLayoutProps) {
 
         {/* Middle Column: Scrollable Content Area */}
         <main 
+          ref={scrollWrapperRef}
           id="docs-content-wrapper"
           className="flex-1 overflow-y-auto overflow-x-hidden pt-24 px-6 md:px-10 lg:px-14 pb-32 no-scrollbar"
         >
-          <div className="max-w-4xl mx-auto">
+          <div ref={scrollContentRef} className="max-w-4xl mx-auto min-h-full">
             {children}
           </div>
         </main>
