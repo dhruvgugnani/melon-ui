@@ -1,6 +1,7 @@
 {
   "name": "@melonui-dev/cli",
   "version": "0.1.4",
+  "license": "MIT",
   "description": "Premium UI distribution ecosystem for modern frontend developers",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
