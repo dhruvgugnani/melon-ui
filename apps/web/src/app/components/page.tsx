@@ -34,6 +34,7 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   MorphingCyberNode: dynamic(() => import('@/components/community/demos/MorphingCyberNode').then(m => m.MorphingCyberNode), { ssr: false }),
   OrbitalCommandRing: dynamic(() => import('@/components/community/demos/OrbitalCommandRing').then(m => m.OrbitalCommandRing), { ssr: false }),
   KineticGlassGrid: dynamic(() => import('@/components/community/demos/KineticGlassGrid').then(m => m.KineticGlassGrid), { ssr: false }),
+  SignalLoom: dynamic(() => import('@/components/community/demos/SignalLoom').then(m => m.SignalLoom), { ssr: false }),
 };
 
 // Beautiful custom preview placeholders for the cards (to avoid heavy WebGL contexts)
@@ -103,6 +104,38 @@ function StaticPlaceholder({ slug, color }: { slug: string; color: string }) {
     );
   }
 
+  if (slug === "signal-loom") {
+    return (
+      <div className="relative h-full w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] p-4 select-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_25%,rgba(255,92,113,0.24),transparent_36%),radial-gradient(circle_at_76%_70%,rgba(127,255,94,0.18),transparent_38%)]" />
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full opacity-80">
+          {[22, 50, 78].map((x, i) => (
+            <path
+              key={x}
+              d={`M ${x} 8 C ${x + (i === 1 ? 9 : -6)} 34, ${x - (i === 1 ? 8 : -5)} 62, ${x} 94`}
+              fill="none"
+              stroke={i === 1 ? "#7fff5e" : "#ff5c71"}
+              strokeWidth={i === 1 ? 1.5 : 0.8}
+              strokeLinecap="round"
+              strokeDasharray={i === 1 ? "2 4" : "0"}
+            />
+          ))}
+        </svg>
+        <div className="relative z-10 flex h-full flex-col justify-between">
+          <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-[#ff5c71]">Signal Loom</span>
+          <div className="grid grid-cols-3 gap-2">
+            {["Brief", "Taste", "Ship"].map((label, i) => (
+              <span key={label} className="rounded border border-white/10 bg-white/[0.04] px-2 py-3 text-center font-mono text-[8px] uppercase text-white/45">
+                {label}
+                <span className="mt-1 block h-1 rounded-full" style={{ backgroundColor: i === 1 ? "#7fff5e" : "#ff5c71" }} />
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (slug === "grow-input" || slug === "tag-input") {
     return (
       <div className="relative h-full w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center p-4 select-none">
@@ -144,6 +177,7 @@ function StaticPlaceholder({ slug, color }: { slug: string; color: string }) {
 
 const getScale = (slug: string) => {
   if (slug === "solar-carousel" || slug === "orbital-command-ring") return "scale-[0.45]";
+  if (slug === "signal-loom") return "scale-[0.52]";
   if (slug === "kinetic-glass-grid" || slug === "kinetic-magnet" || slug === "morphing-cyber-node" || slug === "particle-field" || slug === "floating-orbs") return "scale-[0.5]";
   if (slug === "holo-ticket" || slug === "rind-peel-card" || slug === "flip-card" || slug === "changelog") return "scale-[0.65]";
   if (slug === "parallax-strips" || slug === "harvest-reveal" || slug === "stripe-wipe" || slug === "morph-transition") return "scale-[0.6]";
@@ -160,6 +194,7 @@ const STATIC_PREVIEW_SLUGS = new Set([
   "kinetic-glass-grid",
   "kinetic-magnet",
   "morphing-cyber-node",
+  "signal-loom",
 ]);
 
 function CardPreview({ comp, color }: { comp: typeof componentsData[number]; color: string }) {

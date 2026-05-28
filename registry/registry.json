@@ -468,5 +468,26 @@
       "Elastic"
     ],
     "preview": "/preview/kinetic-magnet.png"
+  },
+  "signal-loom": {
+    "name": "Signal Loom",
+    "description": "A pointer-reactive glass command surface where luminous workflow threads bend toward the cursor and layered inspection wafers morph into focus.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "signal-loom.tsx",
+        "path": "components/signal-loom.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Glassmorphism",
+      "Pointer Physics",
+      "Workflow"
+    ],
+    "preview": "/preview/signal-loom.png"
   }
 }

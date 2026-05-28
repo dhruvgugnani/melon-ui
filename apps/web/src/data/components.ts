@@ -460,6 +460,22 @@ export const componentsData: ComponentData[] = [
     cliCommand: "npx @melonui-dev/cli add kinetic-glass-grid",
     codeSnippet: `const distance = useTransform([mouseX, mouseY], ([latestX, latestY]) => {\n  // Distance calculation logic\n});\nconst scale = useSpring(useTransform(distance, [0, MAX_DISTANCE], [1.3, 1]), springConfig);`,
     componentPath: "KineticGlassGrid",
+  },
+  {
+    id: "signal-loom",
+    slug: "signal-loom",
+    title: "Signal Loom",
+    description: "A pointer-reactive glass command surface where luminous workflow threads bend toward the cursor and layered inspection wafers morph into focus.",
+    category: "Widgets",
+    tags: ["Framer Motion", "Glassmorphism", "Pointer Physics", "Workflow"],
+    cliCommand: "npx @melonui-dev/cli add signal-loom",
+    codeSnippet: `const pointerX = useMotionValue(50);
+const pointerY = useMotionValue(50);
+const smoothX = useSpring(pointerX, { stiffness: 180, damping: 26, mass: 0.6 });
+const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
+
+// Curved SVG loom paths, radial glare, and inspection lens all derive from pointer motion.`,
+    componentPath: "SignalLoom",
   }
 ];
 
