@@ -412,11 +412,12 @@ export const componentsData: ComponentData[] = [
     category: "GSAP Text",
     tags: ["Framer Motion", "Typography", "Scanner", "Glitch"],
     cliCommand: "npx @melonui-dev/cli add rind-scanner-text",
-    codeSnippet: `const clipPath = active
+    codeSnippet: `const beam = active ? ["0%", "100%"] : "0%";
+const clipPath = active
   ? ["inset(0 100% 0 0)", "inset(0 0% 0 0)", "inset(0 0% 0 100%)"]
   : "inset(0 100% 0 0)";
 
-// The scan layer keeps the word readable while revealing a neon color pass.`,
+// Scanner rails, beam, and color reveal move together while the base word stays readable.`,
     componentPath: "RindScannerText",
     props: [
       { name: "text", type: "string", defaultValue: `"SCANNER"`, description: "Headline text to scan.", control: { type: "text" } },
@@ -443,6 +444,12 @@ export const componentsData: ComponentData[] = [
 // Hover expands each text sticker into an offset editorial stack.`,
     componentPath: "StickerStackText",
     props: [
+      { name: "topText", type: "string", defaultValue: `"LOUD"`, description: "Top sticker label.", control: { type: "text" } },
+      { name: "middleText", type: "string", defaultValue: `"SOFT"`, description: "Middle sticker label.", control: { type: "text" } },
+      { name: "bottomText", type: "string", defaultValue: `"TYPE"`, description: "Bottom sticker label.", control: { type: "text" } },
+      { name: "topColor", type: "string", defaultValue: `"#ff5c71"`, description: "Top sticker color.", control: { type: "color" } },
+      { name: "middleColor", type: "string", defaultValue: `"#f7f0d2"`, description: "Middle sticker color.", control: { type: "color" } },
+      { name: "bottomColor", type: "string", defaultValue: `"#7fff5e"`, description: "Bottom sticker color.", control: { type: "color" } },
       { name: "hint", type: "string", defaultValue: `"Hover to fan"`, description: "Optional helper label shown under the sticker stack.", control: { type: "text" } }
     ],
   },
