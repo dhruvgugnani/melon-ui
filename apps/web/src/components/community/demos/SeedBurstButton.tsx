@@ -18,9 +18,17 @@ function Seed({ style }: { style?: React.CSSProperties }) {
   );
 }
 
-const SEED_COUNT = 12;
+export interface SeedBurstButtonProps {
+  label?: string;
+  count?: number;
+  gravity?: number;
+}
 
-export function SeedBurstButton() {
+export function SeedBurstButton({
+  label = "Click Me",
+  count = 12,
+  gravity = 0.6,
+}: SeedBurstButtonProps) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const seedsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [active, setActive] = useState(false);
@@ -35,10 +43,10 @@ export function SeedBurstButton() {
 
     seedsRef.current.forEach((seed, i) => {
       if (!seed) return;
-      const angle = (i / SEED_COUNT) * Math.PI * 2;
+      const angle = (i / count) * Math.PI * 2;
       const dist = 60 + Math.random() * 60;
       const dx = Math.cos(angle) * dist;
-      const dy = Math.sin(angle) * dist;
+      const dy = Math.sin(angle) * dist + (gravity * 50);
 
       gsap.set(seed, {
         x: originX,
@@ -64,7 +72,7 @@ export function SeedBurstButton() {
   return (
     <div className="relative flex items-center justify-center w-64 h-32 overflow-visible">
       {/* Seeds overlay */}
-      {Array.from({ length: SEED_COUNT }).map((_, i) => (
+      {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
           ref={(el) => { seedsRef.current[i] = el; }}
@@ -83,7 +91,7 @@ export function SeedBurstButton() {
       >
         {/* Rind stripe */}
         <span className="absolute inset-x-0 bottom-0 h-1.5 bg-[#7fff5e]" />
-        <span className="relative z-10">Click Me</span>
+        <span className="relative z-10">{label}</span>
 
         {/* Juice burst overlay */}
         <span

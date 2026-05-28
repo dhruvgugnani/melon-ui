@@ -3,7 +3,17 @@
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 
-export function VineInput() {
+export interface VineInputProps {
+  placeholder?: string;
+  glowColor?: string;
+  growSpeed?: number;
+}
+
+export function VineInput({
+  placeholder = "e.g. Farmer Joe",
+  glowColor = "#7fff5e",
+  growSpeed = 1.0,
+}: VineInputProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGPathElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -24,7 +34,7 @@ export function VineInput() {
     if (!path) return;
     gsap.to(path, {
       strokeDashoffset: 0,
-      duration: 0.7,
+      duration: 0.7 / growSpeed,
       ease: "power3.out",
     });
   };
@@ -35,7 +45,7 @@ export function VineInput() {
     const len = path.getTotalLength();
     gsap.to(path, {
       strokeDashoffset: len,
-      duration: 0.5,
+      duration: 0.5 / growSpeed,
       ease: "power2.in",
     });
   };
@@ -48,7 +58,7 @@ export function VineInput() {
         <input
           ref={inputRef}
           type="text"
-          placeholder="e.g. Farmer Joe"
+          placeholder={placeholder}
           onFocus={handleFocus}
           onBlur={handleBlur}
           className="w-full bg-transparent border-0 border-b border-[#333] px-0 py-3 text-[#f4f4f4] font-mono text-lg placeholder:text-[#333] outline-none"
@@ -64,7 +74,7 @@ export function VineInput() {
             ref={svgRef}
             d="M0 2 Q 37.5 -2 75 2 Q 112.5 6 150 2 Q 187.5 -2 225 2 Q 262.5 6 300 2"
             fill="none"
-            stroke="#7fff5e"
+            stroke={glowColor}
             strokeWidth="2"
             strokeLinecap="round"
           />

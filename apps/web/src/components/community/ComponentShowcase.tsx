@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import gsap from "gsap";
 import Link from "next/link";
+import { getComponentBySlug } from "@/data/components";
 
 interface ComponentShowcaseProps {
   title: string;
@@ -48,6 +49,30 @@ export function ComponentShowcase({
   const compName = componentPath || title.replace(/\s+/g, "");
   const resolvedCliCommand = cliCommand || `npx @melonui-dev/cli add ${compSlug}`;
 
+  // Fetch component info and props list
+  const componentInfo = slug ? getComponentBySlug(slug) : null;
+  const propsList = componentInfo?.props || [];
+
+  // Playground state management
+  const [playgroundProps, setPlaygroundProps] = useState<Record<string, any>>({});
+
+  useEffect(() => {
+    const defaults: Record<string, any> = {};
+    propsList.forEach((p) => {
+      if (p.defaultValue.startsWith('"') || p.defaultValue.startsWith("'")) {
+        defaults[p.name] = p.defaultValue.slice(1, -1);
+      } else if (p.defaultValue === "true") {
+        defaults[p.name] = true;
+      } else if (p.defaultValue === "false") {
+        defaults[p.name] = false;
+      } else {
+        const val = Number(p.defaultValue);
+        defaults[p.name] = isNaN(val) ? p.defaultValue : val;
+      }
+    });
+    setPlaygroundProps(defaults);
+  }, [slug, componentInfo]); // Reset on slug / component change
+
   // Dynamically calculate dependencies based on tags
   const getDependencies = (tagsList: string[]) => {
     const deps = ["clsx", "tailwind-merge"];
@@ -71,7 +96,7 @@ export function ComponentShowcase({
   const dependenciesList = getDependencies(tags);
   const installDepsCommand = `npm install ${dependenciesList.join(" ")}`;
 
-  // Correct import path for the user's project
+  // Base resolved usage code
   const resolvedUsageCode = usageCode || `import { ${compName} } from "@/components/${compSlug}";
 
 export default function Page() {
@@ -81,6 +106,37 @@ export default function Page() {
     </main>
   );
 }`;
+
+  // Dynamic usage code builder
+  const [dynamicUsageCode, setDynamicUsageCode] = useState(resolvedUsageCode);
+
+  useEffect(() => {
+    if (propsList.length === 0) {
+      setDynamicUsageCode(resolvedUsageCode);
+      return;
+    }
+
+    const propsStr = Object.entries(playgroundProps)
+      .map(([key, val]) => {
+        if (typeof val === "string") return `      ${key}="${val}"`;
+        if (typeof val === "boolean") return `      ${key}={${val}}`;
+        return `      ${key}={${val}}`;
+      })
+      .join("\n");
+
+    const dynamicCode = `import { ${compName} } from "@/components/${compSlug}";
+
+export default function Page() {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-[#050505] p-8">
+      <${compName}
+${propsStr}
+      />
+    </main>
+  );
+}`;
+    setDynamicUsageCode(dynamicCode);
+  }, [playgroundProps, propsList, compName, compSlug, resolvedUsageCode]);
 
   const resolvedAiPrompt = aiPrompt || `I want to integrate the MelonUI "${title}" component into my React/Next.js project.
 Component description: "${description}"
@@ -254,7 +310,7 @@ Please write a premium, responsive React page component in Next.js that:
           }`}
           style={{ minHeight: scrollable ? "500px" : "380px", maxHeight: scrollable ? "500px" : undefined }}
         >
-          {component}
+          {React.isValidElement(component) ? React.cloneElement(component, playgroundProps) : component}
         </div>
 
         {/* --- Panel 2: Installation & AI --- */}
@@ -324,7 +380,7 @@ Please write a premium, responsive React page component in Next.js that:
                       How to import and use
                     </span>
                     <button
-                      onClick={() => handleCopy(resolvedUsageCode, setCopiedUsage)}
+                      onClick={() => handleCopy(dynamicUsageCode, setCopiedUsage)}
                       className="px-3 py-1 bg-[#111] hover:bg-[#ff5c71] text-[#555] hover:text-[#050505] transition-all duration-200 border border-[#1a1a1a] hover:border-[#ff5c71] font-mono text-[10px] uppercase tracking-wider cursor-pointer active:scale-95 hover:scale-[1.02]"
                     >
                       {copiedUsage ? "Copied Code" : "Copy Code"}
@@ -335,7 +391,7 @@ Please write a premium, responsive React page component in Next.js that:
                       <span className="font-mono text-[11px] text-[#444]">app/page.tsx</span>
                     </div>
                     <pre className="p-4 overflow-x-auto text-xs font-mono text-white/70 leading-relaxed max-h-[220px]">
-                      <code>{resolvedUsageCode}</code>
+                      <code>{dynamicUsageCode}</code>
                     </pre>
                   </div>
                 </div>
@@ -412,6 +468,153 @@ Please write a premium, responsive React page component in Next.js that:
         </div>
 
       </div>
+
+      {/* Interactive Playground & API Reference */}
+      {propsList.length > 0 && (
+        <div className="mt-12 border-t border-[#ff5c71]/15 pt-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Left: Controls / Sliders */}
+          <div className="lg:col-span-5 space-y-6">
+            <div>
+              <h4 className="text-xl font-black uppercase text-[#f4f4f4] tracking-tight flex items-center gap-2" style={{ fontFamily: "var(--font-londrina-solid)" }}>
+                <span className="w-2.5 h-2.5 rounded-full bg-[#7fff5e] animate-pulse" />
+                Interactive Playground
+              </h4>
+              <p className="text-xs font-mono text-[#555] mt-1">Adjust sliders and values to preview changes in real-time</p>
+            </div>
+
+            <div className="bg-[#070707] border border-[#ff5c71]/10 p-5 rounded-lg space-y-5">
+              {propsList.map((prop) => {
+                if (!prop.control) return null;
+                const value = playgroundProps[prop.name] ?? "";
+
+                return (
+                  <div key={prop.name} className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="font-mono text-xs text-[#e5e5e5] font-bold">{prop.name}</span>
+                      <span className="font-mono text-[10px] text-[#ff5c71]">{String(value)}</span>
+                    </div>
+
+                    {prop.control.type === "slider" && (
+                      <input
+                        type="range"
+                        min={prop.control.min ?? 0}
+                        max={prop.control.max ?? 100}
+                        step={prop.control.step ?? 1}
+                        value={Number(value)}
+                        onChange={(e) => {
+                          setPlaygroundProps(prev => ({
+                            ...prev,
+                            [prop.name]: Number(e.target.value)
+                          }));
+                        }}
+                        className="w-full h-1 bg-[#151515] rounded-lg appearance-none cursor-pointer accent-[#ff5c71]"
+                      />
+                    )}
+
+                    {prop.control.type === "text" && (
+                      <input
+                        type="text"
+                        value={String(value)}
+                        onChange={(e) => {
+                          setPlaygroundProps(prev => ({
+                            ...prev,
+                            [prop.name]: e.target.value
+                          }));
+                        }}
+                        className="w-full bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-1.5 font-mono text-xs text-[#f4f4f4] focus:border-[#ff5c71]/40 outline-none"
+                      />
+                    )}
+
+                    {prop.control.type === "color" && (
+                      <div className="flex gap-2">
+                        <input
+                          type="color"
+                          value={String(value).startsWith("rgba") ? "#ff5c71" : String(value)}
+                          onChange={(e) => {
+                            setPlaygroundProps(prev => ({
+                              ...prev,
+                              [prop.name]: e.target.value
+                            }));
+                          }}
+                          className="w-8 h-8 rounded border border-[#1a1a1a] bg-[#0a0a0a] cursor-pointer"
+                        />
+                        <input
+                          type="text"
+                          value={String(value)}
+                          onChange={(e) => {
+                            setPlaygroundProps(prev => ({
+                              ...prev,
+                              [prop.name]: e.target.value
+                            }));
+                          }}
+                          className="flex-1 bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-1.5 font-mono text-xs text-[#f4f4f4] focus:border-[#ff5c71]/40 outline-none"
+                        />
+                      </div>
+                    )}
+                    
+                    <p className="text-[10px] font-mono text-[#555] leading-relaxed">{prop.description}</p>
+                  </div>
+                );
+              })}
+
+              <button
+                onClick={() => {
+                  const defaults: Record<string, any> = {};
+                  propsList.forEach(p => {
+                    if (p.defaultValue.startsWith('"') || p.defaultValue.startsWith("'")) {
+                      defaults[p.name] = p.defaultValue.slice(1, -1);
+                    } else if (p.defaultValue === "true") {
+                      defaults[p.name] = true;
+                    } else if (p.defaultValue === "false") {
+                      defaults[p.name] = false;
+                    } else {
+                      const val = Number(p.defaultValue);
+                      defaults[p.name] = isNaN(val) ? p.defaultValue : val;
+                    }
+                  });
+                  setPlaygroundProps(defaults);
+                }}
+                className="w-full py-2 bg-[#0d0d0d] hover:bg-[#151515] border border-[#1a1a1a] text-[#777] hover:text-[#f4f4f4] font-mono text-[10px] uppercase tracking-widest transition-all rounded cursor-pointer active:scale-98"
+              >
+                Reset Default Settings
+              </button>
+            </div>
+          </div>
+
+          {/* Right: API Reference Table */}
+          <div className="lg:col-span-7 space-y-6 font-sans">
+            <div>
+              <h4 className="text-xl font-black uppercase text-[#f4f4f4] tracking-tight" style={{ fontFamily: "var(--font-londrina-solid)" }}>
+                API Reference (Props)
+              </h4>
+              <p className="text-xs font-mono text-[#555] mt-1">Component properties and type specifications</p>
+            </div>
+
+            <div className="border border-[#1a1a1a] bg-[#070707] rounded-lg overflow-hidden">
+              <table className="w-full border-collapse text-left font-mono text-xs">
+                <thead>
+                  <tr className="border-b border-[#1a1a1a] bg-[#0d0d0d] text-[#ff5c71]">
+                    <th className="p-3.5 font-bold uppercase tracking-wider">Prop</th>
+                    <th className="p-3.5 font-bold uppercase tracking-wider">Type</th>
+                    <th className="p-3.5 font-bold uppercase tracking-wider">Default</th>
+                    <th className="p-3.5 font-bold uppercase tracking-wider">Description</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#111] text-[#ccc]">
+                  {propsList.map((prop) => (
+                    <tr key={prop.name} className="hover:bg-white/[0.01] transition-colors">
+                      <td className="p-3.5 font-bold text-white">{prop.name}</td>
+                      <td className="p-3.5 text-[#7fff5e]">{prop.type}</td>
+                      <td className="p-3.5 text-[#ff5c71]/80">{prop.defaultValue}</td>
+                      <td className="p-3.5 text-[#777] leading-relaxed text-[11px]">{prop.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </article>
   );
 }

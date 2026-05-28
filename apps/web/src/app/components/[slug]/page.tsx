@@ -147,6 +147,7 @@ export default async function ComponentPage(props: { params: Promise<{ slug: str
           aiPrompt={component.aiPrompt}
           componentPath={component.componentPath}
           scrollable={component.scrollable}
+          slug={component.slug}
           component={ComponentToRender ? <ComponentToRender /> : <div>Component Not Found</div>}
         />
       </section>

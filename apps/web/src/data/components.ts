@@ -1,3 +1,16 @@
+export interface ComponentProp {
+  name: string;
+  type: string;
+  defaultValue: string;
+  description: string;
+  control?: {
+    type: "slider" | "text" | "color" | "boolean";
+    min?: number;
+    max?: number;
+    step?: number;
+  };
+}
+
 export interface ComponentData {
   id: string;
   slug: string;
@@ -11,6 +24,7 @@ export interface ComponentData {
   scrollable?: boolean;
   usageCode?: string;
   aiPrompt?: string;
+  props?: ComponentProp[];
 }
 
 export const componentsData: ComponentData[] = [
@@ -46,6 +60,29 @@ export const componentsData: ComponentData[] = [
     cliCommand: "npx @melonui-dev/cli add burst-button",
     codeSnippet: `const burst = (e) => {\n  const rect = e.target.getBoundingClientRect();\n  const x = e.clientX - rect.left;\n  const y = e.clientY - rect.top;\n  // Particle creation logic...\n};`,
     componentPath: "SeedBurstButton",
+    props: [
+      {
+        name: "label",
+        type: "string",
+        defaultValue: `"Click Me"`,
+        description: "The text displayed on the button surface.",
+        control: { type: "text" }
+      },
+      {
+        name: "count",
+        type: "number",
+        defaultValue: "12",
+        description: "Number of seed particles generated on click.",
+        control: { type: "slider", min: 4, max: 32, step: 1 }
+      },
+      {
+        name: "gravity",
+        type: "number",
+        defaultValue: "0.6",
+        description: "Downwards weight force applied to bursting seed particles.",
+        control: { type: "slider", min: 0.1, max: 2.0, step: 0.1 }
+      }
+    ]
   },
   {
     id: "ripple-button",
@@ -57,6 +94,29 @@ export const componentsData: ComponentData[] = [
     cliCommand: "npx @melonui-dev/cli add ripple-button",
     codeSnippet: `const createRipple = (e) => {\n  const btn = e.currentTarget;\n  const circle = document.createElement("span");\n  const diameter = Math.max(btn.clientWidth, btn.clientHeight);\n  const radius = diameter / 2;\n\n  circle.style.width = circle.style.height = \`\${diameter}px\`;\n  circle.style.left = \`\${e.clientX - btn.getBoundingClientRect().left - radius}px\`;\n  circle.style.top = \`\${e.clientY - btn.getBoundingClientRect().top - radius}px\`;\n  circle.classList.add("ripple");\n\n  const ripple = btn.getElementsByClassName("ripple")[0];\n  if (ripple) { ripple.remove(); }\n  btn.appendChild(circle);\n};`,
     componentPath: "RippleButton",
+    props: [
+      {
+        name: "label",
+        type: "string",
+        defaultValue: `"Click for ripple"`,
+        description: "The text content displayed in the center of the button.",
+        control: { type: "text" }
+      },
+      {
+        name: "duration",
+        type: "number",
+        defaultValue: "0.7",
+        description: "Speed (seconds) for ripple fade out and scale animation.",
+        control: { type: "slider", min: 0.2, max: 2.0, step: 0.1 }
+      },
+      {
+        name: "rippleColor",
+        type: "string",
+        defaultValue: `"rgba(127, 255, 94, 0.25)"`,
+        description: "CSS color definition applied to the expanding circular ripple.",
+        control: { type: "color" }
+      }
+    ]
   },
   {
     id: "magnetic-nav",
@@ -123,6 +183,29 @@ export const componentsData: ComponentData[] = [
     cliCommand: "npx @melonui-dev/cli add grow-input",
     codeSnippet: `const onFocus = () => gsap.to(pathRef.current, { strokeDashoffset: 0, duration: 1, ease: "power2.out" });\nconst onBlur = () => gsap.to(pathRef.current, { strokeDashoffset: pathLength, duration: 0.6, ease: "power2.in" });`,
     componentPath: "VineInput",
+    props: [
+      {
+        name: "placeholder",
+        type: "string",
+        defaultValue: `"e.g. Farmer Joe"`,
+        description: "Placeholder text for the text input.",
+        control: { type: "text" }
+      },
+      {
+        name: "glowColor",
+        type: "string",
+        defaultValue: `"#7fff5e"`,
+        description: "SVG stroke color for the animated growing vine.",
+        control: { type: "color" }
+      },
+      {
+        name: "growSpeed",
+        type: "number",
+        defaultValue: "1.0",
+        description: "Speed multiplier for vine growing animation on focus.",
+        control: { type: "slider", min: 0.2, max: 3.0, step: 0.1 }
+      }
+    ]
   },
   {
     id: "tag-input",
@@ -190,6 +273,36 @@ export const componentsData: ComponentData[] = [
     codeSnippet: `gsap.to(chars, {\n  scrollTrigger: { trigger: container, start: "top center", end: "bottom center", scrub: true },\n  opacity: 1, filter: "blur(0px)", stagger: 0.05\n});`,
     componentPath: "HarvestReveal",
     scrollable: true,
+    props: [
+      {
+        name: "text",
+        type: "string",
+        defaultValue: `"Every great UI starts as a seed."`,
+        description: "The text content to animate character-by-character.",
+        control: { type: "text" }
+      },
+      {
+        name: "stagger",
+        type: "number",
+        defaultValue: "0.045",
+        description: "Delay interval between starting animation for successive letters.",
+        control: { type: "slider", min: 0.01, max: 0.2, step: 0.005 }
+      },
+      {
+        name: "duration",
+        type: "number",
+        defaultValue: "0.65",
+        description: "Duration of single letter fade, translate, and un-blur transition.",
+        control: { type: "slider", min: 0.2, max: 2.0, step: 0.05 }
+      },
+      {
+        name: "blur",
+        type: "number",
+        defaultValue: "6",
+        description: "Initial pixel radius of the CSS blur filter on letters.",
+        control: { type: "slider", min: 0, max: 20, step: 1 }
+      }
+    ]
   },
   {
     id: "parallax-strips",
@@ -213,6 +326,29 @@ export const componentsData: ComponentData[] = [
     cliCommand: "npx @melonui-dev/cli add drip-text",
     codeSnippet: `const handleEnter = () => {\n  charRefs.current.forEach((el, i) => {\n    gsap.to(el, {\n      y: 12 + Math.random() * 16,\n      skewX: (Math.random() - 0.5) * 20,\n      color: "#7fff5e", duration: 0.4 + i * 0.06,\n      ease: "power3.in", delay: i * 0.04,\n    });\n  });\n};`,
     componentPath: "MelonDripText",
+    props: [
+      {
+        name: "text",
+        type: "string",
+        defaultValue: `"MELON"`,
+        description: "The text phrase displayed on screen.",
+        control: { type: "text" }
+      },
+      {
+        name: "stagger",
+        type: "number",
+        defaultValue: "0.04",
+        description: "Delay step (seconds) added progressively to each character animation.",
+        control: { type: "slider", min: 0.01, max: 0.15, step: 0.01 }
+      },
+      {
+        name: "yOffset",
+        type: "number",
+        defaultValue: "16",
+        description: "Max random pixel translation distance the letters drip downwards.",
+        control: { type: "slider", min: 5, max: 40, step: 1 }
+      }
+    ]
   },
   {
     id: "scramble-text",
@@ -224,6 +360,29 @@ export const componentsData: ComponentData[] = [
     cliCommand: "npx @melonui-dev/cli add scramble-text",
     codeSnippet: `const scramble = () => {\n  let iterations = 0;\n  const maxIter = text.length * 5;\n  const interval = setInterval(() => {\n    iterations++;\n    el.textContent = text.split("").map((char, i) => {\n      if (iterations > Math.floor((i / text.length) * maxIter))\n        return char;\n      return CHARS[Math.floor(Math.random() * CHARS.length)];\n    }).join("");\n    if (iterations >= maxIter) clearInterval(interval);\n  }, 35);\n};`,
     componentPath: "ScrambleText",
+    props: [
+      {
+        name: "text",
+        type: "string",
+        defaultValue: `"SCRAMBLE"`,
+        description: "The text string to scramble and resolve.",
+        control: { type: "text" }
+      },
+      {
+        name: "speed",
+        type: "number",
+        defaultValue: "35",
+        description: "Interval duration (milliseconds) between scrambling letter updates.",
+        control: { type: "slider", min: 10, max: 120, step: 5 }
+      },
+      {
+        name: "glyphs",
+        type: "string",
+        defaultValue: `"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%"`,
+        description: "A string of random character glyphs chosen during scramble cycles.",
+        control: { type: "text" }
+      }
+    ]
   },
   {
     id: "stripe-wipe",

@@ -2,11 +2,18 @@
 
 import { useRef, useCallback } from "react";
 
-const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%";
+export interface ScrambleTextProps {
+  text?: string;
+  speed?: number;
+  glyphs?: string;
+}
 
-export function ScrambleText() {
+export function ScrambleText({
+  text = "SCRAMBLE",
+  speed = 35,
+  glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%",
+}: ScrambleTextProps) {
   const textRef = useRef<HTMLSpanElement>(null);
-  const originalText = "SCRAMBLE";
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isRunning = useRef(false);
 
@@ -15,32 +22,33 @@ export function ScrambleText() {
     isRunning.current = true;
 
     let iterations = 0;
-    const maxIter = originalText.length * 5;
+    const maxIter = text.length * 5;
 
     intervalRef.current = setInterval(() => {
       if (!textRef.current) return;
       iterations++;
 
-      textRef.current.textContent = originalText
+      textRef.current.textContent = text
         .split("")
         .map((char, i) => {
           if (char === " ") return " ";
-          const resolveAt = Math.floor((i / originalText.length) * maxIter);
+          const resolveAt = Math.floor((i / text.length) * maxIter);
           if (iterations > resolveAt) return char;
-          return CHARS[Math.floor(Math.random() * CHARS.length)];
+          return glyphs[Math.floor(Math.random() * glyphs.length)];
         })
         .join("");
 
       if (iterations >= maxIter) {
         clearInterval(intervalRef.current!);
-        if (textRef.current) textRef.current.textContent = originalText;
+        if (textRef.current) textRef.current.textContent = text;
         isRunning.current = false;
       }
-    }, 35);
-  }, []);
+    }, speed);
+  }, [text, speed, glyphs]);
 
   return (
     <div
+      key={text}
       className="flex flex-col items-center gap-6 cursor-pointer group"
       onMouseEnter={scramble}
     >
@@ -49,7 +57,7 @@ export function ScrambleText() {
         className="font-black text-6xl text-[#f4f4f4] tracking-tighter group-hover:text-[#ff5c71] transition-colors duration-300"
         style={{ fontFamily: "var(--font-anton)", minWidth: "8ch", textAlign: "center" }}
       >
-        {originalText}
+        {text}
       </span>
       <span className="font-mono text-[10px] uppercase tracking-widest text-[#444]">
         Hover to scramble
