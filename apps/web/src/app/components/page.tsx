@@ -142,6 +142,15 @@ function StaticPlaceholder({ slug, color }: { slug: string; color: string }) {
   );
 }
 
+const getScale = (slug: string) => {
+  if (slug === "solar-carousel" || slug === "orbital-command-ring") return "scale-[0.45]";
+  if (slug === "kinetic-glass-grid" || slug === "kinetic-magnet" || slug === "morphing-cyber-node" || slug === "particle-field" || slug === "floating-orbs") return "scale-[0.5]";
+  if (slug === "holo-ticket" || slug === "rind-peel-card" || slug === "flip-card" || slug === "changelog") return "scale-[0.65]";
+  if (slug === "parallax-strips" || slug === "harvest-reveal" || slug === "stripe-wipe" || slug === "morph-transition") return "scale-[0.6]";
+  if (slug === "magnetic-nav" || slug === "step-trail" || slug === "grow-input" || slug === "tag-input" || slug === "blob-cursor" || slug === "crosshair") return "scale-[0.8]";
+  return "scale-95";
+};
+
 function CardPreview({ comp, color }: { comp: typeof componentsData[number]; color: string }) {
   const [isHovered, setIsHovered] = useState(false);
   const ComponentToRender = componentsMap[comp.componentPath];
@@ -154,7 +163,11 @@ function CardPreview({ comp, color }: { comp: typeof componentsData[number]; col
       className="relative h-44 w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center p-3 select-none transition-all duration-300 group-hover:border-[#ff5c71]/20"
     >
       {ComponentToRender && (!isCursor || isHovered) ? (
-        <div className="w-full h-full flex items-center justify-center pointer-events-auto scale-90 origin-center transition-all duration-300">
+        <div 
+          className={`w-full h-full flex items-center justify-center transition-all duration-300 ${getScale(comp.slug)} origin-center ${
+            isHovered ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+        >
           <ComponentToRender />
         </div>
       ) : (
@@ -270,19 +283,9 @@ export default function ComponentsIndexPage() {
             return (
               <div
                 key={comp.id}
-                onClick={(e) => {
-                  const target = e.target as HTMLElement;
-                  if (
-                    target.closest("button") || 
-                    target.closest("input") || 
-                    target.closest("select") || 
-                    target.closest("a") ||
-                    target.closest("textarea") ||
-                    target.closest("canvas") ||
-                    target.closest("[data-prevent-card-click]")
-                  ) {
-                    return;
-                  }
+                onClickCapture={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
                   router.push(`/components/${comp.slug}`);
                 }}
                 className="group relative flex flex-col p-4 rounded-[8px] border border-white/5 bg-zinc-950/20 hover:border-[#ff5c71]/40 hover:bg-zinc-950/50 hover:shadow-[0_8px_24px_rgba(255,92,113,0.03)] transition-all duration-300 cursor-pointer select-none"
