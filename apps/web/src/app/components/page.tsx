@@ -19,7 +19,6 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   VineInput: dynamic(() => import('@/components/community/demos/VineInput').then(m => m.VineInput), { ssr: false }),
   TagInput: dynamic(() => import('@/components/community/demos/TagInput').then(m => m.TagInput), { ssr: false }),
   ParticleBackground: dynamic(() => import('@/components/community/demos/ClientParticleBackground').then(m => m.ParticleBackground), { ssr: false }),
-  FloatingOrbs: dynamic(() => import('@/components/community/demos/ClientFloatingOrbs').then(m => m.FloatingOrbs), { ssr: false }),
   StickerWall: dynamic(() => import('@/components/community/demos/ClientStickerWall').then(m => m.StickerWall), { ssr: false }),
   LuminousWaves: dynamic(() => import('@/components/community/demos/ClientLuminousWaves').then(m => m.LuminousWaves), { ssr: false }),
   RetroGrid: dynamic(() => import('@/components/community/demos/ClientRetroGrid').then(m => m.RetroGrid), { ssr: false }),
@@ -226,7 +225,7 @@ const getScale = (slug: string) => {
   if (slug === "sticker-stack-text") return "scale-[0.34]";
   if (slug === "glyph-orbit-text") return "scale-[0.32]";
   if (slug === "seedwave-text") return "scale-[0.34]";
-  if (slug === "kinetic-glass-grid" || slug === "kinetic-magnet" || slug === "morphing-cyber-node" || slug === "particle-field" || slug === "floating-orbs" || slug === "sticker-wall" || slug === "luminous-waves" || slug === "retro-grid" || slug === "noise-blob" || slug === "matrix-rain") return "scale-[0.5]";
+  if (slug === "kinetic-glass-grid" || slug === "kinetic-magnet" || slug === "morphing-cyber-node" || slug === "particle-field" || slug === "sticker-wall" || slug === "luminous-waves" || slug === "retro-grid" || slug === "noise-blob" || slug === "matrix-rain") return "scale-[0.5]";
   if (slug === "holo-ticket" || slug === "rind-peel-card" || slug === "flip-card" || slug === "changelog") return "scale-[0.65]";
   if (slug === "parallax-strips" || slug === "harvest-reveal" || slug === "stripe-wipe" || slug === "morph-transition") return "scale-[0.6]";
   if (slug === "magnetic-nav" || slug === "step-trail" || slug === "grow-input" || slug === "tag-input" || slug === "blob-cursor" || slug === "crosshair") return "scale-[0.8]";
@@ -236,7 +235,6 @@ const getScale = (slug: string) => {
 // Components that are too GPU-heavy for grid previews — use static placeholder always
 const STATIC_PREVIEW_SLUGS = new Set([
   "particle-field",
-  "floating-orbs",
   "sticker-wall",
   "luminous-waves",
   "retro-grid",

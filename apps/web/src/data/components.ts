@@ -237,24 +237,6 @@ export const componentsData: ComponentData[] = [
     ]
   },
   {
-    id: "floating-orbs",
-    slug: "floating-orbs",
-    title: "Floating Orbs",
-    description: "Organic fluid-morphing custom glass shader mesh floating slowly and reacting to cursor hover.",
-    category: "3D Backgrounds",
-    tags: ["Three.js", "R3F", "Glassmorphism"],
-    cliCommand: "npx @melonui-dev/cli add floating-orbs",
-    codeSnippet: `// Custom glass morphing orbs utilizing MeshDistortionMaterial from Drei.`,
-    componentPath: "FloatingOrbs",
-    props: [
-      { name: "orbCount", type: "number", defaultValue: "5", description: "Number of floating glass orbs.", control: { type: "slider", min: 1, max: 10, step: 1 } },
-      { name: "speed", type: "number", defaultValue: "1.5", description: "Speed of floating and vertex morphing.", control: { type: "slider", min: 0.2, max: 4.0, step: 0.1 } },
-      { name: "distort", type: "number", defaultValue: "0.45", description: "Amount of liquid mesh distortion.", control: { type: "slider", min: 0.1, max: 1.0, step: 0.05 } },
-      { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Primary orb color.", control: { type: "color" } },
-      { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Secondary orb color.", control: { type: "color" } }
-    ]
-  },
-  {
     id: "sticker-wall",
     slug: "sticker-wall",
     title: "Sticker Wall",
@@ -265,7 +247,7 @@ export const componentsData: ComponentData[] = [
     codeSnippet: `// StickerWall.tsx`,
     componentPath: "StickerWall",
     props: [
-      { name: "stickers", type: "array", defaultValue: "[]", description: "Custom array of stickers: { label: string, emoji?: string, color?: string }[]" },
+      { name: "stickers", type: "string", defaultValue: `"🍉 MELON, 🌱 SEED, 💦 JUICY, 🍈 RIND, ⭐ PRO, 🍃 FRESH, 🔪 SLICE, 🍭 SWEET"`, description: "Custom comma-separated list of stickers: 'Emoji Label, Emoji Label, ...'", control: { type: "text" } },
       { name: "stickerDensity", type: "number", defaultValue: "12", description: "Number of stickers scattered on the wall.", control: { type: "slider", min: 4, max: 24, step: 1 } },
       { name: "scaleOnHover", type: "number", defaultValue: "1.15", description: "Scale enlargement factor on hover.", control: { type: "slider", min: 1.0, max: 1.4, step: 0.05 } },
       { name: "stickerTheme", type: "string", defaultValue: `"melon"`, description: "Sticker label presets: 'melon', 'tech', or 'mixed'.", control: { type: "text" } }
@@ -282,11 +264,12 @@ export const componentsData: ComponentData[] = [
     codeSnippet: `// LuminousWaves.tsx`,
     componentPath: "LuminousWaves",
     props: [
-      { name: "waveCount", type: "number", defaultValue: "4", description: "Number of horizontal wave threads.", control: { type: "slider", min: 1, max: 10, step: 1 } },
-      { name: "amplitude", type: "number", defaultValue: "35", description: "Peak vertical displacement amplitude.", control: { type: "slider", min: 10, max: 100, step: 5 } },
-      { name: "frequency", type: "number", defaultValue: "0.008", description: "Wave cycle horizontal frequency spacing.", control: { type: "slider", min: 0.002, max: 0.02, step: 0.001 } },
+      { name: "waveCount", type: "number", defaultValue: "5", description: "Number of horizontal wave threads.", control: { type: "slider", min: 1, max: 10, step: 1 } },
+      { name: "amplitude", type: "number", defaultValue: "38", description: "Peak vertical displacement amplitude.", control: { type: "slider", min: 10, max: 100, step: 5 } },
+      { name: "frequency", type: "number", defaultValue: "0.006", description: "Wave cycle horizontal frequency spacing.", control: { type: "slider", min: 0.002, max: 0.02, step: 0.001 } },
       { name: "waveColor", type: "string", defaultValue: `"#7fff5e"`, description: "Neon hex color of the glowing waves.", control: { type: "color" } },
-      { name: "speed", type: "number", defaultValue: "1.0", description: "Velocity of horizontal wave flow.", control: { type: "slider", min: 0.2, max: 3.0, step: 0.1 } }
+      { name: "secondaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Secondary color to blend into for iridescent waves.", control: { type: "color" } },
+      { name: "speed", type: "number", defaultValue: "0.5", description: "Velocity of horizontal wave flow.", control: { type: "slider", min: 0.2, max: 3.0, step: 0.1 } }
     ]
   },
   {

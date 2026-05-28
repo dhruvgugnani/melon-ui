@@ -16,7 +16,6 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   VineInput: dynamic(() => import('./demos/VineInput').then(m => m.VineInput), { ssr: false }),
   TagInput: dynamic(() => import('./demos/TagInput').then(m => m.TagInput), { ssr: false }),
   ParticleBackground: dynamic(() => import('./demos/ClientParticleBackground').then(m => m.ParticleBackground), { ssr: false }),
-  FloatingOrbs: dynamic(() => import('./demos/ClientFloatingOrbs').then(m => m.FloatingOrbs), { ssr: false }),
   StickerWall: dynamic(() => import('./demos/ClientStickerWall').then(m => m.StickerWall), { ssr: false }),
   LuminousWaves: dynamic(() => import('./demos/ClientLuminousWaves').then(m => m.LuminousWaves), { ssr: false }),
   RetroGrid: dynamic(() => import('./demos/ClientRetroGrid').then(m => m.RetroGrid), { ssr: false }),
