@@ -39,7 +39,9 @@ export function ComponentShowcase({
   const [installMethod, setInstallMethod] = useState<"cli" | "manual">("cli");
   const [previewTheme, setPreviewTheme] = useState<"dark" | "light">("dark");
   const [previewWidth, setPreviewWidth] = useState<string>("100%");
-  const [sliderVal, setSliderVal] = useState<number>(100);
+  const [showResizer, setShowResizer] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+  const [displayedWidth, setDisplayedWidth] = useState<number>(0);
   const [copiedCli, setCopiedCli] = useState(false);
   const [copiedDeps, setCopiedDeps] = useState(false);
   const [copiedUsage, setCopiedUsage] = useState(false);
@@ -48,6 +50,12 @@ export function ComponentShowcase({
 
   const previewPanelRef = useRef<HTMLDivElement>(null);
   const installPanelRef = useRef<HTMLDivElement>(null);
+  const previewBoxRef = useRef<HTMLDivElement>(null);
+  const resizeDataRef = useRef({
+    startX: 0,
+    startWidth: 0,
+    parentWidth: 0,
+  });
 
   const compSlug = slug || title.replace(/\s+/g, "-").toLowerCase();
   const compName = componentPath || title.replace(/\s+/g, "");
@@ -189,6 +197,93 @@ Please write a premium, responsive React page component in Next.js that:
     }
   };
 
+  const startResize = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    if (!previewBoxRef.current || !previewPanelRef.current) return;
+
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const startWidth = previewBoxRef.current.getBoundingClientRect().width;
+    const parentWidth = previewPanelRef.current.clientWidth;
+
+    resizeDataRef.current = {
+      startX: clientX,
+      startWidth,
+      parentWidth,
+    };
+
+    setIsResizing(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleMouseMove = (e: MouseEvent | TouchEvent) => {
+      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+      const { startX, startWidth, parentWidth } = resizeDataRef.current;
+      
+      const deltaX = clientX - startX;
+      // Since it is centered, resizing right border extends both sides -> 2 * deltaX
+      let newWidth = startWidth + 2 * deltaX;
+
+      const minWidth = 280;
+      const maxWidth = Math.max(minWidth, parentWidth - 64);
+      
+      if (newWidth < minWidth) newWidth = minWidth;
+      if (newWidth > maxWidth) newWidth = maxWidth;
+
+      setPreviewWidth(`${newWidth}px`);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchmove", handleMouseMove, { passive: false });
+    window.addEventListener("touchend", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchmove", handleMouseMove);
+      window.removeEventListener("touchend", handleMouseUp);
+    };
+  }, [isResizing]);
+
+  useEffect(() => {
+    if (isResizing) {
+      document.body.style.cursor = "ew-resize";
+      document.body.style.userSelect = "none";
+    } else {
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    }
+    return () => {
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+  }, [isResizing]);
+
+  useEffect(() => {
+    if (!previewBoxRef.current) return;
+    
+    const updateWidth = () => {
+      if (previewBoxRef.current) {
+        setDisplayedWidth(Math.round(previewBoxRef.current.getBoundingClientRect().width));
+      }
+    };
+
+    updateWidth();
+
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(previewBoxRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [previewWidth]);
+
   return (
     <article className="relative w-full mb-24">
       {/* Header */}
@@ -305,7 +400,7 @@ Please write a premium, responsive React page component in Next.js that:
                 <button
                   onClick={() => {
                     setPreviewWidth("100%");
-                    setSliderVal(100);
+                    setShowResizer(true);
                   }}
                   className={`p-1 border rounded bg-[#0d0d0f] transition-all cursor-pointer flex items-center justify-center w-6 h-6 z-10 active:scale-90 hover:scale-105 duration-200 ${
                     previewWidth === "100%"
@@ -315,7 +410,7 @@ Please write a premium, responsive React page component in Next.js that:
                   title="Desktop View (100%)"
                   aria-label="Desktop Preview"
                 >
-                  <svg width="13" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="2" y="3" width="20" height="14" rx="2" />
                     <line x1="8" y1="21" x2="16" y2="21" />
                     <line x1="12" y1="17" x2="12" y2="21" />
@@ -326,7 +421,7 @@ Please write a premium, responsive React page component in Next.js that:
                 <button
                   onClick={() => {
                     setPreviewWidth("768px");
-                    setSliderVal(76);
+                    setShowResizer(true);
                   }}
                   className={`p-1 border rounded bg-[#0d0d0f] transition-all cursor-pointer flex items-center justify-center w-6 h-6 z-10 active:scale-90 hover:scale-105 duration-200 ${
                     previewWidth === "768px"
@@ -336,9 +431,10 @@ Please write a premium, responsive React page component in Next.js that:
                   title="Tablet View (768px)"
                   aria-label="Tablet Preview"
                 >
-                  <svg width="11" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <rect x="4" y="2" width="16" height="20" rx="2" />
-                    <line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="3" />
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="4" y="3" width="16" height="18" rx="2" />
+                    <circle cx="12" cy="17" r="0.75" fill="currentColor" />
+                    <line x1="11" y1="5" x2="13" y2="5" />
                   </svg>
                 </button>
 
@@ -346,7 +442,7 @@ Please write a premium, responsive React page component in Next.js that:
                 <button
                   onClick={() => {
                     setPreviewWidth("375px");
-                    setSliderVal(37);
+                    setShowResizer(true);
                   }}
                   className={`p-1 border rounded bg-[#0d0d0f] transition-all cursor-pointer flex items-center justify-center w-6 h-6 z-10 active:scale-90 hover:scale-105 duration-200 ${
                     previewWidth === "375px"
@@ -356,30 +452,20 @@ Please write a premium, responsive React page component in Next.js that:
                   title="Phone View (375px)"
                   aria-label="Phone Preview"
                 >
-                  <svg width="9" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <rect x="5" y="2" width="14" height="20" rx="2" />
-                    <line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="3" />
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="7" y="3" width="10" height="18" rx="2" />
+                    <circle cx="12" cy="17" r="0.5" fill="currentColor" />
+                    <line x1="11" y1="5" x2="13" y2="5" />
                   </svg>
                 </button>
 
-                {/* Manual Width Slider */}
-                <div className="flex items-center gap-2 pl-2 border-l border-[#ff5c71]/10 hidden sm:flex">
-                  <span className="font-mono text-[9px] uppercase tracking-wider text-[#444] shrink-0">Width:</span>
-                  <input
-                    type="range"
-                    min="30"
-                    max="100"
-                    value={sliderVal}
-                    onChange={(e) => {
-                      const val = Number(e.target.value);
-                      setSliderVal(val);
-                      setPreviewWidth(`${val}%`);
-                    }}
-                    className="w-16 sm:w-20 md:w-24 h-1 bg-[#151515] rounded-lg appearance-none cursor-pointer accent-[#ff5c71]"
-                    title="Drag to resize preview width"
-                  />
-                  <span className="font-mono text-[9px] text-[#ff5c71]/80 w-8 text-right shrink-0">{sliderVal}%</span>
-                </div>
+                {/* Manual Width Display */}
+                {showResizer && (
+                  <div className="flex items-center gap-1.5 pl-2 border-l border-[#ff5c71]/10">
+                    <span className="font-mono text-[9px] uppercase tracking-wider text-[#444] shrink-0">Width:</span>
+                    <span className="font-mono text-[9px] text-[#ff5c71] font-bold shrink-0">{displayedWidth}px</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -398,9 +484,14 @@ Please write a premium, responsive React page component in Next.js that:
         >
           {/* Responsive Preview Wrapper Frame */}
           <div
-            className={`h-full w-full mx-auto relative transition-all duration-300 ease-out flex items-center justify-center ${
-              previewWidth !== "100%" 
-                ? "border-2 border-dashed border-[#ff5c71]/30 rounded-xl overflow-hidden shadow-2xl shadow-[#ff5c71]/5 bg-[#030303]" 
+            ref={previewBoxRef}
+            className={`h-full mx-auto relative flex items-center justify-center ${
+              !isResizing ? "transition-all duration-300 ease-out" : ""
+            } ${
+              previewWidth === "100%" ? "w-full" : ""
+            } ${
+              showResizer 
+                ? "border-2 border-dashed border-[#ff5c71]/30 rounded-xl shadow-2xl shadow-[#ff5c71]/5 bg-[#030303]" 
                 : ""
             }`}
             style={{ 
@@ -418,6 +509,22 @@ Please write a premium, responsive React page component in Next.js that:
               })
             ) : (
               component
+            )}
+
+            {/* Draggable resize handle */}
+            {showResizer && (
+              <div
+                onMouseDown={startResize}
+                onTouchStart={startResize}
+                className="absolute top-0 bottom-0 -right-3 w-6 flex items-center justify-center cursor-ew-resize group/resizer z-30 select-none"
+                title="Drag to resize viewport"
+              >
+                <div className="w-1.5 h-12 bg-white/10 group-hover/resizer:bg-[#ff5c71] group-active/resizer:bg-[#ff5c71] rounded-full transition-all flex flex-col items-center justify-center gap-0.5 shadow-md shadow-black/50 border border-white/5 group-hover/resizer:scale-x-125 duration-200">
+                  <span className="w-0.5 h-0.5 rounded-full bg-white/40 group-hover/resizer:bg-white" />
+                  <span className="w-0.5 h-0.5 rounded-full bg-white/40 group-hover/resizer:bg-white" />
+                  <span className="w-0.5 h-0.5 rounded-full bg-white/40 group-hover/resizer:bg-white" />
+                </div>
+              </div>
             )}
           </div>
         </div>
