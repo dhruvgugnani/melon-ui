@@ -388,17 +388,17 @@ export const componentsData: ComponentData[] = [
     id: "chromatic-melt-text",
     slug: "chromatic-melt-text",
     title: "Chromatic Melt Text",
-    description: "A transparent, reusable text effect where chunky MelonUI letters liquify with chromatic under-drips and tactile hover deformation.",
+    description: "A transparent chromatic wordmark with offset glass shadows, soft pointer glow, and restrained per-letter hover lift.",
     category: "GSAP Text",
     tags: ["Framer Motion", "Typography", "Pointer Physics", "Gradient"],
     cliCommand: "npx @melonui-dev/cli add chromatic-melt-text",
     codeSnippet: `const [spot, setSpot] = useState({ x: 48, y: 42 });
 
-// Pointer position drives the radial ink glow while each glyph springs and melts on hover.`,
+// Pointer position drives a soft chromatic glow while each glyph gets offset glass shadows.`,
     componentPath: "ChromaticMeltText",
     props: [
-      { name: "text", type: "string", defaultValue: `"MELT MODE"`, description: "Headline text to render.", control: { type: "text" } },
-      { name: "kicker", type: "string", defaultValue: `"Pointer reactive ink"`, description: "Optional small label above the text.", control: { type: "text" } },
+      { name: "text", type: "string", defaultValue: `"CHROMA"`, description: "Headline text to render.", control: { type: "text" } },
+      { name: "kicker", type: "string", defaultValue: `"Chromatic glass type"`, description: "Optional small label above the text.", control: { type: "text" } },
       { name: "primaryColor", type: "string", defaultValue: `"#ffffff"`, description: "Main glyph color.", control: { type: "color" } },
       { name: "secondaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Glow and under-drip color.", control: { type: "color" } },
       { name: "accentColor", type: "string", defaultValue: `"#7fff5e"`, description: "Hover and alternate drip color.", control: { type: "color" } }
@@ -408,17 +408,19 @@ export const componentsData: ComponentData[] = [
     id: "rind-scanner-text",
     slug: "rind-scanner-text",
     title: "Rind Scanner Text",
-    description: "A transparent sliced headline scanner with offset typography bands, neon rind sweeps, and click-to-pin glitch motion.",
+    description: "A transparent readable headline scanner where a neon rind beam reveals a clean color pass across the word.",
     category: "GSAP Text",
     tags: ["Framer Motion", "Typography", "Scanner", "Glitch"],
     cliCommand: "npx @melonui-dev/cli add rind-scanner-text",
-    codeSnippet: `const slices = ["inset(0 0 78% 0)", "inset(24% 0 48% 0)", "inset(54% 0 18% 0)"];
+    codeSnippet: `const clipPath = active
+  ? ["inset(0 100% 0 0)", "inset(0 0% 0 0)", "inset(0 0% 0 100%)"]
+  : "inset(0 100% 0 0)";
 
-// Each duplicate headline is clipped into a different band and animated independently.`,
+// The scan layer keeps the word readable while revealing a neon color pass.`,
     componentPath: "RindScannerText",
     props: [
-      { name: "text", type: "string", defaultValue: `"SCAN THE RIND"`, description: "Headline text to slice and scan.", control: { type: "text" } },
-      { name: "label", type: "string", defaultValue: `"Typography scanner"`, description: "Optional accessibility and eyebrow label.", control: { type: "text" } },
+      { name: "text", type: "string", defaultValue: `"SCANNER"`, description: "Headline text to scan.", control: { type: "text" } },
+      { name: "label", type: "string", defaultValue: `"Readable scan reveal"`, description: "Optional accessibility and eyebrow label.", control: { type: "text" } },
       { name: "baseColor", type: "string", defaultValue: `"#f4f4f4"`, description: "Base text color.", control: { type: "color" } },
       { name: "scanColor", type: "string", defaultValue: `"#7fff5e"`, description: "Scanner beam and highlighted slice color.", control: { type: "color" } },
       { name: "accentColor", type: "string", defaultValue: `"#ff5c71"`, description: "Secondary glow color.", control: { type: "color" } }
@@ -448,15 +450,16 @@ export const componentsData: ComponentData[] = [
     id: "glyph-orbit-text",
     slug: "glyph-orbit-text",
     title: "Glyph Orbit Text",
-    description: "A transparent central headline surrounded by orbiting character tiles that unlock into a kinetic typographic halo.",
+    description: "A transparent central headline surrounded by orbiting character tiles derived from the same word, forming a readable typographic halo.",
     category: "GSAP Text",
     tags: ["Framer Motion", "Typography", "Orbit", "Glyphs"],
     cliCommand: "npx @melonui-dev/cli add glyph-orbit-text",
-    codeSnippet: `const angle = (index / glyphs.length) * Math.PI * 2;
+    codeSnippet: `const orbitGlyphs = glyphs?.length ? glyphs : text.replace(/\\s/g, "").split("");
+const angle = (index / orbitGlyphs.length) * Math.PI * 2;
 const x = Math.cos(angle) * radius;
 const y = Math.sin(angle) * radius;
 
-// Glyph tiles spring from a tight lockup into a circular orbit.`,
+// Glyph tiles are derived from the rendered word unless custom glyphs are passed.`,
     componentPath: "GlyphOrbitText",
     props: [
       { name: "text", type: "string", defaultValue: `"ORBIT"`, description: "Central headline text.", control: { type: "text" } },

@@ -13,11 +13,9 @@ export interface RindScannerTextProps {
   style?: CSSProperties;
 }
 
-const SCANNER_SLICES = ["inset(0 0 78% 0)", "inset(24% 0 48% 0)", "inset(54% 0 18% 0)"];
-
 export function RindScannerText({
-  text = "SCAN THE RIND",
-  label = "Typography scanner",
+  text = "SCANNER",
+  label = "Readable scan reveal",
   baseColor = "#f4f4f4",
   scanColor = "#7fff5e",
   accentColor = "#ff5c71",
@@ -41,42 +39,53 @@ export function RindScannerText({
           {label}
         </span>
       )}
-      <span className="relative block min-h-[clamp(7rem,18vw,11rem)] w-full overflow-visible">
+      <span className="relative block min-h-[clamp(5rem,12vw,8rem)] w-full overflow-hidden">
         <motion.span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 z-10 w-16 blur-md"
+          className="pointer-events-none absolute inset-y-1 z-20 w-14 rounded-full blur-md"
           style={{
             background: `linear-gradient(90deg, transparent, ${scanColor}66, transparent)`,
           }}
-          animate={{ x: active ? ["-20%", "640%"] : "-35%" }}
+          animate={{ x: active ? ["-15%", "760%"] : "-35%" }}
           transition={{ duration: 1.2, ease: "easeInOut", repeat: active ? Infinity : 0, repeatDelay: 0.35 }}
         />
         <span
-          className="absolute inset-0 block text-[clamp(3.4rem,13vw,9rem)] uppercase leading-[0.78] opacity-15"
-          style={{ fontFamily: "var(--font-londrina-solid)", color: baseColor }}
+          aria-hidden="true"
+          className="absolute inset-x-0 top-1/2 h-px"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${scanColor}88, ${accentColor}66, transparent)`,
+          }}
+        />
+        <span className="sr-only">{text}</span>
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 block text-[clamp(3.3rem,11vw,7.6rem)] uppercase leading-[0.84]"
+          style={{
+            fontFamily: "var(--font-londrina-solid)",
+            color: baseColor,
+            textShadow: `0 18px 40px ${accentColor}22`,
+          }}
         >
           {text}
         </span>
-        {SCANNER_SLICES.map((clip, index) => (
-          <motion.span
-            key={clip}
-            aria-hidden="true"
-            className="absolute inset-0 block text-[clamp(3.4rem,13vw,9rem)] uppercase leading-[0.78]"
-            style={{
-              fontFamily: "var(--font-londrina-solid)",
-              color: index === 1 ? scanColor : baseColor,
-              textShadow: index === 1 ? `0 0 34px ${scanColor}66` : `0 0 30px ${accentColor}33`,
-              clipPath: clip,
-            }}
-            animate={{
-              x: active ? [0, index === 1 ? -16 : 12, 0] : 0,
-              skewX: active ? [0, index === 1 ? -5 : 4, 0] : 0,
-            }}
-            transition={{ duration: 0.45, repeat: active ? Infinity : 0, repeatDelay: 0.7 + index * 0.1 }}
-          >
-            {text}
-          </motion.span>
-        ))}
+        <motion.span
+          aria-hidden="true"
+          className="absolute inset-0 block overflow-hidden text-[clamp(3.3rem,11vw,7.6rem)] uppercase leading-[0.84]"
+          style={{
+            fontFamily: "var(--font-londrina-solid)",
+            color: scanColor,
+            textShadow: `0 0 28px ${scanColor}77`,
+          }}
+          initial={false}
+          animate={{
+            clipPath: active
+              ? ["inset(0 100% 0 0)", "inset(0 0% 0 0)", "inset(0 0% 0 100%)"]
+              : "inset(0 100% 0 0)",
+          }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], repeat: active ? Infinity : 0, repeatDelay: 0.35 }}
+        >
+          {text}
+        </motion.span>
       </span>
     </button>
   );

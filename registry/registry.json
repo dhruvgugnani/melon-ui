@@ -492,7 +492,7 @@
   },
   "chromatic-melt-text": {
     "name": "Chromatic Melt Text",
-    "description": "A transparent, reusable text effect where chunky MelonUI letters liquify with chromatic under-drips and tactile hover deformation.",
+    "description": "A transparent chromatic wordmark with offset glass shadows, soft pointer glow, and restrained per-letter hover lift.",
     "category": "GSAP Text",
     "dependencies": [
       "framer-motion"
@@ -513,7 +513,7 @@
   },
   "rind-scanner-text": {
     "name": "Rind Scanner Text",
-    "description": "A transparent sliced headline scanner with offset typography bands, neon rind sweeps, and click-to-pin glitch motion.",
+    "description": "A transparent readable headline scanner where a neon rind beam reveals a clean color pass across the word.",
     "category": "GSAP Text",
     "dependencies": [
       "framer-motion"
@@ -555,7 +555,7 @@
   },
   "glyph-orbit-text": {
     "name": "Glyph Orbit Text",
-    "description": "A transparent central headline surrounded by orbiting character tiles that unlock into a kinetic typographic halo.",
+    "description": "A transparent central headline surrounded by orbiting character tiles derived from the same word, forming a readable typographic halo.",
     "category": "GSAP Text",
     "dependencies": [
       "framer-motion"
