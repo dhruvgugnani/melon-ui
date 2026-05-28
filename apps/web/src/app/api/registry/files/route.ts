@@ -26,7 +26,7 @@ export async function GET(request: Request) {
         "Content-Type": "text/plain; charset=utf-8",
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "File not found" }, { status: 404 });
   }
 }

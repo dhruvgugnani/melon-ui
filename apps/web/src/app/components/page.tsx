@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { componentsData, ComponentData } from "@/data/components";
+import { componentsData } from "@/data/components";
 
 // Beautiful custom preview placeholders for the cards (to avoid heavy WebGL contexts)
 function CardPreview({ slug, color }: { slug: string; color: string }) {

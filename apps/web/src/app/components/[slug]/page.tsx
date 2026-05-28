@@ -6,8 +6,6 @@ import { ComponentShowcase } from '@/components/community/ComponentShowcase';
 
 import dynamic from 'next/dynamic';
 import React from 'react';
-import fs from 'fs';
-import path from 'path';
 
 // Dynamically import all components
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,27 +93,6 @@ export default async function ComponentPage(props: { params: Promise<{ slug: str
   }
 
   const ComponentToRender = componentsMap[component.componentPath];
-
-  let fullSourceCode = component.codeSnippet;
-  try {
-    const filePath = path.join(process.cwd(), "src/components/community/demos", `${component.componentPath}.tsx`);
-    if (fs.existsSync(filePath)) {
-      fullSourceCode = fs.readFileSync(filePath, "utf8");
-    } else {
-      // Fallback for wrapped components (e.g. FloatingOrbs -> ClientFloatingOrbs)
-      const wrapperName = component.componentPath === "FloatingOrbs" 
-        ? "ClientFloatingOrbs" 
-        : component.componentPath === "ParticleBackground" 
-          ? "ClientParticleBackground" 
-          : `Client${component.componentPath}`;
-      const clientFilePath = path.join(process.cwd(), "src/components/community/demos", `${wrapperName}.tsx`);
-      if (fs.existsSync(clientFilePath)) {
-        fullSourceCode = fs.readFileSync(clientFilePath, "utf8");
-      }
-    }
-  } catch (e) {
-    console.error("Failed to read source file:", e);
-  }
 
   const jsonLd = {
     "@context": "https://schema.org",
