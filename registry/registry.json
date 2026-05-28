@@ -512,8 +512,8 @@
     "preview": "/preview/chromatic-melt-text.png"
   },
   "rind-scanner-text": {
-    "name": "Rind Scanner Text",
-    "description": "A transparent readable headline scanner where a neon rind beam reveals a clean color pass across the word.",
+    "name": "Rind Reveal Text",
+    "description": "A transparent pointer-light wordmark that reveals a melon/rind color pass inside readable chunky type.",
     "category": "GSAP Text",
     "dependencies": [
       "framer-motion"
@@ -527,8 +527,8 @@
     "tags": [
       "Framer Motion",
       "Typography",
-      "Scanner",
-      "Glitch"
+      "Reveal",
+      "Gradient"
     ],
     "preview": "/preview/rind-scanner-text.png"
   },

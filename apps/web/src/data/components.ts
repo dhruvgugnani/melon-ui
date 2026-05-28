@@ -407,24 +407,24 @@ export const componentsData: ComponentData[] = [
   {
     id: "rind-scanner-text",
     slug: "rind-scanner-text",
-    title: "Rind Scanner Text",
-    description: "A transparent readable headline scanner where a neon rind beam reveals a clean color pass across the word.",
+    title: "Rind Reveal Text",
+    description: "A transparent pointer-light wordmark that reveals a melon/rind color pass inside readable chunky type.",
     category: "GSAP Text",
-    tags: ["Framer Motion", "Typography", "Scanner", "Glitch"],
+    tags: ["Framer Motion", "Typography", "Reveal", "Gradient"],
     cliCommand: "npx @melonui-dev/cli add rind-scanner-text",
-    codeSnippet: `const beam = active ? ["0%", "100%"] : "0%";
+    codeSnippet: `const [spot, setSpot] = useState({ x: 52, y: 46 });
 const clipPath = active
-  ? ["inset(0 100% 0 0)", "inset(0 0% 0 0)", "inset(0 0% 0 100%)"]
-  : "inset(0 100% 0 0)";
+  ? \`circle(52% at \${spot.x}% \${spot.y}%)\`
+  : \`circle(22% at \${spot.x}% \${spot.y}%)\`;
 
-// Scanner rails, beam, and color reveal move together while the base word stays readable.`,
+// Pointer position reveals a melon/rind gradient inside the text while the base word stays readable.`,
     componentPath: "RindScannerText",
     props: [
-      { name: "text", type: "string", defaultValue: `"SCANNER"`, description: "Headline text to scan.", control: { type: "text" } },
-      { name: "label", type: "string", defaultValue: `"Readable scan reveal"`, description: "Optional accessibility and eyebrow label.", control: { type: "text" } },
+      { name: "text", type: "string", defaultValue: `"RIND"`, description: "Headline text to reveal.", control: { type: "text" } },
+      { name: "label", type: "string", defaultValue: `"Pointer light reveal"`, description: "Optional accessibility and eyebrow label.", control: { type: "text" } },
       { name: "baseColor", type: "string", defaultValue: `"#f4f4f4"`, description: "Base text color.", control: { type: "color" } },
-      { name: "scanColor", type: "string", defaultValue: `"#7fff5e"`, description: "Scanner beam and highlighted slice color.", control: { type: "color" } },
-      { name: "accentColor", type: "string", defaultValue: `"#ff5c71"`, description: "Secondary glow color.", control: { type: "color" } }
+      { name: "scanColor", type: "string", defaultValue: `"#7fff5e"`, description: "Rind green reveal color.", control: { type: "color" } },
+      { name: "accentColor", type: "string", defaultValue: `"#ff5c71"`, description: "Pulp accent reveal color.", control: { type: "color" } }
     ],
   },
   {
