@@ -20,71 +20,61 @@ MelonUI is an open-source, hand-crafted collection of premium interactive compon
 
 ## 🚀 Getting Started
 
-### 1. Installation & Execution
+### Option A: Global CLI (Recommended)
 
-You can run the MelonUI CLI tool globally on your system, or execute it dynamically on-demand using `npx`.
-
-#### Option A: Global Installation (Recommended)
-Install the package globally to access the `melonui` binary directly:
-```bash
-npm install -g @melonui-dev/cli
-```
-Once installed, run any command prefixing with `melonui` (e.g. `melonui init`).
-
-#### Option B: Dynamic Execution via npx
-Alternatively, run commands directly on-the-fly without global installation:
-```bash
-npx @melonui-dev/cli [command]
-```
+1. **Install CLI globally**:
+   ```bash
+   npm install -g @melonui-dev/cli
+   ```
+2. **Initialize project**:
+   ```bash
+   melonui init
+   ```
+3. **Open searchable components checklist**:
+   ```bash
+   melonui add
+   ```
+   *(Use the arrow keys to browse, `Space` to select/deselect, start typing to filter, and press `Enter` to confirm).*
+4. **(Alternative) Add a component directly**:
+   ```bash
+   melonui add burst-button
+   ```
 
 ---
 
-### 2. Interactive Modes
+### Option B: Dynamic Execution (No Global Installation)
 
-MelonUI CLI supports intuitive interactive prompts.
+1. **Initialize project**:
+   ```bash
+   npx @melonui-dev/cli init
+   ```
+2. **Open searchable components checklist**:
+   ```bash
+   npx @melonui-dev/cli add
+   ```
+   *(Use the arrow keys to browse, `Space` to select/deselect, start typing to filter, and press `Enter` to confirm).*
+3. **(Alternative) Add a component directly**:
+   ```bash
+   npx @melonui-dev/cli add burst-button
+   ```
 
-#### Navigation Dashboard
-If you execute the binary with **zero arguments**, it opens an interactive dashboard menu to select commands:
+---
+
+### 🛠️ Interactive Dashboard Mode
+If you execute the binary with **zero arguments**, it opens an interactive command dashboard to select actions:
 ```bash
 melonui
 # OR: npx @melonui-dev/cli
 ```
-```text
-What would you like to do?
-> Initialize MelonUI Project   (Set up utils, paths, and core dependencies)
-  Add/Install Components       (Search, select, and install components dynamically)
-  Exit
-```
-
-#### Searchable Component Selector
-To view all available components in the CLI, run the `add` command **without a component parameter**:
-```bash
-melonui add
-# OR: npx @melonui-dev/cli add
-```
-This fetches the remote registry list and displays a searchable multiselect prompt:
-```text
-Fetching components from MelonUI registry...
-
-Select components to install (Space to select, Enter to confirm, type to search)
-> [ ] Burst Button [Buttons] - Seeds physically burst from click point
-  [ ] Ripple Button [Buttons] - Radial click ripple effect
-  [ ] Luminous Waves [Backgrounds] - Hardware accelerated WebGL wave field
-  [ ] Retro Grid [Backgrounds] - Nostalgic neon perspective grid
-```
-- **Navigation**: Arrow keys (Up/Down) to browse.
-- **Selection**: `Spacebar` to check/uncheck components.
-- **Search**: Start typing to filter components dynamically by name or details.
-- **Execution**: Press `Enter` to install all selected components.
 
 ---
 
-### 3. Command Reference
+### 📋 Command Reference
 
 | Command | Usage | Description |
 |---|---|---|
-| **`init`** | `melonui init` | Sets up project preferences, installs core requirements (`clsx`, `tailwind-merge`), and creates a local utility file `utils.ts`. |
-| **`add`** | `melonui add [component]` | Installs the specified component. If no component is passed, opens the interactive multiselect selector. Resolves and installs dependencies automatically. |
+| **`init`** | `melonui init` | Sets up project configurations, installs helper utilities (`clsx`, `tailwind-merge`), and creates `utils.ts`. |
+| **`add`** | `melonui add [component]` | Installs the specified component. If no component is passed, opens the interactive multiselect list. Resolves and installs dependencies automatically. |
 | **`--help`** | `melonui --help` | Lists CLI version, command descriptions, and available option flags. |
 
 ---

@@ -71,90 +71,131 @@ const DOCS_DATA: Record<string, DocContent> = {
     category: "Getting Started",
     description: "Learn how to configure your project and install the necessary dependencies for MelonUI.",
     headings: [
-      { id: "cli-setup", text: "CLI Setup" },
-      { id: "dependencies", text: "Manual Dependencies" },
+      { id: "cli-global", text: "Option A: Global CLI" },
+      { id: "cli-npx", text: "Option B: Dynamic (npx)" },
+      { id: "dependencies", text: "Option C: Manual Setup" },
       { id: "css-setup", text: "CSS Setup" },
       { id: "typescript", text: "TypeScript" },
     ],
     render: (copyFn, copiedId) => (
       <div className="space-y-10">
-        <section id="cli-setup" className="space-y-4">
-          <h2 id="cli-setup" className="text-3xl font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)" }}>
-            CLI Setup (Recommended)
-          </h2>
-          <p className="text-white/60 leading-relaxed text-sm">
-            The fastest way to get started is by using the official MelonUI CLI. You can install it globally or run it on-the-fly using <code className="text-white font-mono px-1 py-0.5 rounded bg-white/5">npx</code>.
-          </p>
-          
-          <div className="space-y-3">
-            <h3 className="text-lg font-bold text-white/90">Global Installation</h3>
-            <p className="text-white/50 leading-relaxed text-xs">
-              Install the CLI globally to access the <code className="text-white font-mono">melonui</code> binary anywhere on your system:
-            </p>
-            <div className="relative">
-              <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
-                npm install -g @melonui-dev/cli
-              </pre>
-              <button
-                onClick={() => copyFn("npm install -g @melonui-dev/cli", "global-cli")}
-                className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
-              >
-                {copiedId === "global-cli" ? "COPIED" : "COPY"}
-              </button>
-            </div>
+        {/* Option A: Global CLI */}
+        <section id="cli-global" className="space-y-6">
+          <div className="border-l-2 border-[#7fff5e] pl-4">
+            <h2 className="text-3xl font-black uppercase text-white leading-none" style={{ fontFamily: "var(--font-londrina-solid)" }}>
+              Option A: Global CLI (Recommended)
+            </h2>
+            <p className="text-white/40 text-xs mt-1">Best for running the short `melonui` command anywhere.</p>
           </div>
 
-          <div className="space-y-3 pt-2">
-            <h3 className="text-lg font-bold text-white/90">Initialize Project</h3>
-            <p className="text-white/50 leading-relaxed text-xs">
-              Run the initialization command at the root of your project to detect package manager, install core helpers, and configure directory paths:
-            </p>
-            <div className="relative">
-              <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
-                melonui init
-              </pre>
-              <button
-                onClick={() => copyFn("melonui init", "global-init")}
-                className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
-              >
-                {copiedId === "global-init" ? "COPIED" : "COPY"}
-              </button>
+          <div className="space-y-4 pl-2">
+            <div className="space-y-2">
+              <h3 className="text-xs font-mono uppercase text-[#7fff5e]">1. Install CLI globally</h3>
+              <div className="relative">
+                <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-white/90 overflow-x-auto select-all">
+                  npm install -g @melonui-dev/cli
+                </pre>
+                <button
+                  onClick={() => copyFn("npm install -g @melonui-dev/cli", "global-cli")}
+                  className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
+                >
+                  {copiedId === "global-cli" ? "COPIED" : "COPY"}
+                </button>
+              </div>
             </div>
-            <p className="text-white/40 text-[11px] leading-relaxed">
-              *Alternative npx usage: <code className="text-white/70">npx @melonui-dev/cli init</code>
-            </p>
-          </div>
 
-          <div className="space-y-3 pt-2">
-            <h3 className="text-lg font-bold text-white/90">Add Components & Interactive List</h3>
-            <p className="text-white/50 leading-relaxed text-xs">
-              To view all available components and select which ones to add, run the <code className="text-white font-mono">add</code> command without any arguments. This fetches the remote registry list and opens a searchable, interactive multiselect menu:
-            </p>
-            <div className="relative">
-              <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
-                melonui add
-              </pre>
-              <button
-                onClick={() => copyFn("melonui add", "global-add-interactive")}
-                className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
-              >
-                {copiedId === "global-add-interactive" ? "COPIED" : "COPY"}
-              </button>
+            <div className="space-y-2">
+              <h3 className="text-xs font-mono uppercase text-[#7fff5e]">2. Initialize your workspace</h3>
+              <div className="relative">
+                <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-white/90 overflow-x-auto select-all">
+                  melonui init
+                </pre>
+                <button
+                  onClick={() => copyFn("melonui init", "global-init")}
+                  className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
+                >
+                  {copiedId === "global-init" ? "COPIED" : "COPY"}
+                </button>
+              </div>
             </div>
-            <p className="text-white/40 text-[11px] leading-relaxed">
-              *Use the arrow keys to browse, <kbd className="bg-white/10 px-1 rounded">Space</kbd> to select/deselect, start typing to search/filter the registry, and press <kbd className="bg-white/10 px-1 rounded">Enter</kbd> to install.
-            </p>
+
+            <div className="space-y-2">
+              <h3 className="text-xs font-mono uppercase text-[#7fff5e]">3. Open searchable component list</h3>
+              <p className="text-white/60 leading-relaxed text-xs">
+                To see all available components and select which ones to add, run the <code className="text-white font-mono">add</code> command without any arguments:
+              </p>
+              <div className="relative">
+                <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
+                  melonui add
+                </pre>
+                <button
+                  onClick={() => copyFn("melonui add", "global-add")}
+                  className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
+                >
+                  {copiedId === "global-add" ? "COPIED" : "COPY"}
+                </button>
+              </div>
+            </div>
           </div>
         </section>
 
+        {/* Option B: Dynamic CLI */}
+        <section id="cli-npx" className="space-y-6">
+          <div className="border-l-2 border-[#ff5c71] pl-4">
+            <h2 className="text-3xl font-black uppercase text-white leading-none" style={{ fontFamily: "var(--font-londrina-solid)" }}>
+              Option B: Dynamic Execution (npx)
+            </h2>
+            <p className="text-white/40 text-xs mt-1">Best for running the CLI on-demand without installing a global utility.</p>
+          </div>
+
+          <div className="space-y-4 pl-2">
+            <div className="space-y-2">
+              <h3 className="text-xs font-mono uppercase text-[#ff5c71]">1. Initialize your workspace</h3>
+              <div className="relative">
+                <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-white/90 overflow-x-auto select-all">
+                  npx @melonui-dev/cli init
+                </pre>
+                <button
+                  onClick={() => copyFn("npx @melonui-dev/cli init", "npx-init")}
+                  className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
+                >
+                  {copiedId === "npx-init" ? "COPIED" : "COPY"}
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-xs font-mono uppercase text-[#ff5c71]">2. Open searchable component list</h3>
+              <p className="text-white/60 leading-relaxed text-xs">
+                To fetch the remote registry and select components dynamically without global installs:
+              </p>
+              <div className="relative">
+                <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
+                  npx @melonui-dev/cli add
+                </pre>
+                <button
+                  onClick={() => copyFn("npx @melonui-dev/cli add", "npx-add")}
+                  className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
+                >
+                  {copiedId === "npx-add" ? "COPIED" : "COPY"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Option C: Manual Setup */}
         <section id="dependencies" className="space-y-4">
-          <h2 id="dependencies" className="text-3xl font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)" }}>
-            Manual Dependencies
-          </h2>
-          <p className="text-white/60 leading-relaxed text-sm">
-            Before using any MelonUI component manually, you need to install the required animation and rendering packages. Run the following command in your terminal:
+          <div className="border-l-2 border-white/20 pl-4">
+            <h2 className="text-3xl font-black uppercase text-white leading-none" style={{ fontFamily: "var(--font-londrina-solid)" }}>
+              Option C: Manual Setup (No CLI)
+            </h2>
+            <p className="text-white/40 text-xs mt-1">If you prefer copy-pasting code manually instead of using our CLI.</p>
+          </div>
+          <p className="text-white/60 leading-relaxed text-xs pl-2">
+            Before using any MelonUI component manually, install the required packages in your project terminal:
           </p>
-          <div className="relative">
+          <div className="relative pl-2">
             <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
               npm install gsap @gsap/react three @react-three/fiber @react-three/drei clsx tailwind-merge framer-motion lenis
             </pre>
