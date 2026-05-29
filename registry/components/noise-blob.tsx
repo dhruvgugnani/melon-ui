@@ -3,20 +3,27 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 
-export interface NoiseBlobProps {
+export interface NoiseBlobProps extends React.ComponentPropsWithoutRef<"div"> {
   primaryColor?: string;
   secondaryColor?: string;
+  tertiaryColor?: string;
   blobSize?: number;
   speed?: number;
   gooeyness?: number; // threshold matrix
+  bg?: string;
 }
 
 export function NoiseBlob({
   primaryColor = "#ff5c71",
   secondaryColor = "#7fff5e",
+  tertiaryColor = "#e8d5b7",
   blobSize = 120,
   speed = 1.0,
   gooeyness = 10,
+  bg = "#050505",
+  className = "",
+  style,
+  ...props
 }: NoiseBlobProps) {
   // Generate random movement offsets and delays
   const blobs = useMemo(() => {
@@ -39,7 +46,7 @@ export function NoiseBlob({
       },
       {
         id: 3,
-        color: "#e8d5b7",
+        color: tertiaryColor,
         x: [0, 50, -40, 0],
         y: [0, 70, -60, 0],
         delay: 3.0,
@@ -54,7 +61,7 @@ export function NoiseBlob({
         sizeMult: 1.05,
       },
     ];
-  }, [primaryColor, secondaryColor]);
+  }, [primaryColor, secondaryColor, tertiaryColor]);
 
   // Adjust SVG blur & alpha matrix based on gooeyness (range 2 to 20)
   const stdDeviation = gooeyness * 2;
@@ -62,10 +69,13 @@ export function NoiseBlob({
 
   return (
     <div
-      className="w-full h-full min-h-[300px] bg-[#050505] relative overflow-hidden flex items-center justify-center"
+      className={`w-full h-full min-h-[300px] relative overflow-hidden flex items-center justify-center ${className}`}
       style={{
         border: "1px solid #111",
+        backgroundColor: bg,
+        ...style
       }}
+      {...props}
     >
       {/* Liquid Blobs Container with SVG Filter applied */}
       <div
@@ -120,7 +130,7 @@ export function NoiseBlob({
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(circle at center, transparent 30%, rgba(5,5,5,0.7) 90%)",
+          background: `radial-gradient(circle at center, transparent 30%, ${bg}b3 90%)`,
         }}
       />
     </div>

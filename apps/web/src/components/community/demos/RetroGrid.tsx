@@ -2,20 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export interface RetroGridProps {
+export interface RetroGridProps extends React.ComponentPropsWithoutRef<"div"> {
   gridColor?: string;
   speed?: number;
   horizonColor?: string;
   tiltMultiplier?: number;
-}
-
-interface Particle {
-  x: number;
-  y: number;
-  size: number;
-  speedY: number;
-  speedX: number;
-  opacity: number;
+  bg?: string;
+  borderColor?: string;
 }
 
 export function RetroGrid({
@@ -23,6 +16,11 @@ export function RetroGrid({
   speed = 1.5,
   horizonColor = "#7fff5e",
   tiltMultiplier = 1.0,
+  bg = "#050505",
+  borderColor = "#111",
+  className = "",
+  style,
+  ...props
 }: RetroGridProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -188,10 +186,13 @@ export function RetroGrid({
   return (
     <div
       ref={containerRef}
-      className="w-full h-full min-h-[300px] bg-[#050505] relative overflow-hidden flex items-center justify-center select-none"
+      className={`w-full h-full min-h-[300px] relative overflow-hidden flex items-center justify-center select-none ${className}`}
       style={{
-        border: "1px solid #111",
+        border: `1px solid ${borderColor}`,
+        backgroundColor: bg,
+        ...style
       }}
+      {...props}
     >
       {/* Synthwave Cyber Sun */}
       <div

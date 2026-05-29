@@ -2,13 +2,14 @@
 
 import { useEffect, useRef } from "react";
 
-export interface LuminousWavesProps {
+export interface LuminousWavesProps extends React.ComponentPropsWithoutRef<"div"> {
   waveCount?: number;
   amplitude?: number;
   frequency?: number;
   waveColor?: string;
   secondaryColor?: string;
   speed?: number;
+  bg?: string;
 }
 
 interface Particle {
@@ -27,6 +28,10 @@ export function LuminousWaves({
   waveColor = "#7fff5e",
   secondaryColor = "#ff5c71",
   speed = 0.5,
+  bg = "#030303",
+  className = "",
+  style,
+  ...props
 }: LuminousWavesProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: -1000, y: -1000 });
@@ -231,7 +236,15 @@ export function LuminousWaves({
   }, [waveCount, amplitude, frequency, waveColor, secondaryColor, speed]);
 
   return (
-    <div className="w-full h-full min-h-[350px] bg-[#030303] relative overflow-hidden" style={{ border: "1px solid #111" }}>
+    <div 
+      className={`w-full h-full min-h-[350px] relative overflow-hidden ${className}`} 
+      style={{ 
+        border: "1px solid #111",
+        backgroundColor: bg,
+        ...style 
+      }}
+      {...props}
+    >
       {/* Editorial grid backing */}
       <div 
         className="absolute inset-0 opacity-[0.02] pointer-events-none" 
@@ -244,7 +257,12 @@ export function LuminousWaves({
         }}
       />
       {/* Radial vignette shader overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_35%,#030303_90%)] pointer-events-none z-10" />
+      <div 
+        className="absolute inset-0 pointer-events-none z-10" 
+        style={{
+          background: `radial-gradient(circle at center, transparent 35%, ${bg} 90%)`
+        }}
+      />
       <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full" />
     </div>
   );

@@ -678,6 +678,20 @@ const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
       { name: "statusLabel", type: "string", defaultValue: `"Live"`, description: "Status pill text.", control: { type: "text" } },
       { name: "lensLabel", type: "string", defaultValue: `"Inspection Lens"`, description: "Right panel label.", control: { type: "text" } }
     ],
+  },
+  {
+    id: "floating-orbs",
+    slug: "floating-orbs",
+    title: "Floating Orbs",
+    description: "3D interactive floating orbs rendered with React Three Fiber, supporting OrbitControls, custom sizing, and reduced-motion states.",
+    category: "3D Backgrounds",
+    tags: ["React Three Fiber", "ThreeJS", "3D", "Interactive"],
+    cliCommand: "npx @melonui-dev/cli add floating-orbs",
+    codeSnippet: "",
+    componentPath: "FloatingOrbs",
+    props: [
+      { name: "fov", type: "number", defaultValue: "60", description: "Camera field of view.", control: { type: "slider", min: 30, max: 120, step: 5 } }
+    ]
   }
 ];
 

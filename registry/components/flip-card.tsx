@@ -3,7 +3,56 @@
 import { useRef } from "react";
 import gsap from "gsap";
 
-export function FlipCard() {
+export interface FlipCardProps extends React.ComponentPropsWithoutRef<"div"> {
+  width?: string | number;
+  height?: string | number;
+  frontCategory?: string;
+  frontTitle?: string;
+  frontHint?: string;
+  frontBg?: string;
+  frontBorder?: string;
+  frontTextColor?: string;
+  frontCategoryColor?: string;
+  frontHintColor?: string;
+  frontStripeColor?: string;
+
+  backEmoji?: string;
+  backTitle?: string;
+  backHint?: string;
+  backBg?: string;
+  backTextColor?: string;
+  backHintColor?: string;
+  
+  perspective?: string | number;
+  duration?: number;
+}
+
+export function FlipCard({
+  width = 260,
+  height = 180,
+  frontCategory = "Component / Card",
+  frontTitle = "Flip Card",
+  frontHint = "Click to reveal >",
+  frontBg = "#0d0d0d",
+  frontBorder = "#1e1e1e",
+  frontTextColor = "#f4f4f4",
+  frontCategoryColor = "#444",
+  frontHintColor = "#555",
+  frontStripeColor = "rgba(255, 92, 113, 0.2)",
+
+  backEmoji = "🍉",
+  backTitle = "Surprise!",
+  backHint = "Click again to flip back",
+  backBg = "#ff5c71",
+  backTextColor = "#050505",
+  backHintColor = "rgba(5, 5, 5, 0.6)",
+
+  perspective = "1000px",
+  duration = 0.7,
+  className = "",
+  style,
+  ...props
+}: FlipCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const isFlipped = useRef(false);
 
@@ -13,16 +62,32 @@ export function FlipCard() {
     isFlipped.current = !isFlipped.current;
     gsap.to(cardRef.current, {
       rotationY: target,
-      duration: 0.7,
+      duration: duration,
       ease: "power3.inOut",
     });
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      flip();
+    }
+  };
+
   return (
     <div
-      className="cursor-pointer"
-      style={{ perspective: "1000px", width: 260, height: 180 }}
+      role="button"
+      tabIndex={0}
+      className={`cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff5c71] ${className}`}
+      style={{
+        perspective,
+        width,
+        height,
+        ...style
+      }}
       onClick={flip}
+      onKeyDown={handleKeyDown}
+      {...props}
     >
       <div
         ref={cardRef}
@@ -35,31 +100,43 @@ export function FlipCard() {
       >
         {/* Front */}
         <div
-          style={{ backfaceVisibility: "hidden" }}
-          className="absolute inset-0 bg-[#0d0d0d] border border-[#1e1e1e] flex flex-col justify-between p-5"
+          style={{
+            backfaceVisibility: "hidden",
+            backgroundColor: frontBg,
+            borderColor: frontBorder,
+          }}
+          className="absolute inset-0 border flex flex-col justify-between p-5"
         >
-          <span className="font-mono text-[10px] text-[#444] uppercase tracking-widest">
-            Component / Card
+          <span className="font-mono text-[10px] uppercase tracking-widest" style={{ color: frontCategoryColor }}>
+            {frontCategory}
           </span>
           <div>
-            <p className="font-black text-2xl uppercase text-[#f4f4f4]" style={{ fontFamily: "var(--font-anton)" }}>
-              Flip Card
+            <p className="font-black text-2xl uppercase" style={{ fontFamily: "var(--font-anton)", color: frontTextColor }}>
+              {frontTitle}
             </p>
-            <p className="font-mono text-xs text-[#555] mt-1">Click to reveal -></p>
+            <p className="font-mono text-xs mt-1" style={{ color: frontHintColor }}>
+              {frontHint}
+            </p>
           </div>
-          <div className="w-full h-px bg-[#ff5c71]/20" />
+          <div className="w-full h-px" style={{ backgroundColor: frontStripeColor }} />
         </div>
 
         {/* Back */}
         <div
-          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-          className="absolute inset-0 bg-[#ff5c71] flex flex-col justify-center items-center gap-3"
+          style={{
+            backfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+            backgroundColor: backBg,
+          }}
+          className="absolute inset-0 flex flex-col justify-center items-center gap-3"
         >
-          <span className="text-4xl">🍉</span>
-          <p className="font-black text-xl uppercase text-[#050505]" style={{ fontFamily: "var(--font-anton)" }}>
-            Surprise!
+          {backEmoji && <span className="text-4xl">{backEmoji}</span>}
+          <p className="font-black text-xl uppercase" style={{ fontFamily: "var(--font-anton)", color: backTextColor }}>
+            {backTitle}
           </p>
-          <p className="font-mono text-xs text-[#050505]/60">Click again to flip back</p>
+          <p className="font-mono text-xs" style={{ color: backHintColor }}>
+            {backHint}
+          </p>
         </div>
       </div>
     </div>

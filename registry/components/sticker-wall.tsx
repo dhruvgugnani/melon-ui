@@ -9,11 +9,16 @@ export interface StickerItemInput {
   color?: string;
 }
 
-export interface StickerWallProps {
+export interface StickerWallProps extends React.ComponentPropsWithoutRef<"div"> {
   stickers?: StickerItemInput[] | string;
   stickerDensity?: number;
   scaleOnHover?: number;
   stickerTheme?: "melon" | "tech" | "mixed";
+  bg?: string;
+  borderColor?: string;
+  titleText?: string;
+  subtitleText?: string;
+  textColor?: string;
 }
 
 interface StickerItem {
@@ -55,6 +60,14 @@ export function StickerWall({
   stickerDensity = 12,
   scaleOnHover = 1.15,
   stickerTheme = "melon",
+  bg = "#050505",
+  borderColor = "#111",
+  titleText = "Your Hero Title Goes Here",
+  subtitleText = "Stickers scattered along border bounds to preserve content layout",
+  textColor = "rgba(255, 255, 255, 0.1)",
+  className = "",
+  style,
+  ...props
 }: StickerWallProps) {
   const stickers = useMemo(() => {
     let resolvedStickers: StickerItemInput[] = [];
@@ -152,7 +165,15 @@ export function StickerWall({
   }, [customStickers, stickerDensity, stickerTheme]);
 
   return (
-    <div className="w-full h-full min-h-[350px] bg-[#050505] relative overflow-hidden p-6 select-none" style={{ border: "1px solid #111" }}>
+    <div 
+      className={`w-full h-full min-h-[350px] relative overflow-hidden p-6 select-none ${className}`}
+      style={{
+        border: `1px solid ${borderColor}`,
+        backgroundColor: bg,
+        ...style
+      }}
+      {...props}
+    >
       {/* Editorial Grid Backing */}
       <div 
         className="absolute inset-0 opacity-[0.02] pointer-events-none" 
@@ -167,15 +188,22 @@ export function StickerWall({
       
       {/* Clean central area placeholder indicator */}
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-12 text-center">
-        <h1 
-          className="text-2xl md:text-4xl font-black uppercase tracking-tight text-white/10" 
-          style={{ fontFamily: "var(--font-Outfit), sans-serif" }}
-        >
-          Your Hero Title Goes Here
-        </h1>
-        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#333] mt-2">
-          Stickers scattered along border bounds to preserve content layout
-        </p>
+        {titleText && (
+          <h1 
+            className="text-2xl md:text-4xl font-black uppercase tracking-tight" 
+            style={{ 
+              fontFamily: "var(--font-Outfit), sans-serif",
+              color: textColor 
+            }}
+          >
+            {titleText}
+          </h1>
+        )}
+        {subtitleText && (
+          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/20 mt-2">
+            {subtitleText}
+          </p>
+        )}
       </div>
 
       {stickers.map((s) => (

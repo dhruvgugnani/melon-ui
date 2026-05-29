@@ -1,12 +1,13 @@
 "use client";
 
-import React, { CSSProperties, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   AnimatePresence,
   motion,
   useMotionValue,
   useSpring,
   useTransform,
+  HTMLMotionProps,
 } from "framer-motion";
 
 export interface SignalLoomThread {
@@ -18,14 +19,15 @@ export interface SignalLoomThread {
   copy: string;
 }
 
-export interface SignalLoomProps {
+export interface SignalLoomProps extends Omit<HTMLMotionProps<"section">, "title"> {
   title?: string;
   eyebrow?: string;
   statusLabel?: string;
   lensLabel?: string;
   threads?: SignalLoomThread[];
-  className?: string;
-  style?: CSSProperties;
+  containerBg?: string;
+  cardBgLeft?: string;
+  cardBgRight?: string;
 }
 
 const DEFAULT_THREADS: SignalLoomThread[] = [
@@ -63,8 +65,12 @@ export function SignalLoom({
   statusLabel = "Live",
   lensLabel = "Inspection Lens",
   threads = DEFAULT_THREADS,
+  containerBg = "rgba(0, 0, 0, 0.45)",
+  cardBgLeft = "rgba(8, 8, 8, 0.8)",
+  cardBgRight = "rgba(10, 10, 10, 0.82)",
   className = "",
   style,
+  ...props
 }: SignalLoomProps) {
   const [active, setActive] = useState(1);
   const [hovered, setHovered] = useState<number | null>(null);
@@ -122,6 +128,7 @@ export function SignalLoom({
       onPointerUp={() => setPressed(false)}
       className={`relative flex w-full items-center justify-center overflow-visible px-0 py-0 text-white ${className}`}
       style={style}
+      {...props}
     >
       <motion.div
         className="pointer-events-none absolute -inset-6 opacity-70 blur-2xl"
@@ -131,15 +138,18 @@ export function SignalLoom({
       />
 
       <motion.div
-        className="relative z-10 grid w-full max-w-5xl gap-3 rounded-[8px] border border-white/10 bg-black/45 p-3 shadow-[0_35px_90px_rgba(0,0,0,0.55)] backdrop-blur-2xl md:grid-cols-[1.08fr_0.92fr] md:p-4"
-        style={{ rotateX, rotateY, transformPerspective: 1000 }}
+        className="relative z-10 grid w-full max-w-5xl gap-3 rounded-[8px] border border-white/10 p-3 shadow-[0_35px_90px_rgba(0,0,0,0.55)] backdrop-blur-2xl md:grid-cols-[1.08fr_0.92fr] md:p-4"
+        style={{ rotateX, rotateY, transformPerspective: 1000, backgroundColor: containerBg }}
         animate={{ scale: pressed ? 0.985 : 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 22 }}
       >
         <div className="pointer-events-none absolute inset-0 rounded-[8px] bg-[linear-gradient(135deg,rgba(255,255,255,0.16),transparent_24%,transparent_72%,rgba(127,255,94,0.13))]" />
         <div className="pointer-events-none absolute inset-[1px] rounded-[7px] border border-white/5" />
 
-        <div className="relative min-h-[320px] overflow-hidden rounded-[6px] border border-white/10 bg-[#080808]/80 p-4 sm:min-h-[380px] sm:p-5">
+        <div 
+          className="relative min-h-[320px] overflow-hidden rounded-[6px] border border-white/10 p-4 sm:min-h-[380px] sm:p-5"
+          style={{ backgroundColor: cardBgLeft }}
+        >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.08),transparent_34%)]" />
           <svg
             aria-hidden="true"
@@ -241,7 +251,10 @@ export function SignalLoom({
           </div>
         </div>
 
-        <aside className="relative overflow-hidden rounded-[6px] border border-white/10 bg-[#0a0a0a]/82 p-4 sm:p-5">
+        <aside 
+          className="relative overflow-hidden rounded-[6px] border border-white/10 p-4 sm:p-5"
+          style={{ backgroundColor: cardBgRight }}
+        >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(127,255,94,0.14),transparent_32%),radial-gradient(circle_at_20%_80%,rgba(255,92,113,0.18),transparent_38%)]" />
           <div className="relative z-10 flex h-full min-h-[320px] flex-col sm:min-h-[380px]">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">

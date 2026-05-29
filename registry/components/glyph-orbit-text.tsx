@@ -3,22 +3,23 @@
 import React, { CSSProperties, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
-export interface GlyphOrbitTextProps {
+export interface GlyphOrbitTextProps extends React.ComponentPropsWithoutRef<"button"> {
   text?: string;
   glyphs?: string[];
   primaryColor?: string;
+  secondaryColor?: string;
   accentColor?: string;
-  className?: string;
-  style?: CSSProperties;
 }
 
 export function GlyphOrbitText({
   text = "ORBIT",
   glyphs,
   primaryColor = "#ffffff",
+  secondaryColor = "#ff5c71",
   accentColor = "#7fff5e",
   className = "",
   style,
+  ...props
 }: GlyphOrbitTextProps) {
   const [active, setActive] = useState(false);
   const shouldReduceMotion = useReducedMotion();
@@ -30,9 +31,13 @@ export function GlyphOrbitText({
       aria-label={`${text} glyph orbit`}
       onPointerEnter={() => setActive(true)}
       onPointerLeave={() => setActive(false)}
-      onClick={() => setActive((value) => !value)}
       className={`relative inline-grid min-h-[clamp(15rem,34vw,22rem)] w-full max-w-[980px] cursor-pointer place-items-center overflow-visible bg-transparent p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7fff5e] ${className}`}
       style={style}
+      {...props}
+      onClick={(e) => {
+        setActive((value) => !value);
+        if (props.onClick) props.onClick(e);
+      }}
     >
       <motion.span
         aria-hidden="true"
@@ -50,7 +55,7 @@ export function GlyphOrbitText({
           <motion.span
             key={`${glyph}-${index}`}
             className="absolute grid h-10 w-10 place-items-center rounded-[6px] border border-white/12 bg-black/20 text-2xl uppercase backdrop-blur-md sm:h-12 sm:w-12 sm:text-3xl"
-            style={{ fontFamily: "var(--font-londrina-solid)", color: index % 2 ? "#ff5c71" : accentColor }}
+            style={{ fontFamily: "var(--font-londrina-solid)", color: index % 2 ? secondaryColor : accentColor }}
             animate={{
               x: Math.cos(angle) * radius,
               y: Math.sin(angle) * radius,

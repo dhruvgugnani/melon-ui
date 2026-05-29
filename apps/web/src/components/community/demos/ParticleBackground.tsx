@@ -1,175 +1,144 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 
-export interface ParticleBackgroundProps {
-  particleCount?: number;
-  speed?: number;
-  particleColor?: string;
-  lineColor?: string;
-  linkDistance?: number;
+const DEFAULT_PARTICLE_COUNT = 1200;
+const DEFAULT_PALETTE: [number, number, number][] = [
+  [0.5, 1.0, 0.37],
+  [1.0, 0.36, 0.44],
+  [0.91, 0.84, 0.72],
+];
+
+function pseudoRandom(seed: number) {
+  const value = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return value - Math.floor(value);
 }
 
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  radius: number;
-  alpha: number;
+interface ParticleFieldProps {
+  particleCount?: number;
+  particleSize?: number;
+  palette?: [number, number, number][];
+}
+
+function ParticleField({
+  particleCount = DEFAULT_PARTICLE_COUNT,
+  particleSize = 0.04,
+  palette = DEFAULT_PALETTE,
+}: ParticleFieldProps) {
+  const meshRef = useRef<THREE.Points>(null);
+  const mouse = useRef({ x: 0, y: 0 });
+
+  const positions = useMemo(() => {
+    const arr = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i += 1) {
+      arr[i] = (pseudoRandom(i + 1) - 0.5) * 8;
+    }
+    return arr;
+  }, [particleCount]);
+
+  const colors = useMemo(() => {
+    const arr = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i += 1) {
+      const c = palette[Math.floor(pseudoRandom(i + 4001) * palette.length)] || [1, 1, 1];
+      arr[i * 3] = c[0];
+      arr[i * 3 + 1] = c[1];
+      arr[i * 3 + 2] = c[2];
+    }
+    return arr;
+  }, [particleCount, palette]);
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      mouse.current.x = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouse.current.y = -(e.clientY / window.innerHeight - 0.5) * 2;
+    };
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
+  useFrame(({ clock }) => {
+    if (!meshRef.current) return;
+    const t = clock.getElapsedTime();
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      meshRef.current.rotation.y = mouse.current.x * 0.3;
+      meshRef.current.rotation.x = mouse.current.y * 0.1;
+      return;
+    }
+    meshRef.current.rotation.y = t * 0.04 + mouse.current.x * 0.3;
+    meshRef.current.rotation.x = t * 0.02 + mouse.current.y * 0.1;
+  });
+
+  return (
+    <points ref={meshRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[positions, 3]}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          args={[colors, 3]}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={particleSize}
+        vertexColors
+        transparent
+        opacity={0.85}
+        sizeAttenuation
+      />
+    </points>
+  );
+}
+
+export interface ParticleBackgroundProps extends React.ComponentPropsWithoutRef<"div"> {
+  particleCount?: number;
+  particleSize?: number;
+  palette?: [number, number, number][];
+  bg?: string;
+  borderColor?: string;
+  showHint?: boolean;
+  hintText?: string;
 }
 
 export function ParticleBackground({
-  particleCount = 120,
-  speed = 0.8,
-  particleColor = "#ff5c71",
-  lineColor = "#7fff5e",
-  linkDistance = 110,
+  particleCount = DEFAULT_PARTICLE_COUNT,
+  particleSize = 0.04,
+  palette = DEFAULT_PALETTE,
+  bg = "#060606",
+  borderColor = "#1a1a1a",
+  showHint = true,
+  hintText = "Move your mouse to interact",
+  className = "",
+  style,
+  ...props
 }: ParticleBackgroundProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef = useRef({ x: -1000, y: -1000 });
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let particles: Particle[] = [];
-
-    const resizeCanvas = () => {
-      const parent = canvas.parentElement;
-      if (parent) {
-        canvas.width = parent.clientWidth;
-        canvas.height = parent.clientHeight || 400;
-      }
-    };
-
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    // Initialize particles
-    const initParticles = () => {
-      particles = [];
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.25 * speed, // slow drifting
-          vy: (Math.random() - 0.5) * 0.25 * speed,
-          radius: 0.6 + Math.random() * 1.2, // very fine dust
-          alpha: 0.12 + Math.random() * 0.28, // translucent
-        });
-      }
-    };
-
-    initParticles();
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw and update particles
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        // Wrap around boundaries (better than bounce for clean backgrounds)
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
-
-        // Draw particle
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = particleColor;
-        ctx.globalAlpha = p.alpha;
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
-      });
-
-      // Draw connections
-      ctx.lineWidth = 0.55;
-      for (let i = 0; i < particles.length; i++) {
-        const p1 = particles[i];
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-
-          if (dist < linkDistance) {
-            // Highly transparent link lines
-            const alpha = (1 - dist / linkDistance) * 0.12 * Math.min(p1.alpha, p2.alpha);
-            ctx.strokeStyle = lineColor;
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.globalAlpha = alpha;
-            ctx.stroke();
-            ctx.globalAlpha = 1.0;
-          }
-        }
-
-        // Ambient glow near mouse pointer
-        if (mouseRef.current.x !== -1000) {
-          const distMouse = Math.hypot(p1.x - mouseRef.current.x, p1.y - mouseRef.current.y);
-          if (distMouse < linkDistance * 1.6) {
-            const alpha = (1 - distMouse / (linkDistance * 1.6)) * 0.18;
-            ctx.strokeStyle = lineColor;
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(mouseRef.current.x, mouseRef.current.y);
-            ctx.globalAlpha = alpha;
-            ctx.stroke();
-            ctx.globalAlpha = 1.0;
-          }
-        }
-      }
-
-      animationFrameId = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseRef.current.x = e.clientX - rect.left;
-      mouseRef.current.y = e.clientY - rect.top;
-    };
-
-    const handleMouseLeave = () => {
-      mouseRef.current.x = -1000;
-      mouseRef.current.y = -1000;
-    };
-
-    canvas.addEventListener("mousemove", handleMouseMove);
-    canvas.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener("resize", resizeCanvas);
-      canvas.removeEventListener("mousemove", handleMouseMove);
-      canvas.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, [particleCount, speed, particleColor, lineColor, linkDistance]);
-
   return (
-    <div className="w-full h-full min-h-[350px] bg-[#030303] relative overflow-hidden" style={{ border: "1px solid #111" }}>
-      {/* Premium subtle tech-grid background overlay */}
-      <div 
-        className="absolute inset-0 opacity-[0.015] pointer-events-none" 
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, #ffffff 1px, transparent 1px),
-            linear-gradient(to bottom, #ffffff 1px, transparent 1px)
-          `,
-          backgroundSize: "30px 30px"
-        }}
-      />
-      {/* Smooth vignette overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,#030303_95%)] pointer-events-none" />
-      <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full" />
+    <div 
+      className={`w-full h-[360px] relative ${className}`}
+      style={{
+        backgroundColor: bg,
+        border: `1px solid ${borderColor}`,
+        ...style
+      }}
+      {...props}
+    >
+      <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
+        <ambientLight intensity={0.5} />
+        <ParticleField 
+          particleCount={particleCount} 
+          particleSize={particleSize} 
+          palette={palette} 
+        />
+      </Canvas>
+      {showHint && (
+        <p className="text-center font-mono text-xs text-[#444] -mt-7 relative z-10 pb-4 pointer-events-none">
+          {hintText}
+        </p>
+      )}
     </div>
   );
 }

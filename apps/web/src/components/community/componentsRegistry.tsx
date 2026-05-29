@@ -41,4 +41,5 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   StickerStackText: dynamic(() => import('./demos/StickerStackText').then(m => m.StickerStackText), { ssr: false }),
   GlyphOrbitText: dynamic(() => import('./demos/GlyphOrbitText').then(m => m.GlyphOrbitText), { ssr: false }),
   SeedwaveText: dynamic(() => import('./demos/SeedwaveText').then(m => m.SeedwaveText), { ssr: false }),
+  FloatingOrbs: dynamic(() => import('./demos/FloatingOrbs').then(m => m.FloatingOrbs), { ssr: false }),
 };

@@ -3,15 +3,39 @@
 import React, { useRef, useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 
-const COMMANDS = [
+export interface CommandItem {
+  id: string;
+  label: string;
+  icon: string;
+  color: string;
+}
+
+const DEFAULT_COMMANDS: CommandItem[] = [
   { id: "deploy", label: "Deploy", icon: "🚀", color: "#7fff5e" },
   { id: "analyze", label: "Analyze", icon: "⌖", color: "#00f0ff" },
   { id: "purge", label: "Purge", icon: "⚠", color: "#ff5c71" },
-  { id: "sync", label: "Sync", icon: "⟳", color: "#d600ff" },
+  { id: "sync", label: "Sync", icon: "⟳", color: "#ff8c00" }, // Orange to avoid purple ban
   { id: "shield", label: "Shield", icon: "⛨", color: "#e8d5b7" },
 ];
 
-export function OrbitalCommandRing() {
+export interface OrbitalCommandRingProps extends React.ComponentPropsWithoutRef<"div"> {
+  commands?: CommandItem[];
+  bg?: string;
+  borderColor?: string;
+  joystickColor?: string;
+  onExecute?: (command: CommandItem) => void;
+}
+
+export function OrbitalCommandRing({
+  commands = DEFAULT_COMMANDS,
+  bg = "#050505",
+  borderColor = "rgba(255,255,255,0.05)",
+  joystickColor = "#ffffff",
+  onExecute,
+  className = "",
+  style,
+  ...props
+}: OrbitalCommandRingProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [menuState, setMenuState] = useState<"idle" | "active" | "executing">("idle");
@@ -85,7 +109,7 @@ export function OrbitalCommandRing() {
       let angle = Math.atan2(dy, dx);
       if (angle < 0) angle += 2 * Math.PI;
 
-      const segment = (2 * Math.PI) / COMMANDS.length;
+      const segment = (2 * Math.PI) / commands.length;
       const adjustedAngle = (angle + segment / 2) % (2 * Math.PI);
       const index = Math.floor(adjustedAngle / segment);
       setSelectedNode(index);
@@ -101,9 +125,13 @@ export function OrbitalCommandRing() {
     dragY.set(0);
 
     if (selectedNode !== null) {
-      const cmd = COMMANDS[selectedNode];
+      const cmd = commands[selectedNode];
       setLastExecuted({ label: cmd.label, color: cmd.color });
       setMenuState("executing");
+
+      if (onExecute) {
+        onExecute(cmd);
+      }
 
       setTimeout(() => {
         setMenuState("idle");
@@ -122,7 +150,13 @@ export function OrbitalCommandRing() {
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
       onContextMenu={(e) => e.preventDefault()}
-      className="relative w-full h-[500px] bg-[#050505] rounded-xl overflow-hidden border border-white/5 cursor-crosshair touch-none select-none"
+      className={`relative w-full h-[500px] overflow-hidden border cursor-crosshair touch-none select-none ${className}`}
+      style={{
+        backgroundColor: bg,
+        borderColor: borderColor,
+        ...style
+      }}
+      {...props}
     >
       {/* Background ambient noise/hint */}
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-30">
@@ -172,8 +206,8 @@ export function OrbitalCommandRing() {
             />
 
             {/* Command Nodes */}
-            {COMMANDS.map((cmd, i) => {
-              const angle = (i / COMMANDS.length) * 2 * Math.PI;
+            {commands.map((cmd, i) => {
+              const angle = (i / commands.length) * 2 * Math.PI;
               const radius = 120; // Distance of the nodes from origin
               const nx = origin.x + Math.cos(angle) * radius;
               const ny = origin.y + Math.sin(angle) * radius;
@@ -241,11 +275,11 @@ export function OrbitalCommandRing() {
                 className="w-2.5 h-2.5 rounded-full transition-colors duration-200"
                 style={{
                   backgroundColor:
-                    selectedNode !== null ? COMMANDS[selectedNode].color : "#fff",
+                    selectedNode !== null ? commands[selectedNode].color : joystickColor,
                   boxShadow:
                     selectedNode !== null
-                      ? `0 0 10px ${COMMANDS[selectedNode].color}`
-                      : "0 0 5px #fff",
+                      ? `0 0 10px ${commands[selectedNode].color}`
+                      : `0 0 5px ${joystickColor}`,
                 }}
               />
             </motion.div>

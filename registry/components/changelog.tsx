@@ -16,14 +16,31 @@ export interface ChangelogVersion {
   note: string;
 }
 
-export interface ChangelogCardProps {
+export interface ChangelogCardProps extends React.ComponentPropsWithoutRef<"div"> {
   versions?: ChangelogVersion[];
   title?: string;
+  borderColor?: string;
+  titleColor?: string;
+  plusColor?: string;
+  versionColor?: string;
+  noteColor?: string;
+  dateColor?: string;
+  rowHoverBg?: string;
 }
 
 export function ChangelogCard({
   versions = VERSIONS,
-  title = "Changelog"
+  title = "Changelog",
+  borderColor = "#1a1a1a",
+  titleColor = "#555",
+  plusColor = "#ff5c71",
+  versionColor = "#ff5c71",
+  noteColor = "#444",
+  dateColor = "#333",
+  rowHoverBg = "rgba(255, 255, 255, 0.03)",
+  className = "",
+  style,
+  ...props
 }: ChangelogCardProps) {
   const [open, setOpen] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
@@ -43,32 +60,64 @@ export function ChangelogCard({
     });
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggle();
+    }
+  };
+
   return (
-    <div className="w-full max-w-sm border border-[#1a1a1a] bg-[#0a0a0a]">
+    <div
+      className={`w-full max-w-sm border ${className}`}
+      style={{
+        borderColor: borderColor,
+        backgroundColor: "transparent",
+        ...style
+      }}
+      {...props}
+    >
       <button
         onClick={toggle}
-        className="w-full flex items-center justify-between px-5 py-4 group"
+        onKeyDown={handleKeyDown}
+        className="w-full flex items-center justify-between px-5 py-4 group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ff5c71]"
       >
-        <span className="font-mono text-xs uppercase tracking-widest text-[#555] group-hover:text-[#aaa] transition-colors">
+        <span className="font-mono text-xs uppercase tracking-widest transition-colors group-hover:text-[#aaa]" style={{ color: titleColor }}>
           {title}
         </span>
         <span
-          className="font-black text-[#ff5c71] text-xl transition-transform duration-300"
-          style={{ display: "inline-block", transform: open ? "rotate(45deg)" : "rotate(0)" }}
+          className="font-black text-xl transition-transform duration-300"
+          style={{
+            display: "inline-block",
+            transform: open ? "rotate(45deg)" : "rotate(0)",
+            color: plusColor
+          }}
         >
           +
         </span>
       </button>
 
       <div ref={listRef} style={{ height: 0, opacity: 0, overflow: "hidden" }}>
-        <div className="border-t border-[#111] divide-y divide-[#111]">
+        <div className="border-t divide-y" style={{ borderColor: borderColor, color: borderColor }}>
           {versions.map((ver) => (
-            <div key={ver.v} className="px-5 py-3 flex items-center justify-between group/row hover:bg-[#0f0f0f] transition-colors">
+            <div
+              key={ver.v}
+              className="px-5 py-3 flex items-center justify-between group/row transition-colors"
+              style={{ borderBottomColor: borderColor }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = rowHoverBg;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+              }}
+            >
               <div>
-                <span className="font-mono text-xs text-[#ff5c71] font-bold">{ver.v}</span>
-                <p className="font-mono text-[10px] text-[#444] mt-0.5">{ver.note}</p>
+                <span className="font-mono text-xs font-bold" style={{ color: versionColor }}>{ver.v}</span>
+                <p className="font-mono text-[10px] mt-0.5" style={{ color: noteColor }}>{ver.note}</p>
               </div>
-              <span className="font-mono text-[9px] text-[#333] group-hover/row:text-[#555] transition-colors">{ver.date}</span>
+              <span className="font-mono text-[9px] transition-colors" style={{ color: dateColor }}>
+                {ver.date}
+              </span>
             </div>
           ))}
         </div>

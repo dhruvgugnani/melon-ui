@@ -1,6 +1,6 @@
 "use client";
 
-import React, { CSSProperties, useState } from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface Seed {
@@ -9,14 +9,12 @@ interface Seed {
   y: number;
 }
 
-export interface SeedwaveTextProps {
+export interface SeedwaveTextProps extends React.ComponentPropsWithoutRef<"button"> {
   topText?: string;
   bottomText?: string;
   seedCount?: number;
   primaryColor?: string;
   colors?: string[];
-  className?: string;
-  style?: CSSProperties;
 }
 
 export function SeedwaveText({
@@ -27,6 +25,7 @@ export function SeedwaveText({
   colors = ["#7fff5e", "#ff5c71", "#f7f0d2"],
   className = "",
   style,
+  ...props
 }: SeedwaveTextProps) {
   const [seeds, setSeeds] = useState<Seed[]>([]);
   const [wave, setWave] = useState(0);
@@ -45,15 +44,20 @@ export function SeedwaveText({
     window.setTimeout(() => {
       setSeeds((current) => current.filter((seed) => !created.some((item) => item.id === seed.id)));
     }, 1200);
+
+    if (props.onPointerDown) {
+      props.onPointerDown(event);
+    }
   };
 
   return (
     <button
       type="button"
       aria-label={`${topText} ${bottomText}`}
-      onPointerDown={burst}
       className={`relative inline-block w-full max-w-[980px] cursor-pointer overflow-visible bg-transparent p-0 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff5c71] ${className}`}
       style={style}
+      {...props}
+      onPointerDown={burst}
     >
       <motion.span
         key={wave}

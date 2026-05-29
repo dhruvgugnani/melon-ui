@@ -1,37 +1,65 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import gsap from "gsap";
 
-export interface JuicyCursorProps {
+export interface JuicyCursorProps extends React.ComponentPropsWithoutRef<"div"> {
   containerRef?: React.RefObject<HTMLElement | null>;
+  color?: string;
+  size?: number;
+  ringSize?: number;
+  ringColor?: string;
+  borderColor?: string;
 }
 
-export function JuicyCursor({ containerRef }: JuicyCursorProps) {
+export function JuicyCursor({
+  containerRef,
+  color = "#ff5c71",
+  size = 20,
+  ringSize = 40,
+  ringColor = "#ff5c71",
+  borderColor = "#1a1a1a",
+  className = "",
+  style,
+  ...props
+}: JuicyCursorProps) {
   const blobRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
   const posRef = useRef({ x: 0, y: 0, vx: 0, vy: 0, px: 0, py: 0 });
   const [isVisible, setIsVisible] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const blob = blobRef.current;
     const ring = ringRef.current;
     if (!blob || !ring) return;
 
-    const target = containerRef?.current || window;
+    const target = containerRef ? containerRef.current : previewRef.current;
+    if (!target) return;
 
-    const onMove = (e: Event) => {
-      const mouseEvent = e as MouseEvent;
-      const p = posRef.current;
-      
-      let x = mouseEvent.clientX;
-      let y = mouseEvent.clientY;
-      
-      if (containerRef?.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        x = mouseEvent.clientX - rect.left;
-        y = mouseEvent.clientY - rect.top;
+    // Apply cursor-none to target
+    const originalCursor = target.style.cursor;
+    const originalPosition = target.style.position;
+    
+    if (containerRef) {
+      target.style.cursor = "none";
+      const computedStyle = window.getComputedStyle(target);
+      if (computedStyle.position === "static") {
+        target.style.position = "relative";
       }
+    }
+
+    const onMove = (e: MouseEvent) => {
+      const p = posRef.current;
+      const rect = target.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
 
       p.vx = x - p.x;
       p.vy = y - p.y;
@@ -77,42 +105,43 @@ export function JuicyCursor({ containerRef }: JuicyCursorProps) {
     target.addEventListener("mousemove", onMove);
     target.addEventListener("mousedown", onDown);
     target.addEventListener("mouseup", onUp);
+    target.addEventListener("mouseenter", onEnter);
+    target.addEventListener("mouseleave", onLeave);
 
-    if (containerRef?.current) {
-      containerRef.current.addEventListener("mouseenter", onEnter);
-      containerRef.current.addEventListener("mouseleave", onLeave);
-      // Determine initial hover state if cursor is already inside bounds
-      setIsVisible(true);
-    } else {
-      setIsVisible(true);
-    }
+    // Initial state check
+    setIsVisible(true);
 
     return () => {
       target.removeEventListener("mousemove", onMove);
       target.removeEventListener("mousedown", onDown);
       target.removeEventListener("mouseup", onUp);
-      if (containerRef?.current) {
-        containerRef.current.removeEventListener("mouseenter", onEnter);
-        containerRef.current.removeEventListener("mouseleave", onLeave);
+      target.removeEventListener("mouseenter", onEnter);
+      target.removeEventListener("mouseleave", onLeave);
+      if (containerRef) {
+        target.style.cursor = originalCursor;
+        target.style.position = originalPosition;
       }
     };
-  }, [containerRef]);
+  }, [containerRef, mounted]);
 
-  const positionClass = containerRef ? "absolute" : "fixed";
+  const positionClass = "absolute";
 
-  return (
-    <div className="w-full h-64 bg-[#060606] flex items-center justify-center relative overflow-hidden" style={{ border: "1px solid #1a1a1a" }}>
-      <p className="font-mono text-[#333] text-sm uppercase tracking-widest select-none">
-        Move your cursor here
-      </p>
-
+  const cursorElements = (
+    <>
       {/* Blob cursor */}
       <div
         ref={blobRef}
         className={`${positionClass} pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2`}
         style={{ top: 0, left: 0, display: isVisible ? "block" : "none" }}
       >
-        <div className="w-5 h-5 rounded-full bg-[#ff5c71]" />
+        <div
+          className="rounded-full"
+          style={{
+            width: size,
+            height: size,
+            backgroundColor: color,
+          }}
+        />
       </div>
 
       {/* Trailing ring */}
@@ -121,13 +150,54 @@ export function JuicyCursor({ containerRef }: JuicyCursorProps) {
         className={`${positionClass} pointer-events-none z-[9998] -translate-x-1/2 -translate-y-1/2`}
         style={{ top: 0, left: 0, opacity: 0.4, display: isVisible ? "block" : "none" }}
       >
-        <div className="w-10 h-10 rounded-full border border-[#ff5c71]" />
+        <div
+          className="rounded-full border"
+          style={{
+            width: ringSize,
+            height: ringSize,
+            borderColor: ringColor,
+          }}
+        />
       </div>
+    </>
+  );
+
+  // If containerRef is provided, render via Portal
+  if (containerRef) {
+    if (!mounted || !containerRef.current) return null;
+    return createPortal(cursorElements, containerRef.current);
+  }
+
+  // Localized preview
+  return (
+    <div
+      ref={previewRef}
+      className={`w-full h-64 flex items-center justify-center relative overflow-hidden cursor-none ${className}`}
+      style={{
+        border: `1px solid ${borderColor}`,
+        backgroundColor: "transparent",
+        ...style
+      }}
+      {...props}
+    >
+      <p className="font-mono text-[#333] text-sm uppercase tracking-widest select-none pointer-events-none">
+        Move your cursor here
+      </p>
+
+      {cursorElements}
 
       {/* Decorative seeds pattern */}
-      <div className="absolute bottom-4 right-4 flex gap-1 opacity-20">
+      <div className="absolute bottom-4 right-4 flex gap-1 opacity-20 pointer-events-none">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="w-1 h-3 bg-[#1a1a1a] rounded-full border border-[#ff5c71]" style={{ transform: `rotate(${-15 + i * 8}deg)` }} />
+          <div
+            key={i}
+            className="w-1 h-3 rounded-full border"
+            style={{
+              transform: `rotate(${-15 + i * 8}deg)`,
+              backgroundColor: borderColor,
+              borderColor: color,
+            }}
+          />
         ))}
       </div>
     </div>

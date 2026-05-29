@@ -4,15 +4,25 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import gsap from "gsap";
 
-export interface CrosshairCursorProps {
+export interface CrosshairCursorProps extends React.ComponentPropsWithoutRef<"div"> {
   containerRef?: React.RefObject<HTMLElement | null>;
+  color?: string;
+  borderColor?: string;
 }
 
-export function CrosshairCursor({ containerRef }: CrosshairCursorProps) {
+export function CrosshairCursor({
+  containerRef,
+  color = "#ff5c71",
+  borderColor = "#1a1a1a",
+  className = "",
+  style,
+  ...props
+}: CrosshairCursorProps) {
   const cursorRef = useRef<HTMLDivElement>(null);
   const hLineRef = useRef<HTMLDivElement>(null);
   const vLineRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
   const posRef = useRef({ x: 0, y: 0 });
   const [isInside, setIsInside] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -22,11 +32,9 @@ export function CrosshairCursor({ containerRef }: CrosshairCursorProps) {
   }, []);
 
   useEffect(() => {
-    // If containerRef is provided, use it. Otherwise, use our default container.
-    const container = containerRef ? containerRef.current : cursorRef.current?.parentElement;
+    const container = containerRef ? containerRef.current : previewRef.current;
     if (!container) return;
 
-    // Apply cursor-none and ensure relative positioning
     const originalCursor = container.style.cursor;
     const originalPosition = container.style.position;
     
@@ -65,10 +73,7 @@ export function CrosshairCursor({ containerRef }: CrosshairCursorProps) {
     container.addEventListener("mouseenter", onEnter);
     container.addEventListener("mouseleave", onLeave);
 
-    // Initial check if cursor is already inside (for default container or if mouseenter triggered)
-    if (!containerRef) {
-      setIsInside(true);
-    }
+    setIsInside(true);
 
     return () => {
       container.removeEventListener("mousemove", onMove);
@@ -89,13 +94,13 @@ export function CrosshairCursor({ containerRef }: CrosshairCursorProps) {
       {/* Crosshair lines */}
       <div
         ref={hLineRef}
-        className="absolute inset-x-0 h-px bg-[#ff5c71]/40 pointer-events-none"
-        style={{ top: "50%" }}
+        className="absolute inset-x-0 h-px pointer-events-none opacity-40"
+        style={{ top: "50%", backgroundColor: color }}
       />
       <div
         ref={vLineRef}
-        className="absolute inset-y-0 w-px bg-[#ff5c71]/40 pointer-events-none"
-        style={{ left: "50%" }}
+        className="absolute inset-y-0 w-px pointer-events-none opacity-40"
+        style={{ left: "50%", backgroundColor: color }}
       />
 
       {/* Center dot */}
@@ -104,14 +109,14 @@ export function CrosshairCursor({ containerRef }: CrosshairCursorProps) {
         className="absolute w-3 h-3 pointer-events-none"
         style={{ top: 0, left: 0 }}
       >
-        <div className="w-full h-full border border-[#ff5c71] rotate-45" />
+        <div className="w-full h-full border rotate-45" style={{ borderColor: color }} />
       </div>
 
       {/* Coordinates label */}
       <span
         ref={labelRef}
-        className="absolute font-mono text-[9px] text-[#ff5c71] pointer-events-none uppercase tracking-widest"
-        style={{ top: 0, left: 0 }}
+        className="absolute font-mono text-[9px] pointer-events-none uppercase tracking-widest"
+        style={{ top: 0, left: 0, color: color }}
       >
         0, 0
       </span>
@@ -120,7 +125,7 @@ export function CrosshairCursor({ containerRef }: CrosshairCursorProps) {
       <div
         className="absolute inset-0 pointer-events-none opacity-10"
         style={{
-          backgroundImage: "linear-gradient(#ff5c71 1px, transparent 1px), linear-gradient(90deg, #ff5c71 1px, transparent 1px)",
+          backgroundImage: `linear-gradient(${color} 1px, transparent 1px), linear-gradient(90deg, ${color} 1px, transparent 1px)`,
           backgroundSize: "40px 40px",
         }}
       />
@@ -136,8 +141,14 @@ export function CrosshairCursor({ containerRef }: CrosshairCursorProps) {
   // Default localized preview
   return (
     <div
-      className="w-full h-64 bg-[#040404] relative overflow-hidden cursor-none"
-      style={{ border: "1px solid #1a1a1a" }}
+      ref={previewRef}
+      className={`w-full h-64 relative overflow-hidden cursor-none ${className}`}
+      style={{
+        border: `1px solid ${borderColor}`,
+        backgroundColor: "transparent",
+        ...style
+      }}
+      {...props}
     >
       {crosshairElements}
       <p className="absolute bottom-3 left-0 right-0 text-center font-mono text-[10px] text-[#333] uppercase tracking-widest pointer-events-none">
@@ -146,4 +157,3 @@ export function CrosshairCursor({ containerRef }: CrosshairCursorProps) {
     </div>
   );
 }
-

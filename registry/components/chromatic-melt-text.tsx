@@ -3,14 +3,12 @@
 import React, { CSSProperties, useState } from "react";
 import { motion } from "framer-motion";
 
-export interface ChromaticMeltTextProps {
+export interface ChromaticMeltTextProps extends React.ComponentPropsWithoutRef<"div"> {
   text?: string;
   kicker?: string;
   primaryColor?: string;
   secondaryColor?: string;
   accentColor?: string;
-  className?: string;
-  style?: CSSProperties;
 }
 
 export function ChromaticMeltText({
@@ -21,6 +19,7 @@ export function ChromaticMeltText({
   accentColor = "#7fff5e",
   className = "",
   style,
+  ...props
 }: ChromaticMeltTextProps) {
   const [spot, setSpot] = useState({ x: 48, y: 42 });
 
@@ -39,6 +38,7 @@ export function ChromaticMeltText({
       onPointerLeave={() => setSpot({ x: 48, y: 42 })}
       className={`relative inline-flex w-full max-w-[980px] flex-col overflow-visible ${className}`}
       style={style}
+      {...props}
     >
       {kicker && (
         <p

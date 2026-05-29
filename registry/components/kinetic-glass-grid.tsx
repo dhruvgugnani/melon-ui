@@ -1,18 +1,19 @@
 "use client";
 
 import React, { useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, MotionValue } from "framer-motion";
 
-const GRID_SIZE = 8;
 const MAX_DISTANCE = 250;
 
 interface TileProps {
-  mouseX: import("framer-motion").MotionValue<number>;
-  mouseY: import("framer-motion").MotionValue<number>;
+  mouseX: MotionValue<number>;
+  mouseY: MotionValue<number>;
   index: number;
+  primaryColor: string;
+  accentColor: string;
 }
 
-const Tile: React.FC<TileProps> = ({ mouseX, mouseY }) => {
+const Tile: React.FC<TileProps> = ({ mouseX, mouseY, primaryColor, accentColor }) => {
   const tileRef = useRef<HTMLDivElement>(null);
 
   // Derive distance from mouse to the center of this tile
@@ -44,16 +45,17 @@ const Tile: React.FC<TileProps> = ({ mouseX, mouseY }) => {
   // Border glow intensity based on proximity
   const glowRaw = useTransform(distance, [0, MAX_DISTANCE / 2], [1, 0]);
   const glow = useSpring(glowRaw, { stiffness: 300, damping: 30 });
+  
   const borderColor = useTransform(
     glow,
     [0, 1],
-    ["rgba(255, 255, 255, 0.05)", "rgba(255, 92, 113, 0.8)"] // #ff5c71 glow
+    ["rgba(255, 255, 255, 0.05)", `${primaryColor}cc`]
   );
 
   const boxShadow = useTransform(
     glow,
     [0, 1],
-    ["0px 0px 0px rgba(0,0,0,0)", "0px 0px 30px rgba(255, 92, 113, 0.4)"]
+    ["0px 0px 0px rgba(0,0,0,0)", `0px 0px 30px ${primaryColor}66`]
   );
 
   return (
@@ -73,14 +75,29 @@ const Tile: React.FC<TileProps> = ({ mouseX, mouseY }) => {
 
       {/* Decorative dot in the center */}
       <motion.div
-        style={{ scale: glow }}
-        className="w-1.5 h-1.5 rounded-full bg-[#7fff5e]"
+        style={{ scale: glow, backgroundColor: accentColor }}
+        className="w-1.5 h-1.5 rounded-full"
       />
     </motion.div>
   );
 };
 
-export const KineticGlassGrid: React.FC = () => {
+export interface KineticGlassGridProps extends React.ComponentPropsWithoutRef<"div"> {
+  gridSize?: number;
+  primaryColor?: string;
+  accentColor?: string;
+  bg?: string;
+}
+
+export const KineticGlassGrid: React.FC<KineticGlassGridProps> = ({
+  gridSize = 8,
+  primaryColor = "#ff5c71",
+  accentColor = "#7fff5e",
+  bg = "#050505",
+  className = "",
+  style,
+  ...props
+}) => {
   const mouseX = useMotionValue(typeof window !== "undefined" ? window.innerWidth / 2 : 0);
   const mouseY = useMotionValue(typeof window !== "undefined" ? window.innerHeight / 2 : 0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -104,17 +121,28 @@ export const KineticGlassGrid: React.FC = () => {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full h-[600px] bg-[#050505] overflow-hidden flex items-center justify-center p-8 [perspective:1000px]"
+      className={`relative w-full h-[600px] overflow-hidden flex items-center justify-center p-8 [perspective:1000px] ${className}`}
+      style={{
+        backgroundColor: bg,
+        ...style
+      }}
+      {...props}
     >
       {/* Ambient background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#ff5c71]/20 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute top-1/3 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] bg-[#7fff5e]/20 rounded-full blur-[80px] pointer-events-none" />
+      <div 
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full blur-[100px] pointer-events-none" 
+        style={{ backgroundColor: `${primaryColor}33` }}
+      />
+      <div 
+        className="absolute top-1/3 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full blur-[80px] pointer-events-none" 
+        style={{ backgroundColor: `${accentColor}33` }}
+      />
 
       {/* Grid container */}
       <motion.div
         className="grid gap-4 z-10"
         style={{
-          gridTemplateColumns: `repeat(${GRID_SIZE}, minmax(0, 1fr))`,
+          gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
           width: "100%",
           maxWidth: "600px",
           transformStyle: "preserve-3d",
@@ -122,13 +150,25 @@ export const KineticGlassGrid: React.FC = () => {
           rotateZ: -5,
         }}
       >
-        {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, i) => (
-          <Tile key={i} index={i} mouseX={mouseX} mouseY={mouseY} />
+        {Array.from({ length: gridSize * gridSize }).map((_, i) => (
+          <Tile 
+            key={i} 
+            index={i} 
+            mouseX={mouseX} 
+            mouseY={mouseY} 
+            primaryColor={primaryColor} 
+            accentColor={accentColor} 
+          />
         ))}
       </motion.div>
 
       {/* Overlay vignette to blend grid edges into background */}
-      <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_100px_40px_#050505]" />
+      <div 
+        className="absolute inset-0 pointer-events-none" 
+        style={{
+          boxShadow: `inset 0 0 100px 40px ${bg}`
+        }}
+      />
     </div>
   );
 };

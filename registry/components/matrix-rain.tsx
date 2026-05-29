@@ -2,12 +2,14 @@
 
 import { useEffect, useRef } from "react";
 
-export interface MatrixRainProps {
+export interface MatrixRainProps extends React.ComponentPropsWithoutRef<"div"> {
   rainSpeed?: number;
   fontSize?: number;
   rainColor?: string;
   accentColor?: string;
   glow?: boolean;
+  bg?: string;
+  bgOpacity?: number;
 }
 
 export function MatrixRain({
@@ -16,6 +18,11 @@ export function MatrixRain({
   rainColor = "#7fff5e",
   accentColor = "#ff5c71",
   glow = true,
+  bg = "#050505",
+  bgOpacity = 0.08,
+  className = "",
+  style,
+  ...props
 }: MatrixRainProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -45,9 +52,24 @@ export function MatrixRain({
 
     const glyphs = "🍉🌱🌿💦🍈•010101MELONUISEEDS".split("");
 
+    const hexToRgb = (hex: string) => {
+      const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+      const fullHex = hex.replace(shorthandRegex, (_, r, g, b) => r + r + g + g + b + b);
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
+      return result
+        ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16),
+          }
+        : { r: 5, g: 5, b: 5 };
+    };
+
+    const rgbBg = hexToRgb(bg);
+
     const draw = () => {
-      // Fade canvas slightly to create matrix rain tail trail
-      ctx.fillStyle = "rgba(5, 5, 5, 0.08)";
+      // Fade canvas slightly to create matrix rain tail trail matching custom background color
+      ctx.fillStyle = `rgba(${rgbBg.r}, ${rgbBg.g}, ${rgbBg.b}, ${bgOpacity})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.font = `bold ${fontSize}px monospace`;
@@ -105,10 +127,18 @@ export function MatrixRain({
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", resizeCanvas);
     };
-  }, [rainSpeed, fontSize, rainColor, accentColor, glow]);
+  }, [rainSpeed, fontSize, rainColor, accentColor, glow, bg, bgOpacity]);
 
   return (
-    <div className="w-full h-full min-h-[300px] bg-[#050505] relative overflow-hidden" style={{ border: "1px solid #111" }}>
+    <div 
+      className={`w-full h-full min-h-[300px] relative overflow-hidden ${className}`} 
+      style={{ 
+        border: "1px solid #111",
+        backgroundColor: bg,
+        ...style 
+      }}
+      {...props}
+    >
       <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full" />
     </div>
   );

@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 
-interface CarouselItem {
+export interface CarouselItem {
   id: number;
   title: string;
   tag: string;
@@ -11,15 +11,32 @@ interface CarouselItem {
   description: string;
 }
 
-const ITEMS: CarouselItem[] = [
+const DEFAULT_ITEMS: CarouselItem[] = [
   { id: 1, title: "AETHER", tag: "WebGL", color: "#ff5c71", description: "Procedural digital shader canvas engine." },
   { id: 2, title: "HELIOS", tag: "Core Light", color: "#7fff5e", description: "Ultra-fast volumetric illumination mapping." },
   { id: 3, title: "NOVA", tag: "Ecosystem", color: "#00f0ff", description: "Decentralized reactive state sync framework." },
   { id: 4, title: "CHRONOS", tag: "GSAP Util", color: "#ffb000", description: "Sub-millisecond interactive timeline controller." },
-  { id: 5, title: "NEBULA", tag: "CSS 3D", color: "#d600ff", description: "Generative canvas stellar particle simulation." }
+  { id: 5, title: "NEBULA", tag: "CSS 3D", color: "#ff8c00", description: "Generative canvas stellar particle simulation." } // avoiding purple
 ];
 
-export function SolarCarousel() {
+export interface SolarCarouselProps extends React.ComponentPropsWithoutRef<"div"> {
+  items?: CarouselItem[];
+  radius?: number;
+  tilt?: number;
+  bg?: string;
+  borderColor?: string;
+}
+
+export function SolarCarousel({
+  items = DEFAULT_ITEMS,
+  radius = 200,
+  tilt = 65,
+  bg = "#050505",
+  borderColor = "rgba(255, 255, 255, 0.05)",
+  className = "",
+  style,
+  ...props
+}: SolarCarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -34,16 +51,24 @@ export function SolarCarousel() {
     isDragging: false,
     dragStart: 0,
     targetRotation: 0,
-    radius: 200,
-    targetRadius: 200,
-    tilt: 65, // tilt angle in degrees
+    radius: radius,
+    targetRadius: radius,
+    tilt: tilt, // tilt angle in degrees
   });
+
+  const itemsRef = useRef(items);
+  useEffect(() => {
+    itemsRef.current = items;
+    physics.current.radius = radius;
+    physics.current.targetRadius = radius;
+    physics.current.tilt = tilt;
+  }, [items, radius, tilt]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) {
       physics.current.velocity = 0;
     }
@@ -72,11 +97,13 @@ export function SolarCarousel() {
         physics.current.radius += (physics.current.targetRadius - physics.current.radius) * 0.1;
       }
 
+      const currentItems = itemsRef.current;
+
       // Position cards along 3D elliptical orbit
       cardRefs.current.forEach((card, index) => {
-        if (!card) return;
+        if (!card || !currentItems[index]) return;
 
-        const totalItems = ITEMS.length;
+        const totalItems = currentItems.length;
         // Distribute items evenly around the circle
         const angle = physics.current.rotation + (index / totalItems) * Math.PI * 2;
 
@@ -96,7 +123,7 @@ export function SolarCarousel() {
           scale,
           opacity,
           zIndex: Math.round(depth * 100),
-          // We counter-act the track's X-rotation tilt (e.g. 65deg) so cards face the screen upright
+          // We counter-act the track's X-rotation tilt so cards face the screen upright
           rotationX: -physics.current.tilt,
         });
       });
@@ -157,10 +184,10 @@ export function SolarCarousel() {
 
   // Increase gravitational pull (draw cards in) when hovering core
   const handleCoreEnter = () => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    physics.current.targetRadius = 150; // Pull closer
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    physics.current.targetRadius = radius * 0.75; // Pull closer
     if (prefersReducedMotion) {
-      physics.current.radius = 150;
+      physics.current.radius = radius * 0.75;
     }
     if (coreRef.current) {
       gsap.to(coreRef.current, {
@@ -173,10 +200,10 @@ export function SolarCarousel() {
   };
 
   const handleCoreLeave = () => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    physics.current.targetRadius = 200; // Return to orbit
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    physics.current.targetRadius = radius; // Return to orbit
     if (prefersReducedMotion) {
-      physics.current.radius = 200;
+      physics.current.radius = radius;
     }
     if (coreRef.current) {
       gsap.to(coreRef.current, {
@@ -195,7 +222,7 @@ export function SolarCarousel() {
     // Slow down rotation speed on focus
     physics.current.velocity *= 0.1;
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     gsap.to(card, {
       y: prefersReducedMotion ? 0 : -30, // Lift item vertically
@@ -208,7 +235,7 @@ export function SolarCarousel() {
   const handleCardLeave = (card: HTMLDivElement | null) => {
     setActiveCard(null);
     if (!card) return;
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     gsap.to(card, {
       y: 0,
       borderColor: "rgba(255, 255, 255, 0.08)",
@@ -218,7 +245,15 @@ export function SolarCarousel() {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center w-full min-h-[500px] overflow-hidden select-none bg-[#050505] rounded-xl border border-white/5">
+    <div 
+      className={`relative flex flex-col items-center justify-center w-full min-h-[500px] overflow-hidden select-none border ${className}`}
+      style={{
+        backgroundColor: bg,
+        borderColor: borderColor,
+        ...style
+      }}
+      {...props}
+    >
       {/* Dynamic Ambient Background Nebula Glow */}
       <div 
         className="absolute w-[400px] h-[400px] rounded-full blur-[100px] pointer-events-none opacity-20 transition-colors duration-500"
@@ -248,7 +283,7 @@ export function SolarCarousel() {
             height: "480px",
             borderRadius: "50%",
             border: "1.5px dashed rgba(255, 255, 255, 0.08)",
-            transform: `rotateX(${physics.current.tilt}deg)`,
+            transform: `rotateX(${tilt}deg)`,
             transformStyle: "preserve-3d",
           }}
         >
@@ -263,7 +298,7 @@ export function SolarCarousel() {
               border: "2px solid #ff5c71",
               boxShadow: "0 0 25px 8px rgba(255, 92, 113, 0.15)",
               // Counter-act the parent's X rotation to make the core face us upright
-              transform: `rotateX(${-physics.current.tilt}deg)`,
+              transform: `rotateX(${-tilt}deg)`,
               transformStyle: "preserve-3d",
             }}
           >
@@ -273,7 +308,7 @@ export function SolarCarousel() {
           </div>
 
           {/* Cards Orbiting inside Track */}
-          {ITEMS.map((item, index) => (
+          {items.map((item, index) => (
             <div
               key={item.id}
               ref={(el) => { cardRefs.current[index] = el; }}

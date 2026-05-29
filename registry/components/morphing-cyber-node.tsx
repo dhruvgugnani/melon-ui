@@ -3,10 +3,29 @@
 import React, { useRef, useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 
-type NodeState = "IDLE" | "SCANNING" | "AUDIO" | "ALERT";
+export type NodeState = "IDLE" | "SCANNING" | "AUDIO" | "ALERT";
 
-export function MorphingCyberNode() {
-  const [nodeState, setNodeState] = useState<NodeState>("IDLE");
+export interface MorphingCyberNodeProps extends React.ComponentPropsWithoutRef<"div"> {
+  initialState?: NodeState;
+  primaryColor?: string;
+  secondaryColor?: string;
+  tertiaryColor?: string;
+  bg?: string;
+  borderColor?: string;
+}
+
+export function MorphingCyberNode({
+  initialState = "IDLE",
+  primaryColor = "#7fff5e",
+  secondaryColor = "#ff5c71",
+  tertiaryColor = "#e8d5b7",
+  bg = "transparent",
+  borderColor = "rgba(255, 255, 255, 0.05)",
+  className = "",
+  style,
+  ...props
+}: MorphingCyberNodeProps) {
+  const [nodeState, setNodeState] = useState<NodeState>(initialState);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Use pseudo-random seeded values based on index to ensure deterministic rendering
@@ -41,21 +60,30 @@ export function MorphingCyberNode() {
 
   const states = {
     IDLE: { width: 220, height: 70, borderRadius: 35, background: "rgba(5, 5, 5, 0.8)", borderColor: "rgba(255, 255, 255, 0.1)" },
-    SCANNING: { width: 320, height: 180, borderRadius: 24, background: "rgba(10, 15, 10, 0.9)", borderColor: "rgba(127, 255, 94, 0.4)" },
-    AUDIO: { width: 280, height: 110, borderRadius: 32, background: "rgba(15, 5, 10, 0.85)", borderColor: "rgba(255, 92, 113, 0.3)" },
-    ALERT: { width: 340, height: 220, borderRadius: 16, background: "rgba(20, 0, 0, 0.95)", borderColor: "rgba(255, 92, 113, 0.8)" }
+    SCANNING: { width: 320, height: 180, borderRadius: 24, background: "rgba(10, 15, 10, 0.9)", borderColor: `${primaryColor}66` },
+    AUDIO: { width: 280, height: 110, borderRadius: 32, background: "rgba(15, 5, 10, 0.85)", borderColor: `${secondaryColor}4d` },
+    ALERT: { width: 340, height: 220, borderRadius: 16, background: "rgba(20, 0, 0, 0.95)", borderColor: `${secondaryColor}cc` }
   };
 
   return (
-    <div className="relative w-full h-[400px] flex items-center justify-center bg-[#000] overflow-hidden rounded-xl border border-white/5" style={{ perspective: 1200 }}>
+    <div 
+      className={`relative w-full h-[400px] flex items-center justify-center overflow-hidden rounded-xl border ${className}`} 
+      style={{ 
+        perspective: 1200,
+        backgroundColor: bg,
+        borderColor: borderColor,
+        ...style 
+      }}
+      {...props}
+    >
       {/* Background ambient light */}
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full blur-[100px] pointer-events-none opacity-20"
         animate={{
           backgroundColor:
-            nodeState === "SCANNING" ? "#7fff5e" :
-            nodeState === "ALERT" ? "#ff5c71" :
-            nodeState === "AUDIO" ? "#d600ff" :
+            nodeState === "SCANNING" ? primaryColor :
+            nodeState === "ALERT" ? secondaryColor :
+            nodeState === "AUDIO" ? tertiaryColor :
             "#ffffff"
         }}
         transition={{ duration: 0.8 }}
@@ -96,8 +124,8 @@ export function MorphingCyberNode() {
             >
               <div className="w-3 h-3 rounded-full bg-white/20 animate-pulse" />
               <span className="font-mono text-sm tracking-widest text-white/50 uppercase">System Ready</span>
-              <button onClick={() => setNodeState("SCANNING")} className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
-                <span className="text-[#7fff5e]">⛶</span>
+              <button onClick={(e) => { e.stopPropagation(); setNodeState("SCANNING"); }} className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+                <span style={{ color: primaryColor }}>⛶</span>
               </button>
             </motion.div>
           )}
@@ -111,22 +139,32 @@ export function MorphingCyberNode() {
               className="flex flex-col items-center p-6 w-full h-full relative"
               style={{ transform: "translateZ(40px)" }}
             >
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-[#7fff5e]/50 shadow-[0_0_15px_#7fff5e]">
+              <div 
+                className="absolute top-0 left-0 w-full h-[2px]"
+                style={{
+                  backgroundColor: `${primaryColor}80`,
+                  boxShadow: `0 0 15px ${primaryColor}`
+                }}
+              >
                 <motion.div
-                  className="w-full h-full bg-[#7fff5e]"
+                  className="w-full h-full"
+                  style={{ backgroundColor: primaryColor }}
                   animate={{ x: ["-100%", "100%"] }}
                   transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
                 />
               </div>
               <div className="flex w-full justify-between items-center mb-4 mt-2">
-                <span className="font-mono text-xs text-[#7fff5e] uppercase tracking-[0.3em]">Scanning</span>
+                <span className="font-mono text-xs uppercase tracking-[0.3em]" style={{ color: primaryColor }}>Scanning</span>
                 <span className="font-mono text-[10px] text-white/40">192.168.1.X</span>
               </div>
 
-              <div className="flex-1 w-full border border-[#7fff5e]/20 rounded bg-black/50 overflow-hidden relative mb-4">
+              <div className="flex-1 w-full border rounded bg-black/50 overflow-hidden relative mb-4" style={{ borderColor: `${primaryColor}33` }}>
                 {/* Radar sweep effect */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-[#7fff5e]/20 to-transparent"
+                  className="absolute inset-0"
+                  style={{
+                    background: `linear-gradient(to right, transparent, ${primaryColor}33, transparent)`
+                  }}
                   animate={{ x: ["-100%", "100%"] }}
                   transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
                 />
@@ -134,7 +172,8 @@ export function MorphingCyberNode() {
                    {radarConfig.map((config, i) => (
                      <motion.div
                         key={i}
-                        className="bg-[#7fff5e]/30 rounded-[1px]"
+                        className="rounded-[1px]"
+                        style={{ backgroundColor: `${primaryColor}4d` }}
                         animate={{ opacity: [0.1, 1, 0.1] }}
                         transition={{ duration: config.duration, repeat: Infinity, delay: config.delay }}
                      />
@@ -143,8 +182,8 @@ export function MorphingCyberNode() {
               </div>
 
               <div className="flex gap-2 w-full">
-                <button onClick={() => setNodeState("AUDIO")} className="flex-1 py-1.5 rounded bg-white/5 hover:bg-white/10 font-mono text-[10px] uppercase text-white/70 transition-colors">Audio Mode</button>
-                <button onClick={() => setNodeState("IDLE")} className="px-3 py-1.5 rounded bg-red-500/10 hover:bg-red-500/20 text-[#ff5c71] font-mono text-[10px] uppercase transition-colors">Cancel</button>
+                <button onClick={(e) => { e.stopPropagation(); setNodeState("AUDIO"); }} className="flex-1 py-1.5 rounded bg-white/5 hover:bg-white/10 font-mono text-[10px] uppercase text-white/70 transition-colors">Audio Mode</button>
+                <button onClick={(e) => { e.stopPropagation(); setNodeState("IDLE"); }} className="px-3 py-1.5 rounded bg-red-500/10 hover:bg-red-500/20 font-mono text-[10px] uppercase transition-colors" style={{ color: secondaryColor }}>Cancel</button>
               </div>
             </motion.div>
           )}
@@ -158,9 +197,16 @@ export function MorphingCyberNode() {
               className="flex items-center w-full px-6 gap-6"
               style={{ transform: "translateZ(50px)" }}
             >
-              <div className="w-12 h-12 rounded-full border-2 border-[#ff5c71]/30 flex items-center justify-center bg-[#ff5c71]/10">
+              <div 
+                className="w-12 h-12 rounded-full border-2 flex items-center justify-center"
+                style={{
+                  borderColor: `${secondaryColor}4d`,
+                  backgroundColor: `${secondaryColor}1a`
+                }}
+              >
                 <motion.div
-                  className="w-4 h-4 rounded-full bg-[#ff5c71]"
+                  className="w-4 h-4 rounded-full"
+                  style={{ backgroundColor: secondaryColor }}
                   animate={{ scale: [1, 1.5, 1] }}
                   transition={{ repeat: Infinity, duration: 0.8, ease: "easeInOut" }}
                 />
@@ -170,15 +216,16 @@ export function MorphingCyberNode() {
                  {audioDurations.map((duration, i) => (
                    <motion.div
                      key={i}
-                     className="flex-1 bg-[#ff5c71]/80 rounded-full"
+                     className="flex-1 rounded-full"
+                     style={{ backgroundColor: `${secondaryColor}cc` }}
                      animate={{ height: ["20%", "100%", "20%"] }}
                      transition={{ repeat: Infinity, duration, delay: i * 0.05 }}
                    />
                  ))}
               </div>
 
-              <button onClick={() => setNodeState("ALERT")} className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
-                <span className="text-[#ff5c71]">⚠</span>
+              <button onClick={(e) => { e.stopPropagation(); setNodeState("ALERT"); }} className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+                <span style={{ color: secondaryColor }}>⚠</span>
               </button>
             </motion.div>
           )}
@@ -193,18 +240,19 @@ export function MorphingCyberNode() {
               style={{ transform: "translateZ(60px)", transformOrigin: "bottom" }}
             >
               <motion.div
-                className="text-[4rem] leading-none text-[#ff5c71] mb-2"
+                className="text-[4rem] leading-none mb-2"
                 style={{ fontFamily: "var(--font-anton)" }}
-                animate={{ scale: [1, 1.05, 1], color: ["#ff5c71", "#ffffff", "#ff5c71"] }}
+                animate={{ scale: [1, 1.05, 1], color: [secondaryColor, "#ffffff", secondaryColor] }}
                 transition={{ repeat: Infinity, duration: 1 }}
               >
                 BREACH
               </motion.div>
-              <p className="font-mono text-xs text-[#ff5c71]/70 tracking-widest mb-6">UNAUTHORIZED ACCESS DETECTED</p>
+              <p className="font-mono text-xs tracking-widest mb-6" style={{ color: `${secondaryColor}b3` }}>UNAUTHORIZED ACCESS DETECTED</p>
 
               <button
-                onClick={() => setNodeState("IDLE")}
-                className="px-6 py-2 rounded-sm bg-[#ff5c71] text-black font-black uppercase tracking-widest text-xs hover:bg-white transition-colors"
+                onClick={(e) => { e.stopPropagation(); setNodeState("IDLE"); }}
+                className="px-6 py-2 rounded-sm text-black font-black uppercase tracking-widest text-xs hover:bg-white transition-colors"
+                style={{ backgroundColor: secondaryColor }}
               >
                 LOCKDOWN
               </button>

@@ -1,16 +1,14 @@
 "use client";
 
-import React, { CSSProperties, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-export interface RindScannerTextProps {
+export interface RindScannerTextProps extends React.ComponentPropsWithoutRef<"button"> {
   text?: string;
   label?: string;
   baseColor?: string;
   scanColor?: string;
   accentColor?: string;
-  className?: string;
-  style?: CSSProperties;
 }
 
 export function RindScannerText({
@@ -21,6 +19,7 @@ export function RindScannerText({
   accentColor = "#ff5c71",
   className = "",
   style,
+  ...props
 }: RindScannerTextProps) {
   const [active, setActive] = useState(false);
   const [spot, setSpot] = useState({ x: 52, y: 46 });
@@ -43,9 +42,13 @@ export function RindScannerText({
         setActive(false);
         setSpot({ x: 52, y: 46 });
       }}
-      onClick={() => setActive((value) => !value)}
       className={`group relative inline-flex w-full max-w-[980px] cursor-pointer flex-col overflow-visible bg-transparent p-0 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7fff5e] ${className}`}
       style={style}
+      {...props}
+      onClick={(e) => {
+        setActive((value) => !value);
+        if (props.onClick) props.onClick(e);
+      }}
     >
       {label && (
         <span className="mb-3 block font-mono text-[10px] uppercase tracking-[0.3em]" style={{ color: scanColor }}>

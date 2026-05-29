@@ -8,19 +8,30 @@ export interface NavItem {
   href?: string;
 }
 
-export interface MagneticNavProps {
+export interface MagneticNavProps extends React.ComponentPropsWithoutRef<"nav"> {
   items?: (string | NavItem)[];
+  accentColor?: string;
+  dotColor?: string;
+  textColor?: string;
 }
 
 const DEFAULT_ITEMS = ["Home", "About", "Work", "Contact"];
 
-export function MagneticNav({ items = DEFAULT_ITEMS }: MagneticNavProps) {
+export function MagneticNav({
+  items = DEFAULT_ITEMS,
+  accentColor = "#ff5c71",
+  dotColor = "#7fff5e",
+  textColor = "#f4f4f4",
+  className = "",
+  style,
+  ...props
+}: MagneticNavProps) {
   const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent, i: number) => {
     const el = itemRefs.current[i];
     if (!el) return;
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) return;
 
     const rect = el.getBoundingClientRect();
@@ -39,7 +50,7 @@ export function MagneticNav({ items = DEFAULT_ITEMS }: MagneticNavProps) {
   const handleMouseLeave = useCallback((i: number) => {
     const el = itemRefs.current[i];
     if (!el) return;
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) {
       gsap.set(el, { x: 0, y: 0 });
       return;
@@ -53,7 +64,11 @@ export function MagneticNav({ items = DEFAULT_ITEMS }: MagneticNavProps) {
   }, []);
 
   return (
-    <nav className="flex items-center gap-10">
+    <nav 
+      className={`flex items-center gap-10 ${className}`} 
+      style={style}
+      {...props}
+    >
       {items.map((item, i) => {
         const label = typeof item === "string" ? item : item.label;
         const href = typeof item === "string" ? "#" : (item.href || "#");
@@ -65,15 +80,22 @@ export function MagneticNav({ items = DEFAULT_ITEMS }: MagneticNavProps) {
             href={href}
             onMouseMove={(e) => handleMouseMove(e, i)}
             onMouseLeave={() => handleMouseLeave(i)}
-            className="group relative font-black uppercase text-2xl tracking-tighter text-[#f4f4f4] select-none cursor-pointer outline-none focus-visible:text-[#ff5c71] transition-colors duration-200"
-            style={{ fontFamily: "var(--font-anton)" }}
+            className="group relative font-black uppercase text-2xl tracking-tighter select-none cursor-pointer outline-none transition-colors duration-200"
+            style={{ 
+              fontFamily: "var(--font-anton)",
+              color: textColor
+            }}
           >
             {/* Melon-scan underline */}
             <span
-              className="absolute -bottom-1 left-0 h-0.5 bg-[#ff5c71] w-0 group-hover:w-full group-focus-visible:w-full transition-all duration-300 ease-out"
+              className="absolute -bottom-1 left-0 h-0.5 w-0 group-hover:w-full group-focus-visible:w-full transition-all duration-300 ease-out"
+              style={{ backgroundColor: accentColor }}
             />
             {/* Leaf dot */}
-            <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-[#7fff5e] rounded-full opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200" />
+            <span 
+              className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200" 
+              style={{ backgroundColor: dotColor }}
+            />
             {label}
           </a>
         );

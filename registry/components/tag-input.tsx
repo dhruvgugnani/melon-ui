@@ -3,38 +3,62 @@
 import { useState, useRef, KeyboardEvent } from "react";
 import gsap from "gsap";
 
-const PRESET_TAGS = ["gsap", "three.js", "react", "tailwind"];
-
-export interface TagInputProps {
+export interface TagInputProps extends Omit<React.ComponentPropsWithoutRef<"div">, "onChange"> {
   tags?: string[];
   onChange?: (tags: string[]) => void;
   presetTags?: string[];
+  maxTags?: number;
+  placeholder?: string;
+  borderColor?: string;
+  focusBorderColor?: string;
+  tagBgColor?: string;
+  tagTextColor?: string;
+  tagBorderColor?: string;
+  removeButtonColor?: string;
+  removeButtonHoverColor?: string;
+  presetButtonColor?: string;
+  presetButtonHoverColor?: string;
 }
 
 export function TagInput({
-  tags: externalTags,
+  tags: controlledTags,
   onChange,
-  presetTags = PRESET_TAGS
+  presetTags = ["gsap", "three.js", "react", "tailwind"],
+  maxTags = 6,
+  placeholder = "Add tag...",
+  
+  borderColor = "#1e1e1e",
+  focusBorderColor = "rgba(255, 92, 113, 0.4)",
+  tagBgColor = "#111",
+  tagTextColor = "#aaa",
+  tagBorderColor = "#222",
+  removeButtonColor = "#444",
+  removeButtonHoverColor = "#ff5c71",
+  presetButtonColor = "#444",
+  presetButtonHoverColor = "#ff5c71",
+  
+  className = "",
+  style,
+  ...props
 }: TagInputProps) {
-  const [internalTags, setInternalTags] = useState<string[]>(["animation"]);
+  const [localTags, setLocalTags] = useState<string[]>(["animation"]);
   const [value, setValue] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const tags = externalTags !== undefined ? externalTags : internalTags;
+  const tags = controlledTags ?? localTags;
 
-  const updateTags = (nextTags: string[] | ((prev: string[]) => string[])) => {
-    const resolved = typeof nextTags === "function" ? nextTags(tags) : nextTags;
-    if (externalTags === undefined) {
-      setInternalTags(resolved);
-    }
-    if (onChange) {
-      onChange(resolved);
+  const updateTags = (newTags: string[]) => {
+    if (controlledTags !== undefined) {
+      onChange?.(newTags);
+    } else {
+      setLocalTags(newTags);
+      onChange?.(newTags);
     }
   };
 
   const addTag = (tag: string) => {
     const trimmed = tag.trim().toLowerCase();
-    if (!trimmed || tags.includes(trimmed) || tags.length >= 6) return;
+    if (!trimmed || tags.includes(trimmed) || tags.length >= maxTags) return;
     updateTags([...tags, trimmed]);
     setValue("");
 
@@ -72,22 +96,44 @@ export function TagInput({
   };
 
   return (
-    <div className="flex flex-col gap-5 w-full max-w-sm">
+    <div
+      className={`flex flex-col gap-5 w-full max-w-sm ${className}`}
+      style={style}
+      {...props}
+    >
       {/* Tag container */}
       <div
         ref={containerRef}
-        className="flex flex-wrap gap-2 p-3 border border-[#1e1e1e] bg-[#0a0a0a] min-h-[52px] focus-within:border-[#ff5c71]/40 transition-colors"
+        className="flex flex-wrap gap-2 p-3 border min-h-[52px] transition-colors focus-within:border-[var(--focus-border)]"
+        style={{
+          borderColor: borderColor,
+          "--focus-border": focusBorderColor,
+        } as React.CSSProperties}
       >
         {tags.map((tag) => (
           <span
             key={tag}
             data-tag={tag}
-            className="flex items-center gap-1.5 px-2.5 py-1 bg-[#111] border border-[#222] font-mono text-xs text-[#aaa]"
+            className="flex items-center gap-1.5 px-2.5 py-1 border font-mono text-xs"
+            style={{
+              backgroundColor: tagBgColor,
+              borderColor: tagBorderColor,
+              color: tagTextColor,
+            }}
           >
             {tag}
             <button
               onClick={() => removeTag(tag)}
-              className="text-[#444] hover:text-[#ff5c71] transition-colors leading-none cursor-pointer"
+              className="transition-colors leading-none font-bold"
+              style={{
+                color: removeButtonColor,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = removeButtonHoverColor;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = removeButtonColor;
+              }}
             >
               ×
             </button>
@@ -97,8 +143,8 @@ export function TagInput({
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKey}
-          placeholder={tags.length < 6 ? "Add tag..." : "Max 6 tags"}
-          disabled={tags.length >= 6}
+          placeholder={tags.length < maxTags ? placeholder : `Max ${maxTags} tags`}
+          disabled={tags.length >= maxTags}
           className="flex-1 min-w-[80px] bg-transparent font-mono text-xs text-[#888] placeholder:text-[#333] outline-none"
         />
       </div>
@@ -109,7 +155,19 @@ export function TagInput({
           <button
             key={preset}
             onClick={() => addTag(preset)}
-            className="font-mono text-[10px] text-[#444] hover:text-[#ff5c71] uppercase tracking-wider border border-[#1a1a1a] hover:border-[#ff5c71]/30 px-2 py-1 transition-all cursor-pointer"
+            className="font-mono text-[10px] uppercase tracking-wider border px-2 py-1 transition-all"
+            style={{
+              color: presetButtonColor,
+              borderColor: borderColor,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = presetButtonHoverColor;
+              e.currentTarget.style.borderColor = presetButtonHoverColor;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = presetButtonColor;
+              e.currentTarget.style.borderColor = borderColor;
+            }}
           >
             + {preset}
           </button>

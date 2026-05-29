@@ -1,6 +1,6 @@
 "use client";
 
-import React, { CSSProperties, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
 export interface StickerLayer {
@@ -8,7 +8,7 @@ export interface StickerLayer {
   color: string;
 }
 
-export interface StickerStackTextProps {
+export interface StickerStackTextProps extends React.ComponentPropsWithoutRef<"button"> {
   layers?: StickerLayer[];
   topText?: string;
   middleText?: string;
@@ -17,8 +17,6 @@ export interface StickerStackTextProps {
   middleColor?: string;
   bottomColor?: string;
   hint?: string;
-  className?: string;
-  style?: CSSProperties;
 }
 
 export function StickerStackText({
@@ -32,6 +30,7 @@ export function StickerStackText({
   hint = "Hover to fan",
   className = "",
   style,
+  ...props
 }: StickerStackTextProps) {
   const [open, setOpen] = useState(false);
   const prepared = useMemo(
@@ -61,9 +60,13 @@ export function StickerStackText({
       aria-label="Sticker stack text"
       onPointerEnter={() => setOpen(true)}
       onPointerLeave={() => setOpen(false)}
-      onClick={() => setOpen((value) => !value)}
       className={`relative inline-grid min-h-[clamp(14rem,34vw,21rem)] w-full max-w-[980px] cursor-pointer place-items-center overflow-visible bg-transparent p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff5c71] ${className}`}
       style={style}
+      {...props}
+      onClick={(e) => {
+        setOpen((value) => !value);
+        if (props.onClick) props.onClick(e);
+      }}
     >
       {prepared.map((layer, index) => (
         <motion.span
