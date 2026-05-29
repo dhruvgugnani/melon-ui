@@ -678,6 +678,17 @@ const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
       { name: "statusLabel", type: "string", defaultValue: `"Live"`, description: "Status pill text.", control: { type: "text" } },
       { name: "lensLabel", type: "string", defaultValue: `"Inspection Lens"`, description: "Right panel label.", control: { type: "text" } }
     ],
+  },
+  {
+    id: "glitch-pulse-core",
+    slug: "glitch-pulse-core",
+    title: "Glitch Pulse Core",
+    description: "A 3D, floating, interactive cybernetic core that reacts to hover and clicks with escalating glitch effects, magnetic physics, and an ambient data stream.",
+    category: "Widgets",
+    tags: ["Framer Motion", "3D", "Glitch", "Interactive"],
+    cliCommand: "npx @melonui-dev/cli add glitch-pulse-core",
+    codeSnippet: `const springConfig = { damping: 15, stiffness: 150, mass: 0.8 };\nconst magneticX = useSpring(mouseX, springConfig);\nconst magneticY = useSpring(mouseY, springConfig);`,
+    componentPath: "GlitchPulseCore",
   }
 ];
 
