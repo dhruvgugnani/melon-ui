@@ -10,6 +10,11 @@ import {
   HTMLMotionProps,
 } from "framer-motion";
 
+export interface SignalLoomMetric {
+  label: string;
+  value: string;
+}
+
 export interface SignalLoomThread {
   id: string;
   title: string;
@@ -17,6 +22,7 @@ export interface SignalLoomThread {
   value: string;
   color: string;
   copy: string;
+  metrics?: SignalLoomMetric[];
 }
 
 export interface SignalLoomProps extends Omit<HTMLMotionProps<"section">, "title"> {
@@ -28,6 +34,12 @@ export interface SignalLoomProps extends Omit<HTMLMotionProps<"section">, "title
   containerBg?: string;
   cardBgLeft?: string;
   cardBgRight?: string;
+  currentThreadLabel?: string;
+  hoverHint?: string;
+  clickHint?: string;
+  metricLabel1?: string;
+  metricLabel2?: string;
+  metricLabel3?: string;
 }
 
 const DEFAULT_THREADS: SignalLoomThread[] = [
@@ -38,6 +50,11 @@ const DEFAULT_THREADS: SignalLoomThread[] = [
     value: "92%",
     color: "#ff5c71",
     copy: "Collect user intent, constraints, edge states, and the emotional target.",
+    metrics: [
+      { label: "Pulse", value: "92%" },
+      { label: "Glass", value: "88%" },
+      { label: "Drift", value: "15ms" },
+    ]
   },
   {
     id: "taste",
@@ -46,6 +63,11 @@ const DEFAULT_THREADS: SignalLoomThread[] = [
     value: "Hot",
     color: "#7fff5e",
     copy: "Filter the surface through MelonUI contrast, glass, glow, and tactile motion.",
+    metrics: [
+      { label: "Pulse", value: "Hot" },
+      { label: "Glass", value: "96%" },
+      { label: "Drift", value: "8ms" },
+    ]
   },
   {
     id: "ship",
@@ -54,10 +76,13 @@ const DEFAULT_THREADS: SignalLoomThread[] = [
     value: "Live",
     color: "#f7f0d2",
     copy: "Package the interaction as source-first UI with demo, registry metadata, and polish.",
+    metrics: [
+      { label: "Pulse", value: "Live" },
+      { label: "Glass", value: "99%" },
+      { label: "Drift", value: "3ms" },
+    ]
   },
 ];
-
-const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
 export function SignalLoom({
   title = "Weave the next action",
@@ -68,6 +93,12 @@ export function SignalLoom({
   containerBg = "rgba(0, 0, 0, 0.45)",
   cardBgLeft = "rgba(8, 8, 8, 0.8)",
   cardBgRight = "rgba(10, 10, 10, 0.82)",
+  currentThreadLabel = "Current Thread",
+  hoverHint = "Hover threads",
+  clickHint = "Click to pin",
+  metricLabel1 = "Pulse",
+  metricLabel2 = "Glass",
+  metricLabel3 = "Drift",
   className = "",
   style,
   ...props
@@ -95,16 +126,6 @@ export function SignalLoom({
   const safeThreads = threads.length > 0 ? threads : DEFAULT_THREADS;
   const activeIndex = Math.min(hovered ?? active, safeThreads.length - 1);
   const activeThread = safeThreads[activeIndex] ?? safeThreads[0];
-  const pathData = useMemo(() => {
-    const center = Math.min(hovered ?? active, safeThreads.length - 1);
-    return safeThreads.map((_, index) => {
-      const startX = safeThreads.length === 1 ? 50 : 18 + index * (64 / (safeThreads.length - 1));
-      const pull = center === index ? 10 : center > index ? 5 : -5;
-      const waist = clamp(startX + pull, 16, 84);
-      const lower = clamp(startX - pull * 0.75, 16, 84);
-      return `M ${startX} 6 C ${waist} 28, ${waist} 48, ${startX} 56 C ${lower} 70, ${lower} 84, ${startX} 96`;
-    });
-  }, [active, hovered, safeThreads]);
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -150,41 +171,60 @@ export function SignalLoom({
           className="relative min-h-[320px] overflow-hidden rounded-[6px] border border-white/10 p-4 sm:min-h-[380px] sm:p-5"
           style={{ backgroundColor: cardBgLeft }}
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.08),transparent_34%)]" />
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-            className="absolute inset-0 h-full w-full"
-          >
-            <defs>
-              <filter id="loom-glow" x="-60%" y="-60%" width="220%" height="220%">
-                <feGaussianBlur stdDeviation="1.2" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-            {pathData.map((d, index) => {
-              const isActive = index === activeIndex;
-              return (
-                <motion.path
-                  key={safeThreads[index].id}
-                  d={d}
-                  fill="none"
-                  stroke={safeThreads[index].color}
-                  strokeLinecap="round"
-                  strokeWidth={isActive ? 1.55 : 0.7}
-                  strokeDasharray={isActive ? "1 3" : "0"}
-                  opacity={isActive ? 0.96 : 0.34}
-                  filter="url(#loom-glow)"
-                  animate={{ pathLength: isActive ? [0.72, 1, 0.72] : 1 }}
-                  transition={{ duration: 3.2, repeat: isActive ? Infinity : 0, ease: "easeInOut" }}
-                />
-              );
-            })}
-          </svg>
+          {/* Futuristic Telemetry Dot Matrix */}
+          <div 
+            className="absolute inset-0 opacity-[0.04] pointer-events-none" 
+            style={{
+              backgroundImage: "radial-gradient(circle, #fff 1.5px, transparent 1.5px)",
+              backgroundSize: "24px 24px"
+            }}
+          />
+
+          {/* Interactive Radar Sweep Ring centered at pointer coordinate */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <motion.div 
+              className="absolute rounded-full border border-dashed opacity-30"
+              style={{
+                left: useTransform(smoothX, (v) => `${v}%`),
+                top: useTransform(smoothY, (v) => `${v}%`),
+                x: "-50%",
+                y: "-50%",
+                width: 130,
+                height: 130,
+                borderColor: activeThread.color,
+                boxShadow: `0 0 35px ${activeThread.color}22`,
+              }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.div 
+              className="absolute rounded-full border opacity-15"
+              style={{
+                left: useTransform(smoothX, (v) => `${v}%`),
+                top: useTransform(smoothY, (v) => `${v}%`),
+                x: "-50%",
+                y: "-50%",
+                width: 250,
+                height: 250,
+                borderColor: activeThread.color,
+              }}
+              animate={{ scale: [0.95, 1.08, 0.95] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {/* Glowing sweep line */}
+            <motion.div 
+              className="absolute w-[2px] h-[60px] opacity-25 origin-bottom"
+              style={{
+                left: useTransform(smoothX, (v) => `${v}%`),
+                top: useTransform(smoothY, (v) => `${v}%`),
+                x: "-50%",
+                y: "-100%",
+                background: `linear-gradient(to top, ${activeThread.color}, transparent)`,
+              }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+            />
+          </div>
 
           <div className="relative z-10 flex h-full min-h-[290px] flex-col justify-between sm:min-h-[340px]">
             <div className="flex items-start justify-between gap-4">
@@ -194,7 +234,7 @@ export function SignalLoom({
                 </p>
                 <h3
                   className="mt-2 max-w-[10ch] text-4xl uppercase leading-[0.82] text-white sm:text-6xl"
-                  style={{ fontFamily: "var(--font-londrina-solid)" }}
+                  style={{ fontFamily: "var(--font-Outfit), var(--font-londrina-solid), sans-serif" }}
                 >
                   {title}
                 </h3>
@@ -204,7 +244,7 @@ export function SignalLoom({
               </div>
             </div>
 
-            <div className="grid gap-2 sm:grid-cols-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4">
               {safeThreads.map((thread, index) => {
                 const isActive = index === activeIndex;
                 return (
@@ -229,7 +269,7 @@ export function SignalLoom({
                     </span>
                     <span
                       className="mt-1 block text-xl uppercase leading-none text-white sm:text-2xl"
-                      style={{ fontFamily: "var(--font-londrina-solid)" }}
+                      style={{ fontFamily: "var(--font-Outfit), var(--font-londrina-solid), sans-serif" }}
                     >
                       {thread.title}
                     </span>
@@ -293,11 +333,11 @@ export function SignalLoom({
                   />
                   <div className="relative">
                     <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-white/40">
-                      Current Thread
+                      {currentThreadLabel}
                     </p>
                     <h4
                       className="mt-2 text-5xl uppercase leading-none sm:text-6xl"
-                      style={{ fontFamily: "var(--font-londrina-solid)", color: activeThread.color }}
+                      style={{ fontFamily: "var(--font-Outfit), var(--font-londrina-solid), sans-serif", color: activeThread.color }}
                     >
                       {activeThread.title}
                     </h4>
@@ -305,16 +345,20 @@ export function SignalLoom({
                       {activeThread.copy}
                     </p>
                     <div className="mt-4 grid grid-cols-3 gap-2 sm:mt-5">
-                      {["Pulse", "Glass", "Drift"].map((label, index) => (
+                      {(activeThread.metrics || [
+                        { label: metricLabel1, value: activeThread.value },
+                        { label: metricLabel2, value: "78%" },
+                        { label: metricLabel3, value: "94%" }
+                      ]).map((m, index) => (
                         <div
-                          key={label}
+                          key={index}
                           className="rounded-[5px] border border-white/10 bg-white/[0.04] p-2"
                         >
                           <span className="block font-mono text-[8px] uppercase tracking-[0.18em] text-white/30">
-                            {label}
+                            {m.label}
                           </span>
                           <span className="mt-1 block font-mono text-[10px] text-white/70">
-                            {index === 0 ? activeThread.value : `${68 + index * 11}%`}
+                            {m.value}
                           </span>
                         </div>
                       ))}
@@ -325,8 +369,8 @@ export function SignalLoom({
             </div>
 
             <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/35">
-              <span>Hover threads</span>
-              <span>Click to pin</span>
+              <span>{hoverHint}</span>
+              <span>{clickHint}</span>
             </div>
           </div>
         </aside>

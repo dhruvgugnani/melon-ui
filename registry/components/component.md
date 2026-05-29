@@ -54,13 +54,8 @@ Never ship components with hardcoded UI labels, descriptions, or mock data that 
 ### 3.1 GSAP & Motion Lifecycle Control
 To prevent memory leaks and ensure clean state transitions:
 - **Rule**: Always clean up GSAP timelines, window resize listeners, and custom mouse move listeners during component unmounting.
-- **Rule**: Support users with motion sensitivities. Always parse `prefers-reduced-motion` queries inside React hooks and disable/simplify heavy physics rotations or loops.
-- **Example**:
-  ```typescript
-  const prefersReducedMotion = typeof window !== "undefined" 
-    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches 
-    : false;
-  ```
+
+
 
 ---
 
