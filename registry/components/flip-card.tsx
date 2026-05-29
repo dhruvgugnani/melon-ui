@@ -45,7 +45,7 @@ export function FlipCard() {
             <p className="font-black text-2xl uppercase text-[#f4f4f4]" style={{ fontFamily: "var(--font-anton)" }}>
               Flip Card
             </p>
-            <p className="font-mono text-xs text-[#555] mt-1">Click to reveal →</p>
+            <p className="font-mono text-xs text-[#555] mt-1">Click to reveal -></p>
           </div>
           <div className="w-full h-px bg-[#ff5c71]/20" />
         </div>

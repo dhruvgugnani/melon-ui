@@ -5,15 +5,24 @@ import gsap from "gsap";
 
 const STEPS = ["Harvest", "Slice", "Serve", "Enjoy"];
 
-export function BreadcrumbTrail() {
+export interface BreadcrumbTrailProps {
+  steps?: string[];
+  onChange?: (index: number) => void;
+}
+
+export function BreadcrumbTrail({
+  steps = STEPS,
+  onChange
+}: BreadcrumbTrailProps) {
   const [active, setActive] = useState(0);
   const progressRef = useRef<HTMLDivElement>(null);
 
   const go = (i: number) => {
     setActive(i);
+    if (onChange) onChange(i);
     if (progressRef.current) {
       gsap.to(progressRef.current, {
-        width: `${((i) / (STEPS.length - 1)) * 100}%`,
+        width: `${((i) / (steps.length - 1)) * 100}%`,
         duration: 0.5,
         ease: "power2.out",
       });
@@ -24,11 +33,11 @@ export function BreadcrumbTrail() {
     <div className="flex flex-col items-center gap-8 w-full max-w-sm">
       {/* Step labels */}
       <div className="flex items-center w-full justify-between">
-        {STEPS.map((step, i) => (
+        {steps.map((step, i) => (
           <button
             key={step}
             onClick={() => go(i)}
-            className="flex flex-col items-center gap-2 group"
+            className="flex flex-col items-center gap-2 group cursor-pointer"
           >
             <span
               className={`w-8 h-8 flex items-center justify-center font-mono text-xs font-bold transition-all duration-300 ${
@@ -56,7 +65,7 @@ export function BreadcrumbTrail() {
       </div>
 
       <p className="font-mono text-xs text-[#444]">
-        Step {active + 1} of {STEPS.length}: <span className="text-[#ff5c71]">{STEPS[active]}</span>
+        Step {active + 1} of {steps.length}: <span className="text-[#ff5c71]">{steps[active]}</span>
       </p>
     </div>
   );

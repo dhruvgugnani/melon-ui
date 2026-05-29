@@ -71,7 +71,7 @@ export function MorphTransition() {
         disabled={isRunning}
         className="px-8 py-3 font-mono text-xs uppercase tracking-widest text-[#f4f4f4] border border-[#ff5c71]/30 hover:border-[#ff5c71] hover:text-[#ff5c71] transition-all disabled:opacity-30"
       >
-        {isRunning ? "Morphing..." : "Morph →"}
+        {isRunning ? "Morphing..." : "Morph ->"}
       </button>
     </div>
   );

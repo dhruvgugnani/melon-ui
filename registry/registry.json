@@ -594,5 +594,160 @@
       "Click"
     ],
     "preview": "/preview/seedwave-text.png"
+  },
+  "sticker-wall": {
+    "name": "Sticker Wall",
+    "description": "Interactive Gen-Z editorial sticker grid that fans out, scales, and tilts dynamically on pointer hover.",
+    "category": "3D Backgrounds",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "sticker-wall.tsx",
+        "path": "components/sticker-wall.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Stickers",
+      "Brutalist"
+    ],
+    "preview": "/preview/sticker-wall.png"
+  },
+  "luminous-waves": {
+    "name": "Luminous Waves",
+    "description": "Canvas-based glowing sine wave threads running horizontally and bending dynamically to track cursor position.",
+    "category": "3D Backgrounds",
+    "dependencies": [],
+    "files": [
+      {
+        "name": "luminous-waves.tsx",
+        "path": "components/luminous-waves.tsx"
+      }
+    ],
+    "tags": [
+      "Canvas",
+      "Glow",
+      "Sine Wave"
+    ],
+    "preview": "/preview/luminous-waves.png"
+  },
+  "retro-grid": {
+    "name": "Retro Grid",
+    "description": "A neon 3D perspective grid extending to the horizon that moves forward and tilts on cursor coordinates.",
+    "category": "3D Backgrounds",
+    "dependencies": [],
+    "files": [
+      {
+        "name": "retro-grid.tsx",
+        "path": "components/retro-grid.tsx"
+      }
+    ],
+    "tags": [
+      "CSS 3D",
+      "Perspective",
+      "Parallax"
+    ],
+    "preview": "/preview/retro-grid.png"
+  },
+  "noise-blob": {
+    "name": "Noise Blob",
+    "description": "Organic liquid morphing blobs using SVG color matrix and blur filters to create a gooey lava lamp visual.",
+    "category": "3D Backgrounds",
+    "dependencies": [],
+    "files": [
+      {
+        "name": "noise-blob.tsx",
+        "path": "components/noise-blob.tsx"
+      }
+    ],
+    "tags": [
+      "SVG Filter",
+      "Gooey",
+      "Liquid"
+    ],
+    "preview": "/preview/noise-blob.png"
+  },
+  "matrix-rain": {
+    "name": "Matrix Rain",
+    "description": "Digital cascading streams of custom alphanumeric glyphs and seeds in neon-green and coral-red.",
+    "category": "3D Backgrounds",
+    "dependencies": [],
+    "files": [
+      {
+        "name": "matrix-rain.tsx",
+        "path": "components/matrix-rain.tsx"
+      }
+    ],
+    "tags": [
+      "Canvas",
+      "Matrix",
+      "Retro"
+    ],
+    "preview": "/preview/matrix-rain.png"
+  },
+  "morphing-cyber-node": {
+    "name": "Morphing Cyber Node",
+    "description": "A multi-state, fluid-morphing interactive widget with magnetic hover physics and dynamic glassmorphism.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "morphing-cyber-node.tsx",
+        "path": "components/morphing-cyber-node.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Morph",
+      "Glassmorphism",
+      "Interactive"
+    ],
+    "preview": "/preview/morphing-cyber-node.png"
+  },
+  "orbital-command-ring": {
+    "name": "Orbital Command Ring",
+    "description": "A futuristic radial menu summoned by drag with elastic joystick tether physics and cinematic execution flashes.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "orbital-command-ring.tsx",
+        "path": "components/orbital-command-ring.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Spring",
+      "Radial Menu",
+      "Interactive"
+    ],
+    "preview": "/preview/orbital-command-ring.png"
+  },
+  "kinetic-glass-grid": {
+    "name": "Kinetic Glass Grid",
+    "description": "A physical, reactive glass grid that elevates and glows intelligently based on cursor proximity, using complex distance-based spring physics.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "kinetic-glass-grid.tsx",
+        "path": "components/kinetic-glass-grid.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Physics",
+      "Glassmorphism",
+      "Interactive Grid"
+    ],
+    "preview": "/preview/kinetic-glass-grid.png"
   }
 }

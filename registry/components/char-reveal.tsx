@@ -35,6 +35,9 @@ export function HarvestReveal({
   const charsRef = useRef<(HTMLSpanElement | null)[]>([]);
 
   const runAnimation = () => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
     const chars = charsRef.current.filter(Boolean);
     gsap.killTweensOf(chars);
     gsap.set(chars, { opacity: 0, y: 24, filter: `blur(${blur}px)` });
@@ -50,6 +53,13 @@ export function HarvestReveal({
 
   useEffect(() => {
     if (!containerRef.current) return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      const chars = charsRef.current.filter(Boolean);
+      gsap.set(chars, { opacity: 1, y: 0, filter: "none" });
+      return;
+    }
 
     const scroller = getScrollParent(containerRef.current) ?? undefined;
 

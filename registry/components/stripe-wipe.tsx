@@ -63,7 +63,7 @@ export function RindWipeTransition() {
         className="px-8 py-3 bg-[#ff5c71] text-[#050505] font-black uppercase tracking-widest text-sm disabled:opacity-50 transition-opacity"
         style={{ fontFamily: "var(--font-anton)" }}
       >
-        {isRunning ? "Wiping..." : "Trigger Wipe →"}
+        {isRunning ? "Wiping..." : "Trigger Wipe ->"}
       </button>
 
       <p className="font-mono text-xs text-[#444]">Click to simulate a route transition</p>

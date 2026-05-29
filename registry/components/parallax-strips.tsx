@@ -20,6 +20,9 @@ export function ParallaxStrips() {
 
   useEffect(() => {
     if (!containerRef.current) return;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
     const wrapper = document.querySelector("[data-lenis-wrapper]");
 
     const ctx = gsap.context(() => {

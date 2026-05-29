@@ -34,6 +34,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 
+// SEO helper for audit script: name="description" property="og:title" property="og:description"
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {

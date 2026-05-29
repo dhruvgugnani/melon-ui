@@ -11,30 +11,41 @@ const LINES = [
   { text: "🍉 MelonUI ready. Start building.", delay: 4.2 },
 ];
 
-export function CliTerminal() {
+export interface TerminalLine {
+  text: string;
+  delay: number;
+}
+
+export interface CliTerminalProps {
+  lines?: TerminalLine[];
+}
+
+export function CliTerminal({ lines = LINES }: CliTerminalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const lines = containerRef.current.querySelectorAll<HTMLDivElement>(".cli-line");
+    const cliLines = containerRef.current.querySelectorAll<HTMLDivElement>(".cli-line");
     const cursor = cursorRef.current;
 
     const ctx = gsap.context(() => {
       // Start all lines invisible
-      gsap.set(lines, { opacity: 0, y: 8 });
+      gsap.set(cliLines, { opacity: 0, y: 8 });
       if (cursor) gsap.set(cursor, { opacity: 1 });
 
       const tl = gsap.timeline({ repeat: -1, repeatDelay: 2 });
 
-      LINES.forEach((line, i) => {
-        tl.to(lines[i], {
-          opacity: 1,
-          y: 0,
-          duration: 0.3,
-          ease: "power2.out",
-        }, line.delay);
+      lines.forEach((line, i) => {
+        if (cliLines[i]) {
+          tl.to(cliLines[i], {
+            opacity: 1,
+            y: 0,
+            duration: 0.3,
+            ease: "power2.out",
+          }, line.delay);
+        }
       });
 
       // Blink cursor
@@ -49,7 +60,7 @@ export function CliTerminal() {
       }
 
       // Reset all lines before repeat
-      tl.to(lines, {
+      tl.to(cliLines, {
         opacity: 0,
         y: 8,
         duration: 0.4,
@@ -59,7 +70,7 @@ export function CliTerminal() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [lines]);
 
   return (
     <div
@@ -77,10 +88,10 @@ export function CliTerminal() {
 
       {/* Terminal body */}
       <div className="p-6 flex flex-col gap-3 min-h-[180px]">
-        {LINES.map((line, i) => (
+        {lines.map((line, i) => (
           <div
             key={i}
-            className={`cli-line ${i === 0 ? "text-[#7fff5e]" : i === LINES.length - 1 ? "text-[#ff5c71]" : "text-[#a0a0a0]"}`}
+            className={`cli-line ${i === 0 ? "text-[#7fff5e]" : i === lines.length - 1 ? "text-[#ff5c71]" : "text-[#a0a0a0]"}`}
           >
             {line.text}
           </div>

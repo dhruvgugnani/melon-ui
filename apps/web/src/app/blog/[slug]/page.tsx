@@ -169,16 +169,16 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
       const trimmed = block.trim();
       if (!trimmed) return null;
 
-      // H1 Header
+      // H1 Header (Rendered as H2 for SEO heading hierarchy compliance)
       if (trimmed.startsWith("# ")) {
         return (
-          <h1 
+          <h2 
             key={idx}
             className="text-3xl md:text-5xl font-black uppercase text-white tracking-tight mb-8 mt-12"
             style={{ fontFamily: "var(--font-londrina-solid)" }}
           >
             {parseInline(trimmed.slice(2))}
-          </h1>
+          </h2>
         );
       }
 

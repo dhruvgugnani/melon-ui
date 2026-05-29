@@ -43,19 +43,34 @@ export function SolarCarousel() {
     const container = containerRef.current;
     if (!container) return;
 
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      physics.current.velocity = 0;
+    }
+
     // Continuous orbit loop
     const tick = () => {
       if (!physics.current.isDragging) {
-        // Natural friction/inertia decay
-        physics.current.velocity *= 0.95;
-        if (Math.abs(physics.current.velocity) < 0.001) {
-          physics.current.velocity = 0.002; // Keep a slow baseline orbit
+        if (prefersReducedMotion) {
+          physics.current.velocity = 0;
+        } else {
+          // Natural friction/inertia decay
+          physics.current.velocity *= 0.95;
+          if (Math.abs(physics.current.velocity) < 0.001) {
+            physics.current.velocity = 0.002; // Keep a slow baseline orbit
+          }
+          physics.current.rotation += physics.current.velocity;
         }
+      } else {
         physics.current.rotation += physics.current.velocity;
       }
 
       // Ease radius adjustments (gravity pull)
-      physics.current.radius += (physics.current.targetRadius - physics.current.radius) * 0.1;
+      if (prefersReducedMotion) {
+        physics.current.radius = physics.current.targetRadius;
+      } else {
+        physics.current.radius += (physics.current.targetRadius - physics.current.radius) * 0.1;
+      }
 
       // Position cards along 3D elliptical orbit
       cardRefs.current.forEach((card, index) => {
@@ -142,25 +157,33 @@ export function SolarCarousel() {
 
   // Increase gravitational pull (draw cards in) when hovering core
   const handleCoreEnter = () => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     physics.current.targetRadius = 150; // Pull closer
+    if (prefersReducedMotion) {
+      physics.current.radius = 150;
+    }
     if (coreRef.current) {
       gsap.to(coreRef.current, {
         scale: 1.25,
         backgroundColor: "rgba(255, 92, 113, 0.4)",
         boxShadow: "0 0 40px 20px rgba(255, 92, 113, 0.3)",
-        duration: 0.4,
+        duration: prefersReducedMotion ? 0 : 0.4,
       });
     }
   };
 
   const handleCoreLeave = () => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     physics.current.targetRadius = 200; // Return to orbit
+    if (prefersReducedMotion) {
+      physics.current.radius = 200;
+    }
     if (coreRef.current) {
       gsap.to(coreRef.current, {
         scale: 1,
         backgroundColor: "rgba(255, 92, 113, 0.15)",
         boxShadow: "0 0 25px 8px rgba(255, 92, 113, 0.15)",
-        duration: 0.4,
+        duration: prefersReducedMotion ? 0 : 0.4,
       });
     }
   };
@@ -172,22 +195,25 @@ export function SolarCarousel() {
     // Slow down rotation speed on focus
     physics.current.velocity *= 0.1;
 
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     gsap.to(card, {
-      y: -30, // Lift item vertically
+      y: prefersReducedMotion ? 0 : -30, // Lift item vertically
       borderColor: item.color,
       boxShadow: `0 15px 30px rgba(${item.color === "#7fff5e" ? "127, 255, 94" : item.color === "#ff5c71" ? "255, 92, 113" : "0, 240, 255"}, 0.25)`,
-      duration: 0.3,
+      duration: prefersReducedMotion ? 0 : 0.3,
     });
   };
 
   const handleCardLeave = (card: HTMLDivElement | null) => {
     setActiveCard(null);
     if (!card) return;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     gsap.to(card, {
       y: 0,
       borderColor: "rgba(255, 255, 255, 0.08)",
       boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
-      duration: 0.3,
+      duration: prefersReducedMotion ? 0 : 0.3,
     });
   };
 

@@ -60,6 +60,7 @@ export async function addCommand(component?: string) {
   }
 
   // Install all selected components sequentially
+  let hasError = false;
   for (const comp of selectedComponents) {
     const spinner = ora(`Installing ${comp}...`).start();
     try {
@@ -92,8 +93,15 @@ export async function addCommand(component?: string) {
       logger.green(`Added ${componentData.name} files to ${componentsDir}`);
     } catch (error: any) {
       spinner.fail(`Failed to add component ${comp}: ${error.message}`);
+      hasError = true;
     }
   }
 
-  logger.melon("\n✨ Component installation complete!");
+  if (hasError) {
+    logger.error("\n❌ Component installation failed with errors.");
+    process.exit(1);
+  } else {
+    logger.melon("\n✨ Component installation complete!");
+  }
 }
+

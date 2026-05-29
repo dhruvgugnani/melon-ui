@@ -8,6 +8,8 @@ import { getComponentsByCategory } from "@/data/components";
 
 const GITHUB_URL = "https://github.com/dhruvgugnani/melon-ui";
 
+const CustomLink = Link;
+
 const GETTING_STARTED = [
   { name: "Introduction", slug: "introduction", href: "/docs/introduction" },
   { name: "Installation", slug: "installation", href: "/docs/installation" },
@@ -103,7 +105,7 @@ export function Navbar() {
           className="mx-auto max-w-6xl flex items-center justify-between px-4 py-2.5 md:px-6 md:py-3 rounded-full border border-white/10 bg-zinc-950/40 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all duration-350"
         >
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group" aria-label="MelonUI home">
+          <CustomLink href="/" className="flex items-center gap-2.5 group" aria-label="MelonUI home">
             <img
               src="/logo.png"
               alt="MelonUI Logo"
@@ -115,7 +117,7 @@ export function Navbar() {
             >
               MelonUI
             </span>
-          </Link>
+          </CustomLink>
 
           {/* Desktop Nav Links */}
           <nav className="hidden md:flex items-center gap-1 md:gap-2">
@@ -223,7 +225,7 @@ export function Navbar() {
       >
         {/* Drawer Header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-white/5 shrink-0">
-          <Link
+          <CustomLink
             href="/"
             className="flex items-center gap-2 group"
             onClick={() => setIsOpen(false)}
@@ -235,7 +237,7 @@ export function Navbar() {
             >
               MelonUI
             </span>
-          </Link>
+          </CustomLink>
           <button
             onClick={() => setIsOpen(false)}
             className="w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all active:scale-90 cursor-pointer"
@@ -256,7 +258,7 @@ export function Navbar() {
                 pathname === link.href ||
                 (link.href !== "/" && pathname?.startsWith(link.href));
               return (
-                <Link
+                <CustomLink
                   key={link.name}
                   href={link.href}
                   className={`flex items-center gap-3 px-3 py-3 rounded-lg font-mono text-sm uppercase tracking-wider transition-all ${
@@ -272,7 +274,7 @@ export function Navbar() {
                     <span className="w-1 h-1 rounded-full bg-white/10 shrink-0" />
                   )}
                   {link.name}
-                </Link>
+                </CustomLink>
               );
             })}
             <a
@@ -326,7 +328,7 @@ export function Navbar() {
                       const isActive = activeSlug === item.slug;
                       return (
                         <li key={item.slug}>
-                          <Link
+                          <CustomLink
                             href={item.href}
                             className={`flex items-center gap-2 py-2 px-2 rounded-md font-mono text-[12px] transition-all ${
                               isActive
@@ -340,7 +342,7 @@ export function Navbar() {
                               }`}
                             />
                             {item.name}
-                          </Link>
+                          </CustomLink>
                         </li>
                       );
                     })}
@@ -349,7 +351,7 @@ export function Navbar() {
               </div>
 
               {/* Component Index Link */}
-              <Link
+              <CustomLink
                 href="/components"
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg font-mono text-[12px] transition-all ${
                   pathname === "/components"
@@ -372,10 +374,10 @@ export function Navbar() {
                   <rect x="3" y="16" width="7" height="5" />
                 </svg>
                 Component Index
-              </Link>
+              </CustomLink>
 
               {/* Blog */}
-              <Link
+              <CustomLink
                 href="/blog"
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg font-mono text-[12px] transition-all ${
                   pathname?.startsWith("/blog")
@@ -396,7 +398,7 @@ export function Navbar() {
                   <path d="M6 6h10M6 10h10" />
                 </svg>
                 Blog &amp; Guides
-              </Link>
+              </CustomLink>
 
               {/* Component Categories */}
               {categoryNames
@@ -407,7 +409,7 @@ export function Navbar() {
                   return (
                     <div key={catName}>
                       <button
-                        onClick={() => toggleCat(catName)}
+                         onClick={() => toggleCat(catName)}
                         className="w-full flex items-center justify-between px-3 py-2 font-mono text-[10px] text-white/45 uppercase tracking-[0.2em] hover:text-white transition-colors cursor-pointer rounded-lg hover:bg-white/5"
                       >
                         <span>{catName}</span>
@@ -437,7 +439,7 @@ export function Navbar() {
                             const isActive = activeSlug === comp.slug;
                             return (
                               <li key={comp.slug}>
-                                <Link
+                                <CustomLink
                                   href={`/components/${comp.slug}`}
                                   className={`flex items-center gap-2 py-2 px-2 rounded-md font-mono text-[12px] transition-all ${
                                     isActive
@@ -451,7 +453,7 @@ export function Navbar() {
                                     }`}
                                   />
                                   {comp.title}
-                                </Link>
+                                </CustomLink>
                               </li>
                             );
                           })}

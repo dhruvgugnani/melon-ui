@@ -5,15 +5,37 @@ import gsap from "gsap";
 
 const PRESET_TAGS = ["gsap", "three.js", "react", "tailwind"];
 
-export function TagInput() {
-  const [tags, setTags] = useState<string[]>(["animation"]);
+export interface TagInputProps {
+  tags?: string[];
+  onChange?: (tags: string[]) => void;
+  presetTags?: string[];
+}
+
+export function TagInput({
+  tags: externalTags,
+  onChange,
+  presetTags = PRESET_TAGS
+}: TagInputProps) {
+  const [internalTags, setInternalTags] = useState<string[]>(["animation"]);
   const [value, setValue] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const tags = externalTags !== undefined ? externalTags : internalTags;
+
+  const updateTags = (nextTags: string[] | ((prev: string[]) => string[])) => {
+    const resolved = typeof nextTags === "function" ? nextTags(tags) : nextTags;
+    if (externalTags === undefined) {
+      setInternalTags(resolved);
+    }
+    if (onChange) {
+      onChange(resolved);
+    }
+  };
 
   const addTag = (tag: string) => {
     const trimmed = tag.trim().toLowerCase();
     if (!trimmed || tags.includes(trimmed) || tags.length >= 6) return;
-    setTags((prev) => [...prev, trimmed]);
+    updateTags([...tags, trimmed]);
     setValue("");
 
     // Animate new tag in
@@ -33,10 +55,10 @@ export function TagInput() {
         opacity: 0,
         duration: 0.2,
         ease: "power2.in",
-        onComplete: () => setTags((prev) => prev.filter((t) => t !== tag)),
+        onComplete: () => updateTags(tags.filter((t) => t !== tag)),
       });
     } else {
-      setTags((prev) => prev.filter((t) => t !== tag));
+      updateTags(tags.filter((t) => t !== tag));
     }
   };
 
@@ -65,7 +87,7 @@ export function TagInput() {
             {tag}
             <button
               onClick={() => removeTag(tag)}
-              className="text-[#444] hover:text-[#ff5c71] transition-colors leading-none"
+              className="text-[#444] hover:text-[#ff5c71] transition-colors leading-none cursor-pointer"
             >
               ×
             </button>
@@ -83,11 +105,11 @@ export function TagInput() {
 
       {/* Quick-add presets */}
       <div className="flex gap-2 flex-wrap">
-        {PRESET_TAGS.filter((t) => !tags.includes(t)).map((preset) => (
+        {presetTags.filter((t) => !tags.includes(t)).map((preset) => (
           <button
             key={preset}
             onClick={() => addTag(preset)}
-            className="font-mono text-[10px] text-[#444] hover:text-[#ff5c71] uppercase tracking-wider border border-[#1a1a1a] hover:border-[#ff5c71]/30 px-2 py-1 transition-all"
+            className="font-mono text-[10px] text-[#444] hover:text-[#ff5c71] uppercase tracking-wider border border-[#1a1a1a] hover:border-[#ff5c71]/30 px-2 py-1 transition-all cursor-pointer"
           >
             + {preset}
           </button>

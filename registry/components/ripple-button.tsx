@@ -3,7 +3,17 @@
 import { useRef } from "react";
 import gsap from "gsap";
 
-export function RippleButton() {
+export interface RippleButtonProps {
+  label?: string;
+  duration?: number;
+  rippleColor?: string;
+}
+
+export function RippleButton({
+  label = "Click for ripple",
+  duration = 0.7,
+  rippleColor = "rgba(127, 255, 94, 0.25)"
+}: RippleButtonProps) {
   const rippleContainer = useRef<HTMLSpanElement>(null);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -21,7 +31,7 @@ export function RippleButton() {
       left: ${x}px;
       top: ${y}px;
       border-radius: 50%;
-      background: rgba(127, 255, 94, 0.25);
+      background: ${rippleColor};
       pointer-events: none;
     `;
     rippleContainer.current?.appendChild(ripple);
@@ -32,7 +42,7 @@ export function RippleButton() {
       {
         scale: 1,
         opacity: 0,
-        duration: 0.7,
+        duration: duration,
         ease: "power2.out",
         onComplete: () => ripple.remove(),
       }
@@ -47,7 +57,7 @@ export function RippleButton() {
       {/* Hover fill */}
       <span className="absolute inset-0 bg-[#ff5c71] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
       <span ref={rippleContainer} className="absolute inset-0 overflow-hidden" />
-      <span className="relative z-10">Click for ripple</span>
+      <span className="relative z-10">{label}</span>
     </button>
   );
 }

@@ -25,6 +25,6 @@ export function getInstallCommand(packageManager: string, dependencies: string[]
     case "bun":
       return `bun add ${deps}`;
     default:
-      return `npm install ${deps}`;
+      return `npm install ${deps} --legacy-peer-deps`;
   }
 }

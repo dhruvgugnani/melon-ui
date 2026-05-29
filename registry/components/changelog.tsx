@@ -10,7 +10,21 @@ const VERSIONS = [
   { v: "v1.0.0", date: "2025-05-15", note: "Stable release 🍉" },
 ];
 
-export function ChangelogCard() {
+export interface ChangelogVersion {
+  v: string;
+  date: string;
+  note: string;
+}
+
+export interface ChangelogCardProps {
+  versions?: ChangelogVersion[];
+  title?: string;
+}
+
+export function ChangelogCard({
+  versions = VERSIONS,
+  title = "Changelog"
+}: ChangelogCardProps) {
   const [open, setOpen] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +50,7 @@ export function ChangelogCard() {
         className="w-full flex items-center justify-between px-5 py-4 group"
       >
         <span className="font-mono text-xs uppercase tracking-widest text-[#555] group-hover:text-[#aaa] transition-colors">
-          Changelog
+          {title}
         </span>
         <span
           className="font-black text-[#ff5c71] text-xl transition-transform duration-300"
@@ -48,7 +62,7 @@ export function ChangelogCard() {
 
       <div ref={listRef} style={{ height: 0, opacity: 0, overflow: "hidden" }}>
         <div className="border-t border-[#111] divide-y divide-[#111]">
-          {VERSIONS.map((ver) => (
+          {versions.map((ver) => (
             <div key={ver.v} className="px-5 py-3 flex items-center justify-between group/row hover:bg-[#0f0f0f] transition-colors">
               <div>
                 <span className="font-mono text-xs text-[#ff5c71] font-bold">{ver.v}</span>

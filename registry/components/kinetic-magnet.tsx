@@ -32,7 +32,11 @@ export function KineticMagnet() {
       return gsap.quickSetter(needle, "rotation", "deg");
     });
 
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const handleMouseMove = (e: MouseEvent) => {
+      if (prefersReducedMotion) return;
+
       const parentRect = container.getBoundingClientRect();
       const mouseX = e.clientX - parentRect.left;
       const mouseY = e.clientY - parentRect.top;
@@ -57,6 +61,8 @@ export function KineticMagnet() {
     };
 
     const handleClick = (e: MouseEvent) => {
+      if (prefersReducedMotion) return;
+
       const parentRect = container.getBoundingClientRect();
       const clickX = e.clientX - parentRect.left;
       const clickY = e.clientY - parentRect.top;

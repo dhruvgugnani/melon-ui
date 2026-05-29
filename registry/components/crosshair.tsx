@@ -1,18 +1,42 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import gsap from "gsap";
 
-export function CrosshairCursor() {
+export interface CrosshairCursorProps {
+  containerRef?: React.RefObject<HTMLElement | null>;
+}
+
+export function CrosshairCursor({ containerRef }: CrosshairCursorProps) {
   const cursorRef = useRef<HTMLDivElement>(null);
   const hLineRef = useRef<HTMLDivElement>(null);
   const vLineRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
   const posRef = useRef({ x: 0, y: 0 });
+  const [isInside, setIsInside] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const container = cursorRef.current?.parentElement;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // If containerRef is provided, use it. Otherwise, use our default container.
+    const container = containerRef ? containerRef.current : cursorRef.current?.parentElement;
     if (!container) return;
+
+    // Apply cursor-none and ensure relative positioning
+    const originalCursor = container.style.cursor;
+    const originalPosition = container.style.position;
+    
+    if (containerRef) {
+      container.style.cursor = "none";
+      const computedStyle = window.getComputedStyle(container);
+      if (computedStyle.position === "static") {
+        container.style.position = "relative";
+      }
+    }
 
     const onMove = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
@@ -29,14 +53,38 @@ export function CrosshairCursor() {
       }
     };
 
-    container.addEventListener("mousemove", onMove);
-    return () => container.removeEventListener("mousemove", onMove);
-  }, []);
+    const onEnter = () => {
+      setIsInside(true);
+    };
 
-  return (
-    <div
-      className="w-full h-64 bg-[#040404] relative overflow-hidden cursor-none"
-      style={{ border: "1px solid #1a1a1a" }}
+    const onLeave = () => {
+      setIsInside(false);
+    };
+
+    container.addEventListener("mousemove", onMove);
+    container.addEventListener("mouseenter", onEnter);
+    container.addEventListener("mouseleave", onLeave);
+
+    // Initial check if cursor is already inside (for default container or if mouseenter triggered)
+    if (!containerRef) {
+      setIsInside(true);
+    }
+
+    return () => {
+      container.removeEventListener("mousemove", onMove);
+      container.removeEventListener("mouseenter", onEnter);
+      container.removeEventListener("mouseleave", onLeave);
+      if (containerRef) {
+        container.style.cursor = originalCursor;
+        container.style.position = originalPosition;
+      }
+    };
+  }, [containerRef, mounted]);
+
+  const crosshairElements = (
+    <div 
+      className="absolute inset-0 pointer-events-none overflow-hidden z-[9999]"
+      style={{ display: isInside ? "block" : "none" }}
     >
       {/* Crosshair lines */}
       <div
@@ -76,10 +124,26 @@ export function CrosshairCursor() {
           backgroundSize: "40px 40px",
         }}
       />
+    </div>
+  );
 
-      <p className="absolute bottom-3 left-0 right-0 text-center font-mono text-[10px] text-[#333] uppercase tracking-widest">
+  // If containerRef is provided, render elements via Portal
+  if (containerRef) {
+    if (!mounted || !containerRef.current) return null;
+    return createPortal(crosshairElements, containerRef.current);
+  }
+
+  // Default localized preview
+  return (
+    <div
+      className="w-full h-64 bg-[#040404] relative overflow-hidden cursor-none"
+      style={{ border: "1px solid #1a1a1a" }}
+    >
+      {crosshairElements}
+      <p className="absolute bottom-3 left-0 right-0 text-center font-mono text-[10px] text-[#333] uppercase tracking-widest pointer-events-none">
         Move cursor inside
       </p>
     </div>
   );
 }
+
