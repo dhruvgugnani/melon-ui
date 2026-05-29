@@ -71,18 +71,88 @@ const DOCS_DATA: Record<string, DocContent> = {
     category: "Getting Started",
     description: "Learn how to configure your project and install the necessary dependencies for MelonUI.",
     headings: [
-      { id: "dependencies", text: "Dependencies" },
+      { id: "cli-setup", text: "CLI Setup" },
+      { id: "dependencies", text: "Manual Dependencies" },
       { id: "css-setup", text: "CSS Setup" },
       { id: "typescript", text: "TypeScript" },
     ],
     render: (copyFn, copiedId) => (
       <div className="space-y-10">
-        <section id="dependencies" className="space-y-4">
-          <h2 id="dependencies" className="text-3xl font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)" }}>
-            Dependencies
+        <section id="cli-setup" className="space-y-4">
+          <h2 id="cli-setup" className="text-3xl font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)" }}>
+            CLI Setup (Recommended)
           </h2>
           <p className="text-white/60 leading-relaxed text-sm">
-            Before using any MelonUI component, you need to install the required animation and rendering packages. Run the following command in your terminal:
+            The fastest way to get started is by using the official MelonUI CLI. You can install it globally or run it on-the-fly using <code className="text-white font-mono px-1 py-0.5 rounded bg-white/5">npx</code>.
+          </p>
+          
+          <div className="space-y-3">
+            <h3 className="text-lg font-bold text-white/90">Global Installation</h3>
+            <p className="text-white/50 leading-relaxed text-xs">
+              Install the CLI globally to access the <code className="text-white font-mono">melonui</code> binary anywhere on your system:
+            </p>
+            <div className="relative">
+              <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
+                npm install -g @melonui-dev/cli
+              </pre>
+              <button
+                onClick={() => copyFn("npm install -g @melonui-dev/cli", "global-cli")}
+                className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
+              >
+                {copiedId === "global-cli" ? "COPIED" : "COPY"}
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-3 pt-2">
+            <h3 className="text-lg font-bold text-white/90">Initialize Project</h3>
+            <p className="text-white/50 leading-relaxed text-xs">
+              Run the initialization command at the root of your project to detect package manager, install core helpers, and configure directory paths:
+            </p>
+            <div className="relative">
+              <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
+                melonui init
+              </pre>
+              <button
+                onClick={() => copyFn("melonui init", "global-init")}
+                className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
+              >
+                {copiedId === "global-init" ? "COPIED" : "COPY"}
+              </button>
+            </div>
+            <p className="text-white/40 text-[11px] leading-relaxed">
+              *Alternative npx usage: <code className="text-white/70">npx @melonui-dev/cli init</code>
+            </p>
+          </div>
+
+          <div className="space-y-3 pt-2">
+            <h3 className="text-lg font-bold text-white/90">Add Components & Interactive List</h3>
+            <p className="text-white/50 leading-relaxed text-xs">
+              To view all available components and select which ones to add, run the <code className="text-white font-mono">add</code> command without any arguments. This fetches the remote registry list and opens a searchable, interactive multiselect menu:
+            </p>
+            <div className="relative">
+              <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
+                melonui add
+              </pre>
+              <button
+                onClick={() => copyFn("melonui add", "global-add-interactive")}
+                className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
+              >
+                {copiedId === "global-add-interactive" ? "COPIED" : "COPY"}
+              </button>
+            </div>
+            <p className="text-white/40 text-[11px] leading-relaxed">
+              *Use the arrow keys to browse, <kbd className="bg-white/10 px-1 rounded">Space</kbd> to select/deselect, start typing to search/filter the registry, and press <kbd className="bg-white/10 px-1 rounded">Enter</kbd> to install.
+            </p>
+          </div>
+        </section>
+
+        <section id="dependencies" className="space-y-4">
+          <h2 id="dependencies" className="text-3xl font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)" }}>
+            Manual Dependencies
+          </h2>
+          <p className="text-white/60 leading-relaxed text-sm">
+            Before using any MelonUI component manually, you need to install the required animation and rendering packages. Run the following command in your terminal:
           </p>
           <div className="relative">
             <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
@@ -148,76 +218,150 @@ const DOCS_DATA: Record<string, DocContent> = {
     category: "Getting Started",
     description: "Discover how to use the MelonUI CLI to quickly add components to your codebase.",
     headings: [
-      { id: "setup", text: "Setup" },
-      { id: "init-command", text: "Initialization" },
-      { id: "add-command", text: "Adding Components" },
+      { id: "global-vs-npx", text: "Installation & Execution" },
+      { id: "interactive-mode", text: "Interactive Mode" },
+      { id: "cli-commands", text: "Command Reference" },
     ],
     render: (copyFn, copiedId) => (
       <div className="space-y-10">
-        <section id="setup" className="space-y-4">
-          <h2 id="setup" className="text-3xl font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)" }}>
-            Setup
+        <section id="global-vs-npx" className="space-y-4">
+          <h2 id="global-vs-npx" className="text-3xl font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)" }}>
+            Installation & Execution
           </h2>
           <p className="text-white/60 leading-relaxed text-sm">
-            The CLI tool lets you pull components directly from our registry straight into your project folder. No copy-pasting required. Install it globally or run it via npx:
+            You can run the MelonUI CLI tool globally on your system, or execute it dynamically on-demand using <code className="text-white font-mono px-1 py-0.5 rounded bg-white/5">npx</code>.
           </p>
-          <div className="relative">
-            <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
-              npx @melonui-dev/cli --help
-            </pre>
-            <button
-              onClick={() => copyFn("npx @melonui-dev/cli --help", "cli-help")}
-              className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
-            >
-              {copiedId === "cli-help" ? "COPIED" : "COPY"}
-            </button>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div className="p-4 bg-white/5 border border-white/10 rounded-[6px] space-y-3">
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider font-mono">1. Global Installation</h3>
+              <p className="text-white/50 text-xs leading-relaxed">
+                Install once globally to access the command directly as <code className="text-white font-mono">melonui</code>:
+              </p>
+              <div className="relative">
+                <pre className="p-2.5 bg-zinc-950 border border-white/5 rounded font-mono text-[11px] text-[#7fff5e] overflow-x-auto select-all">
+                  npm install -g @melonui-dev/cli
+                </pre>
+                <button
+                  onClick={() => copyFn("npm install -g @melonui-dev/cli", "cli-global-inst")}
+                  className="absolute right-2 top-2 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[8px] cursor-pointer"
+                >
+                  {copiedId === "cli-global-inst" ? "COPIED" : "COPY"}
+                </button>
+              </div>
+              <p className="text-white/40 text-[10px] leading-relaxed">
+                Once installed, run any command prefixing with <code className="text-white/60">melonui</code> (e.g. <code className="text-white/60">melonui init</code>).
+              </p>
+            </div>
+
+            <div className="p-4 bg-white/5 border border-white/10 rounded-[6px] space-y-3">
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider font-mono">2. Dynamic Execution</h3>
+              <p className="text-white/50 text-xs leading-relaxed">
+                Run directly using <code className="text-white font-mono">npx</code> without a global installation:
+              </p>
+              <div className="relative">
+                <pre className="p-2.5 bg-zinc-950 border border-white/5 rounded font-mono text-[11px] text-[#7fff5e] overflow-x-auto select-all">
+                  npx @melonui-dev/cli [command]
+                </pre>
+                <button
+                  onClick={() => copyFn("npx @melonui-dev/cli", "cli-npx-inst")}
+                  className="absolute right-2 top-2 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[8px] cursor-pointer"
+                >
+                  {copiedId === "cli-npx-inst" ? "COPIED" : "COPY"}
+                </button>
+              </div>
+              <p className="text-white/40 text-[10px] leading-relaxed">
+                Useful for environments where you don&apos;t want to maintain global node_modules dependencies.
+              </p>
+            </div>
           </div>
         </section>
 
-        <section id="init-command" className="space-y-4">
-          <h2 id="init-command" className="text-3xl font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)" }}>
-            Initialization
+        <section id="interactive-mode" className="space-y-4">
+          <h2 id="interactive-mode" className="text-3xl font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)" }}>
+            Interactive Modes
           </h2>
           <p className="text-white/60 leading-relaxed text-sm">
-            Configure your local directories. Run the initialization command at the root of your project:
+            MelonUI provides a rich console interface. If you call commands without parameters, it opens intuitive interactive screens.
           </p>
-          <div className="relative">
-            <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
-              npx @melonui-dev/cli init
-            </pre>
-            <button
-              onClick={() => copyFn("npx @melonui-dev/cli init", "cli-init")}
-              className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
-            >
-              {copiedId === "cli-init" ? "COPIED" : "COPY"}
-            </button>
+
+          <div className="space-y-4">
+            <div className="border border-white/10 bg-zinc-950/40 p-4 rounded-[6px] space-y-2">
+              <h3 className="text-sm font-bold text-[#7fff5e] font-mono">Interactive Navigation Dashboard</h3>
+              <p className="text-white/60 text-xs leading-relaxed">
+                Running the binary with zero arguments opens the main dashboard prompt:
+              </p>
+              <pre className="p-3 bg-zinc-950 rounded font-mono text-[11px] text-white/40 border border-white/5">
+{`$ melonui
+
+What would you like to do?
+> Initialize MelonUI Project   (Set up utils, paths, and core dependencies)
+  Add/Install Components       (Search, select, and install components dynamically)
+  Exit`}
+              </pre>
+            </div>
+
+            <div className="border border-white/10 bg-zinc-950/40 p-4 rounded-[6px] space-y-2">
+              <h3 className="text-sm font-bold text-[#7fff5e] font-mono">Searchable Component Multiselect List</h3>
+              <p className="text-white/60 text-xs leading-relaxed">
+                Running <code className="text-white font-mono">melonui add</code> (or <code className="text-white font-mono">npx @melonui-dev/cli add</code>) without a component name fetches the entire remote component registry list and launches a searchable multi-select selector:
+              </p>
+              <pre className="p-3 bg-zinc-950 rounded font-mono text-[11px] text-white/40 border border-white/5">
+{`$ melonui add
+Fetching components from MelonUI registry...
+
+Select components to install (Space to select, Enter to confirm, type to search)
+> [ ] Burst Button [Buttons] - Seeds physically burst from click point
+  [ ] Ripple Button [Buttons] - Radial click ripple effect
+  [ ] Luminous Waves [Backgrounds] - Hardware accelerated WebGL wave field
+  [ ] Retro Grid [Backgrounds] - Nostalgic neon perspective grid`}
+              </pre>
+              <ul className="list-disc pl-5 text-white/50 text-[11px] space-y-1">
+                <li>Use <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-white font-bold">Arrow Keys</kbd> (Up/Down) to navigate components.</li>
+                <li>Press <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-white font-bold">Spacebar</kbd> to select or deselect components.</li>
+                <li>Start typing characters to filter/search dynamically by name, category, or description.</li>
+                <li>Press <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-white font-bold">Enter</kbd> to download and install all selected components.</li>
+              </ul>
+            </div>
           </div>
-          <p className="text-white/40 text-xs leading-relaxed font-sans">
-            This will query your preferences (components folder, CSS filepath) and create a local config file `melonui.json`.
-          </p>
         </section>
 
-        <section id="add-command" className="space-y-4">
-          <h2 id="add-command" className="text-3xl font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)" }}>
-            Adding Components
+        <section id="cli-commands" className="space-y-4">
+          <h2 id="cli-commands" className="text-3xl font-black uppercase text-white" style={{ fontFamily: "var(--font-londrina-solid)" }}>
+            Command Reference
           </h2>
-          <p className="text-white/60 leading-relaxed text-sm">
-            Add any component to your workspace using the `add` command:
-          </p>
-          <div className="relative">
-            <pre className="p-4 bg-zinc-950 border border-white/10 rounded-[6px] font-mono text-xs text-[#7fff5e] overflow-x-auto select-all">
-              npx @melonui-dev/cli add burst-button
-            </pre>
-            <button
-              onClick={() => copyFn("npx @melonui-dev/cli add burst-button", "cli-add")}
-              className="absolute right-3 top-3 px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/50 hover:text-white hover:bg-white/10 transition-all font-mono text-[9px] cursor-pointer"
-            >
-              {copiedId === "cli-add" ? "COPIED" : "COPY"}
-            </button>
+          
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <span className="font-mono px-2 py-1 bg-[#ff5c71]/10 text-[#ff5c71] text-xs font-bold rounded">init</span>
+                <span className="text-white/50 text-xs font-mono">melonui init</span>
+              </div>
+              <p className="text-white/60 text-xs leading-relaxed pl-2">
+                Initializes the MelonUI workspace configurations. It detects your package manager, installs core requirements (<code className="text-white/80 font-mono">clsx</code> and <code className="text-white/80 font-mono">tailwind-merge</code>), and copies a standard <code className="text-white/80 font-mono">utils.ts</code> file containing the custom Tailwind utility classes joiner.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <span className="font-mono px-2 py-1 bg-[#ff5c71]/10 text-[#ff5c71] text-xs font-bold rounded">add [component]</span>
+                <span className="text-white/50 text-xs font-mono">melonui add [component]</span>
+              </div>
+              <p className="text-white/60 text-xs leading-relaxed pl-2">
+                Pulls the specified component from the registry. If a component name is provided (e.g. <code className="text-white/80 font-mono">melonui add burst-button</code>), it is downloaded directly. If not, it opens the interactive search menu. The CLI automatically downloads the necessary files, resolves dependencies, and installs them using your detected package manager.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <span className="font-mono px-2 py-1 bg-[#ff5c71]/10 text-[#ff5c71] text-xs font-bold rounded">--help</span>
+                <span className="text-white/50 text-xs font-mono">melonui --help</span>
+              </div>
+              <p className="text-white/60 text-xs leading-relaxed pl-2">
+                Displays usage information, package version, list of commands, and descriptive options.
+              </p>
+            </div>
           </div>
-          <p className="text-white/40 text-xs leading-relaxed font-sans">
-            The CLI automatically reads the component&apos;s registry record, installs missing packages, fetches dependencies, and drops the raw TSX component file straight into your components folder.
-          </p>
         </section>
       </div>
     ),
