@@ -62,11 +62,12 @@ export function StickerWall({
   stickerTheme = "melon",
   bg = "#050505",
   borderColor = "#111",
-  titleText = "Your Hero Title Goes Here",
-  subtitleText = "Stickers scattered along border bounds to preserve content layout",
+  titleText = "",
+  subtitleText = "",
   textColor = "rgba(255, 255, 255, 0.1)",
   className = "",
   style,
+  children,
   ...props
 }: StickerWallProps) {
   const stickers = useMemo(() => {
@@ -205,6 +206,12 @@ export function StickerWall({
           </p>
         )}
       </div>
+
+      {children && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-12 text-center pointer-events-auto z-10">
+          {children}
+        </div>
+      )}
 
       {stickers.map((s) => (
         <motion.div
