@@ -42,4 +42,10 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   GlyphOrbitText: dynamic(() => import('./demos/GlyphOrbitText').then(m => m.GlyphOrbitText), { ssr: false }),
   SeedwaveText: dynamic(() => import('./demos/SeedwaveText').then(m => m.SeedwaveText), { ssr: false }),
   FloatingOrbs: dynamic(() => import('./demos/FloatingOrbs').then(m => m.FloatingOrbs), { ssr: false }),
+  GlitchPulseCore: dynamic(() => import('./demos/GlitchPulseCore').then(m => m.GlitchPulseCore), { ssr: false }),
+  LiquidGlassRefraction: dynamic(() => import('./demos/LiquidGlassRefraction').then(m => m.LiquidGlassRefraction), { ssr: false }),
+  LivingAuroraMesh: dynamic(() => import('./demos/LivingAuroraMesh').then(m => m.LivingAuroraMesh), { ssr: false }),
+  MagneticParticleField: dynamic(() => import('./demos/MagneticParticleField').then(m => m.MagneticParticleField), { ssr: false }),
+  RetroCrtBackground: dynamic(() => import('./demos/RetroCrtBackground').then(m => m.RetroCrtBackground), { ssr: false }),
+  StickerCollageWall: dynamic(() => import('./demos/StickerCollageWall').then(m => m.StickerCollageWall), { ssr: false }),
 };

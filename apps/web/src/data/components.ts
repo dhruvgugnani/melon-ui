@@ -727,6 +727,122 @@ const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
     props: [
       { name: "fov", type: "number", defaultValue: "60", description: "Camera field of view.", control: { type: "slider", min: 30, max: 120, step: 5 } }
     ]
+  },
+  {
+    id: "glitch-pulse-core",
+    slug: "glitch-pulse-core",
+    title: "Glitch Pulse Core",
+    description: "A highly interactive cybernetic core utilizing Framer Motion for magnetic hover physics, states (STABLE, UNSTABLE, CRITICAL) and SVG-based escalating glitch effects.",
+    category: "Widgets",
+    tags: ["Framer Motion", "Glitch", "Interactive", "SVG Filter"],
+    cliCommand: "npx @melonui-dev/cli add glitch-pulse-core",
+    codeSnippet: ``,
+    componentPath: "GlitchPulseCore",
+    props: [
+      { name: "initialCoreState", type: "string", defaultValue: `"STABLE"`, description: "Starting state of the core: STABLE, UNSTABLE, or CRITICAL.", control: { type: "text" } },
+      { name: "stableColor", type: "string", defaultValue: `"#7fff5e"`, description: "Hex color of the core in STABLE state.", control: { type: "color" } },
+      { name: "unstableColor", type: "string", defaultValue: `"#ffaa00"`, description: "Hex color of the core in UNSTABLE state.", control: { type: "color" } },
+      { name: "criticalColor", type: "string", defaultValue: `"#ff5c71"`, description: "Hex color of the core in CRITICAL state.", control: { type: "color" } }
+    ]
+  },
+  {
+    id: "liquid-glass",
+    slug: "liquid-glass",
+    title: "Liquid Glass Refraction",
+    description: "A background that behaves like distorted glass underwater with dynamic SVG turbulence and Framer Motion physics.",
+    category: "3D Backgrounds",
+    tags: ["SVG Filter", "Refraction", "Glassmorphism", "Framer Motion"],
+    cliCommand: "npx @melonui-dev/cli add liquid-glass",
+    codeSnippet: ``,
+    componentPath: "LiquidGlassRefraction",
+    props: [
+      { name: "bg", type: "string", defaultValue: `"#000000"`, description: "Hex backdrop color of the container.", control: { type: "color" } },
+      { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Primary gradient node color.", control: { type: "color" } },
+      { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Secondary gradient node color.", control: { type: "color" } },
+      { name: "accentColor", type: "string", defaultValue: `"#3b82f6"`, description: "Accent gradient node color.", control: { type: "color" } },
+      { name: "distortionScale", type: "number", defaultValue: "50", description: "Scale multiplier for the liquid refraction filter.", control: { type: "slider", min: 10, max: 150, step: 5 } },
+      { name: "titleText", type: "string", defaultValue: `""`, description: "Optional foreground card title.", control: { type: "text" } },
+      { name: "descriptionText", type: "string", defaultValue: `""`, description: "Optional foreground card description.", control: { type: "text" } },
+      { name: "showCard", type: "boolean", defaultValue: "false", description: "Toggle rendering of the demo foreground card.", control: { type: "text" } }
+    ]
+  },
+  {
+    id: "living-aurora-mesh",
+    slug: "living-aurora-mesh",
+    title: "Living Aurora Mesh",
+    description: "A breathing animated mesh-gradient ecosystem where color nodes behave like living organisms.",
+    category: "3D Backgrounds",
+    tags: ["Framer Motion", "Mesh Gradient", "Aurora"],
+    cliCommand: "npx @melonui-dev/cli add living-aurora-mesh",
+    codeSnippet: ``,
+    componentPath: "LivingAuroraMesh",
+    props: [
+      { name: "bg", type: "string", defaultValue: `"#000000"`, description: "Hex background color.", control: { type: "color" } },
+      { name: "color1", type: "string", defaultValue: `"#ff5c71"`, description: "Pink aurora node color.", control: { type: "color" } },
+      { name: "color2", type: "string", defaultValue: `"#7fff5e"`, description: "Green aurora node color.", control: { type: "color" } },
+      { name: "color3", type: "string", defaultValue: `"#0052e0"`, description: "Blue aurora node color (compliant with Purple Ban).", control: { type: "color" } },
+      { name: "opacity", type: "number", defaultValue: "0.6", description: "Base opacity of aurora mesh layer.", control: { type: "slider", min: 0.1, max: 1.0, step: 0.05 } },
+      { name: "blurRadius", type: "number", defaultValue: "100", description: "Blur radius in pixels for soft gradients.", control: { type: "slider", min: 20, max: 200, step: 5 } },
+      { name: "titleText", type: "string", defaultValue: `""`, description: "Foreground card title.", control: { type: "text" } }
+    ]
+  },
+  {
+    id: "magnetic-particle-field",
+    slug: "magnetic-particle-field",
+    title: "Magnetic Particle Field",
+    description: "Background particles dynamically attract toward cursor and components in a verlet physics R3F instance field.",
+    category: "3D Backgrounds",
+    tags: ["Three.js", "R3F", "Physics", "InstancedMesh"],
+    cliCommand: "npx @melonui-dev/cli add magnetic-particle-field",
+    codeSnippet: ``,
+    componentPath: "MagneticParticleField",
+    props: [
+      { name: "particleCount", type: "number", defaultValue: "500", description: "Number of active physics particles.", control: { type: "slider", min: 100, max: 1000, step: 50 } },
+      { name: "particleColor", type: "string", defaultValue: `"#7fff5e"`, description: "Hex color of the physical particles.", control: { type: "color" } },
+      { name: "particleSize", type: "number", defaultValue: "0.08", description: "Geometric scale radius of octahedrons.", control: { type: "slider", min: 0.02, max: 0.25, step: 0.01 } },
+      { name: "glowIntensity", type: "number", defaultValue: "1.5", description: "Emissive physical light intensity.", control: { type: "slider", min: 0.1, max: 5.0, step: 0.1 } },
+      { name: "bg", type: "string", defaultValue: `"#050505"`, description: "Backdrop space canvas color.", control: { type: "color" } },
+      { name: "titleText", type: "string", defaultValue: `""`, description: "Optional alert box title.", control: { type: "text" } },
+      { name: "eyebrowText", type: "string", defaultValue: `""`, description: "Optional subtitle text.", control: { type: "text" } }
+    ]
+  },
+  {
+    id: "retro-crt-background",
+    slug: "retro-crt-background",
+    title: "Retro CRT Scan Universe",
+    description: "A nostalgic cyber-terminal background featuring scanlines, phosphor glow, typing effect, and screen flicker.",
+    category: "3D Backgrounds",
+    tags: ["CSS", "Retro", "Terminal", "Animations"],
+    cliCommand: "npx @melonui-dev/cli add retro-crt-background",
+    codeSnippet: ``,
+    componentPath: "RetroCrtBackground",
+    props: [
+      { name: "bg", type: "string", defaultValue: `"#0a1105"`, description: "Retro green-black base background color.", control: { type: "color" } },
+      { name: "color", type: "string", defaultValue: `"#7fff5e"`, description: "Phosphor green terminal display color.", control: { type: "color" } },
+      { name: "scanlineSpeed", type: "number", defaultValue: "10", description: "Cycle duration (seconds) of scanline sweep animation.", control: { type: "slider", min: 1, max: 30, step: 1 } },
+      { name: "typingSpeed", type: "number", defaultValue: "20", description: "Base interval (milliseconds) between keyboard strokes.", control: { type: "slider", min: 5, max: 100, step: 5 } },
+      { name: "flickerIntensity", type: "number", defaultValue: "0.15", description: "Flicker speed rate multiplier.", control: { type: "slider", min: 0.0, max: 1.0, step: 0.05 } }
+    ]
+  },
+  {
+    id: "sticker-collage-wall",
+    slug: "sticker-collage-wall",
+    title: "Sticker Collage Noise Wall",
+    description: "A Gen-Z chaotic scrapbook aesthetic with draggable torn paper stickers and reactive physics.",
+    category: "3D Backgrounds",
+    tags: ["Framer Motion", "Physics", "Drag", "Gen-Z"],
+    cliCommand: "npx @melonui-dev/cli add sticker-collage-wall",
+    codeSnippet: ``,
+    componentPath: "StickerCollageWall",
+    props: [
+      { name: "bg", type: "string", defaultValue: `"#e5e5e5"`, description: "Editorial backing board color.", control: { type: "color" } },
+      { name: "gridOpacity", type: "number", defaultValue: "0.2", description: "Opacity of background grids.", control: { type: "slider", min: 0.0, max: 1.0, step: 0.05 } },
+      { name: "stickerScaleMultiplier", type: "number", defaultValue: "1.0", description: "Uniform scale multiplier for stickers.", control: { type: "slider", min: 0.5, max: 2.0, step: 0.1 } },
+      { name: "dragFree", type: "boolean", defaultValue: "true", description: "Toggle cursor physics dragging.", control: { type: "text" } },
+      { name: "titleText", type: "string", defaultValue: `""`, description: "Watermark editorial title text.", control: { type: "text" } },
+      { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Gradient color for stickers.", control: { type: "color" } },
+      { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Gradient color for stickers.", control: { type: "color" } }
+    ]
   }
 ];
 

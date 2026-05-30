@@ -749,5 +749,129 @@
       "Interactive Grid"
     ],
     "preview": "/preview/kinetic-glass-grid.png"
+  },
+  "glitch-pulse-core": {
+    "name": "Glitch Pulse Core",
+    "description": "A highly interactive cybernetic core utilizing Framer Motion for magnetic hover physics, states (STABLE, UNSTABLE, CRITICAL) and SVG-based escalating glitch effects.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "glitch-pulse-core.tsx",
+        "path": "components/glitch-pulse-core.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Glitch",
+      "Interactive",
+      "SVG Filter"
+    ],
+    "preview": "/preview/glitch-pulse-core.png"
+  },
+  "liquid-glass": {
+    "name": "Liquid Glass Refraction",
+    "description": "A background that behaves like distorted glass underwater with dynamic SVG turbulence and Framer Motion physics.",
+    "category": "3D Backgrounds",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "liquid-glass.tsx",
+        "path": "components/liquid-glass.tsx"
+      }
+    ],
+    "tags": [
+      "SVG Filter",
+      "Refraction",
+      "Glassmorphism",
+      "Framer Motion"
+    ],
+    "preview": "/preview/liquid-glass.png"
+  },
+  "living-aurora-mesh": {
+    "name": "Living Aurora Mesh",
+    "description": "A breathing animated mesh-gradient ecosystem where color nodes behave like living organisms.",
+    "category": "3D Backgrounds",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "living-aurora-mesh.tsx",
+        "path": "components/living-aurora-mesh.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Mesh Gradient",
+      "Aurora"
+    ],
+    "preview": "/preview/living-aurora-mesh.png"
+  },
+  "magnetic-particle-field": {
+    "name": "Magnetic Particle Field",
+    "description": "Background particles dynamically attract toward cursor and components in a verlet physics R3F instance field.",
+    "category": "3D Backgrounds",
+    "dependencies": [
+      "@react-three/fiber",
+      "three"
+    ],
+    "files": [
+      {
+        "name": "magnetic-particle-field.tsx",
+        "path": "components/magnetic-particle-field.tsx"
+      }
+    ],
+    "tags": [
+      "Three.js",
+      "R3F",
+      "Physics",
+      "InstancedMesh"
+    ],
+    "preview": "/preview/magnetic-particle-field.png"
+  },
+  "retro-crt-background": {
+    "name": "Retro CRT Scan Universe",
+    "description": "A nostalgic cyber-terminal background featuring scanlines, phosphor glow, typing effect, and screen flicker.",
+    "category": "3D Backgrounds",
+    "dependencies": [],
+    "files": [
+      {
+        "name": "retro-crt-background.tsx",
+        "path": "components/retro-crt-background.tsx"
+      }
+    ],
+    "tags": [
+      "CSS",
+      "Retro",
+      "Terminal",
+      "Animations"
+    ],
+    "preview": "/preview/retro-crt-background.png"
+  },
+  "sticker-collage-wall": {
+    "name": "Sticker Collage Noise Wall",
+    "description": "A Gen-Z chaotic scrapbook aesthetic with draggable torn paper stickers and reactive physics.",
+    "category": "3D Backgrounds",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "sticker-collage-wall.tsx",
+        "path": "components/sticker-collage-wall.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Physics",
+      "Drag",
+      "Gen-Z"
+    ],
+    "preview": "/preview/sticker-collage-wall.png"
   }
 }
