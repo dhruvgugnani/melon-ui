@@ -634,6 +634,19 @@ const y = Math.sin(angle) * radius;
     cliCommand: "npx @melonui-dev/cli add morphing-cyber-node",
     codeSnippet: `const springConfig = { damping: 20, stiffness: 300, mass: 0.5 };\nconst rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), springConfig);`,
     componentPath: "MorphingCyberNode",
+    props: [
+      { name: "idleText", type: "string", defaultValue: `"System Ready"`, description: "Label shown in ready/idle state.", control: { type: "text" } },
+      { name: "scanningText", type: "string", defaultValue: `"Scanning"`, description: "Status label shown during scanner active state.", control: { type: "text" } },
+      { name: "scanningIp", type: "string", defaultValue: `"192.168.1.X"`, description: "Eyebrow detail label in scanning mode.", control: { type: "text" } },
+      { name: "audioModeText", type: "string", defaultValue: `"Audio Mode"`, description: "Primary action button label in scanner view.", control: { type: "text" } },
+      { name: "cancelText", type: "string", defaultValue: `"Cancel"`, description: "Secondary cancel button label in scanner view.", control: { type: "text" } },
+      { name: "alertTitle", type: "string", defaultValue: `"BREACH"`, description: "Large headline text in danger/alert state.", control: { type: "text" } },
+      { name: "alertSubtitle", type: "string", defaultValue: `"UNAUTHORIZED ACCESS DETECTED"`, description: "Eyebrow detail text in danger/alert state.", control: { type: "text" } },
+      { name: "lockdownText", type: "string", defaultValue: `"LOCKDOWN"`, description: "Lockdown recovery button label in alert state.", control: { type: "text" } },
+      { name: "primaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Theme color for scanner scanning states.", control: { type: "color" } },
+      { name: "secondaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Theme color for alarm and cancel states.", control: { type: "color" } },
+      { name: "tertiaryColor", type: "string", defaultValue: `"#e8d5b7"`, description: "Theme color for ambient audio/idle glow.", control: { type: "color" } }
+    ]
   },
   {
     id: "orbital-command-ring",
@@ -645,6 +658,13 @@ const y = Math.sin(angle) * radius;
     cliCommand: "npx @melonui-dev/cli add orbital-command-ring",
     codeSnippet: `const joystickX = useSpring(dragX, springConfig);\nconst joystickY = useSpring(dragY, springConfig);\n\n// Derived absolute position for the joystick\nconst joystickAbsX = useTransform(() => originX.get() + joystickX.get());\nconst joystickAbsY = useTransform(() => originY.get() + joystickY.get());`,
     componentPath: "OrbitalCommandRing",
+    props: [
+      { name: "title", type: "string", defaultValue: `"Orbital Command Ring"`, description: "Ambient background watermark text.", control: { type: "text" } },
+      { name: "eyebrow", type: "string", defaultValue: `"Hold & drag anywhere to summon"`, description: "Action instruction hint displayed under the watermark.", control: { type: "text" } },
+      { name: "bg", type: "string", defaultValue: `"#050505"`, description: "Hex backdrop background color of the widget viewport.", control: { type: "color" } },
+      { name: "borderColor", type: "string", defaultValue: `"rgba(255,255,255,0.05)"`, description: "Outer frame CSS border color.", control: { type: "color" } },
+      { name: "joystickColor", type: "string", defaultValue: `"#ffffff"`, description: "Default color of the central indicator node.", control: { type: "color" } }
+    ]
   },
   {
     id: "kinetic-glass-grid",
@@ -656,6 +676,15 @@ const y = Math.sin(angle) * radius;
     cliCommand: "npx @melonui-dev/cli add kinetic-glass-grid",
     codeSnippet: `const distance = useTransform([mouseX, mouseY], ([latestX, latestY]) => {\n  // Distance calculation logic\n});\nconst scale = useSpring(useTransform(distance, [0, MAX_DISTANCE], [1.3, 1]), springConfig);`,
     componentPath: "KineticGlassGrid",
+    props: [
+      { name: "title", type: "string", defaultValue: `""`, description: "Optional title header to render in top left corner.", control: { type: "text" } },
+      { name: "eyebrow", type: "string", defaultValue: `""`, description: "Optional smaller eyebrow label placed above the title.", control: { type: "text" } },
+      { name: "gridSize", type: "number", defaultValue: "8", description: "Row/column size of the grid layout (e.g. 8 yields 64 glass tiles).", control: { type: "slider", min: 4, max: 12, step: 1 } },
+      { name: "maxDistance", type: "number", defaultValue: "250", description: "Radius in pixels for proximity tracking to elevate tiles.", control: { type: "slider", min: 100, max: 500, step: 10 } },
+      { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Hover glowing shadow color on tiles.", control: { type: "color" } },
+      { name: "accentColor", type: "string", defaultValue: `"#7fff5e"`, description: "Color of central dots inside hovered tiles.", control: { type: "color" } },
+      { name: "bg", type: "string", defaultValue: `"#050505"`, description: "Hex background color of the grid canvas.", control: { type: "color" } }
+    ]
   },
   {
     id: "signal-loom",
@@ -676,7 +705,13 @@ const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
       { name: "title", type: "string", defaultValue: `"Weave the next action"`, description: "Main command-surface headline.", control: { type: "text" } },
       { name: "eyebrow", type: "string", defaultValue: `"Signal Loom"`, description: "Small label above the headline.", control: { type: "text" } },
       { name: "statusLabel", type: "string", defaultValue: `"Live"`, description: "Status pill text.", control: { type: "text" } },
-      { name: "lensLabel", type: "string", defaultValue: `"Inspection Lens"`, description: "Right panel label.", control: { type: "text" } }
+      { name: "lensLabel", type: "string", defaultValue: `"Inspection Lens"`, description: "Right panel label.", control: { type: "text" } },
+      { name: "currentThreadLabel", type: "string", defaultValue: `"Current Thread"`, description: "Eyebrow detail text inside detail wafer card.", control: { type: "text" } },
+      { name: "hoverHint", type: "string", defaultValue: `"Hover threads"`, description: "Footer left-side indicator text.", control: { type: "text" } },
+      { name: "clickHint", type: "string", defaultValue: `"Click to pin"`, description: "Footer right-side indicator text.", control: { type: "text" } },
+      { name: "metricLabel1", type: "string", defaultValue: `"Pulse"`, description: "First telemetry metric label key.", control: { type: "text" } },
+      { name: "metricLabel2", type: "string", defaultValue: `"Glass"`, description: "Second telemetry metric label key.", control: { type: "text" } },
+      { name: "metricLabel3", type: "string", defaultValue: `"Drift"`, description: "Third telemetry metric label key.", control: { type: "text" } }
     ],
   },
   {

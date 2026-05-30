@@ -12,6 +12,14 @@ export interface MorphingCyberNodeProps extends React.ComponentPropsWithoutRef<"
   tertiaryColor?: string;
   bg?: string;
   borderColor?: string;
+  idleText?: string;
+  scanningText?: string;
+  scanningIp?: string;
+  audioModeText?: string;
+  cancelText?: string;
+  alertTitle?: string;
+  alertSubtitle?: string;
+  lockdownText?: string;
 }
 
 export function MorphingCyberNode({
@@ -21,6 +29,14 @@ export function MorphingCyberNode({
   tertiaryColor = "#e8d5b7",
   bg = "transparent",
   borderColor = "rgba(255, 255, 255, 0.05)",
+  idleText = "System Ready",
+  scanningText = "Scanning",
+  scanningIp = "192.168.1.X",
+  audioModeText = "Audio Mode",
+  cancelText = "Cancel",
+  alertTitle = "BREACH",
+  alertSubtitle = "UNAUTHORIZED ACCESS DETECTED",
+  lockdownText = "LOCKDOWN",
   className = "",
   style,
   ...props
@@ -123,7 +139,7 @@ export function MorphingCyberNode({
               style={{ transform: "translateZ(30px)" }}
             >
               <div className="w-3 h-3 rounded-full bg-white/20 animate-pulse" />
-              <span className="font-mono text-sm tracking-widest text-white/50 uppercase">System Ready</span>
+              <span className="font-mono text-sm tracking-widest text-white/50 uppercase">{idleText}</span>
               <button onClick={(e) => { e.stopPropagation(); setNodeState("SCANNING"); }} className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
                 <span style={{ color: primaryColor }}>⛶</span>
               </button>
@@ -154,8 +170,8 @@ export function MorphingCyberNode({
                 />
               </div>
               <div className="flex w-full justify-between items-center mb-4 mt-2">
-                <span className="font-mono text-xs uppercase tracking-[0.3em]" style={{ color: primaryColor }}>Scanning</span>
-                <span className="font-mono text-[10px] text-white/40">192.168.1.X</span>
+                <span className="font-mono text-xs uppercase tracking-[0.3em]" style={{ color: primaryColor }}>{scanningText}</span>
+                <span className="font-mono text-[10px] text-white/40">{scanningIp}</span>
               </div>
 
               <div className="flex-1 w-full border rounded bg-black/50 overflow-hidden relative mb-4" style={{ borderColor: `${primaryColor}33` }}>
@@ -182,8 +198,8 @@ export function MorphingCyberNode({
               </div>
 
               <div className="flex gap-2 w-full">
-                <button onClick={(e) => { e.stopPropagation(); setNodeState("AUDIO"); }} className="flex-1 py-1.5 rounded bg-white/5 hover:bg-white/10 font-mono text-[10px] uppercase text-white/70 transition-colors">Audio Mode</button>
-                <button onClick={(e) => { e.stopPropagation(); setNodeState("IDLE"); }} className="px-3 py-1.5 rounded bg-red-500/10 hover:bg-red-500/20 font-mono text-[10px] uppercase transition-colors" style={{ color: secondaryColor }}>Cancel</button>
+                <button onClick={(e) => { e.stopPropagation(); setNodeState("AUDIO"); }} className="flex-1 py-1.5 rounded bg-white/5 hover:bg-white/10 font-mono text-[10px] uppercase text-white/70 transition-colors">{audioModeText}</button>
+                <button onClick={(e) => { e.stopPropagation(); setNodeState("IDLE"); }} className="px-3 py-1.5 rounded bg-red-500/10 hover:bg-red-500/20 font-mono text-[10px] uppercase transition-colors" style={{ color: secondaryColor }}>{cancelText}</button>
               </div>
             </motion.div>
           )}
@@ -245,16 +261,16 @@ export function MorphingCyberNode({
                 animate={{ scale: [1, 1.05, 1], color: [secondaryColor, "#ffffff", secondaryColor] }}
                 transition={{ repeat: Infinity, duration: 1 }}
               >
-                BREACH
+                {alertTitle}
               </motion.div>
-              <p className="font-mono text-xs tracking-widest mb-6" style={{ color: `${secondaryColor}b3` }}>UNAUTHORIZED ACCESS DETECTED</p>
+              <p className="font-mono text-xs tracking-widest mb-6" style={{ color: `${secondaryColor}b3` }}>{alertSubtitle}</p>
 
               <button
                 onClick={(e) => { e.stopPropagation(); setNodeState("IDLE"); }}
                 className="px-6 py-2 rounded-sm text-black font-black uppercase tracking-widest text-xs hover:bg-white transition-colors"
                 style={{ backgroundColor: secondaryColor }}
               >
-                LOCKDOWN
+                {lockdownText}
               </button>
             </motion.div>
           )}

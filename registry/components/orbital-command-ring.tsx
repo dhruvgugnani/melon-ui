@@ -24,6 +24,8 @@ export interface OrbitalCommandRingProps extends React.ComponentPropsWithoutRef<
   borderColor?: string;
   joystickColor?: string;
   onExecute?: (command: CommandItem) => void;
+  title?: string;
+  eyebrow?: string;
 }
 
 export function OrbitalCommandRing({
@@ -31,6 +33,8 @@ export function OrbitalCommandRing({
   bg = "#050505",
   borderColor = "rgba(255,255,255,0.05)",
   joystickColor = "#ffffff",
+  title = "Orbital Command Ring",
+  eyebrow = "Hold & drag anywhere to summon",
   onExecute,
   className = "",
   style,
@@ -161,10 +165,10 @@ export function OrbitalCommandRing({
       {/* Background ambient noise/hint */}
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-30">
         <span className="font-mono text-xs uppercase tracking-[0.2em] text-white/50 mb-2">
-          Orbital Command Ring
+          {title}
         </span>
         <span className="font-mono text-[10px] text-white/30">
-          Hold & drag anywhere to summon
+          {eyebrow}
         </span>
       </div>
 

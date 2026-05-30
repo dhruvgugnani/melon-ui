@@ -168,7 +168,7 @@ export function SignalLoom({
         <div className="pointer-events-none absolute inset-[1px] rounded-[7px] border border-white/5" />
 
         <div 
-          className="relative min-h-[320px] overflow-hidden rounded-[6px] border border-white/10 p-4 sm:min-h-[380px] sm:p-5"
+          className="relative min-h-fit overflow-hidden rounded-[6px] border border-white/10 p-4 md:min-h-[380px] sm:p-5"
           style={{ backgroundColor: cardBgLeft }}
         >
           {/* Futuristic Telemetry Dot Matrix */}
@@ -226,14 +226,14 @@ export function SignalLoom({
             />
           </div>
 
-          <div className="relative z-10 flex h-full min-h-[290px] flex-col justify-between sm:min-h-[340px]">
+          <div className="relative z-10 flex h-full min-h-fit flex-col justify-between md:min-h-[340px]">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#ff5c71]">
                   {eyebrow}
                 </p>
                 <h3
-                  className="mt-2 max-w-[10ch] text-4xl uppercase leading-[0.82] text-white sm:text-6xl"
+                  className="mt-2 max-w-[10ch] text-3xl uppercase leading-[0.82] text-white sm:text-5xl md:text-6xl"
                   style={{ fontFamily: "var(--font-Outfit), var(--font-londrina-solid), sans-serif" }}
                 >
                   {title}
@@ -296,7 +296,7 @@ export function SignalLoom({
           style={{ backgroundColor: cardBgRight }}
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(127,255,94,0.14),transparent_32%),radial-gradient(circle_at_20%_80%,rgba(255,92,113,0.18),transparent_38%)]" />
-          <div className="relative z-10 flex h-full min-h-[320px] flex-col sm:min-h-[380px]">
+          <div className="relative z-10 flex h-full min-h-fit flex-col md:min-h-[380px]">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-white/35">
                 {lensLabel}
@@ -309,7 +309,7 @@ export function SignalLoom({
 
             <div className="relative mt-5 flex flex-1 items-center justify-center">
               <motion.div
-                className="absolute h-36 w-36 rounded-full border border-white/10 bg-white/[0.035] backdrop-blur-md sm:h-44 sm:w-44"
+                className="absolute h-28 w-28 rounded-full border border-white/10 bg-white/[0.035] backdrop-blur-md md:h-44 md:w-44"
                 style={{
                   x: lensX,
                   y: lensY,
@@ -323,7 +323,7 @@ export function SignalLoom({
                   animate={{ opacity: 1, y: 0, rotate: 0, filter: "blur(0px)" }}
                   exit={{ opacity: 0, y: -18, rotate: 3, filter: "blur(10px)" }}
                   transition={{ type: "spring", stiffness: 220, damping: 24 }}
-                  className="relative w-full max-w-[290px] rounded-[8px] border border-white/12 bg-black/52 p-4 backdrop-blur-2xl sm:p-5"
+                  className="relative w-full max-w-none md:max-w-[290px] rounded-[8px] border border-white/12 bg-black/52 p-4 backdrop-blur-2xl sm:p-5"
                 >
                   <div
                     className="absolute -inset-px rounded-[8px] opacity-70"

@@ -11,14 +11,15 @@ interface TileProps {
   index: number;
   primaryColor: string;
   accentColor: string;
+  maxDistance: number;
 }
 
-const Tile: React.FC<TileProps> = ({ mouseX, mouseY, primaryColor, accentColor }) => {
+const Tile: React.FC<TileProps> = ({ mouseX, mouseY, primaryColor, accentColor, maxDistance }) => {
   const tileRef = useRef<HTMLDivElement>(null);
 
   // Derive distance from mouse to the center of this tile
   const distance = useTransform([mouseX, mouseY], ([latestX, latestY]) => {
-    if (!tileRef.current) return MAX_DISTANCE;
+    if (!tileRef.current) return maxDistance;
 
     // We use a safe default if ref isn't attached yet
     const rect = tileRef.current.getBoundingClientRect();
@@ -33,17 +34,17 @@ const Tile: React.FC<TileProps> = ({ mouseX, mouseY, primaryColor, accentColor }
 
   // Calculate scaling and transform effects based on distance
   // Tiles closer to the cursor scale up and lift
-  const scaleRaw = useTransform(distance, [0, MAX_DISTANCE], [1.3, 1]);
+  const scaleRaw = useTransform(distance, [0, maxDistance], [1.3, 1]);
   const scale = useSpring(scaleRaw, { stiffness: 300, damping: 20 });
 
-  const zRaw = useTransform(distance, [0, MAX_DISTANCE], [40, 0]);
+  const zRaw = useTransform(distance, [0, maxDistance], [40, 0]);
   const z = useSpring(zRaw, { stiffness: 300, damping: 20 });
 
-  const opacityRaw = useTransform(distance, [0, MAX_DISTANCE], [1, 0.4]);
+  const opacityRaw = useTransform(distance, [0, maxDistance], [1, 0.4]);
   const opacity = useSpring(opacityRaw, { stiffness: 300, damping: 30 });
 
   // Border glow intensity based on proximity
-  const glowRaw = useTransform(distance, [0, MAX_DISTANCE / 2], [1, 0]);
+  const glowRaw = useTransform(distance, [0, maxDistance / 2], [1, 0]);
   const glow = useSpring(glowRaw, { stiffness: 300, damping: 30 });
   
   const borderColor = useTransform(
@@ -87,6 +88,9 @@ export interface KineticGlassGridProps extends React.ComponentPropsWithoutRef<"d
   primaryColor?: string;
   accentColor?: string;
   bg?: string;
+  title?: string;
+  eyebrow?: string;
+  maxDistance?: number;
 }
 
 export const KineticGlassGrid: React.FC<KineticGlassGridProps> = ({
@@ -94,6 +98,9 @@ export const KineticGlassGrid: React.FC<KineticGlassGridProps> = ({
   primaryColor = "#ff5c71",
   accentColor = "#7fff5e",
   bg = "#050505",
+  title,
+  eyebrow,
+  maxDistance = 250,
   className = "",
   style,
   ...props
@@ -138,6 +145,25 @@ export const KineticGlassGrid: React.FC<KineticGlassGridProps> = ({
         style={{ backgroundColor: `${accentColor}33` }}
       />
 
+      {/* Decorative telemetry headers */}
+      {(title || eyebrow) && (
+        <div className="absolute top-6 left-6 z-20 flex flex-col pointer-events-none text-left">
+          {eyebrow && (
+            <span className="font-mono text-[9px] uppercase tracking-[0.28em] text-[#ff5c71] mb-1">
+              {eyebrow}
+            </span>
+          )}
+          {title && (
+            <h3
+              className="text-xl uppercase leading-none text-white font-bold"
+              style={{ fontFamily: "var(--font-Outfit), var(--font-londrina-solid), sans-serif" }}
+            >
+              {title}
+            </h3>
+          )}
+        </div>
+      )}
+
       {/* Grid container */}
       <motion.div
         className="grid gap-4 z-10"
@@ -158,6 +184,7 @@ export const KineticGlassGrid: React.FC<KineticGlassGridProps> = ({
             mouseY={mouseY} 
             primaryColor={primaryColor} 
             accentColor={accentColor} 
+            maxDistance={maxDistance}
           />
         ))}
       </motion.div>
