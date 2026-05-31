@@ -48,4 +48,5 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   MagneticParticleField: dynamic(() => import('./demos/MagneticParticleField').then(m => m.MagneticParticleField), { ssr: false }),
   RetroCrtBackground: dynamic(() => import('./demos/RetroCrtBackground').then(m => m.RetroCrtBackground), { ssr: false }),
   StickerCollageWall: dynamic(() => import('./demos/StickerCollageWall').then(m => m.StickerCollageWall), { ssr: false }),
+  QuantumLensDecoder: dynamic(() => import('./demos/QuantumLensDecoder').then(m => m.QuantumLensDecoder), { ssr: false }),
 };

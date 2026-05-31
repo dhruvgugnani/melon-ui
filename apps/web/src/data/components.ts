@@ -843,6 +843,25 @@ const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
       { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Gradient color for stickers.", control: { type: "color" } },
       { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Gradient color for stickers.", control: { type: "color" } }
     ]
+  },
+  {
+    id: "quantum-lens-decoder",
+    slug: "quantum-lens-decoder",
+    title: "Quantum Lens Decoder",
+    description: "A holographic decoder lens. When hovered, a glowing physical lens tracks the cursor to reveal clear text inside scrambled data.",
+    category: "Widgets",
+    tags: ["Framer Motion", "Clip Path", "Interactive", "Holographic"],
+    cliCommand: "npx @melonui-dev/cli add quantum-lens-decoder",
+    codeSnippet: ``,
+    componentPath: "QuantumLensDecoder",
+    props: [
+      { name: "title", type: "string", defaultValue: `"TOP SECRET"`, description: "Header title in the decoder.", control: { type: "text" } },
+      { name: "clearText", type: "string", defaultValue: `"PROJECT MELON IS THE FUTURE OF UI..."`, description: "The clear text that is hidden beneath the scramble.", control: { type: "text" } },
+      { name: "lensSize", type: "number", defaultValue: "180", description: "The diameter of the glowing decoder lens.", control: { type: "slider", min: 100, max: 400, step: 10 } },
+      { name: "primaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Hex color for the decrypted elements.", control: { type: "color" } },
+      { name: "secondaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Hex color for the lens and glowing accents.", control: { type: "color" } },
+      { name: "bgColor", type: "string", defaultValue: `"#050505"`, description: "Hex color for the card's base background.", control: { type: "color" } }
+    ]
   }
 ];
 
