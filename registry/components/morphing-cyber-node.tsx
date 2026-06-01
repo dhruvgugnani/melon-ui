@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 export type NodeState = "IDLE" | "SCANNING" | "AUDIO" | "ALERT";
@@ -42,15 +42,27 @@ export function MorphingCyberNode({
   ...props
 }: MorphingCyberNodeProps) {
   const [nodeState, setNodeState] = useState<NodeState>(initialState);
+  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Use pseudo-random seeded values based on index to ensure deterministic rendering
   // and prevent hydration mismatches
-  const radarConfig = Array.from({length: 18}).map((_, i) => ({
-    delay: (i * 0.3) % 2,
-    duration: ((i * 0.7) % 2) + 0.5
-  }));
-  const audioDurations = Array.from({length: 12}).map((_, i) => 0.5 + ((i * 0.4) % 0.5));
+  const radarConfig = useMemo(() => 
+    Array.from({ length: 18 }).map((_, i) => ({
+      delay: (i * 0.3) % 2,
+      duration: ((i * 0.7) % 2) + 0.5
+    })),
+    []
+  );
+
+  const audioDurations = useMemo(() => 
+    Array.from({ length: 12 }).map((_, i) => 0.5 + ((i * 0.4) % 0.5)),
+    []
+  );
 
   // Magnetic Hover Physics
   const mouseX = useMotionValue(0);
@@ -74,11 +86,17 @@ export function MorphingCyberNode({
     mouseY.set(0);
   };
 
+  const handleCardClick = () => {
+    if (nodeState === "IDLE") {
+      setNodeState("SCANNING");
+    }
+  };
+
   const states = {
-    IDLE: { width: 220, height: 70, borderRadius: 35, background: "rgba(5, 5, 5, 0.8)", borderColor: "rgba(255, 255, 255, 0.1)" },
-    SCANNING: { width: 320, height: 180, borderRadius: 24, background: "rgba(10, 15, 10, 0.9)", borderColor: `${primaryColor}66` },
-    AUDIO: { width: 280, height: 110, borderRadius: 32, background: "rgba(15, 5, 10, 0.85)", borderColor: `${secondaryColor}4d` },
-    ALERT: { width: 340, height: 220, borderRadius: 16, background: "rgba(20, 0, 0, 0.95)", borderColor: `${secondaryColor}cc` }
+    IDLE: { width: 220, height: 70, borderRadius: 35, backgroundColor: "rgba(5, 5, 5, 0.8)", borderColor: "rgba(255, 255, 255, 0.1)" },
+    SCANNING: { width: 320, height: 180, borderRadius: 24, backgroundColor: "rgba(10, 15, 10, 0.9)", borderColor: `${primaryColor}66` },
+    AUDIO: { width: 280, height: 110, borderRadius: 32, backgroundColor: "rgba(15, 5, 10, 0.85)", borderColor: `${secondaryColor}4d` },
+    ALERT: { width: 340, height: 220, borderRadius: 16, backgroundColor: "rgba(20, 0, 0, 0.95)", borderColor: `${secondaryColor}cc` }
   };
 
   return (
@@ -109,12 +127,13 @@ export function MorphingCyberNode({
         ref={containerRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        onClick={handleCardClick}
         initial={false}
         animate={states[nodeState]}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         style={{
-          rotateX,
-          rotateY,
+          rotateX: mounted ? rotateX : 0,
+          rotateY: mounted ? rotateY : 0,
           transformStyle: "preserve-3d",
           backdropFilter: "blur(20px)",
         }}
@@ -139,8 +158,12 @@ export function MorphingCyberNode({
               style={{ transform: "translateZ(30px)" }}
             >
               <div className="w-3 h-3 rounded-full bg-white/20 animate-pulse" />
-              <span className="font-mono text-sm tracking-widest text-white/50 uppercase">{idleText}</span>
-              <button onClick={(e) => { e.stopPropagation(); setNodeState("SCANNING"); }} className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+              <span className="font-mono text-sm tracking-widest text-white/50 uppercase select-none">{idleText}</span>
+              <button 
+                onClick={(e) => { e.stopPropagation(); setNodeState("SCANNING"); }} 
+                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
+                aria-label="Start Scanning"
+              >
                 <span style={{ color: primaryColor }}>⛶</span>
               </button>
             </motion.div>
@@ -184,7 +207,7 @@ export function MorphingCyberNode({
                   animate={{ x: ["-100%", "100%"] }}
                   transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
                 />
-                <div className="absolute inset-0 flex items-center justify-center grid grid-cols-6 grid-rows-3 gap-1 p-2 opacity-50">
+                <div className="absolute inset-0 grid grid-cols-6 grid-rows-3 gap-1 p-2 opacity-50">
                    {radarConfig.map((config, i) => (
                      <motion.div
                         key={i}
@@ -240,7 +263,7 @@ export function MorphingCyberNode({
                  ))}
               </div>
 
-              <button onClick={(e) => { e.stopPropagation(); setNodeState("ALERT"); }} className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+              <button onClick={(e) => { e.stopPropagation(); setNodeState("ALERT"); }} className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors" aria-label="Trigger Alert">
                 <span style={{ color: secondaryColor }}>⚠</span>
               </button>
             </motion.div>
