@@ -178,20 +178,6 @@ export function MorphingCyberNode({
               className="flex flex-col items-center p-6 w-full h-full relative"
               style={{ transform: "translateZ(40px)" }}
             >
-              <div 
-                className="absolute top-0 left-0 w-full h-[2px] overflow-hidden rounded-t-[24px]"
-                style={{
-                  backgroundColor: `${primaryColor}80`,
-                  boxShadow: `0 0 15px ${primaryColor}`
-                }}
-              >
-                <motion.div
-                  className="w-full h-full"
-                  style={{ backgroundColor: primaryColor }}
-                  animate={{ x: ["-100%", "100%"] }}
-                  transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-                />
-              </div>
               <div className="flex w-full justify-between items-center mb-4 mt-2">
                 <span className="font-mono text-xs uppercase tracking-[0.3em]" style={{ color: primaryColor }}>{scanningText}</span>
                 <span className="font-mono text-[10px] text-white/40">{scanningIp}</span>
@@ -207,6 +193,18 @@ export function MorphingCyberNode({
                   animate={{ x: ["-100%", "100%"] }}
                   transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
                 />
+                
+                {/* Neon green scan line sweep */}
+                <motion.div 
+                  className="absolute left-0 w-full h-[2px] z-10"
+                  style={{
+                    backgroundColor: primaryColor,
+                    boxShadow: `0 0 10px ${primaryColor}`,
+                  }}
+                  animate={{ top: ["0%", "100%"] }}
+                  transition={{ repeat: Infinity, duration: 1.8, ease: "linear" }}
+                />
+
                 <div className="absolute inset-0 grid grid-cols-6 grid-rows-3 gap-1 p-2 opacity-50">
                    {radarConfig.map((config, i) => (
                      <motion.div
