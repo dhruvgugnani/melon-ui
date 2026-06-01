@@ -843,6 +843,39 @@ const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
       { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Gradient color for stickers.", control: { type: "color" } },
       { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Gradient color for stickers.", control: { type: "color" } }
     ]
+  },
+  {
+    id: "hypermorph-bento",
+    slug: "hypermorph-bento",
+    title: "HyperMorph Bento",
+    description: "A highly dynamic 2x2 grid of layout items expanding to flex columns/rows with spring animations.",
+    category: "Widgets",
+    tags: ["Framer Motion", "Layout", "Bento"],
+    cliCommand: "npx @melonui-dev/cli add hypermorph-bento",
+    codeSnippet: "// See HyperMorphBento.tsx",
+    componentPath: "HyperMorphBento",
+    props: [
+      { name: "items", type: "BentoItem[]", defaultValue: "DEFAULT_ITEMS", description: "Array of bento items to render inside the grid." }
+    ]
+  },
+  {
+    id: "quantum-lens-decoder",
+    slug: "quantum-lens-decoder",
+    title: "Quantum Lens Decoder",
+    description: "An interactive code-breaking surface revealing clear text through a cursor-tracking lens.",
+    category: "Widgets",
+    tags: ["Framer Motion", "Clip Path", "Scramble"],
+    cliCommand: "npx @melonui-dev/cli add quantum-lens-decoder",
+    codeSnippet: "// See QuantumLensDecoder.tsx",
+    componentPath: "QuantumLensDecoder",
+    props: [
+      { name: "title", type: "string", defaultValue: `"TOP SECRET"`, description: "The reveal title header.", control: { type: "text" } },
+      { name: "clearText", type: "string", defaultValue: `"PROJECT MELON IS THE FUTURE OF UI. INITIATING PROTOCOL NEON. BYPASSING SECURITY. SYSTEM COMPROMISED. FULL ACCESS GRANTED. PREPARE FOR DEPLOYMENT."`, description: "The underlying decrypted text revealed inside the lens.", control: { type: "text" } },
+      { name: "lensSize", type: "number", defaultValue: "180", description: "Pixel diameter of the cursor-tracking decryption lens.", control: { type: "slider", min: 100, max: 300, step: 10 } },
+      { name: "primaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Main theme neon color for decoded content.", control: { type: "color" } },
+      { name: "secondaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Accent secondary neon color.", control: { type: "color" } },
+      { name: "bgColor", type: "string", defaultValue: `"#050505"`, description: "Backdrop background color of the canvas.", control: { type: "color" } }
+    ]
   }
 ];
 

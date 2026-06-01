@@ -873,5 +873,45 @@
       "Gen-Z"
     ],
     "preview": "/preview/sticker-collage-wall.png"
+  },
+  "hypermorph-bento": {
+    "name": "HyperMorph Bento",
+    "description": "A highly dynamic 2x2 grid of layout items expanding to flex columns/rows with spring animations.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "hypermorph-bento.tsx",
+        "path": "components/hypermorph-bento.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Layout",
+      "Bento"
+    ],
+    "preview": "/preview/hypermorph-bento.png"
+  },
+  "quantum-lens-decoder": {
+    "name": "Quantum Lens Decoder",
+    "description": "An interactive code-breaking surface revealing clear text through a cursor-tracking lens.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "quantum-lens-decoder.tsx",
+        "path": "components/quantum-lens-decoder.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Clip Path",
+      "Scramble"
+    ],
+    "preview": "/preview/quantum-lens-decoder.png"
   }
 }
