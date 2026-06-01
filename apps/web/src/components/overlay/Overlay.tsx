@@ -25,13 +25,21 @@ export function Overlay() {
     const totalSections = 7;
 
     const handleWheel = (e: WheelEvent) => {
-      // If we are currently animating, lock the scroll to prevent skipping
+      const delta = e.deltaY;
+
+      // Detect trackpad: continuous inputs with fractional delta values or low speed
+      const isTrackpad = Math.abs(delta) < 40 || delta % 1 !== 0;
+      if (isTrackpad) {
+        // Let trackpad scroll natively using standard CSS snapping
+        return;
+      }
+
+      // If we are currently animating a scroll wheel snap, lock the scroll to prevent skipping
       if (isAnimatingRef.current) {
         e.preventDefault();
         return;
       }
 
-      const delta = e.deltaY;
       // Ignore micro-scroll drift
       if (Math.abs(delta) < 20) return;
 
@@ -53,16 +61,16 @@ export function Overlay() {
 
         gsap.to(container, {
           scrollTop: targetIndex * window.innerHeight,
-          duration: 0.85,
+          duration: 0.55,
           ease: "power2.out",
           onComplete: () => {
             // Restore native snaps for stability and resizing
             container.style.scrollSnapType = "y mandatory";
             
-            // Cooldown to absorb trackpad scroll momentum trail
+            // Minimal cooldown to debounce extra wheel clicks
             setTimeout(() => {
               isAnimatingRef.current = false;
-            }, 450);
+            }, 100);
           }
         });
       }
