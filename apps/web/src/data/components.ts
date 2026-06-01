@@ -659,8 +659,6 @@ const y = Math.sin(angle) * radius;
     codeSnippet: `const joystickX = useSpring(dragX, springConfig);\nconst joystickY = useSpring(dragY, springConfig);\n\n// Derived absolute position for the joystick\nconst joystickAbsX = useTransform(() => originX.get() + joystickX.get());\nconst joystickAbsY = useTransform(() => originY.get() + joystickY.get());`,
     componentPath: "OrbitalCommandRing",
     props: [
-      { name: "options", type: "CommandItem[]", defaultValue: "DEFAULT_COMMANDS", description: "List of options, each containing label, icon, color, and target route path.", control: { type: "text" } },
-      { name: "onNavigate", type: "(path: string) => void", defaultValue: "undefined", description: "Callback triggered when a page path is selected." },
       { name: "title", type: "string", defaultValue: `"Orbital Command Ring"`, description: "Ambient background watermark text.", control: { type: "text" } },
       { name: "eyebrow", type: "string", defaultValue: `"Hold & drag anywhere to summon"`, description: "Action instruction hint displayed under the watermark.", control: { type: "text" } },
       { name: "bg", type: "string", defaultValue: `"#050505"`, description: "Hex backdrop background color of the widget viewport.", control: { type: "color" } },

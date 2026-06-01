@@ -47,7 +47,9 @@ export function OrbitalCommandRing({
 }: OrbitalCommandRingProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const items = options || commands || DEFAULT_COMMANDS;
+  const items = (Array.isArray(options) ? options : null) || 
+                (Array.isArray(commands) ? commands : null) || 
+                DEFAULT_COMMANDS;
 
   const [menuState, setMenuState] = useState<"idle" | "active" | "executing">("idle");
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
