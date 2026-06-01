@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { componentsData } from "@/data/components";
 
@@ -278,6 +279,7 @@ function CardPreview({ comp, color }: { comp: typeof componentsData[number]; col
 }
 
 export default function ComponentsIndexPage() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -380,9 +382,9 @@ export default function ComponentsIndexPage() {
                   : "#ff8d9a";
 
             return (
-              <Link
+              <div
                 key={comp.id}
-                href={`/components/${comp.slug}`}
+                onClick={() => router.push(`/components/${comp.slug}`)}
                 className="group relative flex flex-col p-4 rounded-[8px] border border-white/5 bg-zinc-950/20 hover:border-[#ff5c71]/40 hover:bg-zinc-950/50 hover:shadow-[0_8px_24px_rgba(255,92,113,0.03)] transition-all duration-300 cursor-pointer select-none"
               >
                 {/* Visual Preview */}
@@ -391,11 +393,15 @@ export default function ComponentsIndexPage() {
                 {/* Info Header */}
                 <div className="mt-4 flex items-start justify-between gap-4">
                   <div>
-                    <h3
-                      className="text-2xl font-black uppercase text-[#e5e5e5] group-hover:text-[#ff5c71] transition-colors leading-none"
-                      style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
-                    >
-                      {comp.title}
+                    <h3>
+                      <Link
+                        href={`/components/${comp.slug}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-2xl font-black uppercase text-[#e5e5e5] group-hover:text-[#ff5c71] transition-colors leading-none"
+                        style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
+                      >
+                        {comp.title}
+                      </Link>
                     </h3>
                     <p className="mt-1.5 text-xs text-white/50 leading-relaxed font-sans line-clamp-2">
                       {comp.description}
@@ -420,7 +426,7 @@ export default function ComponentsIndexPage() {
                     View &rarr;
                   </span>
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>
