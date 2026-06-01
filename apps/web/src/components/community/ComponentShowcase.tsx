@@ -21,6 +21,52 @@ interface ComponentShowcaseProps {
   componentPath?: string;
 }
 
+function highlightSyntax(code: string): string {
+  // Escape HTML characters
+  let escaped = code
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  // Highlight comments (dim gray)
+  escaped = escaped.replace(/(\/\/.*)/g, '<span style="color: #6a737d;">$1</span>');
+
+  // Highlight strings (double quotes) - soft green
+  escaped = escaped.replace(/(&quot;[^\n]*?&quot;)/g, '<span style="color: #7fff5e;">$1</span>');
+  // Highlight strings (single quotes) - soft green
+  escaped = escaped.replace(/('[^\n]*?')/g, '<span style="color: #7fff5e;">$1</span>');
+  // Highlight strings (template literals) - soft green
+  escaped = escaped.replace(/(`[^`]*?`)/g, '<span style="color: #7fff5e;">$1</span>');
+
+  // Highlight keywords - neon pink/coral
+  const keywords = [
+    "import", "export", "default", "function", "const", "return", 
+    "from", "let", "if", "else", "new", "class", "interface", "extends", "typeof", "undefined"
+  ];
+  keywords.forEach(kw => {
+    const reg = new RegExp(`\\b(${kw})\\b`, "g");
+    escaped = escaped.replace(reg, '<span style="color: #ff5c71; font-weight: bold;">$1</span>');
+  });
+
+  // Highlight hooks & functions (useState, useEffect, push, scrollIntoView) - cyan
+  escaped = escaped.replace(/\b(use[A-Z][a-zA-Z0-9_]+)\b/g, '<span style="color: #00f0ff;">$1</span>');
+  escaped = escaped.replace(/\b(push|scrollIntoView|onNavigate|onExecute|querySelector|addEventListener|removeEventListener|setTimeout|setInterval)\b/g, '<span style="color: #00f0ff;">$1</span>');
+
+  // Highlight HTML/JSX component tags - light cyan/teal
+  escaped = escaped.replace(/(&lt;\/?[A-Z][a-zA-Z0-9_]*)/g, '<span style="color: #00f0ff;">$1</span>');
+  escaped = escaped.replace(/(&lt;\/?[a-z][a-zA-Z0-9_]*)/g, '<span style="color: #00f0ff;">$1</span>');
+  // Highlight closing tag symbols
+  escaped = escaped.replace(/(\/?&gt;)/g, '<span style="color: #00f0ff;">$1</span>');
+
+  // Highlight custom classes and components - warm orange
+  escaped = escaped.replace(/\b(CommandItem|OrbitalCommandRing|PageNavigationDemo|PageNavigationDemoProps|React|ComponentPropsWithoutRef|Feature|ChangelogCard|SignalLoom|HyperMorphBento|QuantumLensDecoder|BreadcrumbTrail|HarvestReveal|CliTerminal|TagInput|RindPeelCard|FlipCard|HoloTicket|KineticMagnet|KineticGlassGrid|MorphingCyberNode|SolarCarousel|GlitchPulseCore|RindWipeTransition|MorphTransition|useRef|useState|useEffect|useMotionValue|useSpring|useTransform|AnimatePresence|motion)\b/g, '<span style="color: #ff8c00;">$1</span>');
+
+  // Highlight numbers - warm orange
+  escaped = escaped.replace(/\b([0-9]+)\b/g, '<span style="color: #ff8c00;">$1</span>');
+
+  return escaped;
+}
+
 export function ComponentShowcase({
   title,
   description,
@@ -602,12 +648,12 @@ Please write a premium, responsive React page component in Next.js that:
                       {copiedUsage ? "Copied Code" : "Copy Code"}
                     </button>
                   </div>
-                  <div className="relative bg-[#080808] border border-[#1a1a1a] rounded-[6px] overflow-hidden">
+                  <div className="relative bg-[#030303] border border-[#1a1a1a] rounded-[6px] overflow-hidden shadow-2xl">
                     <div className="px-4 py-2 border-b border-[#111] bg-[#0c0c0c] flex items-center justify-between">
-                      <span className="font-mono text-[11px] text-[#444]">app/page.tsx</span>
+                      <span className="font-mono text-[11px] text-[#ff5c71] font-bold">app/page.tsx</span>
                     </div>
-                    <pre className="p-4 overflow-x-auto text-xs font-mono text-white/70 leading-relaxed max-h-[220px]">
-                      <code>{dynamicUsageCode}</code>
+                    <pre className="p-4 overflow-auto text-xs font-mono text-white/80 leading-relaxed max-h-[350px] scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+                      <code dangerouslySetInnerHTML={{ __html: highlightSyntax(dynamicUsageCode) }} />
                     </pre>
                   </div>
                 </div>
@@ -646,12 +692,12 @@ Please write a premium, responsive React page component in Next.js that:
                       {copiedSource ? "Source Copied!" : "Copy Source Code"}
                     </button>
                   </div>
-                  <div className="relative bg-[#080808] border border-[#1a1a1a] rounded-[6px] overflow-hidden">
+                  <div className="relative bg-[#030303] border border-[#1a1a1a] rounded-[6px] overflow-hidden shadow-2xl">
                     <div className="px-4 py-2 border-b border-[#111] bg-[#0c0c0c] flex items-center justify-between">
-                      <span className="font-mono text-[11px] text-[#444]">components/{compSlug}.tsx</span>
+                      <span className="font-mono text-[11px] text-[#7fff5e] font-bold">components/{compSlug}.tsx</span>
                     </div>
-                    <pre className="p-4 overflow-x-auto text-xs font-mono text-white/50 leading-relaxed max-h-[320px] overflow-y-auto">
-                      <code>{codeSnippet}</code>
+                    <pre className="p-4 overflow-auto text-xs font-mono text-white/80 leading-relaxed max-h-[450px] scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+                      <code dangerouslySetInnerHTML={{ __html: highlightSyntax(codeSnippet) }} />
                     </pre>
                   </div>
                 </div>

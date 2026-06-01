@@ -658,7 +658,34 @@ const y = Math.sin(angle) * radius;
     cliCommand: "npx @melonui-dev/cli add orbital-command-ring",
     codeSnippet: `const joystickX = useSpring(dragX, springConfig);\nconst joystickY = useSpring(dragY, springConfig);\n\n// Derived absolute position for the joystick\nconst joystickAbsX = useTransform(() => originX.get() + joystickX.get());\nconst joystickAbsY = useTransform(() => originY.get() + joystickY.get());`,
     componentPath: "OrbitalCommandRing",
+    usageCode: `import { OrbitalCommandRing } from "@/components/orbital-command-ring";
+import { useRouter } from "next/navigation";
+
+export default function PageNavigationDemo() {
+  const router = useRouter();
+
+  // Define custom options linked to your application routes
+  const customOptions = [
+    { id: "home", label: "Home", icon: "🏠", color: "#7fff5e", path: "/" },
+    { id: "docs", label: "Docs", icon: "📖", color: "#00f0ff", path: "/docs/introduction" },
+    { id: "loom", label: "Loom", icon: "🧶", color: "#ff5c71", path: "/components/signal-loom" },
+    { id: "bento", label: "Bento", icon: "🍱", color: "#ff8c00", path: "/components/hypermorph-bento" }
+  ];
+
+  return (
+    <div className="h-[500px] w-full flex items-center justify-center bg-black">
+      <OrbitalCommandRing
+        options={customOptions}
+        onNavigate={(path) => router.push(path)}
+        title="Page Navigator"
+        eyebrow="Hold & drag to select destination"
+      />
+    </div>
+  );
+}`,
     props: [
+      { name: "options", type: "CommandItem[]", defaultValue: "DEFAULT_COMMANDS", description: "Array of options mapping radial menu nodes. Link custom pages by setting path properties: e.g. path: '/components/signal-loom'." },
+      { name: "onNavigate", type: "(path: string) => void", defaultValue: "undefined", description: "Optional custom router navigation callback: e.g. (path) => router.push(path). Defers navigation until execution animations play." },
       { name: "title", type: "string", defaultValue: `"Orbital Command Ring"`, description: "Ambient background watermark text.", control: { type: "text" } },
       { name: "eyebrow", type: "string", defaultValue: `"Hold & drag anywhere to summon"`, description: "Action instruction hint displayed under the watermark.", control: { type: "text" } },
       { name: "bg", type: "string", defaultValue: `"#050505"`, description: "Hex backdrop background color of the widget viewport.", control: { type: "color" } },
