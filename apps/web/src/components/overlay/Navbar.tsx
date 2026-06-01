@@ -430,7 +430,7 @@ export function Navbar() {
                       <div
                         className={`overflow-hidden transition-all duration-300 ${
                           isExpanded
-                            ? "max-h-[300px] opacity-100"
+                            ? "max-h-[500px] opacity-100"
                             : "max-h-0 opacity-0 pointer-events-none"
                         }`}
                       >

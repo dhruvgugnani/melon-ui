@@ -205,7 +205,7 @@ export function Sidebar() {
               <ul
                 className={`mt-2 flex flex-col gap-0.5 border-l border-white/5 pl-2.5 transition-all duration-300 overflow-hidden ${
                   isCatExpanded
-                    ? "max-h-[300px] opacity-100"
+                    ? "max-h-[500px] opacity-100"
                     : "max-h-0 opacity-0 pointer-events-none"
                 }`}
               >
