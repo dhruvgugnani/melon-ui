@@ -179,7 +179,7 @@ export function MorphingCyberNode({
               style={{ transform: "translateZ(40px)" }}
             >
               <div 
-                className="absolute top-0 left-0 w-full h-[2px]"
+                className="absolute top-0 left-0 w-full h-[2px] overflow-hidden rounded-t-[24px]"
                 style={{
                   backgroundColor: `${primaryColor}80`,
                   boxShadow: `0 0 15px ${primaryColor}`
