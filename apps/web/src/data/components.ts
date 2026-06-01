@@ -691,7 +691,7 @@ const y = Math.sin(angle) * radius;
     slug: "signal-loom",
     title: "Signal Loom",
     description: "A transparent pointer-reactive glass command surface where luminous workflow threads bend toward the cursor and layered inspection wafers morph into focus.",
-    category: "Widgets",
+    category: "Cards",
     tags: ["Framer Motion", "Glassmorphism", "Pointer Physics", "Workflow"],
     cliCommand: "npx @melonui-dev/cli add signal-loom",
     codeSnippet: `const pointerX = useMotionValue(50);
@@ -808,7 +808,7 @@ const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
     slug: "hypermorph-bento",
     title: "HyperMorph Bento",
     description: "A highly dynamic 2x2 grid of layout items expanding to flex columns/rows with spring animations.",
-    category: "Widgets",
+    category: "Cards",
     tags: ["Framer Motion", "Layout", "Bento"],
     cliCommand: "npx @melonui-dev/cli add hypermorph-bento",
     codeSnippet: "// See HyperMorphBento.tsx",

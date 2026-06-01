@@ -3,13 +3,14 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface BentoItem {
+export interface BentoItem {
   id: string;
   title: string;
   subtitle: string;
   color: string;
   icon: React.ReactNode;
   content: string;
+  metrics?: { label: string; value: string }[];
 }
 
 export interface HyperMorphBentoProps extends React.ComponentPropsWithoutRef<"div"> {
@@ -18,59 +19,77 @@ export interface HyperMorphBentoProps extends React.ComponentPropsWithoutRef<"di
 
 const DEFAULT_ITEMS: BentoItem[] = [
   {
-    id: "module-alpha",
-    title: "Quantum Core",
-    subtitle: "PROCESSING NODE",
+    id: "model-registry",
+    title: "Model Registry",
+    subtitle: "INFERENCE CODES",
     color: "#ff5c71",
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
-        <circle cx="12" cy="12" r="4" />
-        <line x1="21.17" y1="8" x2="12" y2="8" />
-        <line x1="3.95" y1="6.06" x2="8.54" y2="14" />
-        <line x1="10.88" y1="21.94" x2="15.46" y2="14" />
+        <path d="M12 2v20" />
+        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
       </svg>
     ),
-    content: "Initiating multi-threaded quantum sequences. Neural pathways optimized for maximum data throughput. Connection stable."
+    content: "Host and version neural weights locally. Track inference pipeline drift and configure model fallback routes automatically.",
+    metrics: [
+      { label: "Active Nodes", value: "14/16" },
+      { label: "Throughput", value: "1.4k rps" },
+      { label: "Drift Index", value: "0.02" }
+    ]
   },
   {
-    id: "module-beta",
-    title: "Neon Nexus",
-    subtitle: "DATA RELAY",
+    id: "vector-ingestion",
+    title: "Vector Ingestion",
+    subtitle: "DATA PIPELINES",
     color: "#7fff5e",
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
       </svg>
     ),
-    content: "Routing external traffic through secured subnets. Real-time telemetry established. Latency at absolute zero."
+    content: "Index raw unstructured documents into multi-dimensional embeddings inside real-time vector subnets with zero pipeline delay.",
+    metrics: [
+      { label: "Embedding Lag", value: "4ms" },
+      { label: "Load Index", value: "28%" },
+      { label: "Queue Depth", value: "0" }
+    ]
   },
   {
-    id: "module-gamma",
-    title: "Synth Weave",
-    subtitle: "MEMORY BANK",
+    id: "response-cache",
+    title: "Response Cache",
+    subtitle: "LATENCY SHIELD",
     color: "#00f0ff",
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="2" width="20" height="8" rx="2" ry="2" />
         <rect x="2" y="14" width="20" height="8" rx="2" ry="2" />
         <line x1="6" y1="6" x2="6.01" y2="6" />
         <line x1="6" y1="18" x2="6.01" y2="18" />
       </svg>
     ),
-    content: "Accessing deep archive storage. Retrievable assets indexed and ready for deployment. Sector integrity at 100%."
+    content: "Deduplicate identical queries before running model calls. Serving cached semantic embeddings directly from physical RAM registers.",
+    metrics: [
+      { label: "Cache Hit Rate", value: "74.2%" },
+      { label: "RAM Allocation", value: "1.2 GB" },
+      { label: "Avg Latency", value: "1.5ms" }
+    ]
   },
   {
-    id: "module-delta",
-    title: "Void Protocol",
-    subtitle: "SECURITY GRID",
+    id: "guardrails",
+    title: "Safety Guardrails",
+    subtitle: "CONTENT FILTERS",
     color: "#ffaa00",
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
       </svg>
     ),
-    content: "Active defense systems online. Intrusion countermeasures fully automated. Firewall parameters locked."
+    content: "Enforce safety boundaries on model inputs and outputs. Filter toxic inputs and lock unauthorized leak parameters automatically.",
+    metrics: [
+      { label: "Block Count", value: "21" },
+      { label: "Filter Delay", value: "11ms" },
+      { label: "Trigger Ratio", value: "0.04%" }
+    ]
   }
 ];
 
@@ -80,17 +99,44 @@ export function HyperMorphBento({ items = DEFAULT_ITEMS, className = "", style, 
 
   return (
     <div
-      className={`relative w-full max-w-4xl min-h-[500px] flex items-center justify-center bg-[#050505] p-6 rounded-2xl border border-white/5 overflow-hidden ${className}`}
+      className={`relative w-full max-w-4xl min-h-[480px] flex flex-col bg-[#08080a] p-4 md:p-6 rounded-lg border border-white/10 overflow-hidden ${className}`}
       style={{ ...style }}
       {...props}
     >
-      {/* Background Noise & Glow */}
-      <div className="absolute inset-0 pointer-events-none opacity-20 mix-blend-overlay" style={{ backgroundImage: "url('data:image/svg+xml;utf8,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E')" }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] rounded-full blur-[100px] pointer-events-none opacity-[0.03] bg-white" />
+      {/* Background Subtle Accent Grids */}
+      <div 
+        className="absolute inset-0 opacity-[0.02] pointer-events-none" 
+        style={{
+          backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+          backgroundSize: "24px 24px"
+        }}
+      />
+
+      {/* Practical SaaS Panel Header */}
+      <div className="relative z-10 flex justify-between items-center mb-6 pb-4 border-b border-white/5">
+        <div className="flex flex-col">
+          <span className="text-[9px] font-mono tracking-[0.25em] text-white/35 uppercase">
+            CLUSTER TELEMETRY
+          </span>
+          <h2 className="text-base font-bold text-white tracking-tight mt-1">
+            Active Processing Nodes
+          </h2>
+        </div>
+        <div className="flex items-center gap-2 border border-white/5 bg-white/[0.02] px-2.5 py-1 rounded">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#7fff5e] animate-pulse" />
+          <span className="text-[9px] font-mono tracking-widest text-[#7fff5e]">
+            SYSTEM SECURE
+          </span>
+        </div>
+      </div>
 
       <motion.div
         layout
-        className={`w-full h-[400px] gap-4 ${activeId === null ? "grid grid-cols-2 grid-rows-2" : "flex flex-col md:flex-row"}`}
+        className={`relative z-10 w-full gap-4 flex-1 flex flex-col ${
+          activeId === null
+            ? "grid grid-cols-1 sm:grid-cols-2"
+            : "md:flex-row min-h-[380px]"
+        }`}
       >
         <AnimatePresence mode="popLayout">
           {safeItems.map((item) => {
@@ -104,92 +150,129 @@ export function HyperMorphBento({ items = DEFAULT_ITEMS, className = "", style, 
                 layoutId={`bento-${item.id}`}
                 onClick={() => setActiveId(isActive ? null : item.id)}
                 className={`
-                  relative group cursor-pointer overflow-hidden rounded-xl border border-white/10
-                  ${isActive ? "w-full md:w-2/3 h-full z-10" : ""}
-                  ${isOther ? "w-full md:w-1/3 h-[125px] md:h-auto flex-1 opacity-70 hover:opacity-100" : ""}
-                  ${activeId === null ? "w-full h-full" : ""}
+                  relative group cursor-pointer overflow-hidden rounded-md border transition-all duration-300
+                  ${isActive ? "w-full md:w-[62%] min-h-[340px] md:min-h-0 z-10" : ""}
+                  ${isOther ? "w-full md:w-[38%] h-[80px] md:h-auto flex-1 opacity-60 hover:opacity-100" : ""}
+                  ${activeId === null ? "w-full h-[160px] md:h-[180px]" : ""}
                 `}
                 style={{
-                  background: `linear-gradient(135deg, rgba(15,15,15,0.8) 0%, rgba(5,5,5,0.9) 100%)`,
-                  boxShadow: isActive ? `0 0 40px ${item.color}20, inset 0 0 20px ${item.color}10` : "none",
-                  borderColor: isActive ? `${item.color}50` : "rgba(255,255,255,0.1)",
+                  backgroundColor: "rgba(13, 13, 16, 0.95)",
+                  borderColor: isActive ? `${item.color}50` : "rgba(255,255,255,0.08)",
+                  boxShadow: isActive 
+                    ? `0 15px 30px -15px ${item.color}20, inset 0 0 10px ${item.color}05` 
+                    : "none",
                 }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                whileHover={!isActive ? { scale: 0.98 } : {}}
-                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 320, damping: 28 }}
+                whileHover={!isActive ? { scale: 0.995, borderColor: "rgba(255,255,255,0.15)" } : {}}
+                whileTap={{ scale: 0.99 }}
               >
-                {/* Active Inner Glow */}
+                {/* Active Accent Ambient Glow */}
                 <motion.div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{ background: `radial-gradient(circle at 50% 0%, ${item.color}15 0%, transparent 70%)` }}
+                  className="absolute inset-x-0 top-0 h-32 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                  style={{ background: `radial-gradient(circle at 50% 0%, ${item.color}08 0%, transparent 70%)` }}
                 />
 
-                <div className={`p-6 flex flex-col h-full ${isActive ? "justify-between" : "justify-center"}`}>
-                  <motion.div layout className="flex items-center gap-4">
-                    <motion.div
-                      layout="position"
-                      className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0 border border-white/10 bg-black/50"
-                      style={{ color: item.color, boxShadow: `0 0 20px ${item.color}20` }}
-                    >
-                      {item.icon}
-                    </motion.div>
-                    <motion.div layout="position" className="flex flex-col">
-                      <motion.span layout="position" className="text-[10px] tracking-widest text-white/40 font-mono">
-                        {item.subtitle}
-                      </motion.span>
-                      <motion.h3 layout="position" className="text-xl text-white/90 font-medium tracking-tight">
-                        {item.title}
-                      </motion.h3>
-                    </motion.div>
-                  </motion.div>
-
-                  <AnimatePresence>
-                    {isActive && (
+                <div className="p-4 md:p-5 flex flex-col h-full justify-between">
+                  <div className="w-full">
+                    <motion.div layout className="flex items-start gap-3.5">
                       <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ delay: 0.1, duration: 0.3 }}
-                        className="mt-8 text-white/60 font-mono text-sm leading-relaxed max-w-md"
+                        layout="position"
+                        className="w-9 h-9 rounded flex items-center justify-center shrink-0 border bg-white/[0.01]"
+                        style={{ 
+                          color: item.color, 
+                          borderColor: `${item.color}20`,
+                        }}
                       >
-                        {item.content}
+                        {item.icon}
+                      </motion.div>
+                      <motion.div layout="position" className="flex flex-col">
+                        <motion.span layout="position" className="text-[8px] tracking-[0.2em] text-white/30 font-mono uppercase">
+                          {item.subtitle}
+                        </motion.span>
+                        <motion.h3 layout="position" className="text-sm md:text-base text-white/90 font-semibold mt-0.5 leading-tight">
+                          {item.title}
+                        </motion.h3>
+                      </motion.div>
+                    </motion.div>
 
-                        <div className="mt-8 flex gap-3">
-                          <button
-                            className="px-4 py-2 rounded-md text-xs font-semibold tracking-wider bg-white/10 hover:bg-white/20 text-white transition-colors border border-white/5"
-                          >
-                            EXECUTE
-                          </button>
-                          <button
-                            className="px-4 py-2 rounded-md text-xs font-semibold tracking-wider transition-colors border border-transparent"
-                            style={{ backgroundColor: `${item.color}20`, color: item.color }}
-                          >
-                            CONFIGURE
-                          </button>
-                        </div>
+                    {/* Collapsed view metrics snippet */}
+                    {!isActive && (
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.4 }}
+                        className="flex gap-4 border-t border-white/5 pt-3 mt-4"
+                      >
+                        {item.metrics?.slice(0, 2).map((m, idx) => (
+                          <div key={idx} className="flex flex-col font-mono text-[9px]">
+                            <span className="text-white/40 uppercase tracking-wider leading-none">{m.label}</span>
+                            <span className="text-white/80 mt-1 leading-none">{m.value}</span>
+                          </div>
+                        ))}
                       </motion.div>
                     )}
-                  </AnimatePresence>
+
+                    <AnimatePresence>
+                      {isActive && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ delay: 0.05, duration: 0.2 }}
+                          className="mt-4 flex flex-col"
+                        >
+                          <p className="text-white/50 text-xs leading-relaxed max-w-md">
+                            {item.content}
+                          </p>
+
+                          {/* Metric Dashboard Block inside expanded card */}
+                          <div className="grid grid-cols-3 gap-2.5 border-t border-white/5 pt-4 mt-5">
+                            {item.metrics?.map((m, idx) => (
+                              <div key={idx} className="bg-white/[0.01] border border-white/5 p-2 rounded flex flex-col">
+                                <span className="font-mono text-[8px] text-white/30 uppercase tracking-widest leading-none">
+                                  {m.label}
+                                </span>
+                                <span className="font-mono text-xs font-semibold mt-1.5 leading-none" style={{ color: item.color }}>
+                                  {m.value}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {isActive && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="mt-5 flex gap-2.5"
+                    >
+                      <button
+                        onClick={(e) => e.stopPropagation()}
+                        className="px-3 py-1.5 rounded font-mono text-[9px] tracking-wider bg-white/5 hover:bg-white/10 text-white/90 transition-all border border-white/5 active:scale-95"
+                      >
+                        RUN TELEMETRY
+                      </button>
+                      <button
+                        onClick={(e) => e.stopPropagation()}
+                        className="px-3 py-1.5 rounded font-mono text-[9px] tracking-wider transition-all border border-transparent active:scale-95"
+                        style={{ backgroundColor: `${item.color}15`, color: item.color }}
+                      >
+                        SYS OPTIMIZE
+                      </button>
+                    </motion.div>
+                  )}
                 </div>
 
-                {/* Decorative Elements */}
-                {isActive && (
-                   <motion.div
-                     initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                     className="absolute bottom-0 right-0 p-6 pointer-events-none opacity-20"
-                   >
-                      <div className="text-[10rem] leading-none font-bold tracking-tighter" style={{ color: item.color }}>
-                        {(item.id.split('-')[1] || item.id || "").charAt(0).toUpperCase()}
-                      </div>
-                   </motion.div>
-                )}
-
-                {/* Top right indicator */}
+                {/* Top right status indicator */}
                 <motion.div
                   layout
-                  className="absolute top-4 right-4 w-2 h-2 rounded-full"
-                  style={{ backgroundColor: item.color, boxShadow: `0 0 10px ${item.color}` }}
-                  animate={{ opacity: isActive ? [1, 0.5, 1] : 0.5 }}
+                  className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full"
+                  style={{ backgroundColor: item.color, boxShadow: `0 0 6px ${item.color}` }}
+                  animate={{ opacity: isActive ? [1, 0.4, 1] : 0.6 }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
               </motion.div>

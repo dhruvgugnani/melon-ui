@@ -472,7 +472,7 @@
   "signal-loom": {
     "name": "Signal Loom",
     "description": "A transparent pointer-reactive glass command surface where luminous workflow threads bend toward the cursor and layered inspection wafers morph into focus.",
-    "category": "Widgets",
+    "category": "Cards",
     "dependencies": [
       "framer-motion"
     ],
@@ -836,7 +836,7 @@
   "hypermorph-bento": {
     "name": "HyperMorph Bento",
     "description": "A highly dynamic 2x2 grid of layout items expanding to flex columns/rows with spring animations.",
-    "category": "Widgets",
+    "category": "Cards",
     "dependencies": [
       "framer-motion"
     ],

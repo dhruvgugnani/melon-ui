@@ -1,14 +1,7 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  HTMLMotionProps,
-} from "framer-motion";
+import React, { useState, useEffect, useMemo } from "react";
+import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion";
 
 export interface SignalLoomMetric {
   label: string;
@@ -85,14 +78,14 @@ const DEFAULT_THREADS: SignalLoomThread[] = [
 ];
 
 export function SignalLoom({
-  title = "Weave the next action",
+  title = "Route the next best action",
   eyebrow = "Signal Loom",
-  statusLabel = "Live",
-  lensLabel = "Inspection Lens",
+  statusLabel = "Live sprint",
+  lensLabel = "Buyer lens",
   threads = DEFAULT_THREADS,
-  containerBg = "rgba(0, 0, 0, 0.45)",
-  cardBgLeft = "rgba(8, 8, 8, 0.8)",
-  cardBgRight = "rgba(10, 10, 10, 0.82)",
+  containerBg = "rgba(8, 8, 10, 0.95)",
+  cardBgLeft = "rgba(12, 12, 16, 0.5)",
+  cardBgRight = "rgba(10, 10, 12, 0.6)",
   currentThreadLabel = "Current Thread",
   hoverHint = "Hover threads",
   clickHint = "Click to pin",
@@ -105,146 +98,124 @@ export function SignalLoom({
 }: SignalLoomProps) {
   const [active, setActive] = useState(1);
   const [hovered, setHovered] = useState<number | null>(null);
-  const [pressed, setPressed] = useState(false);
-  const pointerX = useMotionValue(50);
-  const pointerY = useMotionValue(50);
+  const [logs, setLogs] = useState<string[]>([]);
 
-  const smoothX = useSpring(pointerX, { stiffness: 180, damping: 26, mass: 0.6 });
-  const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
-  const rotateX = useTransform(smoothY, [0, 100], [8, -8]);
-  const rotateY = useTransform(smoothX, [0, 100], [-10, 10]);
-  const glareX = useTransform(smoothX, (value) => `${value}%`);
-  const glareY = useTransform(smoothY, (value) => `${value}%`);
-  const ambientGlow = useTransform(
-    [glareX, glareY],
-    ([x, y]) =>
-      `radial-gradient(circle at ${x} ${y}, rgba(255,92,113,0.22), rgba(127,255,94,0.08) 24%, transparent 52%)`
-  );
-  const lensX = useTransform(smoothX, [0, 100], [-26, 26]);
-  const lensY = useTransform(smoothY, [0, 100], [-22, 22]);
-
-  const safeThreads = threads.length > 0 ? threads : DEFAULT_THREADS;
+  const safeThreads = threads && threads.length > 0 ? threads : DEFAULT_THREADS;
   const activeIndex = Math.min(hovered ?? active, safeThreads.length - 1);
   const activeThread = safeThreads[activeIndex] ?? safeThreads[0];
 
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    pointerX.set(((event.clientX - rect.left) / rect.width) * 100);
-    pointerY.set(((event.clientY - rect.top) / rect.height) * 100);
+  // Streaming logs mockup generator
+  const getLogsForThread = (id: string) => {
+    switch (id) {
+      case "brief":
+        return [
+          "[sys] initiating trace: brief input data payload...",
+          "[api] source telemetry schema validated: OK",
+          "[parse] mapping constraints and edge layouts...",
+          "[info] cluster processing signal routing indexes",
+          "[success] thread trace ready for execution metrics."
+        ];
+      case "taste":
+        return [
+          "[sys] initializing visual taste matrices...",
+          "[metrics] scanning contrast values and border physics...",
+          "[safety] verification: Purple Ban checks fully passed",
+          "[telemetry] computing fluid scroll-animation weights...",
+          "[success] active tactile values synced to dashboard."
+        ];
+      case "ship":
+        return [
+          "[sys] packaging build distribution registry...",
+          "[bundler] packaging react client components...",
+          "[sync] executing components registry sync pipeline...",
+          "[telemetry] verified local compilation checks: OK",
+          "[success] application exported to local node cluster."
+        ];
+      default:
+        return [
+          `[sys] establishing connection to node ${id}...`,
+          "[api] validation: OK, streaming status metadata...",
+          "[trace] pipeline executing trace logs...",
+          "[success] node response processed successfully."
+        ];
+    }
   };
 
-  const resetPointer = () => {
-    pointerX.set(50);
-    pointerY.set(50);
-    setHovered(null);
-    setPressed(false);
-  };
+  useEffect(() => {
+    const targetLogs = getLogsForThread(activeThread.id);
+    setLogs([]);
+    
+    const timeouts = targetLogs.map((log, index) => 
+      setTimeout(() => {
+        setLogs(prev => [...prev, log]);
+      }, index * 120)
+    );
+
+    return () => {
+      timeouts.forEach(clearTimeout);
+    };
+  }, [activeThread.id]);
 
   return (
     <motion.section
       aria-label="Signal Loom interactive component"
-      onPointerMove={handlePointerMove}
-      onPointerLeave={resetPointer}
-      onPointerDown={() => setPressed(true)}
-      onPointerUp={() => setPressed(false)}
       className={`relative flex w-full items-center justify-center overflow-visible px-0 py-0 text-white ${className}`}
       style={style}
       {...props}
     >
-      <motion.div
-        className="pointer-events-none absolute -inset-6 opacity-70 blur-2xl"
-        style={{
-          background: ambientGlow,
-        }}
-      />
-
-      <motion.div
-        className="relative z-10 grid w-full max-w-5xl gap-3 rounded-[8px] border border-white/10 p-3 shadow-[0_35px_90px_rgba(0,0,0,0.55)] backdrop-blur-2xl md:grid-cols-[1.08fr_0.92fr] md:p-4"
-        style={{ rotateX, rotateY, transformPerspective: 1000, backgroundColor: containerBg }}
-        animate={{ scale: pressed ? 0.985 : 1 }}
-        transition={{ type: "spring", stiffness: 260, damping: 22 }}
+      <div
+        className="relative z-10 grid w-full max-w-5xl gap-4 rounded-lg border border-white/10 p-4 shadow-[0_20px_50px_rgba(0,0,0,0.45)] md:grid-cols-[1.1fr_0.9fr]"
+        style={{ backgroundColor: containerBg }}
       >
-        <div className="pointer-events-none absolute inset-0 rounded-[8px] bg-[linear-gradient(135deg,rgba(255,255,255,0.16),transparent_24%,transparent_72%,rgba(127,255,94,0.13))]" />
-        <div className="pointer-events-none absolute inset-[1px] rounded-[7px] border border-white/5" />
-
+        {/* Left Card: Stepper / Pipeline Flow */}
         <div 
-          className="relative min-h-fit overflow-hidden rounded-[6px] border border-white/10 p-4 md:min-h-[380px] sm:p-5"
+          className="relative min-h-fit overflow-hidden rounded border border-white/5 p-4 sm:p-5"
           style={{ backgroundColor: cardBgLeft }}
         >
-          {/* Futuristic Telemetry Dot Matrix */}
+          {/* Background Subtle Accent Grids */}
           <div 
-            className="absolute inset-0 opacity-[0.04] pointer-events-none" 
+            className="absolute inset-0 opacity-[0.02] pointer-events-none" 
             style={{
-              backgroundImage: "radial-gradient(circle, #fff 1.5px, transparent 1.5px)",
-              backgroundSize: "24px 24px"
+              backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+              backgroundSize: "20px 20px"
             }}
           />
 
-          {/* Interactive Radar Sweep Ring centered at pointer coordinate */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <motion.div 
-              className="absolute rounded-full border border-dashed opacity-30"
-              style={{
-                left: useTransform(smoothX, (v) => `${v}%`),
-                top: useTransform(smoothY, (v) => `${v}%`),
-                x: "-50%",
-                y: "-50%",
-                width: 130,
-                height: 130,
-                borderColor: activeThread.color,
-                boxShadow: `0 0 35px ${activeThread.color}22`,
-              }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-            />
-            <motion.div 
-              className="absolute rounded-full border opacity-15"
-              style={{
-                left: useTransform(smoothX, (v) => `${v}%`),
-                top: useTransform(smoothY, (v) => `${v}%`),
-                x: "-50%",
-                y: "-50%",
-                width: 250,
-                height: 250,
-                borderColor: activeThread.color,
-              }}
-              animate={{ scale: [0.95, 1.08, 0.95] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            />
-            {/* Glowing sweep line */}
-            <motion.div 
-              className="absolute w-[2px] h-[60px] opacity-25 origin-bottom"
-              style={{
-                left: useTransform(smoothX, (v) => `${v}%`),
-                top: useTransform(smoothY, (v) => `${v}%`),
-                x: "-50%",
-                y: "-100%",
-                background: `linear-gradient(to top, ${activeThread.color}, transparent)`,
-              }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-            />
-          </div>
-
-          <div className="relative z-10 flex h-full min-h-fit flex-col justify-between md:min-h-[340px]">
-            <div className="flex items-start justify-between gap-4">
+          <div className="relative z-10 flex h-full flex-col justify-between">
+            {/* Header info */}
+            <div className="flex items-start justify-between gap-4 mb-6">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#ff5c71]">
+                <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-[#ff5c71]">
                   {eyebrow}
                 </p>
                 <h3
-                  className="mt-2 max-w-[10ch] text-3xl uppercase leading-[0.82] text-white sm:text-5xl md:text-6xl"
-                  style={{ fontFamily: "var(--font-Outfit), var(--font-londrina-solid), sans-serif" }}
+                  className="mt-1 text-2xl font-bold tracking-tight text-white uppercase sm:text-3xl"
+                  style={{ fontFamily: "var(--font-Outfit), sans-serif" }}
                 >
                   {title}
                 </h3>
               </div>
-              <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
+              <div className="shrink-0 rounded border border-white/10 bg-white/[0.02] px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.2em] text-white/40">
                 {statusLabel}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4">
+            {/* Vertical Flow Stepper Container */}
+            <div className="relative flex flex-col gap-3 py-1 pl-7">
+              {/* Stepper Vertical Flow Line */}
+              <div className="absolute left-[9px] top-4 bottom-4 w-0.5 pointer-events-none bg-white/[0.04]">
+                <svg className="absolute top-0 left-0 w-full h-full" preserveAspectRatio="none">
+                  <motion.line
+                    x1="0" y1="0" x2="0" y2="100%"
+                    stroke={activeThread.color}
+                    strokeWidth="2"
+                    strokeDasharray="4 6"
+                    animate={{ strokeDashoffset: [0, -20] }}
+                    transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                  />
+                </svg>
+              </div>
+
               {safeThreads.map((thread, index) => {
                 const isActive = index === activeIndex;
                 return (
@@ -255,35 +226,46 @@ export function SignalLoom({
                     onFocus={() => setHovered(index)}
                     onBlur={() => setHovered(null)}
                     onClick={() => setActive(index)}
-                    className="group relative min-h-[86px] overflow-hidden rounded-[7px] border border-white/10 bg-white/[0.045] p-2.5 text-left backdrop-blur-xl transition-colors duration-300 hover:border-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff5c71] sm:min-h-[96px]"
+                    className={`
+                      group relative w-full flex items-start gap-4 p-3 rounded text-left border transition-all duration-300
+                      ${isActive ? "border-white/15 bg-white/[0.03]" : "border-transparent bg-white/[0.005] hover:bg-white/[0.015] hover:border-white/5"}
+                    `}
                     aria-pressed={active === index}
                   >
-                    <motion.span
-                      className="absolute inset-x-3 top-3 h-px"
-                      style={{ backgroundColor: thread.color }}
-                      animate={{ scaleX: isActive ? 1 : 0.34, opacity: isActive ? 1 : 0.35 }}
-                      transition={{ type: "spring", stiffness: 260, damping: 24 }}
+                    {/* Stepper Node Bullet */}
+                    <div 
+                      className={`
+                        absolute left-[-24px] top-[14px] w-2.5 h-2.5 rounded-full border bg-[#08080a] z-10 transition-all duration-300
+                        ${isActive ? "scale-110 shadow-[0_0_8px_currentColor]" : "opacity-45 scale-90"}
+                      `}
+                      style={{ 
+                        borderColor: thread.color,
+                        color: thread.color
+                      }}
                     />
-                    <span className="mt-4 block font-mono text-[8px] uppercase tracking-[0.22em] text-white/35">
-                      {thread.meta}
-                    </span>
-                    <span
-                      className="mt-1 block text-xl uppercase leading-none text-white sm:text-2xl"
-                      style={{ fontFamily: "var(--font-Outfit), var(--font-londrina-solid), sans-serif" }}
-                    >
-                      {thread.title}
-                    </span>
-                    <span className="mt-2 block h-1.5 w-10 rounded-full opacity-45" style={{ backgroundColor: thread.color }} />
-                    <span className="sr-only">
-                      {thread.copy}
-                    </span>
-                    <motion.span
-                      className="absolute bottom-3 right-3 rounded-full border px-2 py-0.5 font-mono text-[9px]"
-                      style={{ borderColor: `${thread.color}55`, color: thread.color }}
-                      animate={{ y: isActive ? -2 : 0, opacity: isActive ? 1 : 0.5 }}
-                    >
-                      {thread.value}
-                    </motion.span>
+
+                    <div className="flex-1 flex flex-col">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono text-[8px] uppercase tracking-wider text-white/30">
+                          {thread.meta}
+                        </span>
+                        <span 
+                          className="font-mono text-[9px] font-semibold"
+                          style={{ color: thread.color }}
+                        >
+                          {thread.value}
+                        </span>
+                      </div>
+                      <span
+                        className="text-sm font-semibold tracking-tight text-white/90 uppercase mt-0.5"
+                        style={{ fontFamily: "var(--font-Outfit), sans-serif" }}
+                      >
+                        {thread.title}
+                      </span>
+                      <p className="mt-1 text-[11px] leading-relaxed text-white/50 font-mono">
+                        {thread.copy}
+                      </p>
+                    </div>
                   </button>
                 );
               })}
@@ -291,90 +273,108 @@ export function SignalLoom({
           </div>
         </div>
 
+        {/* Right Card: Telemetry Trace log monitor */}
         <aside 
-          className="relative overflow-hidden rounded-[6px] border border-white/10 p-4 sm:p-5"
+          className="relative overflow-hidden rounded border border-white/5 p-4 sm:p-5"
           style={{ backgroundColor: cardBgRight }}
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(127,255,94,0.14),transparent_32%),radial-gradient(circle_at_20%_80%,rgba(255,92,113,0.18),transparent_38%)]" />
-          <div className="relative z-10 flex h-full min-h-fit flex-col md:min-h-[380px]">
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
-              <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-white/35">
-                {lensLabel}
-              </span>
-              <span
-                className="h-2 w-2 rounded-full shadow-[0_0_20px_currentColor]"
-                style={{ color: activeThread.color, backgroundColor: activeThread.color }}
-              />
-            </div>
+          {/* Subtle Corner Glow Accent */}
+          <div className="absolute top-0 right-0 w-32 h-32 opacity-15 pointer-events-none rounded-full blur-2xl" 
+               style={{ background: `radial-gradient(circle, ${activeThread.color} 0%, transparent 70%)` }} 
+          />
 
-            <div className="relative mt-5 flex flex-1 items-center justify-center">
-              <motion.div
-                className="absolute h-28 w-28 rounded-full border border-white/10 bg-white/[0.035] backdrop-blur-md md:h-44 md:w-44"
-                style={{
-                  x: lensX,
-                  y: lensY,
-                  boxShadow: `0 0 80px ${activeThread.color}22`,
-                }}
-              />
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeThread.id}
-                  initial={{ opacity: 0, y: 22, rotate: -3, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, y: 0, rotate: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -18, rotate: 3, filter: "blur(10px)" }}
-                  transition={{ type: "spring", stiffness: 220, damping: 24 }}
-                  className="relative w-full max-w-none md:max-w-[290px] rounded-[8px] border border-white/12 bg-black/52 p-4 backdrop-blur-2xl sm:p-5"
-                >
-                  <div
-                    className="absolute -inset-px rounded-[8px] opacity-70"
-                    style={{
-                      background: `linear-gradient(135deg, ${activeThread.color}44, transparent 30%, rgba(255,255,255,0.08) 64%, ${activeThread.color}22)`,
-                    }}
+          <div className="relative z-10 flex h-full flex-col justify-between">
+            <div>
+              {/* Header inside wafer */}
+              <div className="flex items-center justify-between border-b border-white/5 pb-3 mb-4">
+                <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/30">
+                  {lensLabel}
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-mono text-[8px] tracking-wider text-white/40 uppercase">NODE:</span>
+                  <span 
+                    className="font-mono text-[8px] font-semibold uppercase tracking-wider"
+                    style={{ color: activeThread.color }}
+                  >
+                    {activeThread.title}
+                  </span>
+                  <span
+                    className="h-1.5 w-1.5 rounded-full shadow-[0_0_8px_currentColor]"
+                    style={{ color: activeThread.color, backgroundColor: activeThread.color }}
                   />
-                  <div className="relative">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-white/40">
-                      {currentThreadLabel}
-                    </p>
-                    <h4
-                      className="mt-2 text-5xl uppercase leading-none sm:text-6xl"
-                      style={{ fontFamily: "var(--font-Outfit), var(--font-londrina-solid), sans-serif", color: activeThread.color }}
+                </div>
+              </div>
+
+              {/* Inspector details layout */}
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col">
+                  <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/40">
+                    {currentThreadLabel}
+                  </span>
+                  <h4
+                    className="text-2xl font-bold tracking-tight text-white uppercase mt-0.5"
+                    style={{ fontFamily: "var(--font-Outfit), sans-serif", color: activeThread.color }}
+                  >
+                    {activeThread.title} Pipeline
+                  </h4>
+                </div>
+
+                {/* Simulated Telemetry log monitor */}
+                <div className="bg-[#050507] border border-white/5 rounded p-3 min-h-[140px] font-mono text-[9px] text-white/60 flex flex-col gap-1.5 overflow-hidden">
+                  <AnimatePresence mode="popLayout">
+                    {logs.map((log, idx) => (
+                      <motion.div
+                        key={log}
+                        initial={{ opacity: 0, x: -3 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="leading-relaxed border-l-2 pl-2 border-white/5 break-all"
+                        style={{ 
+                          borderColor: idx === logs.length - 1 ? activeThread.color : "rgba(255,255,255,0.05)",
+                          color: idx === logs.length - 1 ? "#fff" : "rgba(255,255,255,0.6)"
+                        }}
+                      >
+                        {log}
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+
+                {/* Metrics Grid */}
+                <div className="grid grid-cols-3 gap-2 mt-2">
+                  {(activeThread.metrics || [
+                    { label: metricLabel1, value: activeThread.value },
+                    { label: metricLabel2, value: "78%" },
+                    { label: metricLabel3, value: "94%" }
+                  ]).map((m, index) => (
+                    <div
+                      key={index}
+                      className="rounded border border-white/5 bg-white/[0.01] p-2 flex flex-col"
                     >
-                      {activeThread.title}
-                    </h4>
-                    <p className="mt-3 font-mono text-[11px] leading-relaxed text-white/55 sm:text-xs">
-                      {activeThread.copy}
-                    </p>
-                    <div className="mt-4 grid grid-cols-3 gap-2 sm:mt-5">
-                      {(activeThread.metrics || [
-                        { label: metricLabel1, value: activeThread.value },
-                        { label: metricLabel2, value: "78%" },
-                        { label: metricLabel3, value: "94%" }
-                      ]).map((m, index) => (
-                        <div
-                          key={index}
-                          className="rounded-[5px] border border-white/10 bg-white/[0.04] p-2"
-                        >
-                          <span className="block font-mono text-[8px] uppercase tracking-[0.18em] text-white/30">
-                            {m.label}
-                          </span>
-                          <span className="mt-1 block font-mono text-[10px] text-white/70">
-                            {m.value}
-                          </span>
-                        </div>
-                      ))}
+                      <span className="block font-mono text-[7px] uppercase tracking-[0.15em] text-white/30">
+                        {m.label}
+                      </span>
+                      <span 
+                        className="mt-1 block font-mono text-[10px] font-semibold text-white/80"
+                        style={{ color: activeThread.color }}
+                      >
+                        {m.value}
+                      </span>
                     </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/35">
+            {/* Wafer footer */}
+            <div className="mt-5 flex items-center justify-between border-t border-white/5 pt-3 font-mono text-[8px] uppercase tracking-[0.2em] text-white/30">
               <span>{hoverHint}</span>
               <span>{clickHint}</span>
             </div>
           </div>
         </aside>
-      </motion.div>
+      </div>
     </motion.section>
   );
 }
