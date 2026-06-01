@@ -67,7 +67,7 @@ export function Sidebar() {
   return (
     <aside
       ref={sidebarRef}
-      className="w-64 shrink-0 border-r border-white/5 bg-zinc-950/20 backdrop-blur-sm min-h-full flex flex-col hidden lg:flex relative z-20 pt-20 overflow-hidden"
+      className="w-64 shrink-0 border-r border-white/5 bg-zinc-950/20 backdrop-blur-sm h-full flex flex-col hidden lg:flex relative z-20 pt-20 overflow-hidden"
     >
       {/* Scrollable nav tree */}
       <div className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-6 no-scrollbar">
