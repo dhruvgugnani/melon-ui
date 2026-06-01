@@ -76,6 +76,7 @@ const DEFAULT_ITEMS: BentoItem[] = [
 
 export function HyperMorphBento({ items = DEFAULT_ITEMS, className = "", style, ...props }: HyperMorphBentoProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
+  const safeItems = Array.isArray(items) ? items : DEFAULT_ITEMS;
 
   return (
     <div
@@ -92,7 +93,7 @@ export function HyperMorphBento({ items = DEFAULT_ITEMS, className = "", style, 
         className={`w-full h-[400px] gap-4 ${activeId === null ? "grid grid-cols-2 grid-rows-2" : "flex flex-col md:flex-row"}`}
       >
         <AnimatePresence mode="popLayout">
-          {items.map((item) => {
+          {safeItems.map((item) => {
             const isActive = activeId === item.id;
             const isOther = activeId !== null && !isActive;
 
@@ -177,9 +178,9 @@ export function HyperMorphBento({ items = DEFAULT_ITEMS, className = "", style, 
                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                      className="absolute bottom-0 right-0 p-6 pointer-events-none opacity-20"
                    >
-                     <div className="text-[10rem] leading-none font-bold tracking-tighter" style={{ color: item.color }}>
-                       {item.id.split('-')[1].charAt(0).toUpperCase()}
-                     </div>
+                      <div className="text-[10rem] leading-none font-bold tracking-tighter" style={{ color: item.color }}>
+                        {(item.id.split('-')[1] || item.id || "").charAt(0).toUpperCase()}
+                      </div>
                    </motion.div>
                 )}
 

@@ -746,47 +746,6 @@ const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
     ]
   },
   {
-    id: "liquid-glass",
-    slug: "liquid-glass",
-    title: "Liquid Glass Refraction",
-    description: "A background that behaves like distorted glass underwater with dynamic SVG turbulence and Framer Motion physics.",
-    category: "3D Backgrounds",
-    tags: ["SVG Filter", "Refraction", "Glassmorphism", "Framer Motion"],
-    cliCommand: "npx @melonui-dev/cli add liquid-glass",
-    codeSnippet: ``,
-    componentPath: "LiquidGlassRefraction",
-    props: [
-      { name: "bg", type: "string", defaultValue: `"#000000"`, description: "Hex backdrop color of the container.", control: { type: "color" } },
-      { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Primary gradient node color.", control: { type: "color" } },
-      { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Secondary gradient node color.", control: { type: "color" } },
-      { name: "accentColor", type: "string", defaultValue: `"#3b82f6"`, description: "Accent gradient node color.", control: { type: "color" } },
-      { name: "distortionScale", type: "number", defaultValue: "50", description: "Scale multiplier for the liquid refraction filter.", control: { type: "slider", min: 10, max: 150, step: 5 } },
-      { name: "titleText", type: "string", defaultValue: `""`, description: "Optional foreground card title.", control: { type: "text" } },
-      { name: "descriptionText", type: "string", defaultValue: `""`, description: "Optional foreground card description.", control: { type: "text" } },
-      { name: "showCard", type: "boolean", defaultValue: "false", description: "Toggle rendering of the demo foreground card.", control: { type: "text" } }
-    ]
-  },
-  {
-    id: "living-aurora-mesh",
-    slug: "living-aurora-mesh",
-    title: "Living Aurora Mesh",
-    description: "A breathing animated mesh-gradient ecosystem where color nodes behave like living organisms.",
-    category: "3D Backgrounds",
-    tags: ["Framer Motion", "Mesh Gradient", "Aurora"],
-    cliCommand: "npx @melonui-dev/cli add living-aurora-mesh",
-    codeSnippet: ``,
-    componentPath: "LivingAuroraMesh",
-    props: [
-      { name: "bg", type: "string", defaultValue: `"#000000"`, description: "Hex background color.", control: { type: "color" } },
-      { name: "color1", type: "string", defaultValue: `"#ff5c71"`, description: "Pink aurora node color.", control: { type: "color" } },
-      { name: "color2", type: "string", defaultValue: `"#7fff5e"`, description: "Green aurora node color.", control: { type: "color" } },
-      { name: "color3", type: "string", defaultValue: `"#0052e0"`, description: "Blue aurora node color (compliant with Purple Ban).", control: { type: "color" } },
-      { name: "opacity", type: "number", defaultValue: "0.6", description: "Base opacity of aurora mesh layer.", control: { type: "slider", min: 0.1, max: 1.0, step: 0.05 } },
-      { name: "blurRadius", type: "number", defaultValue: "100", description: "Blur radius in pixels for soft gradients.", control: { type: "slider", min: 20, max: 200, step: 5 } },
-      { name: "titleText", type: "string", defaultValue: `""`, description: "Foreground card title.", control: { type: "text" } }
-    ]
-  },
-  {
     id: "magnetic-particle-field",
     slug: "magnetic-particle-field",
     title: "Magnetic Particle Field",

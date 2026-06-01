@@ -771,47 +771,6 @@
     ],
     "preview": "/preview/glitch-pulse-core.png"
   },
-  "liquid-glass": {
-    "name": "Liquid Glass Refraction",
-    "description": "A background that behaves like distorted glass underwater with dynamic SVG turbulence and Framer Motion physics.",
-    "category": "3D Backgrounds",
-    "dependencies": [
-      "framer-motion"
-    ],
-    "files": [
-      {
-        "name": "liquid-glass.tsx",
-        "path": "components/liquid-glass.tsx"
-      }
-    ],
-    "tags": [
-      "SVG Filter",
-      "Refraction",
-      "Glassmorphism",
-      "Framer Motion"
-    ],
-    "preview": "/preview/liquid-glass.png"
-  },
-  "living-aurora-mesh": {
-    "name": "Living Aurora Mesh",
-    "description": "A breathing animated mesh-gradient ecosystem where color nodes behave like living organisms.",
-    "category": "3D Backgrounds",
-    "dependencies": [
-      "framer-motion"
-    ],
-    "files": [
-      {
-        "name": "living-aurora-mesh.tsx",
-        "path": "components/living-aurora-mesh.tsx"
-      }
-    ],
-    "tags": [
-      "Framer Motion",
-      "Mesh Gradient",
-      "Aurora"
-    ],
-    "preview": "/preview/living-aurora-mesh.png"
-  },
   "magnetic-particle-field": {
     "name": "Magnetic Particle Field",
     "description": "Background particles dynamically attract toward cursor and components in a verlet physics R3F instance field.",

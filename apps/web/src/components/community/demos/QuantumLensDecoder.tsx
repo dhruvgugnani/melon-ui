@@ -170,6 +170,8 @@ export function QuantumLensDecoder({
             backgroundColor: "rgba(10, 20, 10, 0.4)", // Slight tint inside lens
             backdropFilter: "blur(2px) contrast(1.2)"
           }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.2 }}
         >
           <div className="flex justify-between items-center mb-6 border-b pb-4" style={{ borderColor: `${primaryColor}40` }}>
             <div className="flex items-center gap-3">
