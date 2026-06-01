@@ -710,8 +710,8 @@
   },
   "orbital-command-ring": {
     "name": "Orbital Command Ring",
-    "description": "A futuristic radial menu summoned by drag with elastic joystick tether physics and cinematic execution flashes.",
-    "category": "Widgets",
+    "description": "A futuristic radial page navigation menu summoned by dragging with elastic joystick physics, custom target paths, and cinematic flashes.",
+    "category": "Page Transitions",
     "dependencies": [
       "framer-motion"
     ],

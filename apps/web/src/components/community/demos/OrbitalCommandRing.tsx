@@ -8,39 +8,46 @@ export interface CommandItem {
   label: string;
   icon: string;
   color: string;
+  path?: string;
 }
 
 const DEFAULT_COMMANDS: CommandItem[] = [
-  { id: "deploy", label: "Deploy", icon: "🚀", color: "#7fff5e" },
-  { id: "analyze", label: "Analyze", icon: "⌖", color: "#00f0ff" },
-  { id: "purge", label: "Purge", icon: "⚠", color: "#ff5c71" },
-  { id: "sync", label: "Sync", icon: "⟳", color: "#ff8c00" }, // Orange to avoid purple ban
-  { id: "shield", label: "Shield", icon: "⛨", color: "#e8d5b7" },
+  { id: "home", label: "Home", icon: "🏠", color: "#7fff5e", path: "/" },
+  { id: "components", label: "Components", icon: "🍱", color: "#00f0ff", path: "/components" },
+  { id: "docs", label: "Docs", icon: "📖", color: "#ff5c71", path: "/docs/introduction" },
+  { id: "loom", label: "Loom", icon: "🧶", color: "#ff8c00", path: "/components/signal-loom" },
+  { id: "bento", label: "Bento", icon: "🍱", color: "#e8d5b7", path: "/components/hypermorph-bento" },
 ];
 
 export interface OrbitalCommandRingProps extends React.ComponentPropsWithoutRef<"div"> {
+  options?: CommandItem[];
   commands?: CommandItem[];
   bg?: string;
   borderColor?: string;
   joystickColor?: string;
   onExecute?: (command: CommandItem) => void;
+  onNavigate?: (path: string) => void;
   title?: string;
   eyebrow?: string;
 }
 
 export function OrbitalCommandRing({
-  commands = DEFAULT_COMMANDS,
+  options,
+  commands,
   bg = "#050505",
   borderColor = "rgba(255,255,255,0.05)",
   joystickColor = "#ffffff",
   title = "Orbital Command Ring",
   eyebrow = "Hold & drag anywhere to summon",
   onExecute,
+  onNavigate,
   className = "",
   style,
   ...props
 }: OrbitalCommandRingProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const items = options || commands || DEFAULT_COMMANDS;
 
   const [menuState, setMenuState] = useState<"idle" | "active" | "executing">("idle");
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
@@ -113,7 +120,7 @@ export function OrbitalCommandRing({
       let angle = Math.atan2(dy, dx);
       if (angle < 0) angle += 2 * Math.PI;
 
-      const segment = (2 * Math.PI) / commands.length;
+      const segment = (2 * Math.PI) / items.length;
       const adjustedAngle = (angle + segment / 2) % (2 * Math.PI);
       const index = Math.floor(adjustedAngle / segment);
       setSelectedNode(index);
@@ -129,13 +136,31 @@ export function OrbitalCommandRing({
     dragY.set(0);
 
     if (selectedNode !== null) {
-      const cmd = commands[selectedNode];
+      const cmd = items[selectedNode];
       setLastExecuted({ label: cmd.label, color: cmd.color });
       setMenuState("executing");
 
       if (onExecute) {
         onExecute(cmd);
       }
+
+      // Safe page navigation trigger after a short delay to let cinematic play
+      setTimeout(() => {
+        if (cmd.path) {
+          if (onNavigate) {
+            onNavigate(cmd.path);
+          } else if (typeof window !== "undefined") {
+            if (cmd.path.startsWith("#")) {
+              const target = document.querySelector(cmd.path);
+              if (target) {
+                target.scrollIntoView({ behavior: "smooth" });
+              }
+            } else {
+              window.location.href = cmd.path;
+            }
+          }
+        }
+      }, 800);
 
       setTimeout(() => {
         setMenuState("idle");
@@ -210,8 +235,8 @@ export function OrbitalCommandRing({
             />
 
             {/* Command Nodes */}
-            {commands.map((cmd, i) => {
-              const angle = (i / commands.length) * 2 * Math.PI;
+            {items.map((cmd, i) => {
+              const angle = (i / items.length) * 2 * Math.PI;
               const radius = 120; // Distance of the nodes from origin
               const nx = origin.x + Math.cos(angle) * radius;
               const ny = origin.y + Math.sin(angle) * radius;
@@ -279,10 +304,10 @@ export function OrbitalCommandRing({
                 className="w-2.5 h-2.5 rounded-full transition-colors duration-200"
                 style={{
                   backgroundColor:
-                    selectedNode !== null ? commands[selectedNode].color : joystickColor,
+                    selectedNode !== null ? items[selectedNode].color : joystickColor,
                   boxShadow:
                     selectedNode !== null
-                      ? `0 0 10px ${commands[selectedNode].color}`
+                      ? `0 0 10px ${items[selectedNode].color}`
                       : `0 0 5px ${joystickColor}`,
                 }}
               />
