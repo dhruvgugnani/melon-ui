@@ -29,6 +29,48 @@ export interface ComponentData {
 
 export const componentsData: ComponentData[] = [
   {
+    id: "infinity-mirror-card",
+    slug: "infinity-mirror-card",
+    title: "Infinity Mirror",
+    description: "Deep nested 3D card creating an optical illusion of infinite layers, reacting to magnetic mouse movement.",
+    category: "Components",
+    tags: ["Framer Motion", "3D", "Premium"],
+    cliCommand: "npx @melonui-dev/cli add infinity-mirror-card",
+    codeSnippet: `// See InfinityMirrorCard.tsx`,
+    componentPath: "InfinityMirrorCard",
+    scrollable: true,
+    props: [
+      {
+        name: "title",
+        type: "string",
+        defaultValue: "VOID",
+        description: "The main text displayed on the front layer.",
+        control: { type: "text" }
+      },
+      {
+        name: "subtitle",
+        type: "string",
+        defaultValue: "SYSTEM_READY",
+        description: "The smaller accent text displayed on the front layer.",
+        control: { type: "text" }
+      },
+      {
+        name: "layers",
+        type: "number",
+        defaultValue: "5",
+        description: "Number of nested layers in the infinity mirror.",
+        control: { type: "slider", min: 2, max: 10, step: 1 }
+      },
+      {
+        name: "glowColor",
+        type: "string",
+        defaultValue: "#7fff5e",
+        description: "The neon glow color cast by the infinite tunnel.",
+        control: { type: "color" }
+      }
+    ]
+  },
+  {
     id: "cli-terminal",
     slug: "cli-terminal",
     title: "CLI Terminal",
