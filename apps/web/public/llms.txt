@@ -1,0 +1,118 @@
+# MelonUI
+
+> MelonUI is an open-source React component library for builders who want high-fidelity, production-ready UI components with custom WebGL animations and GSAP-powered motion.
+
+## What is MelonUI?
+
+MelonUI is a curated collection of animated, interactive React components built for Next.js, TypeScript, and Tailwind CSS projects. It is not a generic UI kit — every component is engineered with precise physics, GSAP animation timelines, and a "chaotic-but-crafted" aesthetic that makes web applications feel alive.
+
+The library uses a drop-based CLI: `npx melonui add [component-name]`. Components are copied directly into your project as editable source files — no black-box dependencies.
+
+## How It Works
+
+1. **Install via CLI** — Run `npx melonui add [component]` in your Next.js project. The component source is copied directly into your codebase (similar to shadcn/ui).
+2. **Zero runtime dependency** — MelonUI itself is not a runtime package. You own the code.
+3. **GSAP-first** — All animations use GreenSock (GSAP). Components import `gsap` directly and manage their own animation lifecycle with cleanup.
+4. **Tailwind CSS** — Styling uses Tailwind utility classes. Components are compatible with Tailwind v3+.
+5. **TypeScript** — All components are fully typed with exported prop interfaces.
+
+## Tech Stack
+
+- **Framework:** Next.js 14+ (App Router)
+- **Language:** TypeScript
+- **Animation:** GSAP (GreenSock Animation Platform)
+- **Styling:** Tailwind CSS v3
+- **Rendering:** React 18+ with SSR/Client boundary splits
+
+## Component Categories
+
+### Motion / Interaction
+- **SeedBurstButton** — A button that emits canvas particle bursts on click. Physics-based particle spread with gravity and fade.
+- **RindPeelCard** — A card component with a corner-peel hover effect, revealing a contrasting inner layer.
+- **MagneticNav** — A navigation dock where icons magnetically attract toward the cursor. GSAP-powered magnetic field simulation.
+- **JuicySwitch** — A toggle switch with exaggerated squash-and-stretch morphing. Feels bouncy and satisfying to interact with.
+- **BlobCursor** — A custom cursor that morphs into an organic blob shape, following the mouse with spring physics.
+- **Crosshair** — A precision crosshair cursor with animated targeting rings.
+
+### Text / Typography
+- **CharReveal** — Animates text character-by-character on scroll or trigger. Supports scramble, fade, and typewriter modes.
+- **ParallaxStrips** — Horizontal text strips that scroll at different speeds to create a layered parallax depth effect.
+
+### Input / Forms
+- **TagInput** — An animated token/tag input field. Tags animate in and out with spring transitions.
+
+### Navigation / Layout
+- **StepTrail** — A vertical step progress indicator with animated connecting lines between steps.
+- **OrbitalCommandRing** — A circular radial menu that expands from a center point with orbiting action buttons.
+- **CliTerminal** — A styled terminal window component that types out commands with a cursor. Used for displaying install instructions.
+
+### Feedback / Display
+- **HarvestReveal** — An image or content reveal component triggered by scroll position, using clip-path animation.
+
+## Landing Page Architecture
+
+The MelonUI marketing site is built as a fullscreen, snap-scroll single-page experience:
+
+- **7 snap-scroll sections** — each takes 100vh, navigated by mouse wheel (GSAP-animated) or trackpad (native CSS snap)
+- **Section 0 (Hero)** — "Slice the Web." headline with physics-based repelling word paragraph, tech stack chips, and CTA buttons
+- **Section 1 (Build Faster)** — Horizontal accordion of 4 component drops with live interactive previews inside each card
+- **Section 2 (Component Previews)** — 3-column card grid with static component illustrations
+- **Section 3 (CLI / Sand)** — Interactive terminal demo showing `npx melonui add` workflow
+- **Section 4 (Plant)** — Organic component showcases with nature-inspired metaphors
+- **Section 5 (Small Melon)** — Compact component spotlight
+- **Section 6 (CTA / Ship It)** — Call-to-action closing section with primary `Get Started` button
+
+**Custom Scroll System:** A wheel event interceptor distinguishes mouse wheel (deltaY > 40) from trackpad (deltaY < 40 or fractional). Mouse wheel triggers GSAP-animated snap; trackpad uses native CSS snap.
+
+**Custom Cursor:** A dual-element cursor (precision dot + trailing ring) that morphs on hover over interactive elements.
+
+**Scroll HUD:** A fixed right-edge vertical indicator with dots representing each section.
+
+## Design Philosophy
+
+MelonUI's design language:
+- **Color:** Near-black `#050505` background, neon lime `#7fff5e` primary, coral red `#ff5c71` secondary
+- **Typography:** `Londrina Solid` (Google Font) for display text — uppercase, weight 900, tight leading
+- **Motion:** GSAP timelines for entrance animations; RAF loops for continuous physics simulations; elastic easing for spring-back effects
+- **Aesthetic:** "Chaotic components. Production taste." — components push design conventions while remaining engineering-solid
+
+## Repository
+
+- **GitHub:** https://github.com/dhruvgugnani/melon-ui
+- **Website:** https://melonui.dev
+- **Component Browser:** https://melonui.dev/components
+- **Documentation:** https://melonui.dev/docs
+- **CLI:** `npx melonui add [component-name]`
+
+## Quick Start
+
+```bash
+# In your Next.js + Tailwind + TypeScript project:
+npx melonui add seed-burst-button
+npx melonui add rind-peel-card
+npx melonui add magnetic-nav
+npx melonui add juicy-switch
+```
+
+Components are added to your `components/` directory as editable `.tsx` files. No package install required.
+
+## Frequently Asked Questions
+
+**Q: Is MelonUI free?**  
+A: The core component library is open-source and free. Some advanced components may require a Pro access in the future.
+
+**Q: Does it work with React without Next.js?**  
+A: Yes. Components are standard React functional components. Next.js-specific features (Link, Image) are used in some components but can be swapped for React Router equivalents.
+
+**Q: Does it require GSAP Pro?**  
+A: No. All animations use the GSAP free tier (Core, ScrollTrigger). No Club GreenSock plugins required.
+
+**Q: Can I customize the components?**  
+A: Fully. Since the source is copied into your project, you own and control every line.
+
+**Q: Does it support dark mode?**  
+A: Components are designed for dark backgrounds. Light mode variants are not included by default.
+
+## Keywords
+
+React UI library, animated components, GSAP animation, WebGL components, Next.js component library, TypeScript components, Tailwind CSS components, motion design, interactive UI, particle effects, magnetic navigation, physics-based animation, open-source React, component CLI, shadcn alternative, design system, web animation library

@@ -5,13 +5,14 @@ import gsap from "gsap";
 import { Navbar } from "./Navbar";
 import { SpotlightSearch } from "../layout/SpotlightSearch";
 import { HeroSection } from "./HeroSection";
-import { ShowcaseSection } from "./ShowcaseSection";
+import { FasterSection } from "./FasterSection";
 import { FeaturesSection } from "./FeaturesSection";
 import { SandSection } from "./SandSection";
 import { PlantSection } from "./PlantSection";
 import { SmallMelonSection } from "./SmallMelonSection";
 import { CTASection } from "./CTASection";
 import { ScrollHud } from "./ScrollHud";
+import { SmoothCursor } from "./SmoothCursor";
 
 export function Overlay() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -94,6 +95,7 @@ export function Overlay() {
 
   return (
     <>
+      <SmoothCursor />
       <Navbar />
       <SpotlightSearch />
       <div
@@ -104,7 +106,7 @@ export function Overlay() {
       >
         <div id="scroll-content" className="w-full">
           <HeroSection />
-          <ShowcaseSection />
+          <FasterSection />
           <FeaturesSection />
           <SandSection />
           <PlantSection />

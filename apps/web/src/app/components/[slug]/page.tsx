@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { componentsData, getComponentBySlug } from '@/data/components';
 import { ComponentShowcase } from '@/components/community/ComponentShowcase';
+import { SmoothCursor } from "@/components/overlay/SmoothCursor";
 import React from 'react';
 
 export async function generateStaticParams() {
@@ -74,6 +75,7 @@ export default async function ComponentPage(props: { params: Promise<{ slug: str
 
   return (
     <article className="min-h-screen bg-[#050505] selection:bg-[#ff5c71] selection:text-[#050505] px-6 md:px-10 lg:px-14 pb-32 pt-20">
+      <SmoothCursor />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

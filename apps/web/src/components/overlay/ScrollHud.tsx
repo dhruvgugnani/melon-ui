@@ -4,9 +4,9 @@ import { useEffect, useRef } from "react";
 import { getScrollProgress } from "@/components/scene/engine";
 
 const CHAPTERS = [
-  "crate",
   "slice",
-  "drops",
+  "faster",
+  "better",
   "code",
   "wind",
   "access",
@@ -85,7 +85,7 @@ export function ScrollHud() {
       <div className="mb-2 flex items-end gap-3 text-xs font-bold uppercase text-white/58" style={{ letterSpacing: 0 }}>
         <span ref={progressTextRef}>0.0%</span>
         <span className="text-white/22">/</span>
-        <span ref={chapterTextRef}>crate</span>
+        <span ref={chapterTextRef}>slice</span>
       </div>
       <div className="h-[3px] w-full overflow-hidden rounded-full bg-white/12">
         <div
