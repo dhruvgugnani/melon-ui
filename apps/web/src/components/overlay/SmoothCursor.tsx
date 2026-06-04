@@ -62,7 +62,7 @@ export function SmoothCursor() {
       ) {
         setCursorType("hand");
         gsap.to(cursor, {
-          scale: 1.25,
+          scale: 1.1,
           duration: 0.2,
           ease: "power2.out",
         });
@@ -108,8 +108,8 @@ export function SmoothCursor() {
     >
       {cursorType === "arrow" ? (
         <svg
-          width="28"
-          height="28"
+          width="22"
+          height="22"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -126,8 +126,8 @@ export function SmoothCursor() {
         </svg>
       ) : (
         <svg
-          width="28"
-          height="28"
+          width="22"
+          height="22"
           viewBox="0 0 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
