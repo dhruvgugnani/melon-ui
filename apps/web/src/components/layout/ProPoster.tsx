@@ -4,10 +4,10 @@ import React, { useRef } from "react";
 import gsap from "gsap";
 
 export function ProPoster() {
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLButtonElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const card = cardRef.current;
     const glow = glowRef.current;
     if (!card) return;
@@ -62,12 +62,12 @@ export function ProPoster() {
   };
 
   return (
-    <div
+    <button
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={() => alert("MelonUI Pro is currently in preview! Launching soon.")}
-      className="relative overflow-hidden rounded-[8px] border border-[#7fff5e]/25 bg-zinc-950/70 p-5 shadow-[0_12px_48px_rgba(0,0,0,0.6)] group transition-all duration-300 hover:border-[#7fff5e]/60 hover:shadow-[0_16px_48px_rgba(127,255,94,0.15)] select-none cursor-pointer"
+      className="w-full text-left font-sans block relative overflow-hidden rounded-[8px] border border-[#7fff5e]/25 bg-zinc-950/70 p-5 shadow-[0_12px_48px_rgba(0,0,0,0.6)] group transition-all duration-300 hover:border-[#7fff5e]/60 hover:shadow-[0_16px_48px_rgba(127,255,94,0.15)] select-none cursor-pointer outline-none focus:outline-none"
       style={{ transformStyle: "preserve-3d" }}
     >
       {/* Interactive Cursor Spotlight Glow */}
@@ -130,6 +130,6 @@ export function ProPoster() {
           MELON25 (25% OFF)
         </span>
       </div>
-    </div>
+    </button>
   );
 }

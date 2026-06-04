@@ -39,19 +39,34 @@ export const componentsData: ComponentData[] = [
     codeSnippet: `// See InfinityMirrorCard.tsx`,
     componentPath: "InfinityMirrorCard",
     scrollable: true,
+    usageCode: `import { InfinityMirrorCard } from "@/components/community/demos/InfinityMirrorCard";
+
+export default function Demo() {
+  return (
+    <div className="flex items-center justify-center p-12">
+      {/* Customize the text below using the 'title' and 'subtitle' props */}
+      <InfinityMirrorCard 
+        title="CREATIVE" 
+        subtitle="MELONUI_PRO" 
+        layers={5}
+        glowColor="#7fff5e"
+      />
+    </div>
+  );
+}`,
     props: [
       {
         name: "title",
         type: "string",
         defaultValue: "VOID",
-        description: "The main text displayed on the front layer.",
+        description: "The main text displayed on the front layer. Pass your own custom text string to display here.",
         control: { type: "text" }
       },
       {
         name: "subtitle",
         type: "string",
         defaultValue: "SYSTEM_READY",
-        description: "The smaller accent text displayed on the front layer.",
+        description: "The smaller accent text displayed on the front layer. Customize this prop to add secondary metadata.",
         control: { type: "text" }
       },
       {
@@ -286,13 +301,27 @@ export const AntiGravityBento: React.FC<AntiGravityBentoProps> = ({
 
 export default AntiGravityBento;`,
     componentPath: "AntiGravityBento",
-    scrollable: false,
     usageCode: `import { AntiGravityBento } from "@/components/community/demos/AntiGravityBento";
 
 export default function Demo() {
+  // Add your own custom text, images, or components inside this array to populate the bento
+  const myCustomCards = [
+    <div key="1" className="h-full w-full bg-[#111] rounded-xl p-4 flex flex-col justify-between">
+      <span className="text-[#7fff5e] font-mono text-xs">CUSTOM CARD</span>
+      <span className="text-white font-bold text-lg">My Content</span>
+    </div>,
+    <div key="2" className="h-full w-full bg-zinc-900 rounded-xl p-4 flex items-center justify-center">
+      <span className="text-white/60 text-xs">Hover to see zero gravity!</span>
+    </div>
+  ];
+
   return (
     <div className="flex items-center justify-center p-12">
-      <AntiGravityBento width={400} height={400} />
+      <AntiGravityBento 
+        width={400} 
+        height={400} 
+        items={myCustomCards}
+      />
     </div>
   );
 }`,
@@ -339,6 +368,12 @@ export default function Demo() {
         control: {
           type: "color"
         }
+      },
+      {
+        name: "items",
+        type: "React.ReactNode[]",
+        defaultValue: "DEFAULT_ITEMS",
+        description: "Array of custom components/React nodes. Modify this prop to pass your own cards, text, or images."
       }
     ]
   },
@@ -464,6 +499,30 @@ export default function Demo() {
     cliCommand: "npx @melonui-dev/cli add peel-card",
     codeSnippet: `const onEnter = () => gsap.to(peelRef.current, { y: "-85%", duration: 0.6, ease: "power3.inOut" });\nconst onLeave = () => gsap.to(peelRef.current, { y: "0%", duration: 0.6, ease: "power3.inOut" });`,
     componentPath: "RindPeelCard",
+    usageCode: `import { RindPeelCard } from "@/components/community/demos/RindPeelCard";
+
+export default function Demo() {
+  return (
+    <div className="flex items-center justify-center p-12">
+      {/* Customize the text below using the 'peelTitle' and 'revealTitle' props */}
+      <RindPeelCard 
+        peelTitle="Hover Me" 
+        peelCategory="Interactive"
+        revealTitle="Hello World!" 
+        revealDesc="This is my custom revealed description."
+      />
+    </div>
+  );
+}`,
+    props: [
+      { name: "width", type: "string | number", defaultValue: "288", description: "The width of the peel card.", control: { type: "slider", min: 200, max: 600, step: 10 } },
+      { name: "height", type: "string | number", defaultValue: "208", description: "The height of the peel card.", control: { type: "slider", min: 150, max: 500, step: 10 } },
+      { name: "peelTitle", type: "string", defaultValue: `"Rind Peel Card"`, description: "The title shown on the front peel layer. Set this prop to your own title text.", control: { type: "text" } },
+      { name: "peelCategory", type: "string", defaultValue: `"Component"`, description: "The small category text on the front layer.", control: { type: "text" } },
+      { name: "peelHint", type: "string", defaultValue: `"Hover to reveal"`, description: "The helper text on the front layer.", control: { type: "text" } },
+      { name: "revealTitle", type: "string", defaultValue: `"Fresh 🍉"`, description: "The title revealed underneath the peel.", control: { type: "text" } },
+      { name: "revealDesc", type: "string", defaultValue: `"Underneath the rind, something juicy."`, description: "The description text revealed underneath the peel.", control: { type: "text" } }
+    ]
   },
   {
     id: "flip-card",
@@ -475,6 +534,32 @@ export default function Demo() {
     cliCommand: "npx @melonui-dev/cli add flip-card",
     codeSnippet: `const handleFlip = () => {\n  gsap.to(cardRef.current, {\n    rotateY: isFlipped ? 0 : 180,\n    duration: 0.8,\n    ease: "back.out(1.2)"\n  });\n  setIsFlipped(!isFlipped);\n};`,
     componentPath: "FlipCard",
+    usageCode: `import { FlipCard } from "@/components/community/demos/FlipCard";
+
+export default function Demo() {
+  return (
+    <div className="flex items-center justify-center p-12">
+      {/* Click the card to flip it and see your backTitle / backEmoji text */}
+      <FlipCard 
+        frontTitle="Click to open" 
+        frontCategory="MelonUI"
+        backEmoji="🚀"
+        backTitle="Welcome!" 
+        backHint="Click to close"
+      />
+    </div>
+  );
+}`,
+    props: [
+      { name: "width", type: "string | number", defaultValue: "260", description: "The width of the flip card.", control: { type: "slider", min: 180, max: 500, step: 10 } },
+      { name: "height", type: "string | number", defaultValue: "180", description: "The height of the flip card.", control: { type: "slider", min: 120, max: 400, step: 10 } },
+      { name: "frontTitle", type: "string", defaultValue: `"Flip Card"`, description: "The title shown on the front of the card. Customize this prop for your front text.", control: { type: "text" } },
+      { name: "frontCategory", type: "string", defaultValue: `"Component / Card"`, description: "Small category text on the front face.", control: { type: "text" } },
+      { name: "frontHint", type: "string", defaultValue: `"Click to reveal >"`, description: "Helper action text on the front face.", control: { type: "text" } },
+      { name: "backTitle", type: "string", defaultValue: `"Surprise!"`, description: "The title shown on the back of the card after flipping.", control: { type: "text" } },
+      { name: "backHint", type: "string", defaultValue: `"Click again to flip back"`, description: "Helper action text on the back face.", control: { type: "text" } },
+      { name: "backEmoji", type: "string", defaultValue: `"🍉"`, description: "Emoji icon displayed on the back face.", control: { type: "text" } }
+    ]
   },
   {
     id: "holo-ticket",
@@ -486,6 +571,31 @@ export default function Demo() {
     cliCommand: "npx @melonui-dev/cli add holo-ticket",
     codeSnippet: `const handleMouseMove = (e) => {\n  const rect = ticketRef.current.getBoundingClientRect();\n  const x = e.clientX - rect.left;\n  const y = e.clientY - rect.top;\n  const rotateX = ((y - centerY) / centerY) * -15;\n  const rotateY = ((x - centerX) / centerX) * 15;\n  gsap.to(ticketRef.current, { rotateX, rotateY, duration: 0.4 });\n};`,
     componentPath: "HoloTicket",
+    usageCode: `import { HoloTicket } from "@/components/community/demos/HoloTicket";
+
+export default function Demo() {
+  return (
+    <div className="flex items-center justify-center p-12">
+      {/* Hover over ticket to tilt in 3D or drag bottom stub to tear off */}
+      <HoloTicket 
+        topEyebrow="Developer Conf"
+        topSerial="No. 1337"
+        topTitle={<>Melon<br/>Con</>}
+        topSubtitle="ALL ACCESS"
+        bottomText="Tear stub to register entry"
+      />
+    </div>
+  );
+}`,
+    props: [
+      { name: "width", type: "string | number", defaultValue: "256", description: "The width of the holographic ticket.", control: { type: "slider", min: 200, max: 500, step: 10 } },
+      { name: "height", type: "string | number", defaultValue: "384", description: "The height of the holographic ticket.", control: { type: "slider", min: 300, max: 600, step: 10 } },
+      { name: "topEyebrow", type: "string", defaultValue: `"Admit One"`, description: "Label text at the top of the ticket.", control: { type: "text" } },
+      { name: "topSerial", type: "string", defaultValue: `"No. 0842"`, description: "Serial number text at the top right.", control: { type: "text" } },
+      { name: "topSubtitle", type: "string", defaultValue: `"VIP ACCESS"`, description: "Pill subheader text in the top ticket section.", control: { type: "text" } },
+      { name: "bottomText", type: "string", defaultValue: `"Scan barcode for verified admission"`, description: "Instructional text in the bottom stub of the ticket.", control: { type: "text" } },
+      { name: "redeemedText", type: "string", defaultValue: `"REDEEMED"`, description: "Watermark text overlayed when the ticket is torn/redeemed.", control: { type: "text" } }
+    ]
   },
   {
     id: "grow-input",
@@ -926,6 +1036,31 @@ const y = Math.sin(angle) * radius;
     cliCommand: "npx @melonui-dev/cli add solar-carousel",
     codeSnippet: "",
     componentPath: "SolarCarousel",
+    usageCode: `import { SolarCarousel } from "@/components/community/demos/SolarCarousel";
+
+export default function Demo() {
+  // Add your own custom card content here to render in the 3D orbit
+  const myCustomCards = [
+    { id: 1, title: "FIRST", tag: "Design", color: "#ff5c71", description: "My custom component description." },
+    { id: 2, title: "SECOND", tag: "Code", color: "#7fff5e", description: "Copy and customize this easily." },
+    { id: 3, title: "THIRD", tag: "Deploy", color: "#00f0ff", description: "Run it on your project root." }
+  ];
+
+  return (
+    <div className="w-full">
+      <SolarCarousel 
+        radius={200}
+        tilt={65}
+        items={myCustomCards}
+      />
+    </div>
+  );
+}`,
+    props: [
+      { name: "radius", type: "number", defaultValue: "200", description: "Orbit radius in pixels of cards around core.", control: { type: "slider", min: 100, max: 400, step: 10 } },
+      { name: "tilt", type: "number", defaultValue: "65", description: "X-axis tilt angle in degrees of orbital track.", control: { type: "slider", min: 30, max: 90, step: 5 } },
+      { name: "items", type: "CarouselItem[]", defaultValue: "DEFAULT_ITEMS", description: "Array of cards to orbit in the carousel. Change this prop to add your own data." }
+    ]
   },
   {
     id: "kinetic-magnet",
@@ -1012,7 +1147,7 @@ export default function PageNavigationDemo() {
     slug: "kinetic-glass-grid",
     title: "Kinetic Glass Grid",
     description: "A physical, reactive glass grid that elevates and glows intelligently based on cursor proximity, using complex distance-based spring physics.",
-    category: "Widgets",
+    category: "Backgrounds",
     tags: ["Framer Motion", "Physics", "Glassmorphism", "Interactive Grid"],
     cliCommand: "npx @melonui-dev/cli add kinetic-glass-grid",
     codeSnippet: `const distance = useTransform([mouseX, mouseY], ([latestX, latestY]) => {\n  // Distance calculation logic\n});\nconst scale = useSpring(useTransform(distance, [0, MAX_DISTANCE], [1.3, 1]), springConfig);`,
@@ -1042,11 +1177,29 @@ const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
 
 // Curved SVG loom paths, radial glare, and inspection lens all derive from pointer motion.`,
     componentPath: "SignalLoom",
+    usageCode: `import { SignalLoom } from "@/components/community/demos/SignalLoom";
+
+export default function Demo() {
+  return (
+    <div className="w-full">
+      {/* Customize the label text below using the eyebrow, title, and lensLabel props */}
+      <SignalLoom 
+        eyebrow="Workflow telemetry"
+        title="Bespoke Pipeline Controller"
+        statusLabel="Active"
+        lensLabel="Inspector Tool"
+        currentThreadLabel="Selected Node"
+        hoverHint="Hover thread to select"
+        clickHint="Click thread to lockdown"
+      />
+    </div>
+  );
+}`,
     props: [
-      { name: "title", type: "string", defaultValue: `"Weave the next action"`, description: "Main command-surface headline.", control: { type: "text" } },
-      { name: "eyebrow", type: "string", defaultValue: `"Signal Loom"`, description: "Small label above the headline.", control: { type: "text" } },
-      { name: "statusLabel", type: "string", defaultValue: `"Live"`, description: "Status pill text.", control: { type: "text" } },
-      { name: "lensLabel", type: "string", defaultValue: `"Inspection Lens"`, description: "Right panel label.", control: { type: "text" } },
+      { name: "title", type: "string", defaultValue: `"Weave the next action"`, description: "Main command-surface headline text. Set this prop to customize card title.", control: { type: "text" } },
+      { name: "eyebrow", type: "string", defaultValue: `"Signal Loom"`, description: "Small eyebrow label text above the headline. Customize to change eyebrow.", control: { type: "text" } },
+      { name: "statusLabel", type: "string", defaultValue: `"Live"`, description: "Status pill indicator label.", control: { type: "text" } },
+      { name: "lensLabel", type: "string", defaultValue: `"Inspection Lens"`, description: "Inspector panel section label.", control: { type: "text" } },
       { name: "currentThreadLabel", type: "string", defaultValue: `"Current Thread"`, description: "Eyebrow detail text inside detail wafer card.", control: { type: "text" } },
       { name: "hoverHint", type: "string", defaultValue: `"Hover threads"`, description: "Footer left-side indicator text.", control: { type: "text" } },
       { name: "clickHint", type: "string", defaultValue: `"Click to pin"`, description: "Footer right-side indicator text.", control: { type: "text" } },
@@ -1154,8 +1307,37 @@ const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
     cliCommand: "npx @melonui-dev/cli add hypermorph-bento",
     codeSnippet: "// See HyperMorphBento.tsx",
     componentPath: "HyperMorphBento",
+    usageCode: `import { HyperMorphBento } from "@/components/community/demos/HyperMorphBento";
+
+export default function Demo() {
+  // Customize bento grid content by passing custom cards, icons, colors, and stats
+  const customItems = [
+    {
+      id: "node-1",
+      title: "Custom Service",
+      subtitle: "API LAYER",
+      color: "#ff5c71",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="10" />
+        </svg>
+      ),
+      content: "Customize this bento box with your own custom descriptive text content.",
+      metrics: [
+        { label: "Status", value: "Active" },
+        { label: "Queries", value: "99.9%" }
+      ]
+    }
+  ];
+
+  return (
+    <div className="w-full">
+      <HyperMorphBento items={customItems} />
+    </div>
+  );
+}`,
     props: [
-      { name: "items", type: "BentoItem[]", defaultValue: "DEFAULT_ITEMS", description: "Array of bento items to render inside the grid." }
+      { name: "items", type: "BentoItem[]", defaultValue: "DEFAULT_ITEMS", description: "Array of bento items to render inside the grid. Modify this array to render your own bento content." }
     ]
   },
   {
@@ -1163,7 +1345,7 @@ const smoothY = useSpring(pointerY, { stiffness: 180, damping: 26, mass: 0.6 });
     slug: "quantum-lens-decoder",
     title: "Quantum Lens Decoder",
     description: "An interactive code-breaking surface revealing clear text through a cursor-tracking lens.",
-    category: "Widgets",
+    category: "Cards",
     tags: ["Framer Motion", "Clip Path", "Scramble"],
     cliCommand: "npx @melonui-dev/cli add quantum-lens-decoder",
     codeSnippet: "// See QuantumLensDecoder.tsx",

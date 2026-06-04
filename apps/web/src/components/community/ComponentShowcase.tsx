@@ -117,6 +117,7 @@ export function ComponentShowcase({
   useEffect(() => {
     const defaults: Record<string, any> = {};
     propsList.forEach((p) => {
+      if (!p.control) return;
       if (p.defaultValue.startsWith('"') || p.defaultValue.startsWith("'")) {
         defaults[p.name] = p.defaultValue.slice(1, -1);
       } else if (p.defaultValue === "true") {
@@ -196,15 +197,10 @@ ${propsStr}
     setDynamicUsageCode(dynamicCode);
   }, [playgroundProps, propsList, compName, compSlug, resolvedUsageCode]);
 
-  const resolvedAiPrompt = aiPrompt || `I want to integrate the MelonUI "${title}" component into my React/Next.js project.
-Component description: "${description}"
-CLI Installation command: \`${resolvedCliCommand}\`
-Tags/Technologies used: ${tags.join(", ")}
+  const resolvedAiPrompt = `I want to integrate the MelonUI "${title}" component into my project.
+To add it, run the command: \`${resolvedCliCommand}\`
 
-Please write a premium, responsive React page component in Next.js that:
-1. Imports \`${compName}\` from \`@/components/${compSlug}\`.
-2. Places it inside a visually stunning layout matching a dark-mode, glassmorphism design system.
-3. Outlines its props and options with clean code structure and comments.`;
+Please import and merge this component into my project, and write the code showing how to customize its parameters and content.`;
 
   useEffect(() => {
     const previewEl = previewPanelRef.current;
@@ -721,7 +717,7 @@ Please write a premium, responsive React page component in Next.js that:
               <p className="text-xs font-mono text-[#555] leading-relaxed">
                 Feed this prompt to Claude, ChatGPT, or Gemini to quickly write custom integrations, layouts, or configure props for this component on your system.
               </p>
-              <div className="p-4 bg-[#0a0a0a] border border-[#7fff5e]/10 rounded-[6px] font-mono text-[11px] text-white/50 leading-relaxed bg-gradient-to-br from-[#0a0a0a] to-[#040404] select-all max-h-[160px] overflow-y-auto">
+              <div className="p-4 bg-[#0a0a0a] border border-[#7fff5e]/10 rounded-[6px] font-mono text-[11px] text-white/50 leading-relaxed bg-gradient-to-br from-[#0a0a0a] to-[#040404] select-all max-h-[160px] overflow-y-auto whitespace-pre-wrap break-words">
                 {resolvedAiPrompt}
               </div>
             </section>
@@ -823,6 +819,7 @@ Please write a premium, responsive React page component in Next.js that:
                 onClick={() => {
                   const defaults: Record<string, any> = {};
                   propsList.forEach(p => {
+                    if (!p.control) return;
                     if (p.defaultValue.startsWith('"') || p.defaultValue.startsWith("'")) {
                       defaults[p.name] = p.defaultValue.slice(1, -1);
                     } else if (p.defaultValue === "true") {
@@ -852,23 +849,23 @@ Please write a premium, responsive React page component in Next.js that:
               <p className="text-xs font-mono text-[#555] mt-1">Component properties and type specifications</p>
             </div>
 
-            <div className="border border-[#1a1a1a] bg-[#070707] rounded-lg overflow-hidden">
-              <table className="w-full border-collapse text-left font-mono text-xs">
+              <div className="border border-[#1a1a1a] bg-[#070707] rounded-lg overflow-x-auto">
+              <table className="w-full min-w-[700px] table-fixed border-collapse text-left font-mono text-xs">
                 <thead>
                   <tr className="border-b border-[#1a1a1a] bg-[#0d0d0d] text-[#ff5c71]">
-                    <th className="p-3.5 font-bold uppercase tracking-wider">Prop</th>
-                    <th className="p-3.5 font-bold uppercase tracking-wider">Type</th>
-                    <th className="p-3.5 font-bold uppercase tracking-wider">Default</th>
-                    <th className="p-3.5 font-bold uppercase tracking-wider">Description</th>
+                    <th className="w-[20%] p-3.5 font-bold uppercase tracking-wider">Prop</th>
+                    <th className="w-[25%] p-3.5 font-bold uppercase tracking-wider">Type</th>
+                    <th className="w-[20%] p-3.5 font-bold uppercase tracking-wider">Default</th>
+                    <th className="w-[35%] p-3.5 font-bold uppercase tracking-wider">Description</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#111] text-[#ccc]">
                   {propsList.map((prop) => (
                     <tr key={prop.name} className="hover:bg-white/[0.01] transition-colors">
-                      <td className="p-3.5 font-bold text-white">{prop.name}</td>
-                      <td className="p-3.5 text-[#7fff5e]">{prop.type}</td>
-                      <td className="p-3.5 text-[#ff5c71]/80">{prop.defaultValue}</td>
-                      <td className="p-3.5 text-[#777] leading-relaxed text-[11px]">{prop.description}</td>
+                      <td className="w-[20%] p-3.5 font-bold text-white align-top break-all whitespace-normal">{prop.name}</td>
+                      <td className="w-[25%] p-3.5 text-[#7fff5e] align-top break-all whitespace-normal">{prop.type}</td>
+                      <td className="w-[20%] p-3.5 text-[#ff5c71]/80 align-top break-all whitespace-normal">{prop.defaultValue}</td>
+                      <td className="w-[35%] p-3.5 text-white/70 leading-relaxed text-[11px] align-top whitespace-normal break-words">{prop.description}</td>
                     </tr>
                   ))}
                 </tbody>

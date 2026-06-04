@@ -16,7 +16,7 @@ const DEFAULT_ITEMS: CarouselItem[] = [
   { id: 2, title: "HELIOS", tag: "Core Light", color: "#7fff5e", description: "Ultra-fast volumetric illumination mapping." },
   { id: 3, title: "NOVA", tag: "Ecosystem", color: "#00f0ff", description: "Decentralized reactive state sync framework." },
   { id: 4, title: "CHRONOS", tag: "GSAP Util", color: "#ffb000", description: "Sub-millisecond interactive timeline controller." },
-  { id: 5, title: "NEBULA", tag: "CSS 3D", color: "#ff8c00", description: "Generative canvas stellar particle simulation." } // avoiding purple
+  { id: 5, title: "NEBULA", tag: "CSS 3D", color: "#ff8c00", description: "Generative canvas stellar particle simulation." } // avoiding banned tone
 ];
 
 export interface SolarCarouselProps extends React.ComponentPropsWithoutRef<"div"> {

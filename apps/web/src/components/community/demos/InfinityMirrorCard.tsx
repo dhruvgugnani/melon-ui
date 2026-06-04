@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
@@ -9,6 +9,7 @@ export interface InfinityMirrorCardProps {
   layers?: number;
   glowColor?: string;
   borderColor?: string;
+  children?: React.ReactNode;
 }
 
 export const InfinityMirrorCard: React.FC<InfinityMirrorCardProps> = ({
@@ -17,6 +18,7 @@ export const InfinityMirrorCard: React.FC<InfinityMirrorCardProps> = ({
   layers = 5,
   glowColor = "#7fff5e",
   borderColor = "rgba(255, 255, 255, 0.1)",
+  children,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -118,42 +120,46 @@ export const InfinityMirrorCard: React.FC<InfinityMirrorCardProps> = ({
             }}
           />
 
-          {/* Floating Content: Text */}
-          <motion.div
-            className="relative z-10"
-            style={{ transform: "translateZ(40px)" }}
-          >
-            <h3
-              className="text-5xl font-black uppercase tracking-tighter drop-shadow-lg"
-              style={{ fontFamily: "var(--font-anton)", color: "#fff" }}
-            >
-              {title}
-            </h3>
-            <p
-              className="text-sm font-bold tracking-[0.2em] uppercase mt-2 drop-shadow-md"
-              style={{ color: glowColor }}
-            >
-              {subtitle}
-            </p>
-          </motion.div>
+          {children ? children : (
+            <>
+              {/* Floating Content: Text */}
+              <motion.div
+                className="relative z-10"
+                style={{ transform: "translateZ(40px)" }}
+              >
+                <h3
+                  className="text-5xl font-black uppercase tracking-tighter drop-shadow-lg"
+                  style={{ fontFamily: "var(--font-anton)", color: "#fff" }}
+                >
+                  {title}
+                </h3>
+                <p
+                  className="text-sm font-bold tracking-[0.2em] uppercase mt-2 drop-shadow-md"
+                  style={{ color: glowColor }}
+                >
+                  {subtitle}
+                </p>
+              </motion.div>
 
-          {/* Floating Content: UI Element */}
-          <motion.div
-            className="relative z-10 w-full h-1/2 flex flex-col items-center justify-end pb-4"
-            style={{ transform: "translateZ(60px)" }}
-          >
-             <div className="w-full h-px bg-gradient-to-r from-transparent via-white/40 to-transparent relative flex items-center justify-center group-hover:via-white/70 transition-colors duration-500">
-                <motion.div
-                  className="w-5 h-5 rounded-full border-2 border-white/80"
-                  style={{ backgroundColor: glowColor, boxShadow: `0 0 25px ${glowColor}` }}
-                  animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                />
-             </div>
-             <p className="text-[10px] font-mono text-white/50 tracking-widest uppercase mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-2 group-hover:translate-y-0">
-               Initialize Sequence
-             </p>
-          </motion.div>
+              {/* Floating Content: UI Element */}
+              <motion.div
+                className="relative z-10 w-full h-1/2 flex flex-col items-center justify-end pb-4"
+                style={{ transform: "translateZ(60px)" }}
+              >
+                 <div className="w-full h-px bg-gradient-to-r from-transparent via-white/40 to-transparent relative flex items-center justify-center group-hover:via-white/70 transition-colors duration-500">
+                    <motion.div
+                      className="w-5 h-5 rounded-full border-2 border-white/80"
+                      style={{ backgroundColor: glowColor, boxShadow: `0 0 25px ${glowColor}` }}
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                 </div>
+                 <p className="text-[10px] font-mono text-white/50 tracking-widest uppercase mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-2 group-hover:translate-y-0">
+                   Initialize Sequence
+                 </p>
+              </motion.div>
+            </>
+          )}
         </div>
       </motion.div>
     </div>

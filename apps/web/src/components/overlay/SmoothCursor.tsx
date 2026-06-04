@@ -58,7 +58,7 @@ export function SmoothCursor() {
         target.tagName === "BUTTON" ||
         target.closest("a") ||
         target.closest("button") ||
-        target.classList.contains("cursor-pointer")
+        target.closest(".cursor-pointer")
       ) {
         setCursorType("hand");
         gsap.to(cursor, {
@@ -76,7 +76,7 @@ export function SmoothCursor() {
         target.tagName === "BUTTON" ||
         target.closest("a") ||
         target.closest("button") ||
-        target.classList.contains("cursor-pointer")
+        target.closest(".cursor-pointer")
       ) {
         setCursorType("arrow");
         gsap.to(cursor, {

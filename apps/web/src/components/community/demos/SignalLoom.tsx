@@ -119,7 +119,7 @@ export function SignalLoom({
         return [
           "[sys] initializing visual taste matrices...",
           "[metrics] scanning contrast values and border physics...",
-          "[safety] verification: Purple Ban checks fully passed",
+          "[safety] verification: brand color checks fully passed",
           "[telemetry] computing fluid scroll-animation weights...",
           "[success] active tactile values synced to dashboard."
         ];
