@@ -4,13 +4,11 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 export function SmoothCursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const dot = dotRef.current;
-    const ring = ringRef.current;
-    if (!dot || !ring) return;
+    const cursor = cursorRef.current;
+    if (!cursor) return;
 
     // Detect cursor capability (pointing device like mouse)
     const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
@@ -18,29 +16,25 @@ export function SmoothCursor() {
       document.body.style.cursor = "none";
     } else {
       // Hide completely on touch devices
-      dot.style.display = "none";
-      ring.style.display = "none";
+      cursor.style.display = "none";
       return;
     }
 
     const mouse = { x: 0, y: 0 };
-    const ringPos = { x: 0, y: 0 };
+    const cursorPos = { x: 0, y: 0 };
 
     const handleMouseMove = (e: MouseEvent) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
-      
-      // Instantly position the center dot
-      gsap.set(dot, { x: mouse.x, y: mouse.y });
     };
 
-    // Smooth physics LERP loop for the outer trailing ring (snappy 0.28 coefficient)
+    // Smooth physics LERP loop (0.15 coefficient for a premium, water-like lag)
     let animFrameId: number;
     const tick = () => {
-      ringPos.x += (mouse.x - ringPos.x) * 0.28;
-      ringPos.y += (mouse.y - ringPos.y) * 0.28;
+      cursorPos.x += (mouse.x - cursorPos.x) * 0.15;
+      cursorPos.y += (mouse.y - cursorPos.y) * 0.15;
 
-      gsap.set(ring, { x: ringPos.x, y: ringPos.y });
+      gsap.set(cursor, { x: cursorPos.x, y: cursorPos.y });
       animFrameId = requestAnimationFrame(tick);
     };
 
@@ -57,18 +51,18 @@ export function SmoothCursor() {
         target.closest("button") ||
         target.classList.contains("cursor-pointer")
       ) {
-        gsap.to(ring, {
-          scale: 1.6,
-          borderColor: "#7fff5e",
-          backgroundColor: "rgba(127, 255, 94, 0.08)",
+        const path = cursor.querySelector("path");
+        if (path) {
+          gsap.to(path, {
+            fill: "#7fff5e",
+            duration: 0.2,
+            ease: "power2.out",
+          });
+        }
+        gsap.to(cursor, {
+          scale: 1.25,
           duration: 0.2,
-          ease: "power2.out"
-        });
-        gsap.to(dot, {
-          scale: 0.5,
-          backgroundColor: "#7fff5e",
-          duration: 0.2,
-          ease: "power2.out"
+          ease: "power2.out",
         });
       }
     };
@@ -82,18 +76,18 @@ export function SmoothCursor() {
         target.closest("button") ||
         target.classList.contains("cursor-pointer")
       ) {
-        gsap.to(ring, {
-          scale: 1,
-          borderColor: "#ff5c71",
-          backgroundColor: "transparent",
+        const path = cursor.querySelector("path");
+        if (path) {
+          gsap.to(path, {
+            fill: "#ff5c71",
+            duration: 0.25,
+            ease: "power2.out",
+          });
+        }
+        gsap.to(cursor, {
+          scale: 1.0,
           duration: 0.25,
-          ease: "power2.out"
-        });
-        gsap.to(dot, {
-          scale: 1,
-          backgroundColor: "#ff5c71",
-          duration: 0.25,
-          ease: "power2.out"
+          ease: "power2.out",
         });
       }
     };
@@ -111,18 +105,28 @@ export function SmoothCursor() {
   }, []);
 
   return (
-    <>
-      {/* Precision Core Dot */}
-      <div
-        ref={dotRef}
-        className="fixed w-2 h-2 bg-[#ff5c71] rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2"
-      />
-      {/* Outer Springy Ring */}
-      <div
-        ref={ringRef}
-        className="fixed w-7 h-7 border border-[#ff5c71] rounded-full pointer-events-none z-[9998] -translate-x-1/2 -translate-y-1/2 mix-blend-screen"
-        style={{ willChange: "transform" }}
-      />
-    </>
+    <div
+      ref={cursorRef}
+      className="fixed pointer-events-none z-[9999] will-change-transform"
+      style={{ left: 0, top: 0 }}
+    >
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ transformOrigin: "0 0" }}
+        className="drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]"
+      >
+        <path
+          d="M0 0v16l4-4 3 7 2-1-3-7h6L0 0z"
+          fill="#ff5c71"
+          stroke="#050505"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </div>
   );
 }

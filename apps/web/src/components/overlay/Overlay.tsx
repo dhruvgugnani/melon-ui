@@ -12,7 +12,6 @@ import { PlantSection } from "./PlantSection";
 import { SmallMelonSection } from "./SmallMelonSection";
 import { CTASection } from "./CTASection";
 import { ScrollHud } from "./ScrollHud";
-import { SmoothCursor } from "./SmoothCursor";
 
 export function Overlay() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -95,7 +94,6 @@ export function Overlay() {
 
   return (
     <>
-      <SmoothCursor />
       <Navbar />
       <SpotlightSearch />
       <div
