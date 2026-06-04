@@ -53,6 +53,7 @@ export function Navbar() {
 
   // Close drawer on route change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsOpen(false);
   }, [pathname]);
 
@@ -115,7 +116,7 @@ export function Navbar() {
               className="text-base md:text-lg font-black uppercase text-white group-hover:text-[#ff5c71] transition-colors"
               style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
             >
-              MelonUI
+              Melon UI
             </span>
           </CustomLink>
 
@@ -235,7 +236,7 @@ export function Navbar() {
               className="text-sm font-black uppercase text-white"
               style={{ fontFamily: "var(--font-londrina-solid)" }}
             >
-              MelonUI
+              Melon UI
             </span>
           </CustomLink>
           <button
