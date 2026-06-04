@@ -128,10 +128,10 @@ export function SmoothCursor() {
         <svg
           width="28"
           height="28"
-          viewBox="11 2 24 24"
+          viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          style={{ transformOrigin: "0 0" }}
+          style={{ transformOrigin: "0 0", transform: "translate(-45.8%, -8.3%)" }}
           className="drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]"
         >
           <path
