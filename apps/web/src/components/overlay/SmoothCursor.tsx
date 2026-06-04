@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 export function SmoothCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
+  const [cursorType, setCursorType] = useState<"arrow" | "hand">("arrow");
 
   useEffect(() => {
     const cursor = cursorRef.current;
@@ -13,7 +14,15 @@ export function SmoothCursor() {
     // Detect cursor capability (pointing device like mouse)
     const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
     if (hasFinePointer) {
-      document.body.style.cursor = "none";
+      // Inject global CSS rule to hide default cursor everywhere, including on hover
+      const style = document.createElement("style");
+      style.id = "hide-default-cursor";
+      style.innerHTML = `
+        *, *::before, *::after {
+          cursor: none !important;
+        }
+      `;
+      document.head.appendChild(style);
     } else {
       // Hide completely on touch devices
       cursor.style.display = "none";
@@ -51,14 +60,7 @@ export function SmoothCursor() {
         target.closest("button") ||
         target.classList.contains("cursor-pointer")
       ) {
-        const path = cursor.querySelector("path");
-        if (path) {
-          gsap.to(path, {
-            fill: "#7fff5e",
-            duration: 0.2,
-            ease: "power2.out",
-          });
-        }
+        setCursorType("hand");
         gsap.to(cursor, {
           scale: 1.25,
           duration: 0.2,
@@ -76,14 +78,7 @@ export function SmoothCursor() {
         target.closest("button") ||
         target.classList.contains("cursor-pointer")
       ) {
-        const path = cursor.querySelector("path");
-        if (path) {
-          gsap.to(path, {
-            fill: "#ff5c71",
-            duration: 0.25,
-            ease: "power2.out",
-          });
-        }
+        setCursorType("arrow");
         gsap.to(cursor, {
           scale: 1.0,
           duration: 0.25,
@@ -96,7 +91,8 @@ export function SmoothCursor() {
     window.addEventListener("mouseout", handleMouseOut);
 
     return () => {
-      document.body.style.cursor = "auto";
+      const style = document.getElementById("hide-default-cursor");
+      if (style) style.remove();
       window.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animFrameId);
       window.removeEventListener("mouseover", handleMouseOver);
@@ -110,23 +106,43 @@ export function SmoothCursor() {
       className="fixed pointer-events-none z-[9999] will-change-transform"
       style={{ left: 0, top: 0 }}
     >
-      <svg
-        width="28"
-        height="28"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ transformOrigin: "0 0" }}
-        className="drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]"
-      >
-        <path
-          d="M0 0v16l4-4 3 7 2-1-3-7h6L0 0z"
-          fill="#ff5c71"
-          stroke="#050505"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
-        />
-      </svg>
+      {cursorType === "arrow" ? (
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ transformOrigin: "0 0" }}
+          className="drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]"
+        >
+          <path
+            d="M0 0v16l4-4 3 7 2-1-3-7h6L0 0z"
+            fill="#ff5c71"
+            stroke="#050505"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ) : (
+        <svg
+          width="28"
+          height="28"
+          viewBox="11 2 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ transformOrigin: "0 0" }}
+          className="drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]"
+        >
+          <path
+            d="M14 9V5a3 3 0 0 0-3-3 3 3 0 0 0-3 3v6.35C7.41 11.13 6.7 11 6 11c-2.2 0-4 1.8-4 4s1.8 4 4 4h7c3.31 0 6-2.69 6-6V9a3 3 0 0 0-3-3 3 3 0 0 0-2 1.05A3 3 0 0 0 14 9z"
+            fill="#7fff5e"
+            stroke="#050505"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )}
     </div>
   );
 }

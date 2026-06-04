@@ -8,6 +8,7 @@ import { ProPoster } from "./ProPoster";
 import { Sponsors } from "./Sponsors";
 import { TableOfContents } from "./TableOfContents";
 import { SpotlightSearch } from "./SpotlightSearch";
+import { SmoothCursor } from "@/components/overlay/SmoothCursor";
 import Lenis from "lenis";
 
 interface DocsLayoutProps {
@@ -66,6 +67,7 @@ export function DocsLayout({ children }: DocsLayoutProps) {
       </div>
 
       {/* Persistent Floating Navbar */}
+      <SmoothCursor />
       <Navbar />
       <SpotlightSearch />
 
