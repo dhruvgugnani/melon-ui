@@ -806,7 +806,7 @@ export default function Demo() {
     id: "rind-scanner-text",
     slug: "rind-scanner-text",
     title: "Rind Reveal Text",
-    description: "A transparent pointer-light wordmark that reveals a melon/rind color pass inside readable chunky type.",
+    description: "A transparent pointer-light wordmark that reveals a primary/secondary color pass inside readable chunky type.",
     category: "GSAP Text",
     tags: ["Framer Motion", "Typography", "Reveal", "Gradient"],
     cliCommand: "npx @melonui-dev/cli add rind-scanner-text",
@@ -815,14 +815,14 @@ const clipPath = active
   ? \`circle(52% at \${spot.x}% \${spot.y}%)\`
   : \`circle(22% at \${spot.x}% \${spot.y}%)\`;
 
-// Pointer position reveals a melon/rind gradient inside the text while the base word stays readable.`,
+// Pointer position reveals a primary/secondary gradient inside the text while the base word stays readable.`,
     componentPath: "RindScannerText",
     props: [
       { name: "text", type: "string", defaultValue: `"RIND"`, description: "Headline text to reveal.", control: { type: "text" } },
       { name: "label", type: "string", defaultValue: `"Pointer light reveal"`, description: "Optional accessibility and eyebrow label.", control: { type: "text" } },
       { name: "baseColor", type: "string", defaultValue: `"#f4f4f4"`, description: "Base text color.", control: { type: "color" } },
-      { name: "scanColor", type: "string", defaultValue: `"#7fff5e"`, description: "Rind green reveal color.", control: { type: "color" } },
-      { name: "accentColor", type: "string", defaultValue: `"#ff5c71"`, description: "Pulp accent reveal color.", control: { type: "color" } }
+      { name: "scanColor", type: "string", defaultValue: `"#7fff5e"`, description: "Secondary green reveal color.", control: { type: "color" } },
+      { name: "accentColor", type: "string", defaultValue: `"#ff5c71"`, description: "Primary accent reveal color.", control: { type: "color" } }
     ],
   },
   {

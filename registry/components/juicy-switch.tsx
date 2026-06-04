@@ -10,8 +10,8 @@ export interface JuicySwitchProps extends Omit<React.ComponentPropsWithoutRef<"b
   particleCount?: number;
   gravity?: number;
   seedColor?: string;
-  pulpColor?: string;
-  rindColor?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
 }
 
 export function JuicySwitch({
@@ -21,8 +21,8 @@ export function JuicySwitch({
   particleCount = 10,
   gravity = 0.5,
   seedColor = "#1a1a1a",
-  pulpColor = "#ff5c71",
-  rindColor = "#7fff5e",
+  primaryColor = "#ff5c71",
+  secondaryColor = "#7fff5e",
   className = "",
   style,
   ...props
@@ -82,7 +82,7 @@ export function JuicySwitch({
       const particle = document.createElement("span");
       const size = 3 + Math.random() * 5;
       const isSeed = Math.random() > 0.65;
-      const color = isSeed ? seedColor : (Math.random() > 0.4 ? pulpColor : rindColor);
+      const color = isSeed ? seedColor : (Math.random() > 0.4 ? primaryColor : secondaryColor);
       
       particle.style.cssText = `
         position: absolute;
@@ -149,8 +149,8 @@ export function JuicySwitch({
       onClick={handleToggle}
       className={`relative w-[64px] h-[34px] rounded-full border bg-zinc-950 p-1 flex items-center cursor-pointer select-none transition-all duration-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#ff5c71] ${className}`}
       style={{
-        borderColor: isChecked ? `${rindColor}50` : "rgba(255, 255, 255, 0.1)",
-        boxShadow: isChecked ? `0 0 15px ${pulpColor}20` : "none",
+        borderColor: isChecked ? `${secondaryColor}50` : "rgba(255, 255, 255, 0.1)",
+        boxShadow: isChecked ? `0 0 15px ${primaryColor}20` : "none",
         ...style,
       }}
       {...props}
@@ -170,15 +170,15 @@ export function JuicySwitch({
         {isChecked ? (
           /* Watermelon Slice Shape (ON state) */
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            {/* Outer green rind (semi-circle) */}
+            {/* Outer secondary color rind (semi-circle) */}
             <path
               d="M2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12H2Z"
-              fill={rindColor}
+              fill={secondaryColor}
             />
-            {/* Inner pink pulp */}
+            {/* Inner primary color pulp */}
             <path
               d="M4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12H4Z"
-              fill={pulpColor}
+              fill={primaryColor}
             />
             {/* Tiny black seed dots */}
             <circle cx="9" cy="15" r="1" fill={seedColor} />

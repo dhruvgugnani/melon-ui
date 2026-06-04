@@ -513,7 +513,7 @@
   },
   "rind-scanner-text": {
     "name": "Rind Reveal Text",
-    "description": "A transparent pointer-light wordmark that reveals a melon/rind color pass inside readable chunky type.",
+    "description": "A transparent pointer-light wordmark that reveals a primary/secondary color pass inside readable chunky type.",
     "category": "GSAP Text",
     "dependencies": [
       "framer-motion"

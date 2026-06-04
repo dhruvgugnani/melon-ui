@@ -5,23 +5,25 @@ import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { SeedBurstButton } from "../community/demos/SeedBurstButton";
 import { InfinityMirrorCard } from "../community/demos/InfinityMirrorCard";
+import { HoloTicket } from "../community/demos/HoloTicket";
 import { MagneticNav } from "../community/demos/MagneticNav";
-import { JuicySwitch } from "../community/demos/JuicySwitch";
-import { RindPeelCard } from "../community/demos/RindPeelCard";
 
 const DROPS = [
   { name: "Seed Burst", type: "particles / canvas", href: "/components/burst-button", color: "#ff5c71", id: "burst" },
   { name: "Infinity Mirror", type: "3d depth illusion", href: "/components/infinity-mirror-card", color: "#7fff5e", id: "mirror" },
-  { name: "Magnet Dock", type: "gsap magnetic", href: "/components/magnetic-nav", color: "#e0f2dc", id: "dock" },
-  { name: "Juicy Switch", type: "squash & stretch", href: "/components/juicy-switch", color: "#ff8d9a", id: "switch" },
-  { name: "Rind Peel", type: "clip-path peel", href: "/components/peel-card", color: "#7fff5e", id: "peel" },
+  { name: "Holo Ticket", type: "shimmer & 3d tilt", href: "/components/holo-ticket", color: "#ff5c71", id: "ticket" },
+  { name: "Magnet Dock", type: "gsap magnetic icon", href: "/components/magnetic-nav", color: "#e0f2dc", id: "dock" },
 ] as const;
 
 function RealPreview({ id }: { id: string }) {
   if (id === "burst") {
     return (
-      <div className="relative flex items-center justify-center p-8 scale-110">
+      <div className="relative flex items-center justify-center p-8 scale-100 sm:scale-110">
         <SeedBurstButton 
+          label="Melon UI"
+          buttonColor="#ff5c71"
+          buttonTextColor="#050505"
+          stripeColor="#7fff5e"
           buttonClassName="rounded-full px-8 py-3 text-sm font-bold active:scale-95 transition-all" 
           buttonStyle={{ fontFamily: "var(--font-londrina-solid)" }}
         />
@@ -30,28 +32,29 @@ function RealPreview({ id }: { id: string }) {
   }
   if (id === "mirror") {
     return (
-      <div className="relative flex items-center justify-center p-2 scale-90">
-        <InfinityMirrorCard title="MELON" subtitle="3D_PORTAL" layers={5} />
+      <div className="relative flex items-center justify-center p-2 scale-80 sm:scale-90">
+        <InfinityMirrorCard title="MELON UI" subtitle="NEXT_GEN_SYSTEM" layers={6} />
       </div>
     );
   }
-  if (id === "dock") {
+  if (id === "ticket") {
     return (
-      <div className="flex items-center justify-center p-8 scale-100">
-        <MagneticNav />
-      </div>
-    );
-  }
-  if (id === "switch") {
-    return (
-      <div className="flex items-center justify-center p-8 scale-[1.3] md:scale-[1.4]">
-        <JuicySwitch />
+      <div className="relative flex items-center justify-center p-2 scale-[0.7] sm:scale-[0.8] md:scale-90 xl:scale-95">
+        <HoloTicket 
+          topTitle={<>Melon<br/>UI</>}
+          topSubtitle="PREMIUM CORE"
+          bottomText="Unlock Access"
+        />
       </div>
     );
   }
   return (
-    <div className="relative flex items-center justify-center p-6 w-[280px] h-[340px]">
-      <RindPeelCard width="100%" height="100%" />
+    <div className="flex items-center justify-center p-8 scale-90 sm:scale-100">
+      <MagneticNav 
+        items={["Melon", "UI", "Docs", "Store"]}
+        accentColor="#ff5c71"
+        dotColor="#7fff5e"
+      />
     </div>
   );
 }
@@ -61,6 +64,7 @@ export function FasterSection() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [activeIdx, setActiveIdx] = useState<number>(0);
 
   // Entrance animations using GSAP
@@ -87,13 +91,13 @@ export function FasterSection() {
     return () => ctx.revert();
   }, []);
 
-  // Smooth transition when active component changes
+  // Smooth transition when active component changes (only content inside glass animates, glass stays static)
   useEffect(() => {
-    if (!previewRef.current) return;
+    if (!contentRef.current) return;
     gsap.fromTo(
-      previewRef.current,
-      { scale: 0.95, opacity: 0.7 },
-      { scale: 1, opacity: 1, duration: 0.45, ease: "power2.out" }
+      contentRef.current,
+      { scale: 0.95, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.35, ease: "power2.out" }
     );
   }, [activeIdx]);
 
@@ -101,7 +105,7 @@ export function FasterSection() {
 
   return (
     <section
-      className="snap-start relative h-screen w-full overflow-hidden z-10 bg-[#050505]"
+      className="snap-start relative min-h-screen lg:h-screen w-full overflow-hidden z-10 bg-transparent flex items-center"
       style={{ scrollSnapStop: "always" }}
     >
       {/* Cyber Grid Background */}
@@ -118,23 +122,23 @@ export function FasterSection() {
         />
         {/* Soft active glow behind the component */}
         <div 
-          className="absolute right-[20%] top-[25%] h-[500px] w-[500px] rounded-full blur-[140px] pointer-events-none transition-all duration-700 ease-out"
+          className="absolute right-[25%] top-[25%] h-[500px] w-[500px] rounded-full blur-[140px] pointer-events-none transition-all duration-700 ease-out animate-pulse"
           style={{
-            backgroundColor: `${activeDrop.color}15`
+            backgroundColor: `${activeDrop.color}10`
           }}
         />
       </div>
 
-      <div className="relative z-10 grid h-full grid-cols-12 gap-6 px-6 pb-16 pt-28 md:px-10 lg:px-16 items-center">
+      <div className="relative z-10 flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-6 w-full max-w-7xl mx-auto px-6 py-20 md:px-10 lg:px-16 items-center">
         {/* Left Column: Heading and Brutalist List */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col justify-center select-none h-full">
+        <div className="col-span-12 lg:col-span-5 flex flex-col justify-center select-none w-full">
           <div>
-            <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[#e0f2dc]/40">
+            <p className="mb-3 font-mono text-xs uppercase tracking-[0.25em] text-[#e0f2dc]/60">
               Chapter 02 / Component Lab
             </p>
             <h2
               ref={titleRef}
-              className="font-black uppercase leading-[0.76] text-white text-[clamp(2.5rem,6vw,5.5rem)] mb-10"
+              className="font-black uppercase leading-[0.76] text-white text-[clamp(2.5rem,6vw,5.5rem)] mb-8 lg:mb-10"
               style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
             >
               <span className="block">Build</span>
@@ -157,22 +161,22 @@ export function FasterSection() {
                 >
                   <span
                     className={`font-mono text-xs md:text-sm transition-all duration-300 ${
-                      isActive ? "text-[#7fff5e] font-bold" : "text-white/20 group-hover:text-white/40"
+                      isActive ? "text-[#7fff5e] font-bold" : "text-white/35 group-hover:text-white/60"
                     }`}
                   >
                     0{index + 1}
                   </span>
                   <span
-                    className={`text-2.5xl md:text-3.5xl lg:text-4.5xl font-black uppercase transition-all duration-300 tracking-tight
-                      ${isActive ? "text-white scale-105 translate-x-3" : "text-white/25 group-hover:text-white/50"}
+                    className={`text-3xl md:text-4xl lg:text-5xl font-black uppercase transition-all duration-300 tracking-tight
+                      ${isActive ? "text-white scale-105 translate-x-4" : "text-white/40 group-hover:text-white/75"}
                     `}
                     style={{ fontFamily: "var(--font-londrina-solid)" }}
                   >
                     {drop.name}
                   </span>
                   <span
-                    className={`font-mono text-[9px] uppercase tracking-widest transition-opacity duration-300 ${
-                      isActive ? "opacity-50 text-[#ff5c71]" : "opacity-0"
+                    className={`font-mono text-xs uppercase tracking-widest transition-opacity duration-300 ${
+                      isActive ? "opacity-90 text-[#ff5c71]/80 font-bold" : "opacity-0"
                     }`}
                   >
                     {"// "}{drop.type}
@@ -183,13 +187,23 @@ export function FasterSection() {
           </div>
         </div>
 
-        {/* Right Column: Floating Preview Canvas (completely container-less) */}
-        <div className="col-span-12 lg:col-span-7 flex items-center justify-center relative min-h-[380px] lg:h-[500px] z-20">
+        {/* Right Column: Floating Preview Canvas with Frosted Glass Tile */}
+        <div className="col-span-12 lg:col-span-7 flex items-center justify-center relative w-full h-[300px] sm:h-[350px] md:h-[400px] lg:h-[480px] z-20">
           <div
             ref={previewRef}
-            className="w-full flex items-center justify-center select-none"
+            className="w-full max-w-[480px] h-full rounded-3xl border border-white/8 bg-zinc-950/20 backdrop-blur-md flex items-center justify-center select-none relative shadow-[0_24px_80px_rgba(0,0,0,0.8)] overflow-hidden"
           >
-            <RealPreview id={activeDrop.id} />
+            {/* Ambient color light source */}
+            <div 
+              className="absolute -right-20 -top-20 h-60 w-60 rounded-full blur-[100px] opacity-20 pointer-events-none transition-all duration-700 ease-out"
+              style={{
+                backgroundColor: activeDrop.color
+              }}
+            />
+            {/* Real Preview element (wrapped inside animated contentRef) */}
+            <div ref={contentRef} className="relative z-10 w-full h-full flex items-center justify-center">
+              <RealPreview id={activeDrop.id} />
+            </div>
           </div>
         </div>
       </div>
