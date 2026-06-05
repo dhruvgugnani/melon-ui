@@ -50,4 +50,5 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   HyperMorphBento: dynamic(() => import('./demos/HyperMorphBento').then(m => m.HyperMorphBento), { ssr: false }),
   QuantumLensDecoder: dynamic(() => import('./demos/QuantumLensDecoder').then(m => m.QuantumLensDecoder), { ssr: false }),
   InfinityMirrorCard: dynamic(() => import('./demos/InfinityMirrorCard').then(m => m.InfinityMirrorCard), { ssr: false }),
+  FluidMagneticDial: dynamic(() => import('./demos/FluidMagneticDial').then(m => m.FluidMagneticDial), { ssr: false }),
 };
