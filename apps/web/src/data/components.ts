@@ -29,6 +29,26 @@ export interface ComponentData {
 
 export const componentsData: ComponentData[] = [
   {
+    id: "elastic-tether-hub",
+    slug: "elastic-tether-hub",
+    title: "Elastic Tether Hub",
+    description: "A centralized command core that blooms draggable action nodes on click, featuring elastic spring physics, real-time distance tracking, and a dramatic pull-to-fire release mechanic.",
+    category: "Widgets",
+    tags: ["Framer Motion", "Physics", "Drag", "Interactive", "Menu"],
+    cliCommand: "npx @melonui-dev/cli add elastic-tether-hub",
+    codeSnippet: `const distance = useTransform(() => {\n  const dx = springX.get() - targetX;\n  const dy = springY.get() - targetY;\n  return Math.sqrt(dx * dx + dy * dy);\n});`,
+    componentPath: "ElasticTetherHub",
+    usageCode: `import { ElasticTetherHub } from "@/components/community/demos/ElasticTetherHub";
+
+export default function Demo() {
+  return (
+    <div className="flex items-center justify-center p-12 w-full min-h-[500px]">
+      <ElasticTetherHub />
+    </div>
+  );
+}`,
+  },
+  {
     id: "infinity-mirror-card",
     slug: "infinity-mirror-card",
     title: "Infinity Mirror",
