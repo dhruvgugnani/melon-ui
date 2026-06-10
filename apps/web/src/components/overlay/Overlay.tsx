@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Navbar } from "./Navbar";
 import { SpotlightSearch } from "../layout/SpotlightSearch";
@@ -18,6 +18,16 @@ export function Overlay() {
   const containerRef = useRef<HTMLDivElement>(null);
   const currentIndexRef = useRef(0);
   const isAnimatingRef = useRef(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -26,6 +36,8 @@ export function Overlay() {
     const totalSections = 7;
 
     const handleWheel = (e: WheelEvent) => {
+      if (window.innerWidth < 768) return; // Ignore on mobile
+
       const delta = e.deltaY;
 
       // Detect trackpad: continuous inputs with fractional delta values or low speed
@@ -66,7 +78,9 @@ export function Overlay() {
           ease: "power2.out",
           onComplete: () => {
             // Restore native snaps for stability and resizing
-            container.style.scrollSnapType = "y mandatory";
+            if (window.innerWidth >= 768) {
+              container.style.scrollSnapType = "y mandatory";
+            }
             
             // Minimal cooldown to debounce extra wheel clicks
             setTimeout(() => {
@@ -79,7 +93,7 @@ export function Overlay() {
 
     // Keep index in sync if user navigates via scrollbar or keys
     const handleScroll = () => {
-      if (!isAnimatingRef.current) {
+      if (!isAnimatingRef.current && window.innerWidth >= 768) {
         currentIndexRef.current = Math.round(container.scrollTop / window.innerHeight);
       }
     };
@@ -101,8 +115,10 @@ export function Overlay() {
       <div
         ref={containerRef}
         id="snap-container"
-        className="absolute inset-0 z-10 h-screen w-full snap-y snap-mandatory overflow-y-auto overflow-x-hidden overscroll-y-contain no-scrollbar"
-        style={{ scrollSnapType: "y mandatory" }}
+        className={`absolute inset-0 z-10 h-screen w-full overflow-y-auto overflow-x-hidden overscroll-y-contain no-scrollbar ${
+          isMobile ? "" : "snap-y snap-mandatory"
+        }`}
+        style={{ scrollSnapType: isMobile ? "none" : "y mandatory" }}
       >
         <div id="scroll-content" className="w-full">
           <HeroSection />
