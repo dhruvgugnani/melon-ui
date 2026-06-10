@@ -1358,6 +1358,111 @@ export default function Demo() {
       { name: "secondaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Accent secondary neon color.", control: { type: "color" } },
       { name: "bgColor", type: "string", defaultValue: `"#050505"`, description: "Backdrop background color of the canvas.", control: { type: "color" } }
     ]
+  },
+  {
+    id: "elastic-tether-hub",
+    slug: "elastic-tether-hub",
+    title: "Elastic Tether Hub",
+    description: "A centralized command core that blooms draggable action nodes on click, featuring elastic spring physics, real-time distance tracking, and a dramatic pull-to-fire release mechanic.",
+    category: "Widgets",
+    tags: ["Framer Motion", "Physics", "Drag", "Interactive", "Menu"],
+    cliCommand: "npx @melonui-dev/cli add elastic-tether-hub",
+    codeSnippet: "// See ElasticTetherHub.tsx",
+    componentPath: "ElasticTetherHub",
+    usageCode: `import { ElasticTetherHub } from "@/components/community/demos/ElasticTetherHub";
+
+export default function Demo() {
+  return (
+    <div className="flex items-center justify-center p-12 w-full min-h-[500px]">
+      <ElasticTetherHub />
+    </div>
+  );
+}`,
+  },
+  {
+    id: "fluid-magnetic-dial",
+    slug: "fluid-magnetic-dial",
+    title: "Fluid Magnetic Dial",
+    description: "A highly interactive, fluid-like control dial featuring magnetic Framer Motion physics, gooey SVG filters, and dynamic glitching text. Perfect for premium, futuristic dashboard interfaces.",
+    category: "Inputs",
+    tags: ["Framer Motion", "Magnetic", "Gooey", "Experimental"],
+    cliCommand: "npx @melonui-dev/cli add fluid-magnetic-dial",
+    codeSnippet: "// See FluidMagneticDial.tsx",
+    componentPath: "FluidMagneticDial",
+    scrollable: false,
+    usageCode: `import { FluidMagneticDial } from "@/components/community/demos/FluidMagneticDial";
+
+export default function Demo() {
+  return (
+    <div className="flex items-center justify-center p-20 min-h-[400px]">
+      <FluidMagneticDial
+        size={240}
+        label="SYSTEM LOAD"
+        primaryColor="#00f0ff"
+        secondaryColor="#ff5c71"
+      />
+    </div>
+  );
+}`,
+    props: [
+      {
+        name: "size",
+        type: "number",
+        defaultValue: "240",
+        description: "The width and height of the entire dial component in pixels.",
+        control: { type: "slider", min: 100, max: 400, step: 10 }
+      },
+      {
+        name: "label",
+        type: "string",
+        defaultValue: "INTENSITY",
+        description: "The small text label displayed above the value.",
+        control: { type: "text" }
+      },
+      {
+        name: "defaultValue",
+        type: "number",
+        defaultValue: "50",
+        description: "The initial starting value of the dial.",
+        control: { type: "slider", min: 0, max: 100, step: 1 }
+      },
+      {
+        name: "primaryColor",
+        type: "string",
+        defaultValue: "#7fff5e",
+        description: "The starting color of the circular progress track (at min value).",
+        control: { type: "color" }
+      },
+      {
+        name: "secondaryColor",
+        type: "string",
+        defaultValue: "#ff5c71",
+        description: "The ending color of the circular progress track (at max value).",
+        control: { type: "color" }
+      }
+    ]
+  },
+  {
+    id: "synapse-terminal",
+    slug: "synapse-terminal",
+    title: "Synapse Terminal",
+    description: "A Gen-Z premium interactive graph node UI with animated bezier tethers, glassmorphic floating elements, and a reactive custom cursor. Perfect for data visualization, SaaS dashboards, or cyber-aesthetic landing pages.",
+    category: "Widgets",
+    tags: ["Graph", "Network", "Framer Motion", "Interactive", "Cyber", "Dashboard"],
+    cliCommand: "npx @melonui-dev/cli add synapse-terminal",
+    codeSnippet: "// See SynapseTerminal.tsx",
+    componentPath: "SynapseTerminal",
+    scrollable: false,
+    usageCode: `import { SynapseTerminal } from "@/components/community/demos/SynapseTerminal";
+
+export default function MyPage() {
+  return (
+    <div className="w-full max-w-4xl p-8">
+      <SynapseTerminal />
+    </div>
+  );
+}`,
+    aiPrompt: "Generate a Synapse Terminal component that renders an interactive graph visualization with magnetic glassmorphic nodes, animated bezier connection tethers, and a custom reactive tracking cursor.",
   }
 ];
 

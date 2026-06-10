@@ -69,7 +69,7 @@ export default function CommunitySubmitPage() {
     "Inputs",
     "Cursors",
     "Widgets",
-    "3D Backgrounds",
+    "Backgrounds",
     "Scroll Effects",
     "GSAP Text",
     "Page Transitions",

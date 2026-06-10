@@ -228,7 +228,7 @@
   "particle-field": {
     "name": "Particle Field",
     "description": "R3F particle cloud in melon palette colors reacting to mouse movement.",
-    "category": "3D Backgrounds",
+    "category": "Backgrounds",
     "dependencies": [
       "three",
       "@react-three/fiber",
@@ -249,7 +249,7 @@
   "floating-orbs": {
     "name": "Floating Orbs",
     "description": "Sinusoidal floating spheres with dynamic colored point lighting.",
-    "category": "3D Backgrounds",
+    "category": "Backgrounds",
     "dependencies": [
       "three",
       "@react-three/fiber",
@@ -598,7 +598,7 @@
   "sticker-wall": {
     "name": "Sticker Wall",
     "description": "Interactive Gen-Z editorial sticker grid that fans out, scales, and tilts dynamically on pointer hover.",
-    "category": "3D Backgrounds",
+    "category": "Backgrounds",
     "dependencies": [
       "framer-motion"
     ],
@@ -618,7 +618,7 @@
   "luminous-waves": {
     "name": "Luminous Waves",
     "description": "Canvas-based glowing sine wave threads running horizontally and bending dynamically to track cursor position.",
-    "category": "3D Backgrounds",
+    "category": "Backgrounds",
     "dependencies": [],
     "files": [
       {
@@ -636,7 +636,7 @@
   "retro-grid": {
     "name": "Retro Grid",
     "description": "A neon 3D perspective grid extending to the horizon that moves forward and tilts on cursor coordinates.",
-    "category": "3D Backgrounds",
+    "category": "Backgrounds",
     "dependencies": [],
     "files": [
       {
@@ -654,7 +654,7 @@
   "noise-blob": {
     "name": "Noise Blob",
     "description": "Organic liquid morphing blobs using SVG color matrix and blur filters to create a gooey lava lamp visual.",
-    "category": "3D Backgrounds",
+    "category": "Backgrounds",
     "dependencies": [],
     "files": [
       {
@@ -672,7 +672,7 @@
   "matrix-rain": {
     "name": "Matrix Rain",
     "description": "Digital cascading streams of custom alphanumeric glyphs and seeds in neon-green and coral-red.",
-    "category": "3D Backgrounds",
+    "category": "Backgrounds",
     "dependencies": [],
     "files": [
       {
@@ -774,7 +774,7 @@
   "magnetic-particle-field": {
     "name": "Magnetic Particle Field",
     "description": "Background particles dynamically attract toward cursor and components in a verlet physics R3F instance field.",
-    "category": "3D Backgrounds",
+    "category": "Backgrounds",
     "dependencies": [
       "@react-three/fiber",
       "three"
@@ -796,7 +796,7 @@
   "retro-crt-background": {
     "name": "Retro CRT Scan Universe",
     "description": "A nostalgic cyber-terminal background featuring scanlines, phosphor glow, typing effect, and screen flicker.",
-    "category": "3D Backgrounds",
+    "category": "Backgrounds",
     "dependencies": [],
     "files": [
       {
@@ -815,7 +815,7 @@
   "sticker-collage-wall": {
     "name": "Sticker Collage Noise Wall",
     "description": "A Gen-Z chaotic scrapbook aesthetic with draggable torn paper stickers and reactive physics.",
-    "category": "3D Backgrounds",
+    "category": "Backgrounds",
     "dependencies": [
       "framer-motion"
     ],
@@ -872,5 +872,112 @@
       "Scramble"
     ],
     "preview": "/preview/quantum-lens-decoder.png"
+  },
+  "elastic-tether-hub": {
+    "name": "Elastic Tether Hub",
+    "description": "A centralized command core that blooms draggable action nodes on click, featuring elastic spring physics, real-time distance tracking, and a dramatic pull-to-fire release mechanic.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "elastic-tether-hub.tsx",
+        "path": "components/elastic-tether-hub.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Physics",
+      "Drag",
+      "Interactive",
+      "Menu"
+    ],
+    "preview": "/preview/elastic-tether-hub.png"
+  },
+  "fluid-magnetic-dial": {
+    "name": "Fluid Magnetic Dial",
+    "description": "A highly interactive, fluid-like control dial featuring magnetic Framer Motion physics, gooey SVG filters, and dynamic glitching text.",
+    "category": "Inputs",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "fluid-magnetic-dial.tsx",
+        "path": "components/fluid-magnetic-dial.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Magnetic",
+      "Gooey",
+      "Experimental"
+    ],
+    "preview": "/preview/fluid-magnetic-dial.png"
+  },
+  "synapse-terminal": {
+    "name": "Synapse Terminal",
+    "description": "A Gen-Z premium interactive graph node UI with animated bezier tethers, glassmorphic floating elements, and a reactive custom cursor.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "synapse-terminal.tsx",
+        "path": "components/synapse-terminal.tsx"
+      }
+    ],
+    "tags": [
+      "Graph",
+      "Network",
+      "Framer Motion",
+      "Interactive",
+      "Cyber",
+      "Dashboard"
+    ],
+    "preview": "/preview/synapse-terminal.png"
+  },
+  "anti-gravity-bento": {
+    "name": "Anti-Gravity Bento",
+    "description": "A premium glassmorphic bento grid where items float into zero-gravity on hover.",
+    "category": "Cards",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "anti-gravity-bento.tsx",
+        "path": "components/anti-gravity-bento.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "3D",
+      "Glassmorphism",
+      "Bento"
+    ],
+    "preview": "/preview/anti-gravity-bento.png"
+  },
+  "infinity-mirror-card": {
+    "name": "Infinity Mirror",
+    "description": "Deep nested 3D card creating an optical illusion of infinite layers, reacting to magnetic mouse movement.",
+    "category": "Cards",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "infinity-mirror-card.tsx",
+        "path": "components/infinity-mirror-card.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "3D",
+      "Premium"
+    ],
+    "preview": "/preview/infinity-mirror-card.png"
   }
 }
