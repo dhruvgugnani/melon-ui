@@ -53,4 +53,5 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   ElasticTetherHub: dynamic(() => import('./demos/ElasticTetherHub').then(m => m.ElasticTetherHub), { ssr: false }),
   FluidMagneticDial: dynamic(() => import('./demos/FluidMagneticDial').then(m => m.FluidMagneticDial), { ssr: false }),
   SynapseTerminal: dynamic(() => import('./demos/SynapseTerminal').then(m => m.SynapseTerminal), { ssr: false }),
+  KineticShardTerminal: dynamic(() => import('./demos/KineticShardTerminal').then(m => m.KineticShardTerminal), { ssr: false }),
 };
