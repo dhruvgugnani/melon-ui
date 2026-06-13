@@ -54,4 +54,5 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   FluidMagneticDial: dynamic(() => import('./demos/FluidMagneticDial').then(m => m.FluidMagneticDial), { ssr: false }),
   SynapseTerminal: dynamic(() => import('./demos/SynapseTerminal').then(m => m.SynapseTerminal), { ssr: false }),
   KineticShardTerminal: dynamic(() => import('./demos/KineticShardTerminal').then(m => m.KineticShardTerminal), { ssr: false }),
+  ChromaticSliceCard: dynamic(() => import('./demos/ChromaticSliceCard').then(m => m.ChromaticSliceCard), { ssr: false }),
 };
