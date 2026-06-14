@@ -1786,6 +1786,57 @@ export default function MyPage() {
   );
 }`,
     aiPrompt: "Generate a Synapse Terminal component that renders an interactive graph visualization with magnetic glassmorphic nodes, animated bezier connection tethers, and a custom reactive tracking cursor.",
+  },
+  {
+    id: "prism-vault",
+    slug: "prism-vault",
+    title: "Prism Vault",
+    description: "A 3D cryptographic data vault that unspools into a responsive bento dashboard using fluid layout morphing.",
+    category: "Layout",
+    tags: ["3D", "Framer Motion", "Layout", "Glassmorphism", "Bento", "Interactive"],
+    cliCommand: "npx @melonui/cli add prism-vault",
+    componentPath: "community/demos/PrismVault",
+    usageCode: `import { PrismVault } from "@/components/PrismVault";
+
+export default function App() {
+  return (
+    <div className="p-10 flex justify-center bg-black min-h-screen">
+      <PrismVault />
+    </div>
+  );
+}`,
+    props: [
+      {
+        name: "primaryColor",
+        type: "string",
+        defaultValue: "#ff5c71",
+        description: "Primary accent color for text and borders.",
+        control: { type: "color" }
+      },
+      {
+        name: "secondaryColor",
+        type: "string",
+        defaultValue: "#7fff5e",
+        description: "Secondary accent color for highlights and statuses.",
+        control: { type: "color" }
+      },
+      {
+        name: "glowColor",
+        type: "string",
+        defaultValue: "rgba(255, 92, 113, 0.4)",
+        description: "Color of the ambient glow.",
+        control: { type: "color" }
+      },
+      {
+        name: "title",
+        type: "string",
+        defaultValue: "SECURE PRISM VAULT",
+        description: "Title of the vault card.",
+        control: { type: "text" }
+      }
+    ],
+    codeSnippet: `// Use CLI to install: npx @melonui/cli add prism-vault`,
+    aiPrompt: "Generate a PrismVault component that acts as a 3D cryptographic data vault, expanding into a bento dashboard using framer-motion layout animations, with a magnetic hover effect and glassmorphic styling."
   }
 ];
 
