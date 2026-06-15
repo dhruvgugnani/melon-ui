@@ -18,6 +18,7 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   TagInput: dynamic(() => import('./demos/TagInput').then(m => m.TagInput), { ssr: false }),
   ParticleBackground: dynamic(() => import('./demos/ClientParticleBackground').then(m => m.ParticleBackground), { ssr: false }),
   StickerWall: dynamic(() => import('./demos/ClientStickerWall').then(m => m.StickerWall), { ssr: false }),
+  LiquidDimensionalNav: dynamic(() => import('./demos/LiquidDimensionalNav').then(m => m.LiquidDimensionalNav), { ssr: false }),
   LuminousWaves: dynamic(() => import('./demos/ClientLuminousWaves').then(m => m.LuminousWaves), { ssr: false }),
   RetroGrid: dynamic(() => import('./demos/ClientRetroGrid').then(m => m.RetroGrid), { ssr: false }),
   NoiseBlob: dynamic(() => import('./demos/ClientNoiseBlob').then(m => m.NoiseBlob), { ssr: false }),
