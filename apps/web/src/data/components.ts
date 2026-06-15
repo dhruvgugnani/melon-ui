@@ -29,6 +29,48 @@ export interface ComponentData {
 
 export const componentsData: ComponentData[] = [
   {
+    id: "liquid-dimensional-nav",
+    slug: "liquid-dimensional-nav",
+    title: "Liquid Dimensional Nav",
+    description: "A highly interactive sidebar component combining liquid morphing, dimensional 3D peeling, and magnetic physics-based hovering.",
+    category: "Navigation",
+    tags: ["Morphing", "Magnetic", "3D", "Premium"],
+    componentPath: "apps/web/src/components/community/demos/LiquidDimensionalNav.tsx",
+    codeSnippet: `import { LiquidDimensionalNav } from "@/components/ui/liquid-dimensional-nav";
+
+export default function Demo() {
+  return (
+    <div className="w-full max-w-4xl min-h-[600px] flex items-center justify-center bg-[#050505] p-8">
+      <LiquidDimensionalNav />
+    </div>
+  );
+}`,
+    usageCode: `import { LiquidDimensionalNav } from "@/components/ui/liquid-dimensional-nav";\n\n<LiquidDimensionalNav primaryColor="#7fff5e" accentColor="#ff5c71" />`,
+    props: [
+      {
+        name: "primaryColor",
+        type: "string",
+        defaultValue: "#7fff5e",
+        description: "Primary accent color for the liquid drop and glowing elements.",
+        control: { type: "color" }
+      },
+      {
+        name: "accentColor",
+        type: "string",
+        defaultValue: "#ff5c71",
+        description: "Secondary accent color used for decorative elements and hover effects.",
+        control: { type: "color" }
+      },
+      {
+        name: "bg",
+        type: "string",
+        defaultValue: "#050505",
+        description: "Background color of the container.",
+        control: { type: "color" }
+      }
+    ]
+  },
+  {
     id: "kinetic-shard-terminal",
     slug: "kinetic-shard-terminal",
     title: "Kinetic Shard Terminal",
