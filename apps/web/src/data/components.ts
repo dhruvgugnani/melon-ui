@@ -1786,6 +1786,51 @@ export default function MyPage() {
   );
 }`,
     aiPrompt: "Generate a Synapse Terminal component that renders an interactive graph visualization with magnetic glassmorphic nodes, animated bezier connection tethers, and a custom reactive tracking cursor.",
+  },
+  {
+    id: "nexus-prompt-core",
+    slug: "nexus-prompt-core",
+    title: "Nexus Prompt Core",
+    description: "A fluidly morphing AI prompt interface that transitions from a sleek input pill to a glowing processing core, and finally unfolds into a premium glassmorphic response dashboard.",
+    category: "Widgets",
+    tags: ["Framer Motion", "AI Interface", "Morphing", "Premium"],
+    cliCommand: "npx @melonui-dev/cli add nexus-prompt-core",
+    codeSnippet: "// See NexusPromptCore.tsx",
+    componentPath: "NexusPromptCore",
+    scrollable: false,
+    usageCode: `import { NexusPromptCore } from "@/components/community/demos/NexusPromptCore";
+
+export default function MyPage() {
+  return (
+    <div className="w-full p-12">
+      <NexusPromptCore />
+    </div>
+  );
+}`,
+    aiPrompt: "Generate a Nexus Prompt Core component that morphs fluidly between states: an input pill, a glowing processing core, and a glassmorphic dashboard.",
+    props: [
+      {
+        name: "primaryColor",
+        type: "string",
+        defaultValue: "#00f0ff",
+        description: "The primary neon color for the gradients.",
+        control: { type: "color" }
+      },
+      {
+        name: "accentColor",
+        type: "string",
+        defaultValue: "#ff5c71",
+        description: "The secondary neon color for the gradients.",
+        control: { type: "color" }
+      },
+      {
+        name: "glowColor",
+        type: "string",
+        defaultValue: "#7fff5e",
+        description: "The tertiary neon color for the gradients.",
+        control: { type: "color" }
+      }
+    ]
   }
 ];
 
