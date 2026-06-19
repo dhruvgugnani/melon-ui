@@ -1786,6 +1786,77 @@ export default function MyPage() {
   );
 }`,
     aiPrompt: "Generate a Synapse Terminal component that renders an interactive graph visualization with magnetic glassmorphic nodes, animated bezier connection tethers, and a custom reactive tracking cursor.",
+  },
+  {
+    id: "kinetic-shatter-card",
+    slug: "kinetic-shatter-card",
+    title: "Kinetic Shatter Card",
+    description: "A premium glassmorphic enclosure that violently shatters into 3D floating shards on hover, revealing a cybernetic glowing core inside.",
+    category: "Cards",
+    tags: ["Framer Motion", "3D", "Interactive", "Shatter", "Cyber"],
+    cliCommand: "npx @melonui-dev/cli add kinetic-shatter-card",
+    codeSnippet: "// See KineticShatterCard.tsx",
+    componentPath: "KineticShatterCard",
+    scrollable: false,
+    usageCode: `import { KineticShatterCard } from "@/components/community/demos/KineticShatterCard";
+
+export default function Demo() {
+  return (
+    <div className="flex items-center justify-center p-12 min-h-[500px]">
+      <KineticShatterCard
+        title="SHATTER CORE"
+        subtitle="LOCKED ENCLOSURE"
+        revealTitle="SYSTEM EXPOSED"
+        primaryColor="#ff5c71"
+        accentColor="#7fff5e"
+      />
+    </div>
+  );
+}`,
+    props: [
+      {
+        name: "title",
+        type: "string",
+        defaultValue: `"SHATTER CORE"`,
+        description: "The main title displayed on the outer shell.",
+        control: { type: "text" }
+      },
+      {
+        name: "subtitle",
+        type: "string",
+        defaultValue: `"LOCKED ENCLOSURE"`,
+        description: "The subtitle displayed on the outer shell.",
+        control: { type: "text" }
+      },
+      {
+        name: "revealTitle",
+        type: "string",
+        defaultValue: `"SYSTEM EXPOSED"`,
+        description: "The title revealed on the inner core.",
+        control: { type: "text" }
+      },
+      {
+        name: "revealText",
+        type: "string",
+        defaultValue: `"INTERNAL MECHANISMS ONLINE."`,
+        description: "The text description revealed on the inner core.",
+        control: { type: "text" }
+      },
+      {
+        name: "primaryColor",
+        type: "string",
+        defaultValue: `"#ff5c71"`,
+        description: "The primary neon color used for the core glow and highlights.",
+        control: { type: "color" }
+      },
+      {
+        name: "accentColor",
+        type: "string",
+        defaultValue: `"#7fff5e"`,
+        description: "The secondary accent color used for secondary highlights.",
+        control: { type: "color" }
+      }
+    ]
   }
 ];
 
