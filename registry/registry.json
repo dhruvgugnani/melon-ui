@@ -4,8 +4,7 @@
     "description": "Live animated terminal showing the installation flow. Drop it in your docs.",
     "category": "Getting Started",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -24,8 +23,7 @@
     "description": "Accordion-style versioned release list with smooth GSAP height animation.",
     "category": "Getting Started",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -44,8 +42,7 @@
     "description": "Seeds physically burst from the click point with GSAP staggered physics.",
     "category": "Buttons",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -64,8 +61,7 @@
     "description": "Click-origin radial ripple expands from the exact cursor position.",
     "category": "Buttons",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -84,8 +80,7 @@
     "description": "Nav links magnetically attract the cursor; elastic spring snaps back on leave.",
     "category": "Navigations",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -104,8 +99,7 @@
     "description": "Animated step breadcrumb with GSAP-driven progress bar between stages.",
     "category": "Navigations",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -124,8 +118,7 @@
     "description": "Card front retracts on hover revealing vibrant content underneath.",
     "category": "Cards",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -144,8 +137,7 @@
     "description": "3D rotateY flip using CSS preserve-3d and GSAP for precise control.",
     "category": "Cards",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -165,11 +157,7 @@
     "description": "Premium holographic ticket component with 3D pointer-tracking reflection, dynamic CSS clipping, and elastic tearing physics.",
     "category": "Cards",
     "dependencies": [
-      "framer-motion",
-      "gsap",
-      "@gsap/react",
-      "clsx",
-      "tailwind-merge"
+      "gsap"
     ],
     "files": [
       {
@@ -190,8 +178,7 @@
     "description": "SVG stroke dashoffset vine grows along the bottom border on focus.",
     "category": "Inputs",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -210,8 +197,7 @@
     "description": "Animated tag management — press Enter or comma to add, backspace to remove.",
     "category": "Inputs",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -230,9 +216,9 @@
     "description": "R3F particle cloud in melon palette colors reacting to mouse movement.",
     "category": "Backgrounds",
     "dependencies": [
-      "three",
       "@react-three/fiber",
-      "@react-three/drei"
+      "@types/three",
+      "three"
     ],
     "files": [
       {
@@ -251,9 +237,10 @@
     "description": "Sinusoidal floating spheres with dynamic colored point lighting.",
     "category": "Backgrounds",
     "dependencies": [
-      "three",
+      "@react-three/drei",
       "@react-three/fiber",
-      "@react-three/drei"
+      "@types/three",
+      "three"
     ],
     "files": [
       {
@@ -272,8 +259,7 @@
     "description": "Velocity-based squash and stretch blob with elastic trailing ring.",
     "category": "Cursors",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -292,8 +278,7 @@
     "description": "Precision crosshair with live coordinate readout and a grid overlay.",
     "category": "Cursors",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -312,8 +297,7 @@
     "description": "Characters blur-in with stagger tied to ScrollTrigger scroll position.",
     "category": "Scroll Effects",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -332,8 +316,7 @@
     "description": "Depth strips that scroll at different speeds creating a parallax illusion.",
     "category": "Scroll Effects",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -352,8 +335,7 @@
     "description": "Letters drip down on hover with random skew offsets, spring back on leave.",
     "category": "GSAP Text",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -371,10 +353,7 @@
     "name": "Scramble Text",
     "description": "Characters cycle through random glyphs before resolving back on hover.",
     "category": "GSAP Text",
-    "dependencies": [
-      "gsap",
-      "@gsap/react"
-    ],
+    "dependencies": [],
     "files": [
       {
         "name": "scramble-text.tsx",
@@ -392,8 +371,7 @@
     "description": "A colored stripe sweeps across the viewport to mask route changes.",
     "category": "Page Transitions",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -412,8 +390,7 @@
     "description": "Circular clip expands from center masking the page swap between routes.",
     "category": "Page Transitions",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -432,8 +409,7 @@
     "description": "3D orbital carousel where cards rotate in a physical orbit around an interactive central gravity core with inertial drag.",
     "category": "Cards",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -453,8 +429,7 @@
     "description": "A mechanical grid of interactive SVG lines/needles that act as magnetic nodes pointing directly at your cursor, emitting elastic spring waves on clicks.",
     "category": "Cursors",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "gsap"
     ],
     "files": [
       {
@@ -655,7 +630,9 @@
     "name": "Noise Blob",
     "description": "Organic liquid morphing blobs using SVG color matrix and blur filters to create a gooey lava lamp visual.",
     "category": "Backgrounds",
-    "dependencies": [],
+    "dependencies": [
+      "framer-motion"
+    ],
     "files": [
       {
         "name": "noise-blob.tsx",
@@ -777,6 +754,7 @@
     "category": "Backgrounds",
     "dependencies": [
       "@react-three/fiber",
+      "@types/three",
       "three"
     ],
     "files": [
@@ -979,5 +957,155 @@
       "Premium"
     ],
     "preview": "/preview/infinity-mirror-card.png"
+  },
+  "chromatic-slice-card": {
+    "name": "Chromatic Slice Card",
+    "description": "A Gen-Z premium card that dynamically slices into floating horizontal strips in 3D space on hover, revealing a neon core.",
+    "category": "Cards",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "chromatic-slice-card.tsx",
+        "path": "components/chromatic-slice-card.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Premium",
+      "Cyberpunk",
+      "Hover Effect"
+    ],
+    "preview": "/preview/chromatic-slice-card.png"
+  },
+  "kinetic-holo-stack": {
+    "name": "Kinetic Holo Stack",
+    "description": "A highly interactive ",
+    "category": "Cards",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "kinetic-holo-stack.tsx",
+        "path": "components/kinetic-holo-stack.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "3D",
+      "Premium",
+      "Glassmorphism"
+    ],
+    "preview": "/preview/kinetic-holo-stack.png"
+  },
+  "kinetic-shard-terminal": {
+    "name": "Kinetic Shard Terminal",
+    "description": "A highly interactive cyberpunk-style terminal that unlocks via dragging and dropping a ",
+    "category": "Cards",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "kinetic-shard-terminal.tsx",
+        "path": "components/kinetic-shard-terminal.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Drag and Drop",
+      "Premium",
+      "Cyberpunk"
+    ],
+    "preview": "/preview/kinetic-shard-terminal.png"
+  },
+  "kinetic-shatter-card": {
+    "name": "Kinetic Shatter Card",
+    "description": "A premium glassmorphic enclosure that violently shatters into 3D floating shards on hover, revealing a cybernetic glowing core inside.",
+    "category": "Cards",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "kinetic-shatter-card.tsx",
+        "path": "components/kinetic-shatter-card.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "3D",
+      "Interactive",
+      "Shatter",
+      "Cyber"
+    ],
+    "preview": "/preview/kinetic-shatter-card.png"
+  },
+  "liquid-dimensional-nav": {
+    "name": "Liquid Dimensional Nav",
+    "description": "A highly interactive sidebar component combining liquid morphing, dimensional 3D peeling, and magnetic physics-based hovering.",
+    "category": "Navigation",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "liquid-dimensional-nav.tsx",
+        "path": "components/liquid-dimensional-nav.tsx"
+      }
+    ],
+    "tags": [
+      "Morphing",
+      "Magnetic",
+      "3D",
+      "Premium"
+    ],
+    "preview": "/preview/liquid-dimensional-nav.png"
+  },
+  "nexus-prompt-core": {
+    "name": "Nexus Prompt Core",
+    "description": "A fluidly morphing AI prompt interface that transitions from a sleek input pill to a glowing processing core, and finally unfolds into a premium glassmorphic response dashboard.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "nexus-prompt-core.tsx",
+        "path": "components/nexus-prompt-core.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "AI Interface",
+      "Morphing",
+      "Premium"
+    ],
+    "preview": "/preview/nexus-prompt-core.png"
+  },
+  "prism-vault": {
+    "name": "Prism Vault",
+    "description": "A 3D cryptographic data vault that unspools into a responsive bento dashboard using fluid layout morphing.",
+    "category": "Layout",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "prism-vault.tsx",
+        "path": "components/prism-vault.tsx"
+      }
+    ],
+    "tags": [
+      "3D",
+      "Framer Motion",
+      "Layout",
+      "Glassmorphism",
+      "Bento",
+      "Interactive"
+    ],
+    "preview": "/preview/prism-vault.png"
   }
 }

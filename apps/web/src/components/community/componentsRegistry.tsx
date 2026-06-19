@@ -54,4 +54,10 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   FluidMagneticDial: dynamic(() => import('./demos/FluidMagneticDial').then(m => m.FluidMagneticDial), { ssr: false }),
   SynapseTerminal: dynamic(() => import('./demos/SynapseTerminal').then(m => m.SynapseTerminal), { ssr: false }),
   KineticShardTerminal: dynamic(() => import('./demos/KineticShardTerminal').then(m => m.KineticShardTerminal), { ssr: false }),
+  KineticHoloStack: dynamic(() => import('./demos/KineticHoloStack').then(m => m.KineticHoloStack), { ssr: false }),
+  KineticShatterCard: dynamic(() => import('./demos/KineticShatterCard').then(m => m.KineticShatterCard), { ssr: false }),
+  ChromaticSliceCard: dynamic(() => import('./demos/ChromaticSliceCard').then(m => m.ChromaticSliceCard), { ssr: false }),
+  LiquidDimensionalNav: dynamic(() => import('./demos/LiquidDimensionalNav').then(m => m.LiquidDimensionalNav), { ssr: false }),
+  NexusPromptCore: dynamic(() => import('./demos/NexusPromptCore').then(m => m.NexusPromptCore), { ssr: false }),
+  PrismVault: dynamic(() => import('./demos/PrismVault').then(m => m.PrismVault), { ssr: false }),
 };
