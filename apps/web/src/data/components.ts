@@ -1727,6 +1727,23 @@ export const componentsData: ComponentData[] = [
       ]
     },
   {
+      id: "kinetic-swing-tag",
+      slug: "kinetic-swing-tag",
+      title: "Kinetic Swing Tag",
+      description: "A Gen-Z digital streetwear fashion tag with realistic string physics, draggable swinging motion, and holographic glare.",
+      category: "Cards",
+      tags: ["Framer Motion", "Physics", "Gen-Z", "Streetwear", "Interactive"],
+      cliCommand: "npx @melonui-dev/cli add kinetic-swing-tag",
+      codeSnippet: ``,
+      componentPath: "KineticSwingTag",
+      props: [
+        { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Left accent gradient color.", control: { type: "color" } },
+        { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Right accent gradient color.", control: { type: "color" } },
+        { name: "brandName", type: "string", defaultValue: `"MELON"`, description: "The central brand text.", control: { type: "text" } },
+        { name: "seriesText", type: "string", defaultValue: `"S/S 2024 ARCHIVE"`, description: "The subtext collection label.", control: { type: "text" } }
+      ]
+    },
+  {
       id: "kinetic-shatter-card",
       slug: "kinetic-shatter-card",
       title: "Kinetic Shatter Card",
