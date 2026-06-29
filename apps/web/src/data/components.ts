@@ -29,6 +29,36 @@ export interface ComponentData {
 
 export const componentsData: ComponentData[] = [
   {
+    id: "holo-deploy-card",
+    slug: "holo-deploy-card",
+    title: "Holo Deploy Card",
+    description: "A highly kinetic, tactile 3D card. On hover, glassmorphic panels deploy outwardly like a satellite or an unfolding sci-fi interface, expanding the interface area.",
+    category: "Cards",
+    tags: ["Framer Motion", "3D", "Interactive", "Cyber"],
+    cliCommand: "npx @melonui-dev/cli add holo-deploy-card",
+    codeSnippet: "// HoloDeployCard.tsx",
+    componentPath: "HoloDeployCard",
+    usageCode: `import { HoloDeployCard } from "@/components/community/demos/HoloDeployCard";
+
+export default function Demo() {
+  return (
+    <div className="w-full py-32 flex justify-center items-center">
+      <HoloDeployCard
+        title="MAIN TERMINAL"
+        subtitle="HOVER TO INITIALIZE"
+      />
+    </div>
+  );
+}`,
+    props: [
+      { name: "title", type: "string", defaultValue: `"CORE SYSTEM"`, description: "Central glowing title text.", control: { type: "text" } },
+      { name: "subtitle", type: "string", defaultValue: `"HOVER TO DEPLOY"`, description: "Helper text on the center card.", control: { type: "text" } },
+      { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Primary neon accent color.", control: { type: "color" } },
+      { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Secondary neon accent color.", control: { type: "color" } }
+    ]
+  },
+
+  {
       id: "anti-gravity-bento",
       slug: "anti-gravity-bento",
       title: "Anti-Gravity Bento",
