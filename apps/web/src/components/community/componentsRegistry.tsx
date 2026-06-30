@@ -60,4 +60,5 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   LiquidDimensionalNav: dynamic(() => import('./demos/LiquidDimensionalNav').then(m => m.LiquidDimensionalNav), { ssr: false }),
   NexusPromptCore: dynamic(() => import('./demos/NexusPromptCore').then(m => m.NexusPromptCore), { ssr: false }),
   PrismVault: dynamic(() => import('./demos/PrismVault').then(m => m.PrismVault), { ssr: false }),
+  HoloSealVault: dynamic(() => import('./demos/HoloSealVault').then(m => m.HoloSealVault), { ssr: false }),
 };
