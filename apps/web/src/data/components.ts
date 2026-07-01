@@ -2531,6 +2531,72 @@ export const componentsData: ComponentData[] = [
       cliCommand: "npx @melonui-dev/cli add tag-input",
       codeSnippet: `const handleKeyDown = (e) => {\n  if (e.key === 'Enter' && inputValue) {\n    setTags([...tags, inputValue]);\n    setInputValue('');\n  }\n};`,
       componentPath: "TagInput",
+    },
+  {
+      id: "cyber-biometric-scanner",
+      slug: "cyber-biometric-scanner",
+      title: "Cyber Biometric Scanner",
+      description: "A highly interactive, press-and-hold biometric scanner featuring dynamic SVG topography, glowing laser sweeps, and glitching cybernetic states.",
+      category: "Widgets",
+      tags: ["Framer Motion", "Biometric", "Scanner", "Interactive"],
+      cliCommand: "npx @melonui-dev/cli add cyber-biometric-scanner",
+      codeSnippet: `// See CyberBiometricScanner.tsx`,
+      componentPath: "CyberBiometricScanner",
+      scrollable: false,
+      usageCode: `import { CyberBiometricScanner } from "@/components/community/demos/CyberBiometricScanner";
+
+  export default function Demo() {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <CyberBiometricScanner />
+      </div>
+    );
+  }`,
+      aiPrompt: "Generate a CyberBiometricScanner component that uses framer-motion to create a press-and-hold biometric scanner featuring dynamic SVG topography, glowing laser sweeps, and glitching cybernetic states.",
+      props: [
+        {
+          name: "title",
+          type: "string",
+          defaultValue: `"IDENTITY VERIFICATION"`,
+          description: "The main title displayed above the scanner.",
+          control: { type: "text" }
+        },
+        {
+          name: "subtitle",
+          type: "string",
+          defaultValue: `"HOLD TO SCAN"`,
+          description: "The instructional subtitle displayed at the bottom.",
+          control: { type: "text" }
+        },
+        {
+          name: "successText",
+          type: "string",
+          defaultValue: `"ACCESS GRANTED"`,
+          description: "The text displayed upon successful scan.",
+          control: { type: "text" }
+        },
+        {
+          name: "primaryColor",
+          type: "string",
+          defaultValue: `"#00f0ff"`,
+          description: "The main neon color used for the scanner UI and success state.",
+          control: { type: "color" }
+        },
+        {
+          name: "accentColor",
+          type: "string",
+          defaultValue: `"#ff5c71"`,
+          description: "The secondary accent color used for error/failed states.",
+          control: { type: "color" }
+        },
+        {
+          name: "scanDuration",
+          type: "number",
+          defaultValue: "2500",
+          description: "Duration required to hold the scanner in milliseconds before success.",
+          control: { type: "slider", min: 1000, max: 5000, step: 100 }
+        }
+      ]
     }
 ];
 
