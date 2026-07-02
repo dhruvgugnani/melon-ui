@@ -2531,6 +2531,54 @@ export const componentsData: ComponentData[] = [
       cliCommand: "npx @melonui-dev/cli add tag-input",
       codeSnippet: `const handleKeyDown = (e) => {\n  if (e.key === 'Enter' && inputValue) {\n    setTags([...tags, inputValue]);\n    setInputValue('');\n  }\n};`,
       componentPath: "TagInput",
+    },
+  {
+      id: "tethered-orbital-vault",
+      slug: "tethered-orbital-vault",
+      title: "Tethered Orbital Vault",
+      description: "A highly tactile digital lock where users drag orbiting cryptographic keys into a central core via magnetic tethers, morphing into a futuristic dashboard upon decryption.",
+      category: "Widgets",
+      tags: ["Framer Motion", "Interactive", "Drag and Drop", "Cyber", "Dashboard"],
+      cliCommand: "npx @melonui-dev/cli add tethered-orbital-vault",
+      codeSnippet: "// See TetheredOrbitalVault.tsx",
+      componentPath: "TetheredOrbitalVault",
+      scrollable: false,
+      usageCode: `import { TetheredOrbitalVault } from "@/components/community/demos/TetheredOrbitalVault";
+
+  export default function MyPage() {
+    return (
+      <div className="w-full max-w-4xl p-8">
+        <TetheredOrbitalVault />
+      </div>
+    );
+  }`,
+      aiPrompt: "Generate a Tethered Orbital Vault component that features draggable orbiting keys connected by magnetic tethers to a central core, which unlocks and expands into a glassmorphic dashboard.",
+      props: [
+        {
+          name: "title",
+          type: "string",
+          defaultValue: `"ORBITAL VAULT"`,
+          description: "Main header title for the component."
+        },
+        {
+          name: "primaryColor",
+          type: "string",
+          defaultValue: `"#ff5c71"`,
+          description: "Neon color for the first key and logs."
+        },
+        {
+          name: "accentColor",
+          type: "string",
+          defaultValue: `"#7fff5e"`,
+          description: "Neon color for the second key and success state."
+        },
+        {
+          name: "glowColor",
+          type: "string",
+          defaultValue: `"#00f0ff"`,
+          description: "Neon color for the third key and ambient glow."
+        }
+      ]
     }
 ];
 
