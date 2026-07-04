@@ -36,7 +36,7 @@ export function KineticMagnet({
     if (!container) return;
 
     // Cache needle positions
-    let needlePositions = needlesRef.current.map((needle) => {
+    const needlePositions = needlesRef.current.map((needle) => {
       if (!needle) return { x: 0, y: 0 };
       const rect = needle.getBoundingClientRect();
       const parentRect = container.getBoundingClientRect();
