@@ -89,9 +89,9 @@ export function KineticShatterCard({
              style={{ backgroundColor: bgColor }}>
 
           <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-screen"
-               style={{
-                 backgroundImage: `radial-gradient(circle at 50% 50%, ${primaryColor} 0%, transparent 70%)`
-               }} />
+                style={{
+                  backgroundImage: `radial-gradient(circle at 50% 50%, ${primaryColor} 0%, transparent 70%)`
+                }} />
 
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
             style={{
@@ -99,31 +99,41 @@ export function KineticShatterCard({
             }}
           />
 
-          {/* Cyber Core Graphic */}
           <motion.div
-            animate={{
-              scale: isHovered ? [1, 1.05, 1] : 1,
-              opacity: isHovered ? 1 : 0.4
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ 
+              opacity: isHovered ? 1 : 0,
+              scale: isHovered ? 1 : 0.92,
             }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-24 h-24 rounded-full border-4 flex items-center justify-center mb-6 relative"
-            style={{ borderColor: `${primaryColor}50`, boxShadow: isHovered ? `0 0 40px ${primaryColor}40` : 'none' }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="w-full h-full flex flex-col items-center justify-center relative z-10"
           >
-             <div className="absolute w-full h-full border-2 border-dashed rounded-full animate-[spin_10s_linear_infinite]" style={{ borderColor: accentColor }} />
-             <div className="w-8 h-8 rounded-full animate-pulse" style={{ backgroundColor: primaryColor, boxShadow: `0 0 20px ${primaryColor}` }} />
+            {/* Cyber Core Graphic */}
+            <motion.div
+              animate={{
+                scale: isHovered ? [1, 1.05, 1] : 1,
+                opacity: isHovered ? 1 : 0.4
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-24 h-24 rounded-full border-4 flex items-center justify-center mb-6 relative"
+              style={{ borderColor: `${primaryColor}50`, boxShadow: isHovered ? `0 0 40px ${primaryColor}40` : 'none' }}
+            >
+               <div className="absolute w-full h-full border-2 border-dashed rounded-full animate-[spin_10s_linear_infinite]" style={{ borderColor: accentColor }} />
+               <div className="w-8 h-8 rounded-full animate-pulse" style={{ backgroundColor: primaryColor, boxShadow: `0 0 20px ${primaryColor}` }} />
+            </motion.div>
+
+            <h3 className="text-white text-xl font-bold tracking-[0.2em] mb-2 text-center" style={{ textShadow: isHovered ? `0 0 10px ${primaryColor}` : 'none' }}>
+              {revealTitle}
+            </h3>
+            <p className="text-white/50 text-xs tracking-widest text-center uppercase max-w-[200px]">
+              {revealText}
+            </p>
+
+            <div className="mt-8 flex gap-4">
+              <div className="px-3 py-1 rounded-full border text-[10px] tracking-widest bg-black/50" style={{ borderColor: primaryColor, color: primaryColor }}>SPRING</div>
+              <div className="px-3 py-1 rounded-full border text-[10px] tracking-widest bg-black/50" style={{ borderColor: accentColor, color: accentColor }}>INTERACTIVE</div>
+            </div>
           </motion.div>
-
-          <h3 className="text-white text-xl font-bold tracking-[0.2em] mb-2 text-center" style={{ textShadow: isHovered ? `0 0 10px ${primaryColor}` : 'none' }}>
-            {revealTitle}
-          </h3>
-          <p className="text-white/50 text-xs tracking-widest text-center uppercase max-w-[200px]">
-            {revealText}
-          </p>
-
-          <div className="mt-8 flex gap-4">
-            <div className="px-3 py-1 rounded-full border text-[10px] tracking-widest bg-black/50" style={{ borderColor: primaryColor, color: primaryColor }}>SPRING</div>
-            <div className="px-3 py-1 rounded-full border text-[10px] tracking-widest bg-black/50" style={{ borderColor: accentColor, color: accentColor }}>INTERACTIVE</div>
-          </div>
         </div>
 
         {/* Shatter Shell (Front Layer) */}

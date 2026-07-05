@@ -6541,7 +6541,7 @@ export function ParallaxStrips({
       stripRefs.current.forEach((strip, i) => {
         if (!strip || !strips[i]) return;
         gsap.to(strip, {
-          x: strips[i].speed * 120,
+          x: strips[i].speed * 400,
           ease: "none",
           scrollTrigger: {
             trigger: containerRef.current,
