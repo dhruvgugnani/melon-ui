@@ -38,6 +38,7 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   KineticGlassGrid: dynamic(() => import('./demos/KineticGlassGrid').then(m => m.KineticGlassGrid), { ssr: false }),
   SignalLoom: dynamic(() => import('./demos/SignalLoom').then(m => m.SignalLoom), { ssr: false }),
   ChromaticMeltText: dynamic(() => import('./demos/ChromaticMeltText').then(m => m.ChromaticMeltText), { ssr: false }),
+  ZeroGravityShards: dynamic(() => import('./demos/ZeroGravityShards').then(m => m.ZeroGravityShards), { ssr: false }),
   RindScannerText: dynamic(() => import('./demos/RindScannerText').then(m => m.RindScannerText), { ssr: false }),
   StickerStackText: dynamic(() => import('./demos/StickerStackText').then(m => m.StickerStackText), { ssr: false }),
   GlyphOrbitText: dynamic(() => import('./demos/GlyphOrbitText').then(m => m.GlyphOrbitText), { ssr: false }),
