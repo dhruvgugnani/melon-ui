@@ -194,7 +194,7 @@
   },
   "tag-input": {
     "name": "Tag Input",
-    "description": "Animated tag management — press Enter or comma to add, backspace to remove.",
+    "description": "Animated tag management \u2014 press Enter or comma to add, backspace to remove.",
     "category": "Inputs",
     "dependencies": [
       "gsap"
@@ -1128,5 +1128,268 @@
       "Precision"
     ],
     "preview": "/preview/terminal-cursor.png"
+  },
+  "zero-gravity-shards": {
+    "name": "Zero Gravity Shards",
+    "description": "A highly interactive ",
+    "category": "Cards",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "zero-gravity-shards.tsx",
+        "path": "components/zero-gravity-shards.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Morphing",
+      "Layout ID",
+      "Interactive",
+      "Zero Gravity",
+      "Bento"
+    ],
+    "preview": "/preview/zero-gravity-shards.png"
+  },
+  "neural-pattern-lock": {
+    "name": "Neural Pattern Lock",
+    "description": "A highly interactive, 3D-tilting pattern lock screen with magnetic physics and glowing neon paths.",
+    "category": "Inputs",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "neural-pattern-lock.tsx",
+        "path": "components/neural-pattern-lock.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "3D",
+      "Interactive",
+      "Form"
+    ],
+    "preview": "/preview/neural-pattern-lock.png"
+  },
+  "singularity-control-node": {
+    "name": "Singularity Control Node",
+    "description": "A centralized magnetic core that expands into an interactive circular grid of glowing, glassmorphic nodes connected by animated synapse lines.",
+    "category": "Navigation",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "singularity-control-node.tsx",
+        "path": "components/singularity-control-node.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Glassmorphism",
+      "Interactive",
+      "Navigation"
+    ],
+    "preview": "/preview/singularity-control-node.png"
+  },
+  "tethered-orbital-vault": {
+    "name": "Tethered Orbital Vault",
+    "description": "A highly tactile digital lock where users drag orbiting cryptographic keys into a central core via magnetic tethers, morphing into a futuristic dashboard upon decryption.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "tethered-orbital-vault.tsx",
+        "path": "components/tethered-orbital-vault.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Interactive",
+      "Drag and Drop",
+      "Cyber",
+      "Dashboard"
+    ],
+    "preview": "/preview/tethered-orbital-vault.png"
+  },
+  "cyber-biometric-scanner": {
+    "name": "Cyber Biometric Scanner",
+    "description": "A highly interactive, press-and-hold biometric scanner featuring dynamic SVG topography, glowing laser sweeps, and glitching cybernetic states.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "cyber-biometric-scanner.tsx",
+        "path": "components/cyber-biometric-scanner.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Biometric",
+      "Scanner",
+      "Interactive"
+    ],
+    "preview": "/preview/cyber-biometric-scanner.png"
+  },
+  "holo-seal-vault": {
+    "name": "Holo Seal Vault",
+    "description": "A tactile unboxing experience where users physically drag and tear a holographic security seal to reveal encrypted content.",
+    "category": "Cards",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "holo-seal-vault.tsx",
+        "path": "components/holo-seal-vault.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Interactive",
+      "Physics",
+      "Tactile"
+    ],
+    "preview": "/preview/holo-seal-vault.png"
+  },
+  "holo-deploy-card": {
+    "name": "Holo Deploy Card",
+    "description": "A highly kinetic, tactile 3D card. On hover, glassmorphic panels deploy outwardly like a satellite or an unfolding sci-fi interface, expanding the interface area.",
+    "category": "Cards",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "holo-deploy-card.tsx",
+        "path": "components/holo-deploy-card.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "3D",
+      "Interactive",
+      "Cyber"
+    ],
+    "preview": "/preview/holo-deploy-card.png"
+  },
+  "tactile-cyber-badge": {
+    "name": "Tactile Cyber Badge",
+    "description": "A highly interactive, draggable physical ID badge with framer-motion kinetics, realistic lanyard string physics, and premium digital aesthetic.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "tactile-cyber-badge.tsx",
+        "path": "components/tactile-cyber-badge.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Physics",
+      "Interactive",
+      "3D",
+      "Draggable"
+    ],
+    "preview": "/preview/tactile-cyber-badge.png"
+  },
+  "hyperdrive-widget": {
+    "name": "HyperDrive Widget",
+    "description": "A highly interactive, futuristic widget featuring a central magnetic core and orbiting rings that react to hover and click.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "hyperdrive-widget.tsx",
+        "path": "components/hyperdrive-widget.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Interactive",
+      "Premium",
+      "Cyber"
+    ],
+    "preview": "/preview/hyperdrive-widget.png"
+  },
+  "kinetic-swing-tag": {
+    "name": "Kinetic Swing Tag",
+    "description": "A Gen-Z digital streetwear fashion tag with realistic string physics, draggable swinging motion, and holographic glare.",
+    "category": "Cards",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "kinetic-swing-tag.tsx",
+        "path": "components/kinetic-swing-tag.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Physics",
+      "Gen-Z",
+      "Streetwear",
+      "Interactive"
+    ],
+    "preview": "/preview/kinetic-swing-tag.png"
+  },
+  "void-portal-reveal": {
+    "name": "Void Portal Reveal",
+    "description": "A highly interactive, gyroscopic 3D ring portal that massively scales on hover to simulate flying through, revealing a glassmorphic hidden dashboard or UI beneath.",
+    "category": "Backgrounds",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "void-portal-reveal.tsx",
+        "path": "components/void-portal-reveal.tsx"
+      }
+    ],
+    "tags": [
+      "portal",
+      "3d",
+      "interactive",
+      "reveal",
+      "glassmorphism",
+      "framer-motion",
+      "gen-z"
+    ],
+    "preview": "/preview/void-portal-reveal.png"
+  },
+  "holo-hexagon-map": {
+    "name": "Holo Hexagon Map",
+    "description": "A 3D interactive, glassmorphic hexagon grid with magnetic hover and status nodes.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "holo-hexagon-map.tsx",
+        "path": "components/holo-hexagon-map.tsx"
+      }
+    ],
+    "tags": [
+      "hex",
+      "grid",
+      "3d",
+      "interactive",
+      "map",
+      "nodes",
+      "dashboard"
+    ],
+    "preview": "/preview/holo-hexagon-map.png"
   }
 }

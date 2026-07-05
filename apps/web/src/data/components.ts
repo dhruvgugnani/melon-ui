@@ -10046,8 +10046,3357 @@ export function TerminalCursor({
 }
 `,
       componentPath: "TerminalCursor",
+  },
+{
+      id: "zero-gravity-shards",
+      slug: "zero-gravity-shards",
+      title: "Zero Gravity Shards",
+      description: "A highly interactive 'zero gravity' shard interface where glassmorphic cards drift organically using Framer Motion physics, snap to the cursor on hover, and seamlessly morph into full-screen bento grids using layoutId when clicked.",
+      category: "Cards",
+      tags: ["Framer Motion", "Morphing", "Layout ID", "Interactive", "Zero Gravity", "Bento"],
+      cliCommand: "npx @melonui-dev/cli add zero-gravity-shards",
+      codeSnippet: `"use client";
+
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, HTMLMotionProps, MotionValue } from "framer-motion";
+
+export interface ShardData {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  content: React.ReactNode;
+  color: string;
+  initialX: number;
+  initialY: number;
+  rotation: number;
+}
+
+export interface ZeroGravityShardsProps extends Omit<HTMLMotionProps<"div">, "children"> {
+  shards?: ShardData[];
+  coreLabel?: string;
+  coreSublabel?: string;
+  glowColor?: string;
+}
+
+const DEFAULT_SHARDS: ShardData[] = [
+  {
+    id: "shard-1",
+    title: "Neural Core",
+    subtitle: "Active",
+    color: "#7fff5e",
+    initialX: -150,
+    initialY: -120,
+    rotation: -10,
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 20a6 6 0 0 0-12 0" />
+        <circle cx="12" cy="10" r="4" />
+        <circle cx="12" cy="12" r="10" />
+      </svg>
+    ),
+    content: (
+      <div className="flex flex-col gap-4 text-white w-full h-full">
+        <div className="flex justify-between items-center pb-4 border-b border-white/10">
+          <div>
+            <h4 className="text-xl font-bold font-['Outfit']">System Status</h4>
+            <p className="text-sm text-white/50">All nodes operational</p>
+          </div>
+          <div className="w-10 h-10 rounded-full bg-[#7fff5e]/20 flex items-center justify-center text-[#7fff5e]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+            <p className="text-xs text-white/40 mb-1">LATENCY</p>
+            <p className="text-2xl font-mono text-[#7fff5e]">12ms</p>
+          </div>
+          <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+            <p className="text-xs text-white/40 mb-1">THROUGHPUT</p>
+            <p className="text-2xl font-mono text-white">4.2k/s</p>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: "shard-2",
+    title: "Quantum Link",
+    subtitle: "Encrypted",
+    color: "#ff5c71",
+    initialX: 180,
+    initialY: -80,
+    rotation: 15,
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+    ),
+    content: (
+      <div className="flex flex-col h-full w-full justify-between">
+        <h4 className="text-xl font-bold text-white mb-4">Security Overview</h4>
+        <div className="flex-1 rounded-xl bg-black/40 border border-white/10 p-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')] opacity-20"></div>
+          <div className="relative z-10 flex flex-col gap-2 font-mono text-sm">
+            <div className="flex justify-between text-white/70"><span>Protocol</span><span className="text-[#ff5c71]">AES-256</span></div>
+            <div className="flex justify-between text-white/70"><span>Handshake</span><span className="text-white">Success</span></div>
+            <div className="flex justify-between text-white/70"><span>Entropy</span><span className="text-[#7fff5e]">High</span></div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: "shard-3",
+    title: "Void Cache",
+    subtitle: "Synchronizing",
+    color: "#00f0ff",
+    initialX: -120,
+    initialY: 160,
+    rotation: -25,
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+      </svg>
+    ),
+    content: (
+      <div className="flex flex-col items-center justify-center h-full text-center">
+        <div className="w-16 h-16 rounded-full border-4 border-[#00f0ff]/30 border-t-[#00f0ff] animate-spin mb-6"></div>
+        <h3 className="text-2xl font-bold text-white mb-2">Syncing Data</h3>
+        <p className="text-white/50 text-sm">Transferring assets across nodes</p>
+      </div>
+    )
+  },
+  {
+    id: "shard-4",
+    title: "Omni-Grid",
+    subtitle: "Expanded",
+    color: "#e8d5b7",
+    initialX: 160,
+    initialY: 140,
+    rotation: 12,
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="7"></rect>
+        <rect x="14" y="3" width="7" height="7"></rect>
+        <rect x="14" y="14" width="7" height="7"></rect>
+        <rect x="3" y="14" width="7" height="7"></rect>
+      </svg>
+    ),
+    content: (
+      <div className="grid grid-cols-3 grid-rows-3 gap-2 h-full w-full">
+        {[...Array(9)].map((_, i) => (
+          <div key={i} className="bg-white/5 rounded-lg border border-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
+            <div className="w-2 h-2 rounded-full bg-[#e8d5b7]/50" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+];
+
+
+const ShardNode: React.FC<{
+  shard: ShardData;
+  i: number;
+  activeShard: string | null;
+  setActiveShard: (id: string | null) => void;
+  isCoreActive: boolean;
+  smoothMouseX: MotionValue<number>;
+  smoothMouseY: MotionValue<number>;
+}> = ({
+  shard,
+  i,
+  activeShard,
+  setActiveShard,
+  isCoreActive,
+  smoothMouseX,
+  smoothMouseY
+}) => {
+  const parallaxX = useTransform(smoothMouseX, (val) => (val as number) * (shard.initialX / 500));
+  const parallaxY = useTransform(smoothMouseY, (val) => (val as number) * (shard.initialY / 500));
+
+  const floatY = {
+    y: [0, -10, 0],
+    transition: {
+      duration: 4 + i,
+      repeat: Infinity,
+      ease: "easeInOut",
+      delay: i * 0.5
+    }
+  };
+
+  const isActive = activeShard === shard.id;
+  const isDimmed = activeShard !== null && !isActive;
+
+  return (
+    <React.Fragment>
+      <AnimatePresence>
+        {!isActive && isCoreActive && (
+          <motion.div
+            layoutId={\`shard-container-\${shard.id}\`}
+            className="absolute left-1/2 top-1/2 z-20 cursor-pointer"
+            style={{
+              x: \`calc(-50% + \${shard.initialX}px)\`,
+              y: \`calc(-50% + \${shard.initialY}px)\`,
+              translateX: parallaxX,
+              translateY: parallaxY,
+            }}
+            initial={{ opacity: 0, scale: 0, rotate: 0 }}
+            animate={{
+              opacity: isDimmed ? 0 : 1,
+              scale: isDimmed ? 0.8 : 1,
+              rotate: shard.rotation,
+              /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+              ...(floatY as any)
+            }}
+            exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
+            onClick={() => setActiveShard(shard.id)}
+            whileHover={{ scale: 1.1, rotate: 0, zIndex: 30 }}
+          >
+            <motion.div
+              layoutId={\`shard-bg-\${shard.id}\`}
+              className="w-48 p-4 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/10 shadow-2xl relative overflow-hidden group"
+            >
+              {/* Inner highlight */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              {/* Color glow hint */}
+              <div className="absolute -top-10 -right-10 w-20 h-20 rounded-full blur-2xl opacity-30" style={{ backgroundColor: shard.color }} />
+
+              <div className="flex items-center gap-3 relative z-10">
+                <motion.div
+                  layoutId={\`shard-icon-\${shard.id}\`}
+                  className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center"
+                  style={{ color: shard.color }}
+                >
+                  {shard.icon}
+                </motion.div>
+                <div>
+                  <motion.h4 layoutId={\`shard-title-\${shard.id}\`} className="text-sm font-bold text-white font-['Outfit']">{shard.title}</motion.h4>
+                  <motion.p layoutId={\`shard-subtitle-\${shard.id}\`} className="text-[10px] text-white/50 uppercase tracking-wider">{shard.subtitle}</motion.p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </React.Fragment>
+  );
+};
+
+export function ZeroGravityShards({
+  shards = DEFAULT_SHARDS,
+  coreLabel = "Initialize",
+  coreSublabel = "Core Offline",
+  glowColor = "#7fff5e",
+  className = "",
+  ...props
+}: ZeroGravityShardsProps) {
+  const [activeShard, setActiveShard] = useState<string | null>(null);
+  const [isCoreActive, setIsCoreActive] = useState(false);
+
+  // Mouse position tracking
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Smooth mouse coordinates for parallax
+  const smoothMouseX = useSpring(mouseX, { stiffness: 50, damping: 20 });
+  const smoothMouseY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  // Close active shard on escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && activeShard) {
+        setActiveShard(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeShard]);
+
+  return (
+    <motion.div
+      ref={containerRef}
+      className={\`relative w-full h-[600px] bg-[#050505] overflow-hidden rounded-2xl flex items-center justify-center \${className}\`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      {...props}
+    >
+      {/* Background Grid */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-20"
+        style={{
+          backgroundImage: \`
+            linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)
+          \`,
+          backgroundSize: '40px 40px'
+        }}
+      />
+
+      {/* Ambient noise */}
+      <div
+        className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none"
+        style={{
+          backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')"
+        }}
+      />
+
+      {/* Center Core */}
+      <motion.button
+        className="relative z-10 w-32 h-32 rounded-full flex flex-col items-center justify-center border border-white/10 bg-black/50 backdrop-blur-md group"
+        onClick={() => setIsCoreActive(!isCoreActive)}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <motion.div
+          className="absolute inset-0 rounded-full blur-xl opacity-20 transition-opacity duration-500 group-hover:opacity-40"
+          style={{ backgroundColor: isCoreActive ? glowColor : "#ffffff" }}
+          animate={{
+            scale: isCoreActive ? [1, 1.2, 1] : 1,
+            opacity: isCoreActive ? [0.4, 0.8, 0.4] : 0.2
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <div className="absolute inset-0 rounded-full border border-white/5 flex items-center justify-center">
+          <svg className="w-full h-full opacity-30 animate-[spin_10s_linear_infinite]" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 4" />
+          </svg>
+        </div>
+        <span className="relative z-10 font-mono text-sm text-white uppercase tracking-widest group-hover:text-[#7fff5e] transition-colors">{coreLabel}</span>
+        <span className="relative z-10 text-[10px] text-white/40 mt-1 uppercase tracking-wider">{isCoreActive ? "System Online" : coreSublabel}</span>
+      </motion.button>
+
+      {/* Floating Shards */}
+      {shards.map((shard, i) => (
+        <ShardNode
+          key={shard.id}
+          shard={shard}
+          i={i}
+          activeShard={activeShard}
+          setActiveShard={setActiveShard}
+          isCoreActive={isCoreActive}
+          smoothMouseX={smoothMouseX}
+          smoothMouseY={smoothMouseY}
+        />
+      ))}
+
+      {/* Expanded Shard View */}
+      <AnimatePresence>
+        {activeShard && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-40 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm"
+            onClick={() => setActiveShard(null)}
+          >
+            {shards.map((shard) => (
+              shard.id === activeShard && (
+                <motion.div
+                  key={\`expanded-\${shard.id}\`}
+                  layoutId={\`shard-container-\${shard.id}\`}
+                  className="w-full max-w-2xl h-[400px] rounded-3xl bg-[#0a0a0a] border border-white/10 shadow-2xl overflow-hidden flex flex-col relative"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Expanded ambient glow */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-32 blur-3xl opacity-20 pointer-events-none" style={{ backgroundColor: shard.color }} />
+
+                  {/* Header */}
+                  <motion.div layoutId={\`shard-bg-\${shard.id}\`} className="flex items-center justify-between p-6 border-b border-white/10 bg-white/5 relative z-10">
+                    <div className="flex items-center gap-4">
+                      <motion.div
+                        layoutId={\`shard-icon-\${shard.id}\`}
+                        className="w-12 h-12 rounded-xl bg-black/50 border border-white/10 flex items-center justify-center shadow-inner"
+                        style={{ color: shard.color }}
+                      >
+                        {shard.icon}
+                      </motion.div>
+                      <div>
+                        <motion.h4 layoutId={\`shard-title-\${shard.id}\`} className="text-2xl font-bold text-white font-['Outfit']">{shard.title}</motion.h4>
+                        <motion.p layoutId={\`shard-subtitle-\${shard.id}\`} className="text-sm text-white/50 uppercase tracking-widest">{shard.subtitle}</motion.p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setActiveShard(null)}
+                      className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                  </motion.div>
+
+                  {/* Content Area */}
+                  <div className="flex-1 p-8 relative z-10 overflow-y-auto">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="h-full"
+                    >
+                      {shard.content}
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+`,
+      componentPath: "ZeroGravityShards",
+      scrollable: false,
+      usageCode: `import { ZeroGravityShards } from "@/components/ZeroGravityShards";
+
+export default function App() {
+  return (
+    <ZeroGravityShards
+      coreLabel="System"
+      coreSublabel="Initialize Core"
+      glowColor="#ff5c71"
+    />
+  );
+}`,
+      props: [
+        { name: "coreLabel", type: "string", defaultValue: `"Initialize"`, description: "The label text on the central core button.", control: { type: "text" } },
+        { name: "coreSublabel", type: "string", defaultValue: `"Core Offline"`, description: "The sublabel text on the central core button.", control: { type: "text" } },
+        { name: "glowColor", type: "string", defaultValue: `"#7fff5e"`, description: "The glow color of the central core button.", control: { type: "color" } }
+      ]
+  },
+{
+      id: "neural-pattern-lock",
+      slug: "neural-pattern-lock",
+      title: "Neural Pattern Lock",
+      description: "A highly interactive, 3D-tilting pattern lock screen with magnetic physics and glowing neon paths.",
+      category: "Inputs",
+      tags: ["Framer Motion", "3D", "Interactive", "Form"],
+      cliCommand: "npx @melonui-dev/cli add neural-pattern-lock",
+      codeSnippet: `"use client";
+
+import React, { useRef, useState, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+
+export interface NeuralPatternLockProps {
+  className?: string;
+  style?: React.CSSProperties;
+  gridSize?: number;
+  correctPattern?: number[];
+  primaryColor?: string;
+  successColor?: string;
+  errorColor?: string;
+  onSuccess?: () => void;
+  onError?: () => void;
+}
+
+export function NeuralPatternLock({
+  gridSize = 3,
+  correctPattern = [0, 1, 2, 5, 8],
+  primaryColor = "#7fff5e",
+  successColor = "#00f0ff",
+  errorColor = "#ff5c71",
+  onSuccess,
+  onError,
+  className = "",
+  style,
+  ...props
+}: NeuralPatternLockProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const [selectedNodes, setSelectedNodes] = useState<number[]>([]);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [currentMousePos, setCurrentMousePos] = useState({ x: 0, y: 0 });
+  const [nodePositions, setNodePositions] = useState<{ x: number; y: number }[]>([]);
+
+  // 3D Tilt Effect
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const springConfig = { damping: 20, stiffness: 100, mass: 0.5 };
+  const smoothMouseX = useSpring(mouseX, springConfig);
+  const smoothMouseY = useSpring(mouseY, springConfig);
+
+  const rotateX = useTransform(smoothMouseY, [-0.5, 0.5], [15, -15]);
+  const rotateY = useTransform(smoothMouseX, [-0.5, 0.5], [-15, 15]);
+
+  const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!containerRef.current) return;
+
+    let clientX, clientY;
+    if ("touches" in e) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = (e as React.MouseEvent).clientX;
+      clientY = (e as React.MouseEvent).clientY;
+    }
+
+    const rect = containerRef.current.getBoundingClientRect();
+
+    // For 3D Tilt
+    const xPct = (clientX - rect.left) / rect.width - 0.5;
+    const yPct = (clientY - rect.top) / rect.height - 0.5;
+    mouseX.set(xPct);
+    mouseY.set(yPct);
+
+    // For Pattern Drawing
+    if (isDrawing && status === "idle") {
+      setCurrentMousePos({
+        x: clientX - rect.left,
+        y: clientY - rect.top,
+      });
+
+      // Check intersection with nodes
+      const nodeRadius = 24; // Approximate hit area
+      nodePositions.forEach((pos, index) => {
+        if (selectedNodes.includes(index)) return;
+
+        const dx = (clientX - rect.left) - pos.x;
+        const dy = (clientY - rect.top) - pos.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < nodeRadius) {
+          setSelectedNodes((prev) => [...prev, index]);
+        }
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+    if (isDrawing) {
+      handleDrawEnd();
+    }
+  };
+
+  const handleDrawStart = (index: number) => {
+    if (status !== "idle") return;
+    setIsDrawing(true);
+    setSelectedNodes([index]);
+
+    if (containerRef.current) {
+        const pos = nodePositions[index];
+        if (pos) {
+            setCurrentMousePos({ x: pos.x, y: pos.y });
+        }
+    }
+  };
+
+  const handleDrawEnd = () => {
+    if (!isDrawing) return;
+    setIsDrawing(false);
+
+    if (selectedNodes.length === 0) return;
+
+    // Check pattern
+    const isCorrect = selectedNodes.length === correctPattern.length &&
+      selectedNodes.every((val, index) => val === correctPattern[index]);
+
+    if (isCorrect) {
+      setStatus("success");
+      if (onSuccess) onSuccess();
+    } else {
+      setStatus("error");
+      if (onError) onError();
+    }
+
+    // Reset after delay
+    setTimeout(() => {
+      setStatus("idle");
+      setSelectedNodes([]);
+    }, 1500);
+  };
+
+  useEffect(() => {
+    // Calculate node centers relative to container
+    if (containerRef.current) {
+      const updatePositions = () => {
+        if (!containerRef.current) return;
+        const rect = containerRef.current.getBoundingClientRect();
+        const nodes = containerRef.current.querySelectorAll('.pattern-node');
+        const positions: { x: number; y: number }[] = [];
+
+        nodes.forEach((node) => {
+          const nodeRect = node.getBoundingClientRect();
+          positions.push({
+            x: nodeRect.left - rect.left + nodeRect.width / 2,
+            y: nodeRect.top - rect.top + nodeRect.height / 2,
+          });
+        });
+        setNodePositions(positions);
+      };
+
+      updatePositions();
+      window.addEventListener('resize', updatePositions);
+      return () => window.removeEventListener('resize', updatePositions);
+    }
+  }, []);
+
+  const numNodes = gridSize * gridSize;
+  const nodes = Array.from({ length: numNodes }, (_, i) => i);
+
+  let activeColor = primaryColor;
+  if (status === "success") activeColor = successColor;
+  if (status === "error") activeColor = errorColor;
+
+  return (
+    <motion.div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onTouchMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onMouseUp={handleDrawEnd}
+      onTouchEnd={handleDrawEnd}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+        ...style
+      }}
+      className={\`relative w-full max-w-sm aspect-square p-8 rounded-3xl bg-black/40 border border-white/10 backdrop-blur-xl shadow-2xl flex items-center justify-center cursor-crosshair select-none touch-none \${className}\`}
+      {...props}
+    >
+      {/* Background Grid Elements */}
+      <div className="absolute inset-0 pointer-events-none opacity-20"
+        style={{
+          backgroundImage: \`radial-gradient(circle at center, \${activeColor} 1px, transparent 1px)\`,
+          backgroundSize: '24px 24px'
+        }}
+      />
+
+      {/* Container for SVG Lines */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
+        <defs>
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+        </defs>
+
+        {/* Draw confirmed paths */}
+        {selectedNodes.map((nodeIndex, i) => {
+          if (i === 0) return null;
+          const prevNode = selectedNodes[i - 1];
+          const pos1 = nodePositions[prevNode];
+          const pos2 = nodePositions[nodeIndex];
+          if (!pos1 || !pos2) return null;
+
+          return (
+            <motion.line
+              key={\`line-\${prevNode}-\${nodeIndex}\`}
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              x1={pos1.x}
+              y1={pos1.y}
+              x2={pos2.x}
+              y2={pos2.y}
+              stroke={activeColor}
+              strokeWidth="6"
+              strokeLinecap="round"
+              filter="url(#glow)"
+              className="drop-shadow-lg"
+            />
+          );
+        })}
+
+        {/* Draw current dragging line */}
+        {isDrawing && selectedNodes.length > 0 && (
+          <line
+            x1={nodePositions[selectedNodes[selectedNodes.length - 1]]?.x || 0}
+            y1={nodePositions[selectedNodes[selectedNodes.length - 1]]?.y || 0}
+            x2={currentMousePos.x}
+            y2={currentMousePos.y}
+            stroke={activeColor}
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeDasharray="8 8"
+            opacity={0.6}
+          />
+        )}
+      </svg>
+
+      {/* Nodes Grid */}
+      <div
+        className="relative z-10 grid gap-6 sm:gap-8 w-full h-full"
+        style={{
+          gridTemplateColumns: \`repeat(\${gridSize}, 1fr)\`,
+          gridTemplateRows: \`repeat(\${gridSize}, 1fr)\`,
+          transform: "translateZ(30px)"
+        }}
+      >
+        {nodes.map((index) => {
+          const isSelected = selectedNodes.includes(index);
+          const isLast = selectedNodes[selectedNodes.length - 1] === index;
+
+          return (
+            <div
+              key={index}
+              className="pattern-node relative flex items-center justify-center w-full h-full touch-none"
+              onMouseDown={() => handleDrawStart(index)}
+              onTouchStart={() => handleDrawStart(index)}
+            >
+              {/* Outer Glow Ring */}
+              <motion.div
+                animate={{
+                  scale: isSelected ? 1.5 : 1,
+                  opacity: isSelected ? 0.3 : 0,
+                  borderColor: activeColor
+                }}
+                className="absolute w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2"
+                style={{ borderColor: activeColor }}
+              />
+
+              {/* Inner Node */}
+              <motion.div
+                animate={{
+                  scale: isSelected ? (isLast ? 1.4 : 1.2) : 1,
+                  backgroundColor: isSelected ? activeColor : "rgba(255,255,255,0.1)",
+                  boxShadow: isSelected ? \`0 0 20px \${activeColor}\` : "none"
+                }}
+                className="w-4 h-4 sm:w-6 sm:h-6 rounded-full backdrop-blur-md border border-white/20 z-20"
+              />
+
+              {/* Shake Effect for Error */}
+              {status === "error" && isSelected && (
+                 <motion.div
+                    initial={{ x: 0 }}
+                    animate={{ x: [-5, 5, -5, 5, 0] }}
+                    transition={{ duration: 0.4 }}
+                    className="absolute inset-0"
+                 />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+`,
+      componentPath: "NeuralPatternLock",
+      scrollable: false,
+      usageCode: `import { NeuralPatternLock } from "@/components/community/demos/NeuralPatternLock";
+
+export default function App() {
+  return (
+    <div className="flex items-center justify-center p-12">
+      <NeuralPatternLock
+        onSuccess={() => console.log("Success!")}
+        onError={() => console.log("Error!")}
+      />
+    </div>
+  );
+}`,
+      props: [
+        {
+          name: "primaryColor",
+          type: "string",
+          defaultValue: `"#7fff5e"`,
+          description: "Base color of the lock pattern nodes and trails.",
+          control: { type: "color" },
+        },
+        {
+          name: "successColor",
+          type: "string",
+          defaultValue: `"#00f0ff"`,
+          description: "Color shown when pattern is successfully entered.",
+          control: { type: "color" },
+        },
+        {
+          name: "errorColor",
+          type: "string",
+          defaultValue: `"#ff5c71"`,
+          description: "Color shown when pattern entry fails.",
+          control: { type: "color" },
+        },
+        {
+          name: "gridSize",
+          type: "number",
+          defaultValue: "3",
+          description: "Dimensions of the lock grid (e.g., 3 for a 3x3 grid).",
+          control: { type: "slider", min: 2, max: 5, step: 1 },
+        },
+      ]
+    },
+{
+      id: "singularity-control-node",
+      slug: "singularity-control-node",
+      title: "Singularity Control Node",
+      description: "A centralized magnetic core that expands into an interactive circular grid of glowing, glassmorphic nodes connected by animated synapse lines.",
+      category: "Navigation",
+      tags: ["Framer Motion", "Glassmorphism", "Interactive", "Navigation"],
+      cliCommand: "npx @melonui-dev/cli add singularity-control-node",
+      codeSnippet: `"use client";
+
+import React, { useRef, useState } from "react";
+import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+
+export interface SingularityNode {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  color: string;
+}
+
+export interface SingularityControlNodeProps extends React.ComponentPropsWithoutRef<"div"> {
+  nodes?: SingularityNode[];
+  coreColor?: string;
+  onNodeClick?: (node: SingularityNode) => void;
+}
+
+const DEFAULT_NODES: SingularityNode[] = [
+  {
+    id: "neural-link",
+    label: "Neural Link",
+    color: "#ff5c71",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+      </svg>
+    ),
+  },
+  {
+    id: "quantum-state",
+    label: "Quantum State",
+    color: "#7fff5e",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 16v-4M12 8h.01" />
+      </svg>
+    ),
+  },
+  {
+    id: "hyper-drive",
+    label: "Hyper Drive",
+    color: "#00f0ff",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M5 12h14M12 5l7 7-7 7" />
+      </svg>
+    ),
+  },
+  {
+    id: "void-core",
+    label: "Void Core",
+    color: "#a371f7",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+      </svg>
+    ),
+  },
+];
+
+export const SingularityControlNode: React.FC<SingularityControlNodeProps> = ({
+  nodes = DEFAULT_NODES,
+  coreColor = "#ff5c71",
+  onNodeClick,
+  className = "",
+  style,
+  ...props
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Magnetic Core Physics
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const springConfig = { damping: 15, stiffness: 150, mass: 0.5 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current || isOpen) {
+      mouseX.set(0);
+      mouseY.set(0);
+      return;
+    }
+    const rect = containerRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // Magnetic pull extent
+    const pullX = (e.clientX - centerX) * 0.3;
+    const pullY = (e.clientY - centerY) * 0.3;
+
+    mouseX.set(pullX);
+    mouseY.set(pullY);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  // Radius for the expanded nodes
+  const RADIUS = 120;
+
+  return (
+    <div
+      className={\`relative flex items-center justify-center w-full h-[400px] bg-[#050505] overflow-hidden rounded-2xl border border-white/5 \${className}\`}
+      style={style}
+      {...props}
+    >
+      {/* Background Grid & Noise */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at center, white 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
+      <div className="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")" }} />
+
+      <div
+        ref={containerRef}
+        className="relative w-full h-full flex items-center justify-center z-10"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
+        {/* Connection Lines (Synapses) */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none">
+          <AnimatePresence>
+            {isOpen && nodes.map((node, index) => {
+              const angle = (index / nodes.length) * Math.PI * 2 - Math.PI / 2;
+              const x2 = \`calc(50% + \${Math.cos(angle) * RADIUS}px)\`;
+              const y2 = \`calc(50% + \${Math.sin(angle) * RADIUS}px)\`;
+
+              return (
+                <motion.line
+                  key={\`line-\${node.id}\`}
+                  x1="50%"
+                  y1="50%"
+                  x2={x2}
+                  y2={y2}
+                  stroke={node.color}
+                  strokeWidth="2"
+                  strokeOpacity="0.4"
+                  strokeDasharray="4 4"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  exit={{ pathLength: 0, opacity: 0 }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: index * 0.05 }}
+                />
+              );
+            })}
+          </AnimatePresence>
+        </svg>
+
+        {/* Orbiting Nodes */}
+        <AnimatePresence>
+          {isOpen && nodes.map((node, index) => {
+            const angle = (index / nodes.length) * Math.PI * 2 - Math.PI / 2;
+            const x = Math.cos(angle) * RADIUS;
+            const y = Math.sin(angle) * RADIUS;
+
+            return (
+              <motion.div
+                key={\`node-\${node.id}\`}
+                className="absolute"
+                initial={{ x: 0, y: 0, opacity: 0, scale: 0.5, rotate: -45 }}
+                animate={{ x, y, opacity: 1, scale: 1, rotate: 0 }}
+                exit={{ x: 0, y: 0, opacity: 0, scale: 0.5, rotate: 45 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20,
+                  delay: index * 0.05
+                }}
+              >
+                <motion.button
+                  whileHover={{ scale: 1.1, boxShadow: \`0 0 20px \${node.color}40\` }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onNodeClick) onNodeClick(node);
+                  }}
+                  className="group relative flex items-center justify-center w-12 h-12 rounded-xl bg-black/40 border border-white/10 backdrop-blur-md overflow-hidden cursor-pointer"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="text-white/70 group-hover:text-white transition-colors">
+                    {node.icon}
+                  </div>
+                  {/* Node Glow */}
+                  <div
+                    className="absolute inset-0 rounded-xl opacity-20 group-hover:opacity-40 transition-opacity blur-md -z-10"
+                    style={{ backgroundColor: node.color }}
+                  />
+
+                  {/* Tooltip */}
+                  <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-1 bg-black/80 border border-white/10 rounded-md text-[10px] text-white/60 font-mono opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    {node.label}
+                  </div>
+                </motion.button>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+
+        {/* Central Core */}
+        <motion.button
+          className="relative flex items-center justify-center w-20 h-20 rounded-full cursor-pointer group z-20"
+          style={{ x: smoothX, y: smoothY }}
+          onClick={() => setIsOpen(!isOpen)}
+          whileHover={{ scale: isOpen ? 1 : 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          aria-expanded={isOpen}
+          aria-label="Toggle Singularity Control Node"
+        >
+          {/* Core Inner */}
+          <div className="absolute inset-0 rounded-full bg-black border border-white/10 flex items-center justify-center overflow-hidden">
+            {/* Core Gradient Spin */}
+            <motion.div
+              className="absolute w-[200%] h-[200%] opacity-40 blur-xl"
+              style={{
+                background: \`conic-gradient(from 0deg, transparent, \${coreColor}, transparent)\`,
+              }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+            />
+            {/* Core Center Dot */}
+            <motion.div
+              className="w-4 h-4 rounded-full bg-white z-10 shadow-[0_0_15px_rgba(255,255,255,0.8)]"
+              animate={{
+                scale: isOpen ? [1, 1.2, 1] : 1,
+                backgroundColor: isOpen ? coreColor : "#ffffff"
+              }}
+              transition={{ duration: 2, repeat: isOpen ? Infinity : 0 }}
+            />
+          </div>
+
+          {/* Core Outer Glow */}
+          <motion.div
+            className="absolute inset-[-10px] rounded-full border border-white/5 opacity-50 pointer-events-none"
+            animate={{
+              scale: isOpen ? [1, 1.2, 1] : 1,
+              opacity: isOpen ? [0.5, 0.2, 0.5] : 0.5
+            }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute inset-[-20px] rounded-full border border-white/5 opacity-30 pointer-events-none"
+            animate={{
+              scale: isOpen ? [1, 1.4, 1] : 1,
+              opacity: isOpen ? [0.3, 0.1, 0.3] : 0.3
+            }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+          />
+
+          {/* Active Rings */}
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                className="absolute inset-[-30px] rounded-full border border-dashed border-white/20 pointer-events-none"
+                initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
+                animate={{ opacity: 1, scale: 1, rotate: 180 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+              />
+            )}
+          </AnimatePresence>
+        </motion.button>
+      </div>
+    </div>
+  );
+};
+`,
+      componentPath: "SingularityControlNode",
+      scrollable: false,
+      aiPrompt: "Create a singularity control node component that acts as a central magnetic hub. When clicked, it expands via spring physics into a circular array of glassmorphic nodes connected by animated SVG lines. It should have a Gen-Z premium aesthetic with layered depth, noise textures, and smooth Framer Motion animations."
+  },
+{
+      id: "tethered-orbital-vault",
+      slug: "tethered-orbital-vault",
+      title: "Tethered Orbital Vault",
+      description: "A highly tactile digital lock where users drag orbiting cryptographic keys into a central core via magnetic tethers, morphing into a futuristic dashboard upon decryption.",
+      category: "Widgets",
+      tags: ["Framer Motion", "Interactive", "Drag and Drop", "Cyber", "Dashboard"],
+      cliCommand: "npx @melonui-dev/cli add tethered-orbital-vault",
+      codeSnippet: "// See TetheredOrbitalVault.tsx",
+      componentPath: "TetheredOrbitalVault",
+      scrollable: false,
+      usageCode: `import { TetheredOrbitalVault } from "@/components/community/demos/TetheredOrbitalVault";
+
+  export default function MyPage() {
+    return (
+      <div className="w-full max-w-4xl p-8">
+        <TetheredOrbitalVault />
+      </div>
+    );
+  }`,
+      aiPrompt: "Generate a Tethered Orbital Vault component that features draggable orbiting keys connected by magnetic tethers to a central core, which unlocks and expands into a glassmorphic dashboard.",
+      props: [
+        {
+          name: "title",
+          type: "string",
+          defaultValue: `"ORBITAL VAULT"`,
+          description: "Main header title for the component."
+        },
+        {
+          name: "primaryColor",
+          type: "string",
+          defaultValue: `"#ff5c71"`,
+          description: "Neon color for the first key and logs."
+        },
+        {
+          name: "accentColor",
+          type: "string",
+          defaultValue: `"#7fff5e"`,
+          description: "Neon color for the second key and success state."
+        },
+        {
+          name: "glowColor",
+          type: "string",
+          defaultValue: `"#00f0ff"`,
+          description: "Neon color for the third key and ambient glow."
+        }
+      ]
+    },
+{
+      id: "cyber-biometric-scanner",
+      slug: "cyber-biometric-scanner",
+      title: "Cyber Biometric Scanner",
+      description: "A highly interactive, press-and-hold biometric scanner featuring dynamic SVG topography, glowing laser sweeps, and glitching cybernetic states.",
+      category: "Widgets",
+      tags: ["Framer Motion", "Biometric", "Scanner", "Interactive"],
+      cliCommand: "npx @melonui-dev/cli add cyber-biometric-scanner",
+      codeSnippet: `"use client";
+
+import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence, useAnimation, PanInfo } from "framer-motion";
+
+export interface TetheredOrbitalVaultProps extends React.ComponentPropsWithoutRef<"div"> {
+  title?: string;
+  lockedSubtitle?: string;
+  unlockedSubtitle?: string;
+  primaryColor?: string;
+  accentColor?: string;
+  glowColor?: string;
+  bgColor?: string;
+}
+
+export function TetheredOrbitalVault({
+  title = "ORBITAL VAULT",
+  lockedSubtitle = "ALIGN KEYS TO CORE",
+  unlockedSubtitle = "VAULT SECURED. FULL ACCESS.",
+  primaryColor = "#ff5c71",
+  accentColor = "#7fff5e",
+  glowColor = "#00f0ff",
+  bgColor = "#050505",
+  className = "",
+  style,
+  ...props
+}: TetheredOrbitalVaultProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const coreRef = useRef<HTMLDivElement>(null);
+
+  // States
+  const [mounted, setMounted] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
+  const [lockedKeys, setLockedKeys] = useState<string[]>([]);
+
+  // Constants
+  const CORE_RADIUS = 50;
+  const KEY_RADIUS = 30;
+
+  useEffect(() => {
+    setTimeout(() => setMounted(true), 0);
+  }, []);
+
+  // Check if all keys are locked
+  useEffect(() => {
+    if (lockedKeys.length === 3) {
+      setTimeout(() => setUnlocked(true), 500);
+    }
+  }, [lockedKeys]);
+
+  // Keys configuration
+  const keysConfig = [
+    { id: "key-1", label: "ALPHA", color: primaryColor, angle: -90 },
+    { id: "key-2", label: "BETA", color: accentColor, angle: 150 },
+    { id: "key-3", label: "GAMMA", color: glowColor, angle: 30 },
+  ];
+
+  const handleDragStart = () => {
+    // Optional: Visual feedback during drag
+  };
+
+  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo, id: string, controls: ReturnType<typeof useAnimation>) => {
+    if (!coreRef.current || !containerRef.current) {
+      controls.start({ x: 0, y: 0, transition: { type: "spring", stiffness: 300, damping: 20 } });
+      return;
+    }
+
+    const coreRect = coreRef.current.getBoundingClientRect();
+
+    // Core center relative to viewport
+    const coreCenterX = coreRect.left + coreRect.width / 2;
+    const coreCenterY = coreRect.top + coreRect.height / 2;
+
+    const dropX = info.point.x;
+    const dropY = info.point.y;
+
+    // Distance to core
+    const dist = Math.sqrt(Math.pow(dropX - coreCenterX, 2) + Math.pow(dropY - coreCenterY, 2));
+
+    // Snap threshold
+    if (dist < CORE_RADIUS + KEY_RADIUS) {
+      if (!lockedKeys.includes(id)) {
+        setLockedKeys((prev) => [...prev, id]);
+      }
+    } else {
+      controls.start({ x: 0, y: 0, transition: { type: "spring", stiffness: 300, damping: 20 } });
+    }
+  };
+
+  const resetVault = () => {
+    setUnlocked(false);
+    setLockedKeys([]);
+  };
+
+  if (!mounted) return <div className={\`w-full h-[600px] \${className}\`} style={{ backgroundColor: bgColor, ...style }} />;
+
+  return (
+    <div
+      ref={containerRef}
+      className={\`relative w-full h-[600px] rounded-3xl overflow-hidden flex flex-col items-center justify-center font-['Outfit',sans-serif] \${className}\`}
+      style={{
+        backgroundColor: bgColor,
+        backgroundImage: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 80%)",
+        ...style
+      }}
+      {...props}
+    >
+      {/* Background Noise */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.03] z-0 mix-blend-overlay"
+        style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E')" }}
+      />
+
+      <AnimatePresence mode="wait">
+        {!unlocked ? (
+          <motion.div
+            key="vault-locked"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="absolute inset-0 flex items-center justify-center z-10"
+          >
+            {/* Header Text */}
+            <div className="absolute top-10 flex flex-col items-center text-center pointer-events-none">
+              <h2 className="text-white/80 text-xl tracking-[0.3em] font-bold uppercase" style={{ textShadow: \`0 0 20px \${primaryColor}50\` }}>
+                {title}
+              </h2>
+              <div className="flex items-center gap-2 mt-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-white/50 animate-pulse" />
+                <span className="text-[10px] tracking-widest text-white/50">{lockedSubtitle}</span>
+              </div>
+            </div>
+
+            {/* Central Core Lock */}
+            <div
+              ref={coreRef}
+              className="relative flex items-center justify-center"
+              style={{ width: CORE_RADIUS * 2, height: CORE_RADIUS * 2 }}
+            >
+              {/* Outer Ring */}
+              <motion.div
+                className="absolute inset-[-40px] rounded-full border border-white/10"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                style={{ borderStyle: "dashed" }}
+              />
+              <motion.div
+                className="absolute inset-[-60px] rounded-full border border-white/5"
+                animate={{ rotate: -360 }}
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              />
+
+              {/* Core Body */}
+              <motion.div
+                className="absolute inset-0 rounded-full bg-black/80 backdrop-blur-md border flex items-center justify-center z-10"
+                style={{
+                  borderColor: lockedKeys.length === 3 ? accentColor : "rgba(255,255,255,0.2)",
+                  boxShadow: \`0 0 40px \${lockedKeys.length > 0 ? lockedKeys.length === 3 ? accentColor : primaryColor : 'transparent'}20 inset\`
+                }}
+                animate={{ scale: lockedKeys.length === 3 ? [1, 1.1, 1] : 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="w-1/2 h-1/2 rounded-full opacity-20 blur-md" style={{ backgroundColor: primaryColor }} />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-white/40 text-xs font-mono">{lockedKeys.length}/3</span>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Orbiting Keys */}
+            {keysConfig.map((key) => {
+              return (
+                <DraggableKey
+                  key={key.id}
+                  id={key.id}
+                  label={key.label}
+                  color={key.color}
+                  angle={key.angle}
+                  orbitRadius={160}
+                  isLocked={lockedKeys.includes(key.id)}
+                  onDragStart={handleDragStart}
+                  onDragEnd={handleDragEnd}
+                  containerRef={containerRef}
+                />
+              );
+            })}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="vault-unlocked"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.7, type: "spring", bounce: 0.4 }}
+            className="w-full h-full p-8 flex flex-col z-20"
+          >
+            {/* Dashboard Header */}
+            <div className="flex items-center justify-between mb-8 relative z-20">
+              <div>
+                <h2 className="text-white text-3xl font-black tracking-tighter uppercase flex items-center gap-3" style={{ fontFamily: "var(--font-londrina-solid)" }}>
+                  <span style={{ color: accentColor }}>{"//"}</span> {title}
+                </h2>
+                <p className="text-white/50 text-xs font-mono tracking-widest mt-2">{unlockedSubtitle}</p>
+              </div>
+              <button
+                onClick={resetVault}
+                className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 hover:text-white text-[10px] tracking-widest transition-all uppercase flex items-center gap-2 backdrop-blur-md"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
+                  <path d="M21 3v5h-5"/>
+                </svg>
+                RE-LOCK
+              </button>
+            </div>
+
+            {/* Dashboard Bento Grid */}
+            <div className="flex-1 grid grid-cols-3 grid-rows-2 gap-4 relative z-20">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="col-span-2 row-span-2 rounded-2xl bg-white/[0.02] border border-white/10 p-6 flex flex-col overflow-hidden relative group backdrop-blur-md"
+              >
+                <div className="absolute top-0 left-0 w-full h-1" style={{ background: \`linear-gradient(90deg, \${primaryColor}, \${accentColor})\` }} />
+                <div className="absolute -bottom-20 -right-20 w-64 h-64 rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity" style={{ backgroundColor: glowColor }} />
+                <h3 className="text-white/40 text-xs tracking-widest uppercase font-mono mb-6">Encrypted Logs</h3>
+                <div className="flex-1 flex flex-col gap-3 font-mono text-[10px] text-white/60">
+                  <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                    <span className="text-white/30">14:02:41</span>
+                    <span style={{ color: primaryColor }}>AUTH_BYPASS_INITIATED</span>
+                  </div>
+                  <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                    <span className="text-white/30">14:02:42</span>
+                    <span style={{ color: accentColor }}>KEYS_ALIGNED_SUCCESS</span>
+                  </div>
+                  <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                    <span className="text-white/30">14:02:44</span>
+                    <span style={{ color: glowColor }}>VAULT_DECRYPTED</span>
+                  </div>
+                  <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                    <span className="text-white/30">14:02:45</span>
+                    <span className="text-white">DATA_STREAM_ESTABLISHED</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="rounded-2xl bg-white/[0.02] border border-white/10 p-5 flex flex-col justify-between backdrop-blur-md"
+              >
+                <h3 className="text-white/40 text-xs tracking-widest uppercase font-mono">Integrity</h3>
+                <div>
+                  <div className="text-3xl font-light text-white">100%</div>
+                  <div className="text-[10px] tracking-wider text-white/40 mt-1 uppercase">Systems Nominal</div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="rounded-2xl bg-white/[0.02] border border-white/10 p-5 flex flex-col justify-between relative overflow-hidden backdrop-blur-md"
+              >
+                <div className="absolute inset-0 opacity-10" style={{
+                  backgroundImage: \`repeating-linear-gradient(-45deg, transparent, transparent 5px, \${accentColor} 5px, \${accentColor} 10px)\`
+                }} />
+                <h3 className="text-white/40 text-xs tracking-widest uppercase font-mono relative z-10">Status</h3>
+                <div className="relative z-10">
+                  <div className="text-xl font-bold" style={{ color: accentColor }}>UNLOCKED</div>
+                  <div className="text-[10px] tracking-wider text-white/40 mt-1 uppercase">Root Access</div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// Sub-component for individual draggable keys
+function DraggableKey({
+  id,
+  label,
+  color,
+  angle,
+  orbitRadius,
+  isLocked,
+  onDragStart,
+  onDragEnd,
+  containerRef
+}: {
+  id: string;
+  label: string;
+  color: string;
+  angle: number;
+  orbitRadius: number;
+  isLocked: boolean;
+  onDragStart: () => void;
+  onDragEnd: (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo, id: string, controls: ReturnType<typeof useAnimation>) => void;
+  containerRef: React.RefObject<HTMLDivElement | null>;
+}) {
+  const controls = useAnimation();
+  const rad = (angle * Math.PI) / 180;
+  const startX = Math.cos(rad) * orbitRadius;
+  const startY = Math.sin(rad) * orbitRadius;
+
+  useEffect(() => {
+    if (isLocked) {
+      controls.start({
+        x: 0,
+        y: 0,
+        scale: 0.5,
+        opacity: 0,
+        transition: { type: "spring", stiffness: 200, damping: 20 }
+      });
+    } else {
+      controls.start({ x: startX, y: startY, scale: 1, opacity: 1, transition: { duration: 0 } });
+    }
+  }, [isLocked, startX, startY, controls]);
+
+  return (
+    <motion.div
+      className="absolute z-20"
+      initial={{ x: startX, y: startY }}
+      animate={controls}
+    >
+      <motion.div
+        drag={!isLocked}
+        dragConstraints={containerRef}
+        dragElastic={0.2}
+        onDragStart={onDragStart}
+        onDragEnd={(e, info) => onDragEnd(e, info, id, controls)}
+        whileHover={!isLocked ? { scale: 1.1 } : {}}
+        whileDrag={{ scale: 1.2, cursor: "grabbing" }}
+        className={\`w-14 h-14 rounded-full flex items-center justify-center cursor-grab relative group \${isLocked ? 'pointer-events-none' : ''}\`}
+        style={{
+          background: \`radial-gradient(circle at center, \${color}30 0%, rgba(0,0,0,0.8) 100%)\`,
+          border: \`1px solid \${color}80\`,
+          boxShadow: \`0 0 15px \${color}30\`
+        }}
+      >
+        <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+             style={{ boxShadow: \`inset 0 0 10px \${color}\` }} />
+
+        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color, boxShadow: \`0 0 10px \${color}\` }} />
+
+        <span className="absolute -bottom-6 text-[8px] font-mono tracking-widest text-white/50 uppercase whitespace-nowrap">
+          {label}
+        </span>
+      </motion.div>
+    </motion.div>
+  );
+}
+`,
+      componentPath: "CyberBiometricScanner",
+      scrollable: false,
+      usageCode: `import { CyberBiometricScanner } from "@/components/community/demos/CyberBiometricScanner";
+
+  export default function Demo() {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <CyberBiometricScanner />
+      </div>
+    );
+  }`,
+      aiPrompt: "Generate a CyberBiometricScanner component that uses framer-motion to create a press-and-hold biometric scanner featuring dynamic SVG topography, glowing laser sweeps, and glitching cybernetic states.",
+      props: [
+        {
+          name: "title",
+          type: "string",
+          defaultValue: `"IDENTITY VERIFICATION"`,
+          description: "The main title displayed above the scanner.",
+          control: { type: "text" }
+        },
+        {
+          name: "subtitle",
+          type: "string",
+          defaultValue: `"HOLD TO SCAN"`,
+          description: "The instructional subtitle displayed at the bottom.",
+          control: { type: "text" }
+        },
+        {
+          name: "successText",
+          type: "string",
+          defaultValue: `"ACCESS GRANTED"`,
+          description: "The text displayed upon successful scan.",
+          control: { type: "text" }
+        },
+        {
+          name: "primaryColor",
+          type: "string",
+          defaultValue: `"#00f0ff"`,
+          description: "The main neon color used for the scanner UI and success state.",
+          control: { type: "color" }
+        },
+        {
+          name: "accentColor",
+          type: "string",
+          defaultValue: `"#ff5c71"`,
+          description: "The secondary accent color used for error/failed states.",
+          control: { type: "color" }
+        },
+        {
+          name: "scanDuration",
+          type: "number",
+          defaultValue: "2500",
+          description: "Duration required to hold the scanner in milliseconds before success.",
+          control: { type: "slider", min: 1000, max: 5000, step: 100 }
+        }
+      ]
+    },
+{
+    id: "holo-seal-vault",
+    slug: "holo-seal-vault",
+    title: "Holo Seal Vault",
+    description: "A tactile unboxing experience where users physically drag and tear a holographic security seal to reveal encrypted content.",
+    category: "Cards",
+    tags: ["Framer Motion", "Interactive", "Physics", "Tactile"],
+    cliCommand: "npx @melonui-dev/cli add holo-seal-vault",
+    codeSnippet: `"use client";
+
+import React, { useState, useRef, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+
+export interface HoloSealVaultProps extends React.ComponentPropsWithoutRef<"div"> {
+  vaultTitle?: string;
+  vaultDescription?: string;
+  sealColor?: string;
+  accentColor?: string;
+  contentNode?: React.ReactNode;
+}
+
+export function HoloSealVault({
+  vaultTitle = "CLASSIFIED_DATA",
+  vaultDescription = "ENCRYPTED SECTOR. AUTHORIZATION REQUIRED.",
+  sealColor = "#ff5c71",
+  accentColor = "#7fff5e",
+  contentNode,
+  className,
+  style,
+}: HoloSealVaultProps) {
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Seal physics
+  const dragX = useMotionValue(0);
+  const dragY = useMotionValue(0);
+
+  const springX = useSpring(dragX, { stiffness: 400, damping: 25 });
+  const springY = useSpring(dragY, { stiffness: 400, damping: 25 });
+
+  // Calculate drag progress (distance from center)
+  const distance = useTransform(() => {
+    return Math.sqrt(springX.get() ** 2 + springY.get() ** 2);
+  });
+
+  // Seal starts tearing as it gets further away
+  const tearProgress = useTransform(distance, [0, 200], [0, 1]);
+
+  // Visual effects based on tear
+  const sealRotate = useTransform(springX, [-200, 200], [-15, 15]);
+  const sealScale = useTransform(tearProgress, [0, 0.8, 1], [1, 1.1, 0]);
+  const sealOpacity = useTransform(tearProgress, [0, 0.8, 1], [1, 0.9, 0]);
+
+  // Glitch effect on the vault when tearing
+  const vaultGlitchX = useTransform(distance, [0, 150], [0, 10]);
+  const vaultGlitchOpacity = useTransform(distance, [0, 150], [0, 0.5]);
+
+  useEffect(() => {
+    const unsubscribe = tearProgress.on("change", (latest) => {
+      if (latest >= 0.95 && !isUnlocked) {
+        setIsUnlocked(true);
+      }
+    });
+    return () => unsubscribe();
+  }, [tearProgress, isUnlocked]);
+
+  // Generate some deterministic noise/stars for the background
+  const noisePattern = Array.from({ length: 40 }).map((_, i) => ({
+    x: (Math.sin(i * 12.4) * 50 + 50) + "%",
+    y: (Math.cos(i * 4.3) * 50 + 50) + "%",
+    size: Math.abs(Math.sin(i * 7.1)) * 3 + 1,
+  }));
+
+  return (
+    <div
+      ref={containerRef}
+      className={\`relative w-full max-w-2xl mx-auto h-[400px] rounded-2xl overflow-hidden bg-[#0a0a0a] border border-white/10 \${className || ""}\`}
+      style={style}
+    >
+      {/* Background Noise / Grid */}
+      <div className="absolute inset-0 pointer-events-none opacity-20">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#ffffff15] via-transparent to-transparent" />
+        {noisePattern.map((point, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-white/40"
+            style={{
+              left: point.x,
+              top: point.y,
+              width: point.size,
+              height: point.size,
+            }}
+          />
+        ))}
+        {/* CRT Scanline */}
+        <motion.div
+          className="absolute inset-x-0 h-1 bg-white/5"
+          animate={{ y: ["0%", "40000%"] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+
+      <AnimatePresence mode="wait">
+        {!isUnlocked ? (
+          <motion.div
+            key="locked"
+            className="absolute inset-0 flex flex-col items-center justify-center p-8 z-10"
+            exit={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+          >
+            {/* Vault Frame */}
+            <motion.div
+              className="relative w-full max-w-md bg-black/40 border border-white/5 rounded-xl p-8 backdrop-blur-xl overflow-hidden"
+              style={{ x: vaultGlitchX }}
+            >
+              <div className="absolute inset-0 border-2 border-dashed border-white/10 rounded-xl" />
+
+              <div className="text-center space-y-2 mb-12">
+                <h3 className="font-['Anton'] text-3xl tracking-wider text-white uppercase">
+                  {vaultTitle}
+                </h3>
+                <p className="font-['Outfit'] text-xs text-white/50 tracking-widest font-bold">
+                  {vaultDescription}
+                </p>
+              </div>
+
+              {/* The Seal Constraint Area */}
+              <div className="relative h-32 flex items-center justify-center">
+
+                {/* Visual connection wires under the seal */}
+                <div className="absolute inset-x-0 h-[2px] bg-white/10 flex justify-between">
+                  <div className="w-2 h-2 rounded-full bg-white/20 -mt-[3px] ml-4" />
+                  <div className="w-2 h-2 rounded-full bg-white/20 -mt-[3px] mr-4" />
+                </div>
+
+                {/* The Draggable Holographic Seal */}
+                <motion.div
+                  drag
+                  dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+                  dragElastic={0.8}
+                  style={{
+                    x: dragX,
+                    y: dragY,
+                    rotate: sealRotate,
+                    scale: sealScale,
+                    opacity: sealOpacity,
+                  }}
+                  className="relative z-20 cursor-grab active:cursor-grabbing"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <div className="relative px-8 py-4 bg-black border-2 rounded-lg overflow-hidden group shadow-2xl"
+                       style={{ borderColor: sealColor, boxShadow: \`0 0 40px -10px \${sealColor}80\` }}>
+
+                    {/* Holographic foil effect */}
+                    <div className="absolute inset-0 opacity-50 mix-blend-screen bg-gradient-to-tr from-transparent via-white/20 to-transparent group-hover:via-white/40 transition-colors" />
+
+                    {/* Caution stripes */}
+                    <div className="absolute inset-0 opacity-20 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,#fff_10px,#fff_20px)]" />
+
+                    <div className="relative flex items-center space-x-3">
+                      <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: sealColor }} />
+                      <span className="font-['Outfit'] font-black tracking-[0.2em] text-sm text-white drop-shadow-md">
+                        RIP TO UNLOCK
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Glitch Overlay rendering under the seal based on drag distance */}
+                <motion.div
+                  className="absolute inset-0 pointer-events-none bg-red-500/10 mix-blend-overlay"
+                  style={{ opacity: vaultGlitchOpacity }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="unlocked"
+            className="absolute inset-0 flex items-center justify-center p-8 z-20"
+            initial={{ opacity: 0, scale: 1.1, filter: "blur(20px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
+          >
+            <div className="w-full h-full border border-white/20 bg-black/60 backdrop-blur-2xl rounded-xl p-6 relative overflow-hidden shadow-[0_0_100px_-20px_rgba(127,255,94,0.3)]">
+              {/* Decorative Corner Borders */}
+              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 rounded-tl-xl" style={{ borderColor: accentColor }} />
+              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 rounded-br-xl" style={{ borderColor: accentColor }} />
+
+              <div className="absolute top-4 right-4 flex space-x-2">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: accentColor }} />
+                <span className="font-mono text-[10px] text-white/50 tracking-widest">ACCESS_GRANTED</span>
+              </div>
+
+              <div className="mt-8 h-full">
+                {contentNode || (
+                  <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
+                    <motion.div
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      transition={{ delay: 0.2, type: "spring" }}
+                      className="w-16 h-16 rounded-2xl border-2 flex items-center justify-center"
+                      style={{ borderColor: accentColor, color: accentColor }}
+                    >
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                        <line x1="12" y1="22.08" x2="12" y2="12" />
+                      </svg>
+                    </motion.div>
+
+                    <div className="space-y-2">
+                      <h4 className="font-['Outfit'] font-bold text-2xl text-white">DECRYPTED PAYLOAD</h4>
+                      <p className="font-sans text-sm text-white/60 max-w-sm">
+                        The physical security seal has been breached. Welcome to the inner systems.
+                      </p>
+                    </div>
+
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setIsUnlocked(false)}
+                      className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-white text-xs font-bold tracking-widest hover:bg-white/10 transition-colors"
+                    >
+                      RE-SEAL VAULT
+                    </motion.button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+`,
+      componentPath: "HoloSealVault",
+    props: [
+      {
+        name: "vaultTitle",
+        type: "string",
+        defaultValue: "\"CLASSIFIED_DATA\"",
+        description: "The title text displayed on the locked vault.",
+        control: { type: "text" }
+      },
+      {
+        name: "vaultDescription",
+        type: "string",
+        defaultValue: "\"ENCRYPTED SECTOR. AUTHORIZATION REQUIRED.\"",
+        description: "The subtitle text displayed on the locked vault.",
+        control: { type: "text" }
+      },
+      {
+        name: "sealColor",
+        type: "string",
+        defaultValue: "\"#ff5c71\"",
+        description: "The primary color of the holographic security seal.",
+        control: { type: "color" }
+      },
+      {
+        name: "accentColor",
+        type: "string",
+        defaultValue: "\"#7fff5e\"",
+        description: "The accent color used inside the unlocked vault.",
+        control: { type: "color" }
+      }
+    ]
+  },
+{
+    id: "holo-deploy-card",
+    slug: "holo-deploy-card",
+    title: "Holo Deploy Card",
+    description: "A highly kinetic, tactile 3D card. On hover, glassmorphic panels deploy outwardly like a satellite or an unfolding sci-fi interface, expanding the interface area.",
+    category: "Cards",
+    tags: ["Framer Motion", "3D", "Interactive", "Cyber"],
+    cliCommand: "npx @melonui-dev/cli add holo-deploy-card",
+    codeSnippet: "// HoloDeployCard.tsx",
+    componentPath: "HoloDeployCard",
+    usageCode: `import { HoloDeployCard } from "@/components/community/demos/HoloDeployCard";
+
+export default function Demo() {
+  return (
+    <div className="w-full py-32 flex justify-center items-center">
+      <HoloDeployCard
+        title="MAIN TERMINAL"
+        subtitle="HOVER TO INITIALIZE"
+      />
+    </div>
+  );
+}`,
+    props: [
+      { name: "title", type: "string", defaultValue: `"CORE SYSTEM"`, description: "Central glowing title text.", control: { type: "text" } },
+      { name: "subtitle", type: "string", defaultValue: `"HOVER TO DEPLOY"`, description: "Helper text on the center card.", control: { type: "text" } },
+      { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Primary neon accent color.", control: { type: "color" } },
+      { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Secondary neon accent color.", control: { type: "color" } }
+    ]
+  },
+{
+    id: "tactile-cyber-badge",
+    slug: "tactile-cyber-badge",
+    title: "Tactile Cyber Badge",
+    description: "A highly interactive, draggable physical ID badge with framer-motion kinetics, realistic lanyard string physics, and premium digital aesthetic.",
+    category: "Widgets",
+    tags: ["Framer Motion", "Physics", "Interactive", "3D", "Draggable"],
+    cliCommand: "npx @melonui-dev/cli add tactile-cyber-badge",
+    codeSnippet: `"use client";
+
+import React, { useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+
+export interface TactileCyberBadgeProps extends React.ComponentPropsWithoutRef<"div"> {
+  name?: string;
+  role?: string;
+  idNumber?: string;
+  primaryColor?: string;
+  accentColor?: string;
+  companyName?: string;
+}
+
+export const TactileCyberBadge: React.FC<TactileCyberBadgeProps> = ({
+  name = "ALEX CHEN",
+  role = "LEAD ENGINEER",
+  idNumber = "M-99201",
+  primaryColor = "#ff5c71",
+  accentColor = "#7fff5e",
+  companyName = "MELON_UI //",
+  className = "",
+  style,
+  ...props
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Motion values for drag
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Smooth springs for physics
+  const springConfig = { damping: 15, stiffness: 120, mass: 1.2 };
+  const springX = useSpring(x, springConfig);
+  const springY = useSpring(y, springConfig);
+
+  // 3D Tilt based on drag offset
+  const rotateX = useTransform(springY, [-300, 300], [25, -25]);
+  const rotateY = useTransform(springX, [-300, 300], [-25, 25]);
+
+  // Lanyard string physics
+  const lanyardPath = useTransform([springX, springY], ([latestX, latestY]) => {
+    const bX = latestX as number;
+    const bY = latestY as number;
+
+    // Top-center anchor point (assuming 600px container, so -300 from center)
+    const startX = 0;
+    const startY = -300;
+
+    // Badge attachment point (top center of the badge)
+    const endX = bX;
+    const endY = bY - 180;
+
+    // Control point for realistic gravity sag
+    const ctrlX = (startX + endX) / 2;
+    // Add extra slack when badge is pulled up
+    const slack = Math.max(0, 150 - Math.abs(endY - startY));
+    const ctrlY = Math.max(startY, endY) + 50 + slack;
+
+    return \`M \${startX} \${startY} Q \${ctrlX} \${ctrlY} \${endX} \${endY}\`;
+  });
+
+  return (
+    <div
+      ref={containerRef}
+      className={\`relative w-full h-[600px] bg-[#050505] overflow-hidden flex items-center justify-center [perspective:1200px] \${className}\`}
+      style={style}
+      {...props}
+    >
+      {/* Background Subtle Grid */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: \`linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)\`,
+          backgroundSize: "40px 40px"
+        }}
+      />
+
+      {/* Floating Ambience Particles (Deterministic) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: (i % 3 + 1) * 3 + 'px',
+              height: (i % 3 + 1) * 3 + 'px',
+              backgroundColor: i % 2 === 0 ? primaryColor : accentColor,
+              left: \`\${15 + (i * 17)}%\`,
+              top: \`\${20 + (i * 13)}%\`,
+              opacity: 0.3,
+              filter: "blur(2px)"
+            }}
+            animate={{
+              y: [0, -30, 0],
+              opacity: [0.1, 0.5, 0.1]
+            }}
+            transition={{
+              duration: 4 + (i % 3),
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: i * 0.5
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Dynamic Lanyard SVG (Centered origin) */}
+      <div className="absolute top-1/2 left-1/2 w-0 h-0 z-0 pointer-events-none">
+        <svg className="overflow-visible w-0 h-0 pointer-events-none">
+          <motion.path
+            d={lanyardPath}
+            fill="none"
+            stroke="url(#lanyard-gradient)"
+            strokeWidth="8"
+            strokeLinecap="round"
+            style={{ filter: "drop-shadow(0px 10px 10px rgba(0,0,0,0.5))" }}
+          />
+          <defs>
+            <linearGradient id="lanyard-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#111" />
+              <stop offset="100%" stopColor={primaryColor} />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      {/* The Badge */}
+      <motion.div
+        style={{
+          x,
+          y,
+          rotateX,
+          rotateY,
+          transformStyle: "preserve-3d"
+        }}
+        drag
+        dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+        dragElastic={0.4}
+        whileHover={{ scale: 1.02 }}
+        whileDrag={{ scale: 1.05, cursor: "grabbing" }}
+        className="relative z-10 w-[260px] h-[360px] cursor-grab"
+      >
+        {/* Badge Glass Body */}
+        <div className="absolute inset-0 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/10 overflow-hidden shadow-2xl flex flex-col">
+
+          {/* Subtle noise texture */}
+          <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+
+          {/* Top Metallic Clip Section */}
+          <div className="h-16 w-full border-b border-white/10 bg-white/[0.02] relative flex items-center justify-center">
+            {/* The Hole for Lanyard */}
+            <div className="w-14 h-3 rounded-full bg-black/60 shadow-inner border border-white/5 absolute top-3" />
+            <div className="mt-6 font-mono text-[10px] text-white/30 tracking-[0.2em]">{companyName}</div>
+          </div>
+
+          {/* Holographic Element */}
+          <div className="absolute top-20 right-5 w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/40 overflow-hidden shadow-inner">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              className="w-full h-full"
+              style={{
+                background: \`conic-gradient(from 0deg, transparent 0%, \${accentColor} 50%, transparent 100%)\`,
+                opacity: 0.8
+              }}
+            />
+            <div className="absolute inset-[2px] rounded-full bg-[#111] flex items-center justify-center shadow-inner border border-white/5">
+              <div className="w-3 h-3 rounded-full bg-white/20 animate-pulse" />
+            </div>
+          </div>
+
+          {/* Profile Section */}
+          <div className="px-6 pt-6 flex-1 flex flex-col justify-end pb-6 relative z-10">
+            {/* Avatar Mock */}
+            <div className="w-20 h-20 rounded-2xl mb-4 bg-gradient-to-br from-white/10 to-transparent border border-white/10 p-1 backdrop-blur-md shadow-lg">
+              <div className="w-full h-full rounded-xl bg-[#0a0a0a] overflow-hidden relative flex items-end justify-center">
+                <div className="absolute inset-0 opacity-30" style={{ background: \`linear-gradient(135deg, \${primaryColor}, \${accentColor})\` }} />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-16 h-16 text-white/60 translate-y-3">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+            </div>
+
+            <div className="space-y-1 mb-6">
+              <h2 className="font-['Outfit'] text-2xl font-bold text-white tracking-tight uppercase leading-none drop-shadow-md">{name}</h2>
+              <p className="font-mono text-[10px] text-white/60 tracking-wider" style={{ color: primaryColor }}>{role}</p>
+            </div>
+
+            <div className="pt-4 border-t border-white/10 flex justify-between items-end">
+              <div>
+                <p className="font-mono text-[8px] text-white/40 mb-1">ID NO.</p>
+                <p className="font-mono text-xs text-white/80">{idNumber}</p>
+              </div>
+
+              {/* Barcode Mock */}
+              <div className="flex gap-[2px] h-6 opacity-50">
+                {[2,1,3,1,1,2,3,1,2,1].map((w, i) => (
+                  <div key={i} className="bg-white h-full rounded-sm" style={{ width: \`\${w * 2}px\` }} />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Edge LED Strip */}
+          <div className="h-[3px] w-full mt-auto" style={{ background: \`linear-gradient(90deg, \${primaryColor}, \${accentColor})\`, boxShadow: \`0 -5px 15px \${primaryColor}40\` }} />
+        </div>
+
+        {/* 3D Glare Overlay Effect */}
+        <motion.div
+          className="absolute inset-0 rounded-3xl pointer-events-none mix-blend-overlay"
+          style={{
+            background: useTransform(
+              [springX, springY],
+              ([x, y]) => {
+                // Normalize position relative to drag bounds
+                const posX = ((x as number) + 300) / 600 * 100;
+                const posY = ((y as number) + 300) / 600 * 100;
+                return \`radial-gradient(circle at \${posX}% \${posY}%, rgba(255,255,255,0.4) 0%, transparent 50%)\`;
+              }
+            )
+          }}
+        />
+      </motion.div>
+    </div>
+  );
+};
+`,
+      componentPath: "TactileCyberBadge",
+    scrollable: false,
+    usageCode: `import { TactileCyberBadge } from "@/components/community/demos/TactileCyberBadge";
+
+export default function MyPage() {
+  return (
+    <div className="w-full flex justify-center items-center py-20 bg-black">
+      <TactileCyberBadge />
+    </div>
+  );
+}`,
+  },
+{
+      id: "hyperdrive-widget",
+      slug: "hyperdrive-widget",
+      title: "HyperDrive Widget",
+      description: "A highly interactive, futuristic widget featuring a central magnetic core and orbiting rings that react to hover and click.",
+      category: "Widgets",
+      tags: ["Framer Motion", "Interactive", "Premium", "Cyber"],
+      cliCommand: "npx @melonui-dev/cli add hyperdrive-widget",
+      componentPath: "HyperDriveWidget",
+      scrollable: false,
+      codeSnippet: `"use client";
+
+import React, { useRef, useState, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+
+export interface HyperDriveWidgetProps extends React.ComponentPropsWithoutRef<"div"> {
+  title?: string;
+  statusText?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  glowColor?: string;
+  size?: number;
+}
+
+export const HyperDriveWidget = React.forwardRef<HTMLDivElement, HyperDriveWidgetProps>(
+  (
+    {
+      title = "HYPERDRIVE CORE",
+      statusText = "IDLE",
+      primaryColor = "#00f0ff",
+      secondaryColor = "#ff5c71",
+      glowColor = "#7fff5e",
+      size = 360,
+      className = "",
+      style,
+      ...props
+    },
+    forwardedRef
+  ) => {
+    const internalRef = useRef<HTMLDivElement>(null);
+    const ref = (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
+
+    const [isHovered, setIsHovered] = useState(false);
+    const [isActive, setIsActive] = useState(false);
+
+    // Mouse tracking for magnetic pull and 3D tilt
+    const mouseX = useMotionValue(0.5);
+    const mouseY = useMotionValue(0.5);
+
+    // Smooth physics for the core
+    const springConfig = { damping: 20, stiffness: 150, mass: 0.8 };
+    const smoothX = useSpring(mouseX, springConfig);
+    const smoothY = useSpring(mouseY, springConfig);
+
+    // 3D Tilt transforms
+    const rotateX = useTransform(smoothY, [0, 1], [isHovered ? 20 : 0, isHovered ? -20 : 0]);
+    const rotateY = useTransform(smoothX, [0, 1], [isHovered ? -20 : 0, isHovered ? 20 : 0]);
+
+    // Magnetic pull for the core
+    const coreX = useTransform(smoothX, [0, 1], [isHovered ? -30 : 0, isHovered ? 30 : 0]);
+    const coreY = useTransform(smoothY, [0, 1], [isHovered ? -30 : 0, isHovered ? 30 : 0]);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      mouseX.set(x);
+      mouseY.set(y);
+    };
+
+    const handleMouseLeave = () => {
+      setIsHovered(false);
+      setIsActive(false);
+      mouseX.set(0.5);
+      mouseY.set(0.5);
+    };
+
+    // Calculate dynamic colors based on state
+    const currentPrimary = isActive ? glowColor : isHovered ? primaryColor : "rgba(255,255,255,0.2)";
+    const currentStatus = isActive ? "JUMPING" : isHovered ? "CHARGING" : statusText;
+
+    return (
+      <div
+        ref={ref}
+        className={\`relative perspective-[1000px] flex items-center justify-center \${className}\`}
+        style={{ width: size, height: size, ...style }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseDown={() => setIsActive(true)}
+        onMouseUp={() => setIsActive(false)}
+        onTouchStart={() => setIsActive(true)}
+        onTouchEnd={() => setIsActive(false)}
+        {...props}
+      >
+        <motion.div
+          className="w-full h-full relative preserve-3d"
+          style={{
+            rotateX,
+            rotateY,
+            transformStyle: "preserve-3d",
+          }}
+        >
+          {/* Background Glass Plate */}
+          <div className="absolute inset-0 rounded-[2.5rem] bg-black/40 border border-white/10 backdrop-blur-xl shadow-2xl overflow-hidden">
+            {/* Ambient background glow */}
+            <motion.div
+              className="absolute inset-0 opacity-30"
+              animate={{
+                background: isActive
+                  ? \`radial-gradient(circle at 50% 50%, \${glowColor}40 0%, transparent 70%)\`
+                  : isHovered
+                  ? \`radial-gradient(circle at 50% 50%, \${primaryColor}30 0%, transparent 60%)\`
+                  : \`radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 50%)\`
+              }}
+              transition={{ duration: 0.5 }}
+            />
+
+            {/* Noise Texture */}
+            <div
+              className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none"
+              style={{ backgroundImage: "url('data:image/svg+xml;utf8,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')" }}
+            />
+
+            {/* Corner Accents */}
+            <div className="absolute top-4 left-4 w-2 h-2 rounded-full border border-white/30" />
+            <div className="absolute top-4 right-4 w-2 h-2 rounded-full border border-white/30" />
+            <div className="absolute bottom-4 left-4 w-2 h-2 rounded-full border border-white/30" />
+            <div className="absolute bottom-4 right-4 w-2 h-2 rounded-full border border-white/30" />
+
+            {/* Header Text */}
+            <div className="absolute top-6 left-0 right-0 flex flex-col items-center pointer-events-none">
+               <motion.span
+                 className="text-white/80 font-bold tracking-[0.2em] text-sm"
+                 animate={{ textShadow: isHovered ? \`0 0 10px \${currentPrimary}\` : "none" }}
+               >
+                 {title}
+               </motion.span>
+               <motion.span
+                 className="font-mono text-[10px] tracking-widest mt-1 uppercase"
+                 animate={{ color: isActive ? glowColor : isHovered ? primaryColor : "rgba(255,255,255,0.4)" }}
+               >
+                 {currentStatus}
+               </motion.span>
+            </div>
+          </div>
+
+          {/* Orbiting Rings System */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ transform: "translateZ(30px)" }}>
+
+            {/* Outer Ring */}
+            <motion.div
+              className="absolute rounded-full border border-dashed opacity-30"
+              style={{ width: size * 0.75, height: size * 0.75, borderColor: currentPrimary }}
+              animate={{
+                rotate: isActive ? 360 : 0,
+                scale: isActive ? 1.1 : isHovered ? 1.05 : 1,
+              }}
+              transition={{
+                rotate: { duration: isActive ? 1 : 10, repeat: Infinity, ease: "linear" },
+                scale: { type: "spring", stiffness: 200, damping: 20 }
+              }}
+            />
+
+            {/* Middle Ring */}
+            <motion.div
+              className="absolute rounded-full border-2 border-transparent opacity-50"
+              style={{
+                width: size * 0.6,
+                height: size * 0.6,
+                borderTopColor: secondaryColor,
+                borderBottomColor: secondaryColor
+              }}
+              animate={{
+                rotate: isActive ? -360 : 0,
+                scale: isActive ? 0.9 : isHovered ? 0.95 : 1,
+              }}
+              transition={{
+                rotate: { duration: isActive ? 0.8 : 8, repeat: Infinity, ease: "linear" },
+                scale: { type: "spring", stiffness: 200, damping: 20 }
+              }}
+            />
+
+            {/* Inner Data Track */}
+            <motion.svg
+              className="absolute"
+              style={{ width: size * 0.45, height: size * 0.45 }}
+              viewBox="0 0 100 100"
+              animate={{ rotate: isActive ? 360 : 0 }}
+              transition={{ duration: isActive ? 0.5 : 20, repeat: Infinity, ease: "linear" }}
+            >
+              <circle cx="50" cy="50" r="48" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+              <circle
+                cx="50" cy="50" r="48"
+                fill="none"
+                stroke={currentPrimary}
+                strokeWidth="2"
+                strokeDasharray={isActive ? "20 10" : "50 250"}
+                strokeLinecap="round"
+              />
+            </motion.svg>
+          </div>
+
+          {/* Central Magnetic Core */}
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center cursor-pointer z-10"
+            style={{ x: coreX, y: coreY, transform: "translateZ(60px)" }}
+          >
+             <motion.div
+               className="relative rounded-full flex items-center justify-center backdrop-blur-md overflow-hidden"
+               style={{
+                 width: size * 0.25,
+                 height: size * 0.25,
+                 background: "rgba(0,0,0,0.5)",
+                 border: \`1px solid \${currentPrimary}\`,
+                 boxShadow: isActive ? \`0 0 40px \${glowColor}\` : isHovered ? \`0 0 20px \${primaryColor}\` : \`0 0 10px rgba(0,0,0,0.5)\`
+               }}
+               whileHover={{ scale: 1.1 }}
+               whileTap={{ scale: 0.9 }}
+             >
+               {/* Core Center Pulse */}
+               <motion.div
+                 className="w-1/2 h-1/2 rounded-full blur-md"
+                 animate={{
+                   backgroundColor: currentPrimary,
+                   scale: isActive ? [1, 1.5, 1] : [1, 1.2, 1],
+                   opacity: isActive ? 1 : 0.6
+                 }}
+                 transition={{ duration: isActive ? 0.5 : 2, repeat: Infinity, ease: "easeInOut" }}
+               />
+
+               {/* Cybernetic details inside core */}
+               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                 <div className="w-1/3 h-px bg-white/50 absolute" style={{ transform: "rotate(45deg)" }} />
+                 <div className="w-1/3 h-px bg-white/50 absolute" style={{ transform: "rotate(-45deg)" }} />
+                 <div className="w-2 h-2 bg-white rounded-full z-10 shadow-[0_0_10px_white]" />
+               </div>
+             </motion.div>
+          </motion.div>
+
+          {/* Scanning Line Effect on Active */}
+          <AnimatePresence>
+            {isActive && (
+              <motion.div
+                initial={{ top: "0%", opacity: 0 }}
+                animate={{ top: "100%", opacity: 0.5 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+                className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white to-transparent pointer-events-none"
+                style={{ transform: "translateZ(80px)", boxShadow: \`0 0 20px \${glowColor}\` }}
+              />
+            )}
+          </AnimatePresence>
+
+        </motion.div>
+      </div>
+    );
+  }
+);
+
+HyperDriveWidget.displayName = "HyperDriveWidget";
+`,
+      usageCode: `import { HyperDriveWidget } from "@/components/community/demos/HyperDriveWidget";
+
+export default function Demo() {
+  return (
+    <div className="flex items-center justify-center p-12 min-h-[500px]">
+      <HyperDriveWidget
+        title="HYPERDRIVE CORE"
+        primaryColor="#00f0ff"
+        secondaryColor="#ff5c71"
+        glowColor="#7fff5e"
+      />
+    </div>
+  );
+}`,
+      props: [
+        {
+          name: "title",
+          type: "string",
+          defaultValue: `"HYPERDRIVE CORE"`,
+          description: "The main title displayed inside the widget.",
+          control: { type: "text" }
+        },
+        {
+          name: "statusText",
+          type: "string",
+          defaultValue: `"IDLE"`,
+          description: "The default status text shown under the title.",
+          control: { type: "text" }
+        },
+        {
+          name: "size",
+          type: "number",
+          defaultValue: "360",
+          description: "The width and height of the widget container.",
+          control: { type: "slider", min: 200, max: 600, step: 10 }
+        },
+        {
+          name: "primaryColor",
+          type: "string",
+          defaultValue: `"#00f0ff"`,
+          description: "The primary neon color used for the core and rings during hover.",
+          control: { type: "color" }
+        },
+        {
+          name: "secondaryColor",
+          type: "string",
+          defaultValue: `"#ff5c71"`,
+          description: "The secondary neon color used for the middle ring.",
+          control: { type: "color" }
+        },
+        {
+          name: "glowColor",
+          type: "string",
+          defaultValue: `"#7fff5e"`,
+          description: "The neon glow color used during active (clicked) state.",
+          control: { type: "color" }
+        }
+      ]
+    },
+{
+      id: "kinetic-swing-tag",
+      slug: "kinetic-swing-tag",
+      title: "Kinetic Swing Tag",
+      description: "A Gen-Z digital streetwear fashion tag with realistic string physics, draggable swinging motion, and holographic glare.",
+      category: "Cards",
+      tags: ["Framer Motion", "Physics", "Gen-Z", "Streetwear", "Interactive"],
+      cliCommand: "npx @melonui-dev/cli add kinetic-swing-tag",
+      codeSnippet: `"use client";
+
+import React, { useRef, useState, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform, useVelocity, useAnimationFrame } from "framer-motion";
+
+export interface KineticSwingTagProps extends React.ComponentPropsWithoutRef<"div"> {
+  tagWidth?: number;
+  tagHeight?: number;
+  primaryColor?: string;
+  secondaryColor?: string;
+  brandName?: string;
+  seriesText?: string;
+}
+
+export function KineticSwingTag({
+  tagWidth = 260,
+  tagHeight = 400,
+  primaryColor = "#ff5c71",
+  secondaryColor = "#7fff5e",
+  brandName = "MELON",
+  seriesText = "S/S 2024 ARCHIVE",
+  className = "",
+  style,
+  ...props
+}: KineticSwingTagProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const tagRef = useRef<HTMLDivElement>(null);
+
+  const [mounted, setMounted] = useState(false);
+
+  // Positioning
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Physics config
+  const springConfig = { damping: 15, stiffness: 120, mass: 1.5 };
+
+  // Springs for the tag's physical position
+  const springX = useSpring(x, springConfig);
+  const springY = useSpring(y, springConfig);
+
+  // We keep springY if we want to use its value or velocity for additional physics later,
+  // but we can also safely use it in the style tag for y if we want physical dampening on Y as well.
+
+  // Calculate velocity for realistic swing
+  const xVelocity = useVelocity(springX);
+
+  // Map horizontal velocity to rotation angle (swinging effect)
+  const rotateZ = useTransform(xVelocity, [-1000, 1000], [-35, 35]);
+  const smoothRotateZ = useSpring(rotateZ, { damping: 20, stiffness: 200 });
+
+  // Springy string attachment point
+  const [stringPath, setStringPath] = useState("");
+
+  // Holographic glare tracking
+  const glareX = useMotionValue(50);
+  const glareY = useMotionValue(50);
+  const glareOpacity = useMotionValue(0);
+
+  const glareBackground = useTransform(
+    [glareX, glareY],
+    ([gx, gy]) =>
+      \`radial-gradient(circle at \${gx}% \${gy}%, rgba(255,255,255,0.8) 0%, transparent 60%)\`
+  );
+
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Animate the string path every frame to follow the tag
+  useAnimationFrame(() => {
+    if (!tagRef.current || !containerRef.current) return;
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+
+    // Top anchor point (center top of container)
+    const anchorX = containerRect.width / 2;
+    const anchorY = 0;
+
+    // Actually, getting the real eyelet position from the DOM is more accurate
+    const eyeletEl = tagRef.current.querySelector('.eyelet') as HTMLElement;
+    if (eyeletEl) {
+      const eyeletRect = eyeletEl.getBoundingClientRect();
+      const targetX = eyeletRect.left + eyeletRect.width / 2 - containerRect.left;
+      const targetY = eyeletRect.top + eyeletRect.height / 2 - containerRect.top;
+
+      // Calculate a bezier curve that hangs slightly
+      const cp1X = anchorX;
+      const cp1Y = targetY * 0.4;
+      const cp2X = targetX;
+      const cp2Y = targetY * 0.6;
+
+      setStringPath(\`M \${anchorX} \${anchorY} C \${cp1X} \${cp1Y}, \${cp2X} \${cp2Y}, \${targetX} \${targetY}\`);
+    }
+  });
+
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!tagRef.current) return;
+    const rect = tagRef.current.getBoundingClientRect();
+    const xPct = ((e.clientX - rect.left) / rect.width) * 100;
+    const yPct = ((e.clientY - rect.top) / rect.height) * 100;
+    glareX.set(xPct);
+    glareY.set(yPct);
+  };
+
+  if (!mounted) return null;
+
+  return (
+    <div
+      ref={containerRef}
+      className={\`relative w-full h-[600px] overflow-hidden bg-[#050505] flex items-center justify-center font-['Outfit'] \${className}\`}
+      style={style}
+      {...props}
+    >
+      {/* Background ambient light */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-b from-white/10 to-transparent blur-3xl rounded-full mix-blend-screen" />
+      </div>
+
+      {/* The String */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" style={{ overflow: 'visible' }}>
+        <path
+          d={stringPath}
+          fill="none"
+          stroke="rgba(255,255,255,0.4)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          style={{ filter: 'drop-shadow(0px 10px 10px rgba(0,0,0,0.5))' }}
+        />
+        {/* Top anchor ring */}
+        <circle cx="50%" cy="0" r="6" fill="transparent" stroke="rgba(255,255,255,0.5)" strokeWidth="3" />
+        <circle cx="50%" cy="0" r="10" fill="transparent" stroke="#111" strokeWidth="4" />
+      </svg>
+
+      {/* The Tag Draggable Container */}
+      <motion.div
+        drag
+        dragElastic={0.2}
+        dragConstraints={containerRef}
+        dragMomentum={true}
+        dragTransition={{ bounceStiffness: 200, bounceDamping: 20 }}
+        style={{
+          x: springX,
+          y: springY,
+          rotateZ: smoothRotateZ,
+          cursor: "grab",
+          touchAction: "none"
+        }}
+        whileDrag={{ cursor: "grabbing", scale: 1.02 }}
+        className="relative z-20 mt-12"
+      >
+        {/* The Tag Element */}
+        <div
+          ref={tagRef}
+          onMouseMove={handleMouseMove}
+          onMouseEnter={() => glareOpacity.set(1)}
+          onMouseLeave={() => glareOpacity.set(0)}
+          className="relative rounded-2xl overflow-hidden backdrop-blur-2xl shadow-[0_30px_60px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.1)_inset]"
+          style={{
+            width: tagWidth,
+            height: tagHeight,
+            backgroundColor: "rgba(20, 20, 22, 0.7)",
+            transformOrigin: "top center",
+          }}
+        >
+          {/* Holographic Glare */}
+          <motion.div
+            className="absolute inset-0 pointer-events-none z-50 mix-blend-overlay transition-opacity duration-300"
+            style={{
+              opacity: glareOpacity,
+              background: glareBackground as unknown as string,
+            }}
+          />
+
+          {/* Internal gradient lighting */}
+          <div
+            className="absolute inset-0 opacity-40 pointer-events-none"
+            style={{
+              background: \`linear-gradient(135deg, \${primaryColor}40 0%, transparent 50%, \${secondaryColor}40 100%)\`
+            }}
+          />
+
+          {/* The Metal Eyelet */}
+          <div className="absolute top-6 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[#111] border-[6px] border-[#555] shadow-[inset_0_2px_10px_rgba(0,0,0,1),0_2px_4px_rgba(255,255,255,0.1)] flex items-center justify-center z-20 eyelet">
+            <div className="w-2 h-2 rounded-full bg-black shadow-[inset_0_1px_3px_rgba(0,0,0,0.8)]" />
+          </div>
+
+          {/* Top Section */}
+          <div className="pt-20 px-6 pb-20 h-full flex flex-col justify-between relative z-10">
+            <div>
+              <div className="flex justify-between items-start mb-6">
+                <span className="text-[10px] tracking-[0.2em] text-white/40 font-mono">AUTH_ID: X92-B</span>
+                <span className="text-[10px] tracking-widest text-white/40 font-mono border border-white/20 px-2 py-0.5 rounded-sm">01</span>
+              </div>
+
+              <h2 className="text-5xl font-black text-white tracking-tighter mb-2" style={{ fontFamily: "Anton, sans-serif" }}>
+                {brandName}
+              </h2>
+
+              <div className="inline-block bg-white text-black text-[10px] font-bold px-2 py-1 mb-6 tracking-widest">
+                {seriesText}
+              </div>
+
+              <div className="space-y-4 font-mono text-[11px] text-white/60">
+                <div className="flex justify-between border-b border-white/10 pb-1">
+                  <span>MATERIAL</span>
+                  <span className="text-white">GLASS / POLY</span>
+                </div>
+                <div className="flex justify-between border-b border-white/10 pb-1">
+                  <span>FIT</span>
+                  <span className="text-white">OVERSIZED</span>
+                </div>
+                <div className="flex justify-between border-b border-white/10 pb-1">
+                  <span>WASH</span>
+                  <span className="text-white">DO NOT WASH</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Barcode Section */}
+            <div className="mt-8">
+              <div className="w-full h-12 flex gap-[2px] opacity-80 mix-blend-screen">
+                {/* Generated Barcode lines */}
+                {Array.from({ length: 30 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-full bg-white"
+                    style={{
+                      width: \`\${Math.sin(i * 0.5) * 3 + 4}px\`,
+                      opacity: Math.cos(i) > 0 ? 1 : 0.6
+                    }}
+                  />
+                ))}
+              </div>
+              <div className="flex justify-between mt-2 font-mono text-[9px] text-white/40 tracking-[0.3em]">
+                <span>8</span>
+                <span>40291</span>
+                <span>89320</span>
+                <span>2</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Perforated bottom tear line */}
+          <div className="absolute bottom-16 left-0 w-full flex items-center justify-between px-2">
+            <div className="w-3 h-3 rounded-full bg-[#050505] -ml-4 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]" />
+            <div className="flex-1 border-t-2 border-dashed border-white/20 mx-2" />
+            <div className="w-3 h-3 rounded-full bg-[#050505] -mr-4 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]" />
+          </div>
+
+          {/* Tear-off slip content */}
+          <div className="absolute bottom-0 left-0 w-full h-16 bg-white/5 backdrop-blur-md flex items-center justify-center border-t border-white/10">
+            <span className="font-mono text-[10px] tracking-[0.2em] text-[#ff5c71] font-bold">
+              [ DETACH BEFORE WEARING ]
+            </span>
+          </div>
+
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+`,
+      componentPath: "KineticSwingTag",
+      props: [
+        { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Left accent gradient color.", control: { type: "color" } },
+        { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Right accent gradient color.", control: { type: "color" } },
+        { name: "brandName", type: "string", defaultValue: `"MELON"`, description: "The central brand text.", control: { type: "text" } },
+        { name: "seriesText", type: "string", defaultValue: `"S/S 2024 ARCHIVE"`, description: "The subtext collection label.", control: { type: "text" } }
+      ]
+    },
+{
+    id: "void-portal-reveal",
+    slug: "void-portal-reveal",
+    title: "Void Portal Reveal",
+    description: "A highly interactive, gyroscopic 3D ring portal that massively scales on hover to simulate flying through, revealing a glassmorphic hidden dashboard or UI beneath.",
+    category: "Backgrounds",
+    tags: ["portal", "3d", "interactive", "reveal", "glassmorphism", "framer-motion", "gen-z"],
+    cliCommand: "npx @melonui-dev/cli add void-portal-reveal",
+    componentPath: "VoidPortalReveal",
+    codeSnippet: `"use client";
+
+import React, { useState, useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+
+export interface VoidPortalRevealProps extends React.ComponentPropsWithoutRef<"div"> {
+  portalText?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  accentColor?: string;
+  revealedContent?: React.ReactNode;
+}
+
+export function VoidPortalReveal({
+  portalText = "ENTER THE VOID",
+  primaryColor = "#ff5c71",
+  secondaryColor = "#7fff5e",
+  accentColor = "#00f0ff",
+  revealedContent,
+  className = "",
+  style,
+  ...props
+}: VoidPortalRevealProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isRevealed, setIsRevealed] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Smooth out the mouse values
+  const smoothX = useSpring(mouseX, { stiffness: 50, damping: 20 });
+  const smoothY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+
+  // Map mouse position to rotation and translation
+  const rotateX = useTransform(smoothY, [-0.5, 0.5], [20, -20]);
+  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-20, 20]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current || isRevealed) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  const handleMouseLeave = () => {
+    if (!isRevealed) {
+      mouseX.set(0);
+      mouseY.set(0);
+    }
+    setIsHovered(false);
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  // Generate rings
+  const rings = Array.from({ length: 5 });
+
+  const defaultRevealedContent = (
+    <div className="flex flex-col items-center justify-center h-full w-full bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 p-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden relative">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
+
+      <motion.div
+        initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ delay: 0.6, duration: 0.8, type: "spring" }}
+        className="text-center space-y-6 relative z-10"
+      >
+        <div className="w-20 h-20 rounded-2xl border mx-auto flex items-center justify-center relative overflow-hidden" style={{ backgroundColor: \`\${primaryColor}10\`, borderColor: \`\${primaryColor}40\` }}>
+          <div className="absolute inset-0 opacity-50" style={{ background: \`radial-gradient(circle at center, \${primaryColor} 0%, transparent 70%)\` }} />
+          <span className="text-3xl relative z-10" style={{ color: primaryColor }}>✦</span>
+        </div>
+
+        <div>
+          <h3 className="text-3xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">NEXUS OPEN</h3>
+          <p className="text-xs text-gray-400 font-mono tracking-widest mt-2 uppercase">Secure Connection Established</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 w-full max-w-[240px] mx-auto mt-6">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-left backdrop-blur-sm relative overflow-hidden group">
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity" style={{ background: \`linear-gradient(to bottom right, \${secondaryColor}, transparent)\` }} />
+            <div className="text-[10px] text-gray-500 font-mono mb-1">UPLINK</div>
+            <div className="text-sm text-white font-bold tracking-wider" style={{ color: secondaryColor }}>99.9%</div>
+          </div>
+          <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-left backdrop-blur-sm relative overflow-hidden group">
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity" style={{ background: \`linear-gradient(to bottom right, \${accentColor}, transparent)\` }} />
+            <div className="text-[10px] text-gray-500 font-mono mb-1">LATENCY</div>
+            <div className="text-sm text-white font-bold tracking-wider" style={{ color: accentColor }}>4ms</div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+
+  return (
+    <div
+      ref={containerRef}
+      className={\`relative w-full max-w-[400px] aspect-[4/5] rounded-[2.5rem] overflow-hidden cursor-pointer group perspective-[1200px] bg-[#030303] shadow-2xl border border-white/5 \${className}\`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onMouseEnter={handleMouseEnter}
+      onClick={() => setIsRevealed(!isRevealed)}
+      style={style}
+      {...props}
+    >
+      {/* Noise overlay for the outer card */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.02] z-0" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
+
+      {/* Deep Space Background */}
+      <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_50%_50%,_rgba(255,255,255,0.05)_0%,_transparent_60%)]" />
+
+      {/* Portal Container */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center transform-gpu"
+        style={{
+          rotateX: isRevealed ? 0 : rotateX,
+          rotateY: isRevealed ? 0 : rotateY,
+        }}
+        animate={{
+          scale: isRevealed ? 5 : 1,
+          opacity: isRevealed ? 0 : 1,
+          z: isRevealed ? 500 : 0,
+        }}
+        transition={{
+          duration: 1.4,
+          ease: [0.16, 1, 0.3, 1], // cinematic ease out
+        }}
+      >
+        {/* Dynamic Rings */}
+        {rings.map((_, i) => {
+          const isOuter = i === rings.length - 1;
+          const isInner = i === 0;
+          return (
+            <motion.div
+              key={i}
+              className="absolute rounded-full border transform-gpu"
+              style={{
+                width: \`\${(i + 1) * 22}%\`,
+                height: \`\${(i + 1) * 22}%\`,
+                borderColor: isOuter ? \`\${primaryColor}80\` : isInner ? \`\${secondaryColor}80\` : "rgba(255,255,255,0.15)",
+                borderStyle: i % 2 === 0 ? "solid" : "dashed",
+                boxShadow: isOuter ? \`0 0 40px \${primaryColor}30, inset 0 0 20px \${primaryColor}20\` : "none",
+                borderWidth: isOuter ? "2px" : "1px",
+              }}
+              animate={{
+                rotateZ: isHovered ? [0, i % 2 === 0 ? 180 : -180] : 0,
+                rotateX: isHovered ? [0, 10, 0] : 0,
+                rotateY: isHovered ? [0, -10, 0] : 0,
+                scale: isHovered ? 1.05 + i * 0.03 : 1,
+              }}
+              transition={{
+                rotateZ: {
+                  duration: 15 - i * 1.5,
+                  repeat: Infinity,
+                  ease: "linear"
+                },
+                rotateX: {
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                },
+                rotateY: {
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1
+                },
+                scale: {
+                  duration: 0.8,
+                  ease: "easeOut"
+                }
+              }}
+            />
+          );
+        })}
+
+        {/* Center Portal Text and Core */}
+        <motion.div
+          className="absolute z-10 flex flex-col items-center justify-center pointer-events-none"
+          animate={{
+            scale: isHovered ? 1.15 : 1,
+            opacity: isHovered ? 1 : 0.7,
+          }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="relative flex flex-col items-center">
+            <span className="text-sm font-black tracking-[0.5em] text-white z-10 relative drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
+              {portalText}
+            </span>
+            <span className="text-[8px] text-gray-500 font-mono tracking-widest mt-2 uppercase">
+              Click to initiate
+            </span>
+            <motion.div
+              className="absolute inset-0 blur-lg opacity-50 z-0"
+              animate={{ opacity: isHovered ? 0.8 : 0.2 }}
+              style={{ color: primaryColor }}
+            >
+              {portalText}
+            </motion.div>
+          </div>
+
+          <motion.div
+            className="w-16 h-[1px] mt-4 rounded-full"
+            style={{ backgroundColor: primaryColor, boxShadow: \`0 0 10px \${primaryColor}\` }}
+            animate={{
+              width: isHovered ? 80 : 40,
+              opacity: isHovered ? 1 : 0.3
+            }}
+          />
+        </motion.div>
+
+        {/* Deep Center Core Glow */}
+        <motion.div
+          className="absolute w-24 h-24 rounded-full blur-[40px] mix-blend-screen"
+          style={{ backgroundColor: primaryColor }}
+          animate={{
+            opacity: isHovered ? 0.6 : 0.2,
+            scale: isHovered ? 1.5 : 1,
+          }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+        />
+
+        <motion.div
+          className="absolute w-12 h-12 rounded-full blur-[20px] mix-blend-screen"
+          style={{ backgroundColor: secondaryColor }}
+          animate={{
+            opacity: isHovered ? 0.8 : 0,
+            scale: isHovered ? 1.2 : 0.5,
+          }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+        />
+      </motion.div>
+
+      {/* Revealed Content */}
+      <AnimatePresence>
+        {isRevealed && (
+          <motion.div
+            className="absolute inset-0 z-20 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.5 } }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            {/* Backdrop for click-away */}
+            <div
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={(e) => { e.stopPropagation(); setIsRevealed(false); }}
+            />
+
+            <motion.div
+              className="relative w-full h-full z-10 cursor-default"
+              initial={{ scale: 0.8, opacity: 0, rotateX: 20 }}
+              animate={{ scale: 1, opacity: 1, rotateX: 0 }}
+              exit={{ scale: 1.1, opacity: 0 }}
+              transition={{ duration: 0.7, delay: 0.5, type: "spring", bounce: 0.4 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+               {revealedContent || defaultRevealedContent}
+            </motion.div>
+
+            <motion.button
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0 }}
+              transition={{ delay: 1 }}
+              className="absolute top-6 right-6 z-30 w-10 h-10 rounded-full bg-white/5 hover:bg-white/20 border border-white/10 flex items-center justify-center text-white transition-all backdrop-blur-md"
+              onClick={(e) => { e.stopPropagation(); setIsRevealed(false); }}
+            >
+              ✕
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+`,
+      props: [
+      {
+        name: "portalText",
+        type: "string",
+        defaultValue: "ENTER THE VOID",
+        description: "Text displayed in the center of the portal.",
+        control: { type: "text" }
+      },
+      {
+        name: "primaryColor",
+        type: "string",
+        defaultValue: "#ff5c71",
+        description: "The main glow/accent color for the outer rings and center core.",
+        control: { type: "color" }
+      },
+      {
+        name: "secondaryColor",
+        type: "string",
+        defaultValue: "#7fff5e",
+        description: "The secondary color used for inner rings and deep glow elements.",
+        control: { type: "color" }
+      },
+      {
+        name: "accentColor",
+        type: "string",
+        defaultValue: "#00f0ff",
+        description: "The accent color used for secondary stats and highlights in the revealed dashboard.",
+        control: { type: "color" }
+      }
+    ]
+  },
+{
+    id: "holo-hexagon-map",
+    slug: "holo-hexagon-map",
+    title: "Holo Hexagon Map",
+    description: "A 3D interactive, glassmorphic hexagon grid with magnetic hover and status nodes.",
+    category: "Widgets",
+    tags: ["hex", "grid", "3d", "interactive", "map", "nodes", "dashboard"],
+    componentPath: "HoloHexagonMap",
+    cliCommand: "npx melonui add HoloHexagonMap",
+    codeSnippet: `"use client";
+
+import React, { useRef, useState, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+
+export interface HexNode {
+  id: string;
+  row: number;
+  col: number;
+  title?: string;
+  icon?: React.ReactNode;
+  status?: "online" | "offline" | "warning";
+}
+
+export interface HoloHexagonMapProps extends React.ComponentPropsWithoutRef<"div"> {
+  nodes?: HexNode[];
+  rows?: number;
+  cols?: number;
+  hexSize?: number;
+  gap?: number;
+  primaryColor?: string;
+  accentColor?: string;
+  warningColor?: string;
+  onNodeClick?: (node: HexNode) => void;
+}
+
+const SQRT3 = Math.sqrt(3);
+
+export function HoloHexagonMap({
+  nodes = [
+    { id: "core", row: 2, col: 2, title: "CORE", status: "online" },
+    { id: "db", row: 1, col: 3, title: "DB_01", status: "online" },
+    { id: "auth", row: 3, col: 1, title: "AUTH", status: "warning" },
+    { id: "edge", row: 3, col: 3, title: "EDGE", status: "offline" },
+    { id: "cache", row: 1, col: 1, title: "CACHE", status: "online" },
+  ],
+  rows = 5,
+  cols = 5,
+  hexSize = 48,
+  gap = 4,
+  primaryColor = "#7fff5e",
+  accentColor = "#ff5c71",
+  warningColor = "#f5a623",
+  className = "",
+  style,
+  onNodeClick,
+  ...props
+}: HoloHexagonMapProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setMounted(true);
+    }, 0);
+  }, []);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  const springConfig = { damping: 30, stiffness: 150, mass: 1 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  const rotateX = useTransform(smoothY, [-300, 300], [15, -15]);
+  const rotateY = useTransform(smoothX, [-300, 300], [-15, 15]);
+
+  const hexWidth = SQRT3 * hexSize;
+  const hexHeight = 2 * hexSize;
+  const horizontalSpacing = hexWidth + gap;
+  const verticalSpacing = (3 / 2) * hexSize + gap;
+
+  const totalWidth = cols * horizontalSpacing + horizontalSpacing / 2;
+  const totalHeight = rows * verticalSpacing + hexSize / 2;
+
+  const getStatusColor = (status?: string) => {
+    switch (status) {
+      case "online":
+        return primaryColor;
+      case "warning":
+        return warningColor;
+      case "offline":
+        return accentColor;
+      default:
+        return "rgba(255,255,255,0.1)";
+    }
+  };
+
+  const getStatusGlow = (status?: string) => {
+    const color = getStatusColor(status);
+    return status && status !== "offline" ? \`0 0 15px \${color}80\` : "none";
+  };
+
+  const gridCells = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      gridCells.push({ row: r, col: c });
+    }
   }
 
+  const clipPath = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)";
+
+  return (
+    <div
+      className={\`relative w-full h-[500px] bg-black overflow-hidden flex items-center justify-center font-['Outfit'] \${className}\`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      ref={containerRef}
+      style={{ perspective: 1200, ...style }}
+      {...props}
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(127,255,94,0.05)_0%,_rgba(0,0,0,1)_70%)] pointer-events-none" />
+
+      <motion.div
+        className="relative"
+        style={{
+          width: totalWidth,
+          height: totalHeight,
+          rotateX: mounted ? rotateX : 0,
+          rotateY: mounted ? rotateY : 0,
+          transformStyle: "preserve-3d",
+        }}
+      >
+        {gridCells.map((cell) => {
+          const node = nodes.find((n) => n.row === cell.row && n.col === cell.col);
+          const x = cell.col * horizontalSpacing + (cell.row % 2 === 1 ? horizontalSpacing / 2 : 0);
+          const y = cell.row * verticalSpacing;
+          const isHovered = hoveredNode === (node ? node.id : \`\${cell.row}-\${cell.col}\`);
+          const color = node ? getStatusColor(node.status) : "rgba(255,255,255,0.05)";
+          const glow = node ? getStatusGlow(node.status) : "none";
+
+          return (
+            <motion.div
+              key={node ? node.id : \`\${cell.row}-\${cell.col}\`}
+              className={\`absolute transition-all duration-300 \${node ? "cursor-pointer z-10" : "z-0"}\`}
+              style={{
+                left: x,
+                top: y,
+                width: hexWidth,
+                height: hexHeight,
+                transformStyle: "preserve-3d",
+              }}
+              onMouseEnter={() => setHoveredNode(node ? node.id : \`\${cell.row}-\${cell.col}\`)}
+              onMouseLeave={() => setHoveredNode(null)}
+              onClick={() => node && onNodeClick && onNodeClick(node)}
+              animate={{
+                z: isHovered && node ? 30 : 0,
+                scale: isHovered && node ? 1.1 : 1,
+              }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              {/* The Hexagon Shape */}
+              <div
+                className="absolute inset-0 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center border-box transition-colors duration-300"
+                style={{
+                  clipPath,
+                  backgroundColor: isHovered && !node ? "rgba(255,255,255,0.08)" : (node ? "rgba(20,20,20,0.8)" : "rgba(255,255,255,0.03)"),
+                  boxShadow: node ? \`inset 0 0 20px \${color}30\` : "none",
+                }}
+              >
+                {/* Border effect using an inner slightly smaller hex */}
+                <div
+                  className="absolute"
+                  style={{
+                    width: "96%",
+                    height: "98%",
+                    clipPath,
+                    backgroundColor: "transparent",
+                    border: \`1px solid \${isHovered && node ? color : color.replace("1)", "0.3)")}\`,
+                    boxShadow: glow,
+                  }}
+                />
+
+                {node && (
+                  <motion.div
+                    className="flex flex-col items-center gap-1"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <div
+                      className="w-2 h-2 rounded-full mb-1"
+                      style={{
+                        backgroundColor: color,
+                        boxShadow: \`0 0 8px \${color}\`,
+                      }}
+                    />
+                    {node.title && (
+                      <span
+                        className="text-[10px] font-bold tracking-wider"
+                        style={{ color: isHovered ? "#fff" : color }}
+                      >
+                        {node.title}
+                      </span>
+                    )}
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
+      </motion.div>
+
+      {/* Floating Info Panel when a node is hovered */}
+      <AnimatePresence>
+        {hoveredNode && nodes.find((n) => n.id === hoveredNode) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            className="absolute bottom-8 right-8 bg-black/80 backdrop-blur-xl border p-4 min-w-[200px]"
+            style={{
+              borderColor: "rgba(255,255,255,0.1)",
+              clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)"
+            }}
+          >
+            {(() => {
+              const node = nodes.find((n) => n.id === hoveredNode)!;
+              const color = getStatusColor(node.status);
+              return (
+                <div className="flex flex-col gap-2 text-white">
+                  <div className="flex items-center gap-2 border-b pb-2" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+                     <div className="w-3 h-3 rounded-none bg-transparent border-2 animate-pulse" style={{ borderColor: color }} />
+                     <span className="font-mono text-sm tracking-widest uppercase" style={{ color }}>
+                       {node.title || "UNKNOWN"}
+                     </span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-white/50 font-mono mt-1">
+                    <span>STATUS</span>
+                    <span style={{ color }}>{node.status?.toUpperCase() || "N/A"}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-white/50 font-mono mt-1">
+                    <span>COORDS</span>
+                    <span>[{node.row}, {node.col}]</span>
+                  </div>
+                </div>
+              );
+            })()}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+`,
+    }}
+                    />
+                    {node.title && (
+                      <span
+                        className="text-[10px] font-bold tracking-wider"
+                        style={{ color: isHovered ? "#fff" : color }}
+                      >
+                        {node.title}
+                      </span>
+                    )}
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
+      </motion.div>
+
+      {/* Floating Info Panel when a node is hovered */}
+      <AnimatePresence>
+        {hoveredNode && nodes.find((n) => n.id === hoveredNode) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            className="absolute bottom-8 right-8 bg-black/80 backdrop-blur-xl border p-4 min-w-[200px]"
+            style={{
+              borderColor: "rgba(255,255,255,0.1)",
+              clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)"
+            }}
+          >
+            {(() => {
+              const node = nodes.find((n) => n.id === hoveredNode)!;
+              const color = getStatusColor(node.status);
+              return (
+                <div className="flex flex-col gap-2 text-white">
+                  <div className="flex items-center gap-2 border-b pb-2" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+                     <div className="w-3 h-3 rounded-none bg-transparent border-2 animate-pulse" style={{ borderColor: color }} />
+                     <span className="font-mono text-sm tracking-widest uppercase" style={{ color }}>
+                       {node.title || "UNKNOWN"}
+                     </span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-white/50 font-mono mt-1">
+                    <span>STATUS</span>
+                    <span style={{ color }}>{node.status?.toUpperCase() || "N/A"}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-white/50 font-mono mt-1">
+                    <span>COORDS</span>
+                    <span>[{node.row}, {node.col}]</span>
+                  </div>
+                </div>
+              );
+            })()}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+`,
+  }
 ];
 
 // Helper to group components by category
