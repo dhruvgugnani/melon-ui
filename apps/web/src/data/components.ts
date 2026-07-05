@@ -3780,7 +3780,7 @@ export const KineticHoloStack = React.forwardRef<HTMLDivElement, KineticHoloStac
 
 KineticHoloStack.displayName = "KineticHoloStack";
 `,
-      componentPath: "components/community/demos/KineticHoloStack.tsx",
+      componentPath: "KineticHoloStack",
       props: [
         {
           name: "baseColor",
