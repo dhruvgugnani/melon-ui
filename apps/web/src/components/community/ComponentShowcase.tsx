@@ -328,42 +328,19 @@ Please import and merge this component into my project, and write the code showi
 
   return (
     <article className="relative w-full mb-24">
-      {/* Header */}
-      <header className="mb-5 flex flex-col md:flex-row md:items-end justify-between gap-3">
-        <div>
-          {slug ? (
-            <Link href={`/components/${slug}`} className="group inline-block">
-              <h3
-                className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-[#f4f4f4] group-hover:text-[#ff5c71] transition-colors leading-none mb-1.5"
-                style={{ fontFamily: "var(--font-londrina-solid)" }}
-              >
-                {title}
-              </h3>
-            </Link>
-          ) : (
-            <h3
-              className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-[#f4f4f4] leading-none mb-1.5"
-              style={{ fontFamily: "var(--font-londrina-solid)" }}
-            >
-              {title}
-            </h3>
-          )}
-          <p className="text-[#555] max-w-xl text-sm font-mono leading-relaxed">
-            {description}
-          </p>
-        </div>
-
-        <div className="flex gap-1.5 flex-wrap shrink-0">
+      {/* Tags only on index/listing pages, not on [slug] detail page */}
+      {tags.length > 0 && !slug && (
+        <div className="mb-5 flex gap-1.5 flex-wrap">
           {tags.map((tag) => (
             <span
               key={tag}
-              className="px-2.5 py-1 bg-[#0d0d0d] border border-[#1a1a1a] text-[#555] text-[10px] font-mono uppercase tracking-widest"
+              className="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/8 text-white/35 text-[10px] font-mono tracking-wide lowercase"
             >
               {tag}
             </span>
           ))}
         </div>
-      </header>
+      )}
 
       {/* Main Container */}
       <div className="relative border border-[#ff5c71]/15 bg-[#080808] overflow-hidden store-card-glow">

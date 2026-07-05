@@ -34,7 +34,7 @@ export const componentsData: ComponentData[] = [
       title: "Anti-Gravity Bento",
       description: "A premium glassmorphic bento grid where items float into zero-gravity on hover.",
       category: "Cards",
-      tags: ["Framer Motion", "3D", "Glassmorphism", "Bento"],
+      tags: ["framer-motion", "3d", "glassmorphism", "Bento"],
       cliCommand: "npx @melonui-dev/cli add anti-gravity-bento",
       codeSnippet: `"use client";
 
@@ -354,7 +354,7 @@ export default AntiGravityBento;
       title: "Blob Cursor",
       description: "Velocity-based squash and stretch blob with elastic trailing ring.",
       category: "Cursors",
-      tags: ["GSAP", "Cursor"],
+      tags: ["gsap", "cursor"],
       cliCommand: "npx @melonui-dev/cli add blob-cursor",
       codeSnippet: `"use client";
 
@@ -570,7 +570,7 @@ export function JuicyCursor({
       title: "Burst Button",
       description: "Seeds physically burst from the click point with GSAP staggered physics.",
       category: "Buttons",
-      tags: ["GSAP", "Physics"],
+      tags: ["gsap", "physics"],
       cliCommand: "npx @melonui-dev/cli add burst-button",
       codeSnippet: `"use client";
 
@@ -736,7 +736,7 @@ export function SeedBurstButton({
       title: "Changelog",
       description: "Accordion-style versioned release list with smooth GSAP height animation.",
       category: "Getting Started",
-      tags: ["GSAP", "Accordion"],
+      tags: ["gsap", "Accordion"],
       cliCommand: "npx @melonui-dev/cli add changelog",
       codeSnippet: "// See ChangelogCard.tsx",
       componentPath: "ChangelogCard",
@@ -747,7 +747,7 @@ export function SeedBurstButton({
       title: "Char Reveal",
       description: "Characters blur-in with stagger tied to ScrollTrigger scroll position.",
       category: "Scroll Effects",
-      tags: ["GSAP", "ScrollTrigger"],
+      tags: ["gsap", "ScrollTrigger"],
       cliCommand: "npx @melonui-dev/cli add char-reveal",
       codeSnippet: `"use client";
 
@@ -951,7 +951,7 @@ export function HarvestReveal({
       title: "Chromatic Melt Text",
       description: "A transparent chromatic wordmark with offset glass shadows, soft pointer glow, and restrained per-letter hover lift.",
       category: "GSAP Text",
-      tags: ["Framer Motion", "Typography", "Pointer Physics", "Gradient"],
+      tags: ["framer-motion", "Typography", "Pointer Physics", "Gradient"],
       cliCommand: "npx @melonui-dev/cli add chromatic-melt-text",
       codeSnippet: `"use client";
 
@@ -1079,7 +1079,7 @@ export function ChromaticMeltText({
       title: "Chromatic Slice Card",
       description: "A Gen-Z premium card that dynamically slices into floating horizontal strips in 3D space on hover, revealing a neon core.",
       category: "Cards",
-      tags: ["Framer Motion", "Premium", "Cyberpunk", "Hover Effect"],
+      tags: ["framer-motion"],
       cliCommand: "npx @melonui-dev/cli add chromatic-slice-card",
       codeSnippet: `"use client";
 
@@ -1348,7 +1348,7 @@ export function ChromaticSliceCard({
       title: "CLI Terminal",
       description: "Live animated terminal showing the installation flow. Drop it in your docs.",
       category: "Getting Started",
-      tags: ["GSAP", "Timeline"],
+      tags: ["gsap", "Timeline"],
       cliCommand: "npx @melonui-dev/cli add cli-terminal",
       codeSnippet: `"use client";
 
@@ -1507,7 +1507,7 @@ export function CliTerminal({
       title: "Crosshair",
       description: "Precision crosshair with live coordinate readout and a grid overlay.",
       category: "Cursors",
-      tags: ["GSAP", "Cursor"],
+      tags: ["gsap", "cursor"],
       cliCommand: "npx @melonui-dev/cli add crosshair",
       codeSnippet: `"use client";
 
@@ -1677,7 +1677,7 @@ export function CrosshairCursor({
       title: "Drip Text",
       description: "Letters drip down on hover with random skew offsets, spring back on leave.",
       category: "GSAP Text",
-      tags: ["GSAP", "Elastic"],
+      tags: ["gsap", "Elastic"],
       cliCommand: "npx @melonui-dev/cli add drip-text",
       codeSnippet: `"use client";
 
@@ -1787,7 +1787,7 @@ export function MelonDripText({
       title: "Elastic Tether Hub",
       description: "A centralized command core that blooms draggable action nodes on click, featuring elastic spring physics, real-time distance tracking, and a dramatic pull-to-fire release mechanic.",
       category: "Widgets",
-      tags: ["Framer Motion", "Physics", "Drag", "Interactive", "Menu"],
+      tags: ["framer-motion", "physics", "drag", "Menu"],
       cliCommand: "npx @melonui-dev/cli add elastic-tether-hub",
       codeSnippet: "// See ElasticTetherHub.tsx",
       componentPath: "ElasticTetherHub",
@@ -1807,7 +1807,7 @@ export function MelonDripText({
       title: "Flip Card",
       description: "3D rotateY flip using CSS preserve-3d and GSAP for precise control.",
       category: "Cards",
-      tags: ["GSAP", "3D", "CSS"],
+      tags: ["gsap", "3d", "CSS"],
       cliCommand: "npx @melonui-dev/cli add flip-card",
       codeSnippet: `"use client";
 
@@ -2014,7 +2014,7 @@ FlipCard.displayName = "FlipCard";
       title: "Floating Orbs",
       description: "3D interactive floating orbs rendered with React Three Fiber, supporting OrbitControls, custom sizing, and reduced-motion states.",
       category: "Backgrounds",
-      tags: ["React Three Fiber", "ThreeJS", "3D", "Interactive"],
+      tags: ["React Three Fiber", "three.js", "3d"],
       cliCommand: "npx @melonui-dev/cli add floating-orbs",
       codeSnippet: "",
       componentPath: "FloatingOrbs",
@@ -2028,7 +2028,7 @@ FlipCard.displayName = "FlipCard";
       title: "Fluid Magnetic Dial",
       description: "A highly interactive, fluid-like control dial featuring magnetic Framer Motion physics, gooey SVG filters, and dynamic glitching text. Perfect for premium, futuristic dashboard interfaces.",
       category: "Inputs",
-      tags: ["Framer Motion", "Magnetic", "Gooey", "Experimental"],
+      tags: ["framer-motion", "magnetic", "Gooey", "Experimental"],
       cliCommand: "npx @melonui-dev/cli add fluid-magnetic-dial",
       codeSnippet: "// See FluidMagneticDial.tsx",
       componentPath: "FluidMagneticDial",
@@ -2091,7 +2091,7 @@ FlipCard.displayName = "FlipCard";
       title: "Glitch Pulse Core",
       description: "A highly interactive cybernetic core utilizing Framer Motion for magnetic hover physics, states (STABLE, UNSTABLE, CRITICAL) and SVG-based escalating glitch effects.",
       category: "Widgets",
-      tags: ["Framer Motion", "Glitch", "Interactive", "SVG Filter"],
+      tags: ["framer-motion", "Glitch", "SVG Filter"],
       cliCommand: "npx @melonui-dev/cli add glitch-pulse-core",
       codeSnippet: `"use client";
 
@@ -2342,7 +2342,7 @@ export function GlitchPulseCore({
       title: "Glyph Orbit Text",
       description: "A transparent central headline surrounded by orbiting character tiles derived from the same word, forming a readable typographic halo.",
       category: "GSAP Text",
-      tags: ["Framer Motion", "Typography", "Orbit", "Glyphs"],
+      tags: ["framer-motion", "Typography", "Orbit", "Glyphs"],
       cliCommand: "npx @melonui-dev/cli add glyph-orbit-text",
       codeSnippet: `"use client";
 
@@ -2444,7 +2444,7 @@ export function GlyphOrbitText({
       title: "Grow Input",
       description: "SVG stroke dashoffset vine grows along the bottom border on focus.",
       category: "Inputs",
-      tags: ["GSAP", "SVG"],
+      tags: ["gsap", "svg"],
       cliCommand: "npx @melonui-dev/cli add grow-input",
       codeSnippet: `"use client";
 
@@ -2619,7 +2619,7 @@ export function VineInput({
       title: "Holo Ticket",
       description: "Premium holographic ticket component with 3D pointer-tracking reflection, dynamic CSS clipping, and elastic tearing physics.",
       category: "Cards",
-      tags: ["GSAP", "Clip", "Glassmorphism", "Holographic"],
+      tags: ["gsap", "Clip", "glassmorphism", "Holographic"],
       cliCommand: "npx @melonui-dev/cli add holo-ticket",
       codeSnippet: `"use client";
 
@@ -3056,7 +3056,7 @@ HoloTicket.displayName = "HoloTicket";
       title: "HyperMorph Bento",
       description: "A highly dynamic 2x2 grid of layout items expanding to flex columns/rows with spring animations.",
       category: "Cards",
-      tags: ["Framer Motion", "Layout", "Bento"],
+      tags: ["framer-motion", "Layout", "Bento"],
       cliCommand: "npx @melonui-dev/cli add hypermorph-bento",
       codeSnippet: "// See HyperMorphBento.tsx",
       componentPath: "HyperMorphBento",
@@ -3099,7 +3099,7 @@ HoloTicket.displayName = "HoloTicket";
       title: "Infinity Mirror",
       description: "Deep nested 3D card creating an optical illusion of infinite layers, reacting to magnetic mouse movement.",
       category: "Cards",
-      tags: ["Framer Motion", "3D", "Premium"],
+      tags: ["framer-motion", "3d"],
       cliCommand: "npx @melonui-dev/cli add infinity-mirror-card",
       codeSnippet: `"use client";
 
@@ -3323,7 +3323,7 @@ export const InfinityMirrorCard: React.FC<InfinityMirrorCardProps> = ({
       title: "Kinetic Glass Grid",
       description: "A physical, reactive glass grid that elevates and glows intelligently based on cursor proximity, using complex distance-based spring physics.",
       category: "Backgrounds",
-      tags: ["Framer Motion", "Physics", "Glassmorphism", "Interactive Grid"],
+      tags: ["framer-motion", "physics", "glassmorphism", "Interactive Grid"],
       cliCommand: "npx @melonui-dev/cli add kinetic-glass-grid",
       codeSnippet: `"use client";
 
@@ -3544,7 +3544,7 @@ export const KineticGlassGrid: React.FC<KineticGlassGridProps> = ({
       title: "Kinetic Holo Stack",
       description: "A highly interactive 'Holo-Stack' card that reveals its layered 3D structural blueprints on hover using physical spring separation and glowing lasers.",
       category: "Cards",
-      tags: ["Framer Motion", "3D", "Premium", "Glassmorphism"],
+      tags: ["framer-motion", "3d", "glassmorphism"],
       cliCommand: "npx @melonui-dev/cli add kinetic-holo-stack",
       codeSnippet: `"use client";
 
@@ -3806,7 +3806,7 @@ KineticHoloStack.displayName = "KineticHoloStack";
       title: "Kinetic Magnet",
       description: "A mechanical grid of interactive SVG lines/needles that act as magnetic nodes pointing directly at your cursor, emitting elastic spring waves on clicks.",
       category: "Cursors",
-      tags: ["GSAP", "SVG", "Elastic"],
+      tags: ["gsap", "svg", "Elastic"],
       cliCommand: "npx @melonui-dev/cli add kinetic-magnet",
       codeSnippet: "",
       componentPath: "KineticMagnet",
@@ -3817,7 +3817,7 @@ KineticHoloStack.displayName = "KineticHoloStack";
       title: "Kinetic Shard Terminal",
       description: "A highly interactive cyberpunk-style terminal that unlocks via dragging and dropping a 'Data Shard' into a magnetic slot.",
       category: "Cards",
-      tags: ["Framer Motion", "Drag and Drop", "Premium", "Cyberpunk"],
+      tags: ["framer-motion", "drag"],
       cliCommand: "npx @melonui-dev/cli add kinetic-shard-terminal",
       codeSnippet: `"use client";
 
@@ -4137,7 +4137,7 @@ export function KineticShardTerminal({
       title: "Kinetic Shatter Card",
       description: "A premium glassmorphic enclosure that violently shatters into 3D floating shards on hover, revealing a cybernetic glowing core inside.",
       category: "Cards",
-      tags: ["Framer Motion", "3D", "Interactive", "Shatter", "Cyber"],
+      tags: ["framer-motion", "3d", "Shatter"],
       cliCommand: "npx @melonui-dev/cli add kinetic-shatter-card",
       codeSnippet: "// See KineticShatterCard.tsx",
       componentPath: "KineticShatterCard",
@@ -4208,7 +4208,7 @@ export function KineticShardTerminal({
       title: "Liquid Dimensional Nav",
       description: "A highly interactive sidebar component combining liquid morphing, dimensional 3D peeling, and magnetic physics-based hovering.",
       category: "Navigation",
-      tags: ["Morphing", "Magnetic", "3D", "Premium"],
+      tags: ["morphing", "magnetic", "3d"],
       componentPath: "LiquidDimensionalNav",
       codeSnippet: `"use client";
 
@@ -4576,7 +4576,7 @@ export function LiquidDimensionalNav({
       title: "Luminous Waves",
       description: "Canvas-based glowing sine wave threads running horizontally and bending dynamically to track cursor position.",
       category: "Backgrounds",
-      tags: ["Canvas", "Glow", "Sine Wave"],
+      tags: ["canvas", "Glow", "Sine Wave"],
       cliCommand: "npx @melonui-dev/cli add luminous-waves",
       codeSnippet: `"use client";
 
@@ -4864,7 +4864,7 @@ export function LuminousWaves({
       title: "Magnetic Nav",
       description: "Nav links magnetically attract the cursor; elastic spring snaps back on leave.",
       category: "Navigation",
-      tags: ["GSAP", "Elastic"],
+      tags: ["gsap", "Elastic"],
       cliCommand: "npx @melonui-dev/cli add magnetic-nav",
       codeSnippet: `"use client";
 
@@ -4980,7 +4980,7 @@ export function MagneticNav({
       title: "Magnetic Particle Field",
       description: "Background particles dynamically attract toward cursor and components in a verlet physics R3F instance field.",
       category: "Backgrounds",
-      tags: ["Three.js", "R3F", "Physics", "InstancedMesh"],
+      tags: ["three.js", "react-three-fiber", "physics", "InstancedMesh"],
       cliCommand: "npx @melonui-dev/cli add magnetic-particle-field",
       codeSnippet: `"use client";
 
@@ -5186,7 +5186,7 @@ export const MagneticParticleField: React.FC<MagneticParticleFieldProps> = ({
       title: "Matrix Rain",
       description: "Digital cascading streams of custom alphanumeric glyphs and seeds in neon-green and coral-red.",
       category: "Backgrounds",
-      tags: ["Canvas", "Matrix", "Retro"],
+      tags: ["canvas", "Matrix", "Retro"],
       cliCommand: "npx @melonui-dev/cli add matrix-rain",
       codeSnippet: `"use client";
 
@@ -5348,7 +5348,7 @@ export function MatrixRain({
       title: "Morph Transition",
       description: "Circular clip expands from center masking the page swap between routes.",
       category: "Page Transitions",
-      tags: ["GSAP", "Clip"],
+      tags: ["gsap", "Clip"],
       cliCommand: "npx @melonui-dev/cli add morph-transition",
       codeSnippet: `"use client";
 
@@ -5526,7 +5526,7 @@ export function MorphTransition({
       title: "Morphing Cyber Node",
       description: "A multi-state, fluid-morphing interactive widget with magnetic hover physics and dynamic glassmorphism.",
       category: "Widgets",
-      tags: ["Framer Motion", "Morph", "Glassmorphism", "Interactive"],
+      tags: ["framer-motion", "Morph", "glassmorphism"],
       cliCommand: "npx @melonui-dev/cli add morphing-cyber-node",
       codeSnippet: `"use client";
 
@@ -5855,7 +5855,7 @@ export function MorphingCyberNode({
       title: "Nexus Prompt Core",
       description: "A fluidly morphing AI prompt interface that transitions from a sleek input pill to a glowing processing core, and finally unfolds into a premium glassmorphic response dashboard.",
       category: "Widgets",
-      tags: ["Framer Motion", "AI Interface", "Morphing", "Premium"],
+      tags: ["framer-motion", "ai", "morphing"],
       cliCommand: "npx @melonui-dev/cli add nexus-prompt-core",
       codeSnippet: "// See NexusPromptCore.tsx",
       componentPath: "NexusPromptCore",
@@ -6056,7 +6056,7 @@ export function NoiseBlob({
       title: "Orbital Command Ring",
       description: "A futuristic radial page navigation menu summoned by dragging with elastic joystick physics, custom target paths, and cinematic flashes.",
       category: "Page Transitions",
-      tags: ["Framer Motion", "Spring", "Radial Menu", "Interactive", "Navigation"],
+      tags: ["framer-motion", "Spring", "Radial Menu", "navigation"],
       cliCommand: "npx @melonui-dev/cli add orbital-command-ring",
       codeSnippet: `"use client";
 
@@ -6487,7 +6487,7 @@ export function OrbitalCommandRing({
       title: "Parallax Strips",
       description: "Depth strips that scroll at different speeds creating a parallax illusion.",
       category: "Scroll Effects",
-      tags: ["GSAP", "Parallax"],
+      tags: ["gsap", "Parallax"],
       cliCommand: "npx @melonui-dev/cli add parallax-strips",
       codeSnippet: `"use client";
 
@@ -6598,7 +6598,7 @@ export function ParallaxStrips({
       title: "Particle Field",
       description: "Interactive 2D Canvas particle constellation network connecting nearby nodes on cursor proximity.",
       category: "Backgrounds",
-      tags: ["Canvas", "Interactive"],
+      tags: ["canvas"],
       cliCommand: "npx @melonui-dev/cli add particle-field",
       codeSnippet: `"use client";
 
@@ -6760,7 +6760,7 @@ export function ParticleBackground({
       title: "Peel Card",
       description: "Card front retracts on hover revealing vibrant content underneath.",
       category: "Cards",
-      tags: ["GSAP", "Transform"],
+      tags: ["gsap", "Transform"],
       cliCommand: "npx @melonui-dev/cli add peel-card",
       codeSnippet: `"use client";
 
@@ -6977,7 +6977,7 @@ RindPeelCard.displayName = "RindPeelCard";
       title: "Prism Vault",
       description: "A 3D cryptographic data vault that unspools into a responsive bento dashboard using fluid layout morphing.",
       category: "Layout",
-      tags: ["3D", "Framer Motion", "Layout", "Glassmorphism", "Bento", "Interactive"],
+      tags: ["3d", "framer-motion", "Layout", "glassmorphism", "Bento"],
       cliCommand: "npx @melonui/cli add prism-vault",
       componentPath: "PrismVault",
       usageCode: `import { PrismVault } from "@/components/PrismVault";
@@ -7329,7 +7329,7 @@ export function PrismVault({
       title: "Quantum Lens Decoder",
       description: "An interactive code-breaking surface revealing clear text through a cursor-tracking lens.",
       category: "Cards",
-      tags: ["Framer Motion", "Clip Path", "Scramble"],
+      tags: ["framer-motion", "Clip Path", "Scramble"],
       cliCommand: "npx @melonui-dev/cli add quantum-lens-decoder",
       codeSnippet: "// See QuantumLensDecoder.tsx",
       componentPath: "QuantumLensDecoder",
@@ -7348,7 +7348,7 @@ export function PrismVault({
       title: "Retro CRT Scan Universe",
       description: "A nostalgic cyber-terminal background featuring scanlines, phosphor glow, typing effect, and screen flicker.",
       category: "Backgrounds",
-      tags: ["CSS", "Retro", "Terminal", "Animations"],
+      tags: ["CSS", "Retro", "terminal", "Animations"],
       cliCommand: "npx @melonui-dev/cli add retro-crt-background",
       codeSnippet: `"use client";
 
@@ -7776,7 +7776,7 @@ export function RetroGrid({
       title: "Rind Reveal Text",
       description: "A transparent pointer-light wordmark that reveals a primary/secondary color pass inside readable chunky type.",
       category: "GSAP Text",
-      tags: ["Framer Motion", "Typography", "Reveal", "Gradient"],
+      tags: ["framer-motion", "Typography", "reveal", "Gradient"],
       cliCommand: "npx @melonui-dev/cli add rind-scanner-text",
       codeSnippet: `"use client";
 
@@ -7917,7 +7917,7 @@ export function RindScannerText({
       title: "Ripple Button",
       description: "Click-origin radial ripple expands from the exact cursor position.",
       category: "Buttons",
-      tags: ["GSAP", "Ripple"],
+      tags: ["gsap", "Ripple"],
       cliCommand: "npx @melonui-dev/cli add ripple-button",
       codeSnippet: `"use client";
 
@@ -8048,7 +8048,7 @@ export function RippleButton({
       title: "Scramble Text",
       description: "Characters cycle through random glyphs before resolving back on hover.",
       category: "GSAP Text",
-      tags: ["GSAP", "Text"],
+      tags: ["gsap", "text"],
       cliCommand: "npx @melonui-dev/cli add scramble-text",
       codeSnippet: `"use client";
 
@@ -8190,7 +8190,7 @@ export function ScrambleText({
       title: "Seedwave Text",
       description: "Transparent click-born particle typography that compresses the headline and throws melon-colored seed sparks from the exact press point.",
       category: "GSAP Text",
-      tags: ["Framer Motion", "Typography", "Particles", "Click"],
+      tags: ["framer-motion", "Typography", "particles", "click"],
       cliCommand: "npx @melonui-dev/cli add seedwave-text",
       codeSnippet: `"use client";
 
@@ -8310,7 +8310,7 @@ export function SeedwaveText({
       title: "Signal Loom",
       description: "A transparent pointer-reactive glass command surface where luminous workflow threads bend toward the cursor and layered inspection wafers morph into focus.",
       category: "Cards",
-      tags: ["Framer Motion", "Glassmorphism", "Pointer Physics", "Workflow"],
+      tags: ["framer-motion", "glassmorphism", "Pointer Physics", "Workflow"],
       cliCommand: "npx @melonui-dev/cli add signal-loom",
       codeSnippet: `"use client";
 
@@ -8731,7 +8731,7 @@ export function SignalLoom({
       title: "Solar Carousel",
       description: "3D orbital carousel where cards rotate in a physical orbit around an interactive central gravity core with inertial drag.",
       category: "Cards",
-      tags: ["GSAP", "3D", "Perspective"],
+      tags: ["gsap", "3d", "Perspective"],
       cliCommand: "npx @melonui-dev/cli add solar-carousel",
       codeSnippet: "",
       componentPath: "SolarCarousel",
@@ -8767,7 +8767,7 @@ export function SignalLoom({
       title: "Step Trail",
       description: "Animated step breadcrumb with GSAP-driven progress bar between stages.",
       category: "Navigation",
-      tags: ["GSAP", "Progress"],
+      tags: ["gsap", "Progress"],
       cliCommand: "npx @melonui-dev/cli add step-trail",
       codeSnippet: `"use client";
 
@@ -8892,7 +8892,7 @@ export function BreadcrumbTrail({
       title: "Sticker Collage Noise Wall",
       description: "A Gen-Z chaotic scrapbook aesthetic with draggable torn paper stickers and reactive physics.",
       category: "Backgrounds",
-      tags: ["Framer Motion", "Physics", "Drag", "Gen-Z"],
+      tags: ["framer-motion", "physics", "drag"],
       cliCommand: "npx @melonui-dev/cli add sticker-collage-wall",
       codeSnippet: `"use client";
 
@@ -9082,7 +9082,7 @@ export const StickerCollageWall: React.FC<StickerCollageWallProps> = ({
       title: "Sticker Stack Text",
       description: "Transparent layered sticker-style type cards that fan open with springy Gen-Z poster energy and bold MelonUI color blocking.",
       category: "GSAP Text",
-      tags: ["Framer Motion", "Typography", "Stickers", "Spring"],
+      tags: ["framer-motion", "Typography", "Stickers", "Spring"],
       cliCommand: "npx @melonui-dev/cli add sticker-stack-text",
       codeSnippet: `"use client";
 
@@ -9211,7 +9211,7 @@ export function StickerStackText({
       title: "Sticker Wall",
       description: "Interactive Gen-Z editorial sticker grid that fans out, scales, and tilts dynamically on pointer hover.",
       category: "Backgrounds",
-      tags: ["Framer Motion", "Stickers", "Brutalist"],
+      tags: ["framer-motion", "Stickers", "Brutalist"],
       cliCommand: "npx @melonui-dev/cli add sticker-wall",
       codeSnippet: `"use client";
 
@@ -9497,7 +9497,7 @@ export function StickerWall({
       title: "Stripe Wipe",
       description: "A colored stripe sweeps across the viewport to mask route changes.",
       category: "Page Transitions",
-      tags: ["GSAP", "Timeline"],
+      tags: ["gsap", "Timeline"],
       cliCommand: "npx @melonui-dev/cli add stripe-wipe",
       codeSnippet: `"use client";
 
@@ -9666,7 +9666,7 @@ export function RindWipeTransition({
       title: "Synapse Terminal",
       description: "A Gen-Z premium interactive graph node UI with animated bezier tethers, glassmorphic floating elements, and a reactive custom cursor. Perfect for data visualization, SaaS dashboards, or cyber-aesthetic landing pages.",
       category: "Widgets",
-      tags: ["Graph", "Network", "Framer Motion", "Interactive", "Cyber", "Dashboard"],
+      tags: ["Graph", "Network", "framer-motion", "Dashboard"],
       cliCommand: "npx @melonui-dev/cli add synapse-terminal",
       codeSnippet: "// See SynapseTerminal.tsx",
       componentPath: "SynapseTerminal",
@@ -9688,7 +9688,7 @@ export function RindWipeTransition({
       title: "Tag Input",
       description: "Animated tag management ΓÇö press Enter or comma to add, backspace to remove.",
       category: "Inputs",
-      tags: ["GSAP", "Input"],
+      tags: ["gsap", "input"],
       cliCommand: "npx @melonui-dev/cli add tag-input",
       codeSnippet: `"use client";
 
@@ -9877,7 +9877,7 @@ export function TagInput({
       title: "Terminal Cursor",
       description: "A precision spring-velocity cursor containing crosshair ticks and vector neon glow.",
       category: "Cursors",
-      tags: ["Framer Motion", "Spring", "Cursor", "Precision"],
+      tags: ["framer-motion", "Spring", "cursor", "Precision"],
       cliCommand: "npx @melonui-dev/cli add terminal-cursor",
       codeSnippet: `"use client";
 
@@ -10053,7 +10053,7 @@ export function TerminalCursor({
       title: "Zero Gravity Shards",
       description: "A highly interactive 'zero gravity' shard interface where glassmorphic cards drift organically using Framer Motion physics, snap to the cursor on hover, and seamlessly morph into full-screen bento grids using layoutId when clicked.",
       category: "Cards",
-      tags: ["Framer Motion", "Morphing", "Layout ID", "Interactive", "Zero Gravity", "Bento"],
+      tags: ["framer-motion", "morphing", "Layout ID", "Zero Gravity", "Bento"],
       cliCommand: "npx @melonui-dev/cli add zero-gravity-shards",
       codeSnippet: `"use client";
 
@@ -10491,7 +10491,7 @@ export default function App() {
       title: "Neural Pattern Lock",
       description: "A highly interactive, 3D-tilting pattern lock screen with magnetic physics and glowing neon paths.",
       category: "Inputs",
-      tags: ["Framer Motion", "3D", "Interactive", "Form"],
+      tags: ["framer-motion", "3d", "Form"],
       cliCommand: "npx @melonui-dev/cli add neural-pattern-lock",
       codeSnippet: `"use client";
 
@@ -10848,7 +10848,7 @@ export default function App() {
       title: "Singularity Control Node",
       description: "A centralized magnetic core that expands into an interactive circular grid of glowing, glassmorphic nodes connected by animated synapse lines.",
       category: "Navigation",
-      tags: ["Framer Motion", "Glassmorphism", "Interactive", "Navigation"],
+      tags: ["framer-motion", "glassmorphism", "navigation"],
       cliCommand: "npx @melonui-dev/cli add singularity-control-node",
       codeSnippet: `"use client";
 
@@ -11130,7 +11130,7 @@ export const SingularityControlNode: React.FC<SingularityControlNodeProps> = ({
       title: "Tethered Orbital Vault",
       description: "A highly tactile digital lock where users drag orbiting cryptographic keys into a central core via magnetic tethers, morphing into a futuristic dashboard upon decryption.",
       category: "Widgets",
-      tags: ["Framer Motion", "Interactive", "Drag and Drop", "Cyber", "Dashboard"],
+      tags: ["framer-motion", "drag", "Dashboard"],
       cliCommand: "npx @melonui-dev/cli add tethered-orbital-vault",
       codeSnippet: "// See TetheredOrbitalVault.tsx",
       componentPath: "TetheredOrbitalVault",
@@ -11178,7 +11178,7 @@ export const SingularityControlNode: React.FC<SingularityControlNodeProps> = ({
       title: "Cyber Biometric Scanner",
       description: "A highly interactive, press-and-hold biometric scanner featuring dynamic SVG topography, glowing laser sweeps, and glitching cybernetic states.",
       category: "Widgets",
-      tags: ["Framer Motion", "Biometric", "Scanner", "Interactive"],
+      tags: ["framer-motion", "Biometric", "Scanner"],
       cliCommand: "npx @melonui-dev/cli add cyber-biometric-scanner",
       codeSnippet: `"use client";
 
@@ -11602,7 +11602,7 @@ function DraggableKey({
     title: "Holo Seal Vault",
     description: "A tactile unboxing experience where users physically drag and tear a holographic security seal to reveal encrypted content.",
     category: "Cards",
-    tags: ["Framer Motion", "Interactive", "Physics", "Tactile"],
+    tags: ["framer-motion", "physics", "Tactile"],
     cliCommand: "npx @melonui-dev/cli add holo-seal-vault",
     codeSnippet: `"use client";
 
@@ -11872,7 +11872,7 @@ export function HoloSealVault({
     title: "Holo Deploy Card",
     description: "A highly kinetic, tactile 3D card. On hover, glassmorphic panels deploy outwardly like a satellite or an unfolding sci-fi interface, expanding the interface area.",
     category: "Cards",
-    tags: ["Framer Motion", "3D", "Interactive", "Cyber"],
+    tags: ["framer-motion", "3d"],
     cliCommand: "npx @melonui-dev/cli add holo-deploy-card",
     codeSnippet: "// HoloDeployCard.tsx",
     componentPath: "HoloDeployCard",
@@ -11901,7 +11901,7 @@ export default function Demo() {
     title: "Tactile Cyber Badge",
     description: "A highly interactive, draggable physical ID badge with framer-motion kinetics, realistic lanyard string physics, and premium digital aesthetic.",
     category: "Widgets",
-    tags: ["Framer Motion", "Physics", "Interactive", "3D", "Draggable"],
+    tags: ["framer-motion", "physics", "3d", "Draggable"],
     cliCommand: "npx @melonui-dev/cli add tactile-cyber-badge",
     codeSnippet: `"use client";
 
@@ -12149,7 +12149,7 @@ export default function MyPage() {
       title: "HyperDrive Widget",
       description: "A highly interactive, futuristic widget featuring a central magnetic core and orbiting rings that react to hover and click.",
       category: "Widgets",
-      tags: ["Framer Motion", "Interactive", "Premium", "Cyber"],
+      tags: ["framer-motion"],
       cliCommand: "npx @melonui-dev/cli add hyperdrive-widget",
       componentPath: "HyperDriveWidget",
       scrollable: false,
@@ -12471,7 +12471,7 @@ export default function Demo() {
       title: "Kinetic Swing Tag",
       description: "A Gen-Z digital streetwear fashion tag with realistic string physics, draggable swinging motion, and holographic glare.",
       category: "Cards",
-      tags: ["Framer Motion", "Physics", "Gen-Z", "Streetwear", "Interactive"],
+      tags: ["framer-motion", "physics"],
       cliCommand: "npx @melonui-dev/cli add kinetic-swing-tag",
       codeSnippet: `"use client";
 
@@ -12752,7 +12752,7 @@ export function KineticSwingTag({
     title: "Void Portal Reveal",
     description: "A highly interactive, gyroscopic 3D ring portal that massively scales on hover to simulate flying through, revealing a glassmorphic hidden dashboard or UI beneath.",
     category: "Backgrounds",
-    tags: ["portal", "3d", "interactive", "reveal", "glassmorphism", "framer-motion", "gen-z"],
+    tags: ["portal", "3d", "reveal", "glassmorphism", "framer-motion"],
     cliCommand: "npx @melonui-dev/cli add void-portal-reveal",
     componentPath: "VoidPortalReveal",
     codeSnippet: `"use client";
@@ -13073,7 +13073,7 @@ export function VoidPortalReveal({
     title: "Holo Hexagon Map",
     description: "A 3D interactive, glassmorphic hexagon grid with magnetic hover and status nodes.",
     category: "Widgets",
-    tags: ["hex", "grid", "3d", "interactive", "map", "nodes", "dashboard"],
+    tags: ["hex", "grid", "3d", "map", "nodes", "dashboard"],
     componentPath: "HoloHexagonMap",
     cliCommand: "npx melonui add HoloHexagonMap",
     codeSnippet: `"use client";

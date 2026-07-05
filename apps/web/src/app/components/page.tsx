@@ -451,11 +451,11 @@ export default function ComponentsIndexPage() {
                 </div>
 
                 {/* Footer tags */}
-                <div className="mt-4 pt-3 border-t border-white/5 flex flex-wrap gap-1">
+                <div className="mt-4 pt-3 border-t border-white/5 flex flex-wrap gap-1.5">
                   {comp.tags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
-                      className="px-1.5 py-0.5 rounded font-mono text-[8px] uppercase tracking-wider text-white/20 bg-white/1 border border-white/3"
+                      className="px-2 py-0.5 rounded-full font-mono text-[8px] lowercase tracking-wide text-white/25 bg-white/3 border border-white/5"
                     >
                       {tag}
                     </span>
