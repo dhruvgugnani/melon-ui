@@ -1,4 +1,4 @@
-﻿export interface ComponentProp {
+export interface ComponentProp {
   name: string;
   type: string;
   defaultValue: string;
@@ -11901,19 +11901,19 @@ export default function Demo() {
     ]
   },
 {
-    id: "tactile-cyber-badge",
-    slug: "tactile-cyber-badge",
-    title: "Tactile Cyber Badge",
+    id: "tactile-id-card",
+    slug: "tactile-id-card",
+    title: "Tactile ID Card",
     description: "A highly interactive, draggable physical ID badge with framer-motion kinetics, realistic lanyard string physics, and premium digital aesthetic.",
-    category: "Widgets",
+    category: "Cards",
     tags: ["framer-motion", "physics", "3d", "Draggable"],
-    cliCommand: "npx @melonui-dev/cli add tactile-cyber-badge",
+    cliCommand: "npx @melonui-dev/cli add tactile-id-card",
     codeSnippet: `"use client";
 
 import React, { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
-export interface TactileCyberBadgeProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface TactileIDCardProps extends React.ComponentPropsWithoutRef<"div"> {
   name?: string;
   role?: string;
   idNumber?: string;
@@ -11922,7 +11922,7 @@ export interface TactileCyberBadgeProps extends React.ComponentPropsWithoutRef<"
   companyName?: string;
 }
 
-export const TactileCyberBadge: React.FC<TactileCyberBadgeProps> = ({
+export const TactileIDCard: React.FC<TactileIDCardProps> = ({
   name = "ALEX CHEN",
   role = "LEAD ENGINEER",
   idNumber = "M-99201",
@@ -12136,14 +12136,14 @@ export const TactileCyberBadge: React.FC<TactileCyberBadgeProps> = ({
   );
 };
 `,
-      componentPath: "TactileCyberBadge",
+      componentPath: "TactileIDCard",
     scrollable: false,
-    usageCode: `import { TactileCyberBadge } from "@/components/community/demos/TactileCyberBadge";
+    usageCode: `import { TactileIDCard } from "@/components/community/demos/TactileIDCard";
 
 export default function MyPage() {
   return (
     <div className="w-full flex justify-center items-center py-20 bg-black">
-      <TactileCyberBadge />
+      <TactileIDCard />
     </div>
   );
 }`,

@@ -69,7 +69,7 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   KineticSwingTag: dynamic(() => import('./demos/KineticSwingTag').then(m => m.KineticSwingTag), { ssr: false }),
   NeuralPatternLock: dynamic(() => import('./demos/NeuralPatternLock').then(m => m.NeuralPatternLock), { ssr: false }),
   SingularityControlNode: dynamic(() => import('./demos/SingularityControlNode').then(m => m.SingularityControlNode), { ssr: false }),
-  TactileCyberBadge: dynamic(() => import('./demos/TactileCyberBadge').then(m => m.TactileCyberBadge), { ssr: false }),
+  TactileIDCard: dynamic(() => import('./demos/TactileIDCard').then(m => m.TactileIDCard), { ssr: false }),
   TetheredOrbitalVault: dynamic(() => import('./demos/TetheredOrbitalVault').then(m => m.TetheredOrbitalVault), { ssr: false }),
   VoidPortalReveal: dynamic(() => import('./demos/VoidPortalReveal').then(m => m.VoidPortalReveal), { ssr: false }),
   ZeroGravityShards: dynamic(() => import('./demos/ZeroGravityShards').then(m => m.ZeroGravityShards), { ssr: false }),

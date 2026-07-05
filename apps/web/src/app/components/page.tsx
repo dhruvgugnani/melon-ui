@@ -285,6 +285,18 @@ const STATIC_PREVIEW_SLUGS = new Set([
   "hypermorph-bento",
   "elastic-tether-hub",
   "quantum-lens-decoder",
+  "zero-gravity-shards",
+  "neural-pattern-lock",
+  "singularity-control-node",
+  "tethered-orbital-vault",
+  "cyber-biometric-scanner",
+  "holo-seal-vault",
+  "holo-deploy-card",
+  "tactile-id-card",
+  "hyperdrive-widget",
+  "kinetic-swing-tag",
+  "void-portal-reveal",
+  "holo-hexagon-map",
 ]);
 
 function CardPreview({ comp, color }: { comp: typeof componentsData[number]; color: string }) {

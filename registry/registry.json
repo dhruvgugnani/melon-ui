@@ -1279,17 +1279,17 @@
     ],
     "preview": "/preview/holo-deploy-card.png"
   },
-  "tactile-cyber-badge": {
-    "name": "Tactile Cyber Badge",
+  "tactile-id-card": {
+    "name": "Tactile ID Card",
     "description": "A highly interactive, draggable physical ID badge with framer-motion kinetics, realistic lanyard string physics, and premium digital aesthetic.",
-    "category": "Widgets",
+    "category": "Cards",
     "dependencies": [
       "framer-motion"
     ],
     "files": [
       {
-        "name": "tactile-cyber-badge.tsx",
-        "path": "components/tactile-cyber-badge.tsx"
+        "name": "tactile-id-card.tsx",
+        "path": "components/tactile-id-card.tsx"
       }
     ],
     "tags": [
@@ -1299,7 +1299,7 @@
       "3D",
       "Draggable"
     ],
-    "preview": "/preview/tactile-cyber-badge.png"
+    "preview": "/preview/tactile-id-card.png"
   },
   "hyperdrive-widget": {
     "name": "HyperDrive Widget",

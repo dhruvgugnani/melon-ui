@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
-export interface TactileCyberBadgeProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface TactileIDCardProps extends React.ComponentPropsWithoutRef<"div"> {
   name?: string;
   role?: string;
   idNumber?: string;
@@ -12,7 +12,7 @@ export interface TactileCyberBadgeProps extends React.ComponentPropsWithoutRef<"
   companyName?: string;
 }
 
-export const TactileCyberBadge: React.FC<TactileCyberBadgeProps> = ({
+export const TactileIDCard: React.FC<TactileIDCardProps> = ({
   name = "ALEX CHEN",
   role = "LEAD ENGINEER",
   idNumber = "M-99201",
