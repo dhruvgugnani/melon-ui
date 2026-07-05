@@ -3696,8 +3696,13 @@ export const KineticHoloStack = React.forwardRef<HTMLDivElement, KineticHoloStac
     return (
       <div
         ref={ref}
-        className={\`relative perspective-[2000px] cursor-crosshair \${className}\`}
-        style={{ width, height, ...style }}
+        className={\`relative cursor-crosshair \${className}\`}
+        style={{
+          width: width || "100%",
+          height: height || 420,
+          perspective: "2000px",
+          ...style
+        }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onMouseEnter={() => setIsHovered(true)}

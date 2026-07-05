@@ -497,9 +497,9 @@ Please import and merge this component into my project, and write the code showi
           className={`relative w-full flex items-center justify-center p-4 sm:p-6 md:p-8 bg-[#080808] text-white transition-colors duration-300 ${
             previewTheme === "light" ? "light" : ""
           } ${
-            scrollable ? "overflow-y-auto" : "overflow-hidden"
+            scrollable ? "overflow-y-auto" : slug ? "overflow-visible" : "overflow-hidden"
           }`}
-          style={{ minHeight: scrollable ? "500px" : "380px", maxHeight: scrollable ? "500px" : undefined }}
+          style={{ minHeight: scrollable ? "500px" : "480px", maxHeight: scrollable ? "500px" : "640px" }}
         >
           {/* Responsive Preview Wrapper Frame */}
           <div
