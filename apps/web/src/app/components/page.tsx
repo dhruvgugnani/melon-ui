@@ -16,29 +16,29 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   ChromaticSliceCard: dynamic(() => import('@/components/community/demos/ChromaticSliceCard').then(m => m.ChromaticSliceCard), { ssr: false }),
   CliTerminal: dynamic(() => import('@/components/community/demos/CliTerminal').then(m => m.CliTerminal), { ssr: false }),
   CrosshairCursor: dynamic(() => import('@/components/community/demos/CrosshairCursor').then(m => m.CrosshairCursor), { ssr: false }),
-  ElasticTetherHub: dynamic(() => import('@/components/community/demos/ElasticTetherHub').then(m => m.ElasticTetherHub), { ssr: false }),
+  TetherNodeMenu: dynamic(() => import('@/components/community/demos/TetherNodeMenu').then(m => m.TetherNodeMenu), { ssr: false }),
   FlipCard: dynamic(() => import('@/components/community/demos/FlipCard').then(m => m.FlipCard), { ssr: false }),
   FloatingOrbs: dynamic(() => import('@/components/community/demos/FloatingOrbs').then(m => m.FloatingOrbs), { ssr: false }),
-  FluidMagneticDial: dynamic(() => import('@/components/community/demos/FluidMagneticDial').then(m => m.FluidMagneticDial), { ssr: false }),
-  GlitchPulseCore: dynamic(() => import('@/components/community/demos/GlitchPulseCore').then(m => m.GlitchPulseCore), { ssr: false }),
+  FluidControlDial: dynamic(() => import('@/components/community/demos/FluidControlDial').then(m => m.FluidControlDial), { ssr: false }),
+  GlitchStatusIndicator: dynamic(() => import('@/components/community/demos/GlitchStatusIndicator').then(m => m.GlitchStatusIndicator), { ssr: false }),
   GlyphOrbitText: dynamic(() => import('@/components/community/demos/GlyphOrbitText').then(m => m.GlyphOrbitText), { ssr: false }),
   HarvestReveal: dynamic(() => import('@/components/community/demos/HarvestReveal').then(m => m.HarvestReveal), { ssr: false }),
-  HoloTicket: dynamic(() => import('@/components/community/demos/HoloTicket').then(m => m.HoloTicket), { ssr: false }),
-  HyperMorphBento: dynamic(() => import('@/components/community/demos/HyperMorphBento').then(m => m.HyperMorphBento), { ssr: false }),
+  TicketCard: dynamic(() => import('@/components/community/demos/TicketCard').then(m => m.TicketCard), { ssr: false }),
+  DynamicBentoLayout: dynamic(() => import('@/components/community/demos/DynamicBentoLayout').then(m => m.DynamicBentoLayout), { ssr: false }),
   InfinityMirrorCard: dynamic(() => import('@/components/community/demos/InfinityMirrorCard').then(m => m.InfinityMirrorCard), { ssr: false }),
   JuicyCursor: dynamic(() => import('@/components/community/demos/JuicyCursor').then(m => m.JuicyCursor), { ssr: false }),
-  KineticGlassGrid: dynamic(() => import('@/components/community/demos/KineticGlassGrid').then(m => m.KineticGlassGrid), { ssr: false }),
-  KineticHoloStack: dynamic(() => import('@/components/community/demos/KineticHoloStack').then(m => m.KineticHoloStack), { ssr: false }),
-  KineticMagnet: dynamic(() => import('@/components/community/demos/KineticMagnet').then(m => m.KineticMagnet), { ssr: false }),
-  KineticShardTerminal: dynamic(() => import('@/components/community/demos/KineticShardTerminal').then(m => m.KineticShardTerminal), { ssr: false }),
-  KineticShatterCard: dynamic(() => import('@/components/community/demos/KineticShatterCard').then(m => m.KineticShatterCard), { ssr: false }),
+  ProximityGlassGrid: dynamic(() => import('@/components/community/demos/ProximityGlassGrid').then(m => m.ProximityGlassGrid), { ssr: false }),
+  LayeredBlueprintStack: dynamic(() => import('@/components/community/demos/LayeredBlueprintStack').then(m => m.LayeredBlueprintStack), { ssr: false }),
+  MagneticPointerGrid: dynamic(() => import('@/components/community/demos/MagneticPointerGrid').then(m => m.MagneticPointerGrid), { ssr: false }),
+  DataShardTerminal: dynamic(() => import('@/components/community/demos/DataShardTerminal').then(m => m.DataShardTerminal), { ssr: false }),
+  ShatterOnHoverCard: dynamic(() => import('@/components/community/demos/ShatterOnHoverCard').then(m => m.ShatterOnHoverCard), { ssr: false }),
   LiquidDimensionalNav: dynamic(() => import('@/components/community/demos/LiquidDimensionalNav').then(m => m.LiquidDimensionalNav), { ssr: false }),
   LuminousWaves: dynamic(() => import('@/components/community/demos/ClientLuminousWaves').then(m => m.LuminousWaves), { ssr: false }),
   MagneticNav: dynamic(() => import('@/components/community/demos/MagneticNav').then(m => m.MagneticNav), { ssr: false }),
   MagneticParticleField: dynamic(() => import('@/components/community/demos/MagneticParticleField').then(m => m.MagneticParticleField), { ssr: false }),
   MatrixRain: dynamic(() => import('@/components/community/demos/ClientMatrixRain').then(m => m.MatrixRain), { ssr: false }),
   MelonDripText: dynamic(() => import('@/components/community/demos/MelonDripText').then(m => m.MelonDripText), { ssr: false }),
-  MorphingCyberNode: dynamic(() => import('@/components/community/demos/MorphingCyberNode').then(m => m.MorphingCyberNode), { ssr: false }),
+  MorphingControlNode: dynamic(() => import('@/components/community/demos/MorphingControlNode').then(m => m.MorphingControlNode), { ssr: false }),
   MorphTransition: dynamic(() => import('@/components/community/demos/MorphTransition').then(m => m.MorphTransition), { ssr: false }),
   NexusPromptCore: dynamic(() => import('@/components/community/demos/NexusPromptCore').then(m => m.NexusPromptCore), { ssr: false }),
   NoiseBlob: dynamic(() => import('@/components/community/demos/ClientNoiseBlob').then(m => m.NoiseBlob), { ssr: false }),
@@ -46,7 +46,7 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   ParallaxStrips: dynamic(() => import('@/components/community/demos/ParallaxStrips').then(m => m.ParallaxStrips), { ssr: false }),
   ParticleBackground: dynamic(() => import('@/components/community/demos/ClientParticleBackground').then(m => m.ParticleBackground), { ssr: false }),
   PrismVault: dynamic(() => import('@/components/community/demos/PrismVault').then(m => m.PrismVault), { ssr: false }),
-  QuantumLensDecoder: dynamic(() => import('@/components/community/demos/QuantumLensDecoder').then(m => m.QuantumLensDecoder), { ssr: false }),
+  LensTextDecoder: dynamic(() => import('@/components/community/demos/LensTextDecoder').then(m => m.LensTextDecoder), { ssr: false }),
   RetroCrtBackground: dynamic(() => import('@/components/community/demos/RetroCrtBackground').then(m => m.RetroCrtBackground), { ssr: false }),
   RetroGrid: dynamic(() => import('@/components/community/demos/ClientRetroGrid').then(m => m.RetroGrid), { ssr: false }),
   RindPeelCard: dynamic(() => import('@/components/community/demos/RindPeelCard').then(m => m.RindPeelCard), { ssr: false }),
@@ -56,12 +56,12 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   ScrambleText: dynamic(() => import('@/components/community/demos/ScrambleText').then(m => m.ScrambleText), { ssr: false }),
   SeedBurstButton: dynamic(() => import('@/components/community/demos/SeedBurstButton').then(m => m.SeedBurstButton), { ssr: false }),
   SeedwaveText: dynamic(() => import('@/components/community/demos/SeedwaveText').then(m => m.SeedwaveText), { ssr: false }),
-  SignalLoom: dynamic(() => import('@/components/community/demos/SignalLoom').then(m => m.SignalLoom), { ssr: false }),
+  ThreadRouteBoard: dynamic(() => import('@/components/community/demos/ThreadRouteBoard').then(m => m.ThreadRouteBoard), { ssr: false }),
   SolarCarousel: dynamic(() => import('@/components/community/demos/SolarCarousel').then(m => m.SolarCarousel), { ssr: false }),
   StickerCollageWall: dynamic(() => import('@/components/community/demos/StickerCollageWall').then(m => m.StickerCollageWall), { ssr: false }),
   StickerStackText: dynamic(() => import('@/components/community/demos/StickerStackText').then(m => m.StickerStackText), { ssr: false }),
   StickerWall: dynamic(() => import('@/components/community/demos/ClientStickerWall').then(m => m.StickerWall), { ssr: false }),
-  SynapseTerminal: dynamic(() => import('@/components/community/demos/SynapseTerminal').then(m => m.SynapseTerminal), { ssr: false }),
+  InteractiveGraphNetwork: dynamic(() => import('@/components/community/demos/InteractiveGraphNetwork').then(m => m.InteractiveGraphNetwork), { ssr: false }),
   TagInput: dynamic(() => import('@/components/community/demos/TagInput').then(m => m.TagInput), { ssr: false }),
   VineInput: dynamic(() => import('@/components/community/demos/VineInput').then(m => m.VineInput), { ssr: false }),
   TerminalCursor: dynamic(() => import('@/components/community/demos/TerminalCursor').then(m => m.TerminalCursor), { ssr: false }),
@@ -112,13 +112,13 @@ function StaticPlaceholder({ slug, color }: { slug: string; color: string }) {
     );
   }
 
-  if (slug === "peel-card" || slug === "flip-card" || slug === "holo-ticket" || slug === "solar-carousel") {
+  if (slug === "peel-card" || slug === "flip-card" || slug === "ticket-card" || slug === "solar-carousel") {
     return (
       <div className="relative h-full w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] flex items-center justify-center p-3 select-none">
         <div 
           className="h-20 w-32 border border-white/10 rounded-[6px] p-2 flex flex-col justify-end relative overflow-hidden"
           style={{ 
-            background: slug === "holo-ticket" 
+            background: slug === "ticket-card" 
               ? `linear-gradient(135deg, ${color}20, #000 80%)` 
               : "rgba(255,255,255,0.02)" 
           }}
@@ -134,7 +134,7 @@ function StaticPlaceholder({ slug, color }: { slug: string; color: string }) {
     );
   }
 
-  if (slug === "signal-loom") {
+  if (slug === "thread-route-board") {
     return (
       <div className="relative h-full w-full overflow-hidden rounded-[4px] border border-white/5 bg-[#080808] p-4 select-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_25%,rgba(255,92,113,0.24),transparent_36%),radial-gradient(circle_at_76%_70%,rgba(127,255,94,0.18),transparent_38%)]" />
@@ -240,14 +240,14 @@ function StaticPlaceholder({ slug, color }: { slug: string; color: string }) {
 
 const getScale = (slug: string) => {
   if (slug === "solar-carousel" || slug === "orbital-command-ring") return "scale-[0.45]";
-  if (slug === "signal-loom") return "scale-[0.52]";
+  if (slug === "thread-route-board") return "scale-[0.52]";
   if (slug === "chromatic-melt-text") return "scale-[0.3]";
   if (slug === "rind-scanner-text") return "scale-[0.48]";
   if (slug === "sticker-stack-text") return "scale-[0.34]";
   if (slug === "glyph-orbit-text") return "scale-[0.32]";
   if (slug === "seedwave-text") return "scale-[0.34]";
-  if (slug === "kinetic-glass-grid" || slug === "kinetic-magnet" || slug === "morphing-cyber-node" || slug === "particle-field" || slug === "sticker-wall" || slug === "luminous-waves" || slug === "retro-grid" || slug === "noise-blob" || slug === "matrix-rain") return "scale-[0.5]";
-  if (slug === "holo-ticket" || slug === "rind-peel-card" || slug === "flip-card" || slug === "changelog") return "scale-[0.65]";
+  if (slug === "proximity-glass-grid" || slug === "magnetic-pointer-grid" || slug === "morphing-control-node" || slug === "particle-field" || slug === "sticker-wall" || slug === "luminous-waves" || slug === "retro-grid" || slug === "noise-blob" || slug === "matrix-rain") return "scale-[0.5]";
+  if (slug === "ticket-card" || slug === "rind-peel-card" || slug === "flip-card" || slug === "changelog") return "scale-[0.65]";
   if (slug === "parallax-strips" || slug === "harvest-reveal" || slug === "stripe-wipe" || slug === "morph-transition") return "scale-[0.6]";
   if (slug === "magnetic-nav" || slug === "step-trail" || slug === "grow-input" || slug === "tag-input" || slug === "blob-cursor" || slug === "crosshair") return "scale-[0.8]";
   return "scale-95";
@@ -263,40 +263,40 @@ const STATIC_PREVIEW_SLUGS = new Set([
   "matrix-rain",
   "solar-carousel",
   "orbital-command-ring",
-  "kinetic-glass-grid",
-  "kinetic-magnet",
-  "morphing-cyber-node",
-  "signal-loom",
+  "proximity-glass-grid",
+  "magnetic-pointer-grid",
+  "morphing-control-node",
+  "thread-route-board",
   "floating-orbs",
   "magnetic-particle-field",
   "retro-crt-background",
   "sticker-collage-wall",
   "infinity-mirror-card",
-  "fluid-magnetic-dial",
-  "synapse-terminal",
-  "kinetic-shatter-card",
+  "fluid-control-dial",
+  "interactive-graph-network",
+  "shatter-on-hover-card",
   "chromatic-slice-card",
   "liquid-dimensional-nav",
   "nexus-prompt-core",
   "prism-vault",
-  "kinetic-holo-stack",
-  "kinetic-shard-terminal",
+  "layered-blueprint-stack",
+  "data-shard-terminal",
   "anti-gravity-bento",
-  "hypermorph-bento",
-  "elastic-tether-hub",
-  "quantum-lens-decoder",
-  "zero-gravity-shards",
+  "dynamic-bento-layout",
+  "tether-node-menu",
+  "lens-text-decoder",
+  "zero-gravity-bento-grid",
   "neural-pattern-lock",
   "singularity-control-node",
-  "tethered-orbital-vault",
-  "cyber-biometric-scanner",
-  "holo-seal-vault",
-  "holo-deploy-card",
+  "orbital-key-vault",
+  "biometric-touch-scanner",
+  "tear-security-seal",
+  "unfolding-panel-card",
   "tactile-id-card",
   "hyperdrive-widget",
-  "kinetic-swing-tag",
-  "void-portal-reveal",
-  "holo-hexagon-map",
+  "interactive-swing-tag",
+  "3d-portal-reveal",
+  "hexagon-status-grid",
 ]);
 
 function CardPreview({ comp, color }: { comp: typeof componentsData[number]; color: string }) {

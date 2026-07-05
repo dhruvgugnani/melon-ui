@@ -1782,21 +1782,21 @@ export function MelonDripText({
       ]
     },
   {
-      id: "elastic-tether-hub",
-      slug: "elastic-tether-hub",
+      id: "tether-node-menu",
+      slug: "tether-node-menu",
       title: "Tether Node Menu",
       description: "A centralized command core that blooms draggable action nodes on click, featuring elastic spring physics, real-time distance tracking, and a dramatic pull-to-fire release mechanic.",
       category: "Widgets",
       tags: ["framer-motion", "physics", "drag", "Menu"],
-      cliCommand: "npx @melonui-dev/cli add elastic-tether-hub",
-      codeSnippet: "// See ElasticTetherHub.tsx",
-      componentPath: "ElasticTetherHub",
-      usageCode: `import { ElasticTetherHub } from "@/components/community/demos/ElasticTetherHub";
+      cliCommand: "npx @melonui-dev/cli add tether-node-menu",
+      codeSnippet: "// See TetherNodeMenu.tsx",
+      componentPath: "TetherNodeMenu",
+      usageCode: `import { TetherNodeMenu } from "@/components/community/demos/TetherNodeMenu";
 
   export default function Demo() {
     return (
       <div className="flex items-center justify-center p-12 w-full min-h-[500px]">
-        <ElasticTetherHub />
+        <TetherNodeMenu />
       </div>
     );
   }`,
@@ -1811,174 +1811,354 @@ export function MelonDripText({
       cliCommand: "npx @melonui-dev/cli add flip-card",
       codeSnippet: `"use client";
 
-import React, { useRef } from "react";
-import gsap from "gsap";
+import React, { useState, useRef, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 
-export interface FlipCardProps extends React.ComponentPropsWithoutRef<"div"> {
-  width?: string | number;
-  height?: string | number;
-  frontCategory?: string;
-  frontTitle?: string;
-  frontHint?: string;
-  frontBg?: string;
-  frontBorder?: string;
-  frontTextColor?: string;
-  frontCategoryColor?: string;
-  frontHintColor?: string;
-  frontStripeColor?: string;
-
-  backEmoji?: string;
-  backTitle?: string;
-  backHint?: string;
-  backBg?: string;
-  backTextColor?: string;
-  backHintColor?: string;
-  
-  perspective?: string | number;
-  duration?: number;
-
-  children?: React.ReactNode;
-  frontChildren?: React.ReactNode;
-  backChildren?: React.ReactNode;
+// --- Types ---
+export interface ActionNodeData {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  color: string;
 }
 
-export const FlipCard = React.forwardRef<HTMLDivElement, FlipCardProps>(
-  (
-    {
-      width = 260,
-      height = 180,
-      frontCategory = "Component / Card",
-      frontTitle = "Flip Card",
-      frontHint = "Click to reveal >",
-      frontBg = "#0d0d0d",
-      frontBorder = "#1e1e1e",
-      frontTextColor = "#f4f4f4",
-      frontCategoryColor = "#444",
-      frontHintColor = "#555",
-      frontStripeColor = "rgba(255, 92, 113, 0.2)",
+export interface TetherNodeMenuProps extends React.ComponentPropsWithoutRef<"div"> {
+  actions?: ActionNodeData[];
+  centerIcon?: React.ReactNode;
+  ringColor?: string;
+}
 
-      backEmoji = "🍉",
-      backTitle = "Surprise!",
-      backHint = "Click again to flip back",
-      backBg = "#ff5c71",
-      backTextColor = "#050505",
-      backHintColor = "rgba(5, 5, 5, 0.6)",
+// --- Defaults ---
+const DEFAULT_ACTIONS: ActionNodeData[] = [
+  {
+    id: "deploy",
+    label: "Deploy",
+    color: "#7fff5e",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="17 8 12 3 7 8" />
+        <line x1="12" y1="3" x2="12" y2="15" />
+      </svg>
+    ),
+  },
+  {
+    id: "destroy",
+    label: "Destroy",
+    color: "#ff5c71",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="3 6 5 6 21 6" />
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+        <line x1="10" y1="11" x2="10" y2="17" />
+        <line x1="14" y1="11" x2="14" y2="17" />
+      </svg>
+    ),
+  },
+  {
+    id: "analyze",
+    label: "Analyze",
+    color: "#60a5fa",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 16 16 12 12 8" />
+        <line x1="8" y1="12" x2="16" y2="12" />
+      </svg>
+    ),
+  },
+];
 
-      perspective = "1000px",
-      duration = 0.7,
-
-      children,
-      frontChildren,
-      backChildren,
-      className = "",
-      style,
-      ...props
-    },
-    forwardedRef
-  ) => {
-    const internalRef = useRef<HTMLDivElement>(null);
-    const ref = (forwardedRef as React.RefObject<HTMLDivElement | null>) || internalRef;
-    const cardRef = useRef<HTMLDivElement>(null);
-    const isFlipped = useRef(false);
-
-    const flip = () => {
-      if (!cardRef.current) return;
-      const target = isFlipped.current ? 0 : 180;
-      isFlipped.current = !isFlipped.current;
-      gsap.to(cardRef.current, {
-        rotationY: target,
-        duration: duration,
-        ease: "power3.inOut",
-      });
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        flip();
-      }
-    };
-
-    return (
-      <div
-        ref={ref}
-        role="button"
-        tabIndex={0}
-        className={\`cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff5c71] \${className}\`}
-        style={{
-          perspective,
-          width,
-          height,
-          ...style
-        }}
-        onClick={flip}
-        onKeyDown={handleKeyDown}
-        {...props}
-      >
-        <div
-          ref={cardRef}
-          style={{
-            width: "100%",
-            height: "100%",
-            transformStyle: "preserve-3d",
-            position: "relative",
-          }}
-        >
-          {/* Front */}
-          <div
-            style={{
-              backfaceVisibility: "hidden",
-              backgroundColor: frontBg,
-              borderColor: frontBorder,
-            }}
-            className="absolute inset-0 border flex flex-col justify-between p-5"
-          >
-            {children || frontChildren ? (children || frontChildren) : (
-              <>
-                <span className="font-mono text-[10px] uppercase tracking-widest" style={{ color: frontCategoryColor }}>
-                  {frontCategory}
-                </span>
-                <div>
-                  <p className="font-black text-2xl uppercase" style={{ fontFamily: "var(--font-anton)", color: frontTextColor }}>
-                    {frontTitle}
-                  </p>
-                  <p className="font-mono text-xs mt-1" style={{ color: frontHintColor }}>
-                    {frontHint}
-                  </p>
-                </div>
-                <div className="w-full h-px" style={{ backgroundColor: frontStripeColor }} />
-              </>
-            )}
-          </div>
-
-          {/* Back */}
-          <div
-            style={{
-              backfaceVisibility: "hidden",
-              transform: "rotateY(180deg)",
-              backgroundColor: backBg,
-            }}
-            className="absolute inset-0 flex flex-col justify-center items-center gap-3 p-5"
-          >
-            {backChildren ? backChildren : (
-              <>
-                {backEmoji && <span className="text-4xl">{backEmoji}</span>}
-                <p className="font-black text-xl uppercase" style={{ fontFamily: "var(--font-anton)", color: backTextColor }}>
-                  {backTitle}
-                </p>
-                <p className="font-mono text-xs" style={{ color: backHintColor }}>
-                  {backHint}
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
+const CenterIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+  </svg>
 );
 
-FlipCard.displayName = "FlipCard";
+// --- Subcomponents ---
+
+const TetherNode = ({
+  data,
+  index,
+  total,
+  hubRadius,
+  isOpen,
+  onFire,
+}: {
+  data: ActionNodeData;
+  index: number;
+  total: number;
+  hubRadius: number;
+  isOpen: boolean;
+  onFire: (id: string) => void;
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFired, setIsFired] = useState(false);
+
+  // Math for placing nodes in a circle
+  const angle = (index / total) * Math.PI * 2 - Math.PI / 2; // Start from top
+  const targetX = Math.cos(angle) * hubRadius;
+  const targetY = Math.sin(angle) * hubRadius;
+
+  // The core motion values that power the elastic drag
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Springs for smooth snapping
+  const springConfig = { damping: 15, stiffness: 200, mass: 1 };
+  const springX = useSpring(x, springConfig);
+  const springY = useSpring(y, springConfig);
+
+  // Use a ref to ensure hooks are called unconditionally
+  const isInitialRender = useRef(true);
+
+  // Animate node out to radius when open, back to center when closed
+  useEffect(() => {
+    if (isInitialRender.current) {
+        isInitialRender.current = false;
+    }
+
+    if (isOpen && !isFired) {
+      x.set(targetX);
+      y.set(targetY);
+    } else {
+      x.set(0);
+      y.set(0);
+    }
+  }, [isOpen, targetX, targetY, x, y, isFired]);
+
+  // Derived values for the line (tether) and styling
+  const distance = useTransform(() => {
+    const dx = springX.get() - targetX;
+    const dy = springY.get() - targetY;
+    return Math.sqrt(dx * dx + dy * dy);
+  });
+
+  const tetherOpacity = useTransform(distance, [0, 50, 150], [0.2, 0.8, 1]);
+  const tetherWidth = useTransform(distance, [0, 150], [2, 6]);
+
+  // Calculate stroke color based on pull distance (getting "hotter")
+  const strokeColor = useTransform(distance, [0, 100], ["rgba(255,255,255,0.2)", data.color]);
+
+  // Hook conditionally called in render causes errors, move useTransforms up
+  const tetherX2 = useTransform(springX, (val) => \`calc(50% + \${val}px)\`);
+  const tetherY2 = useTransform(springY, (val) => \`calc(50% + \${val}px)\`);
+
+  const handleDragEnd = () => {
+    // Check how far it was pulled from its resting spot
+    const currentDist = distance.get();
+    const FIRE_THRESHOLD = 80;
+
+    if (currentDist > FIRE_THRESHOLD) {
+      setIsFired(true);
+      onFire(data.id);
+
+      // Reset after animation
+      setTimeout(() => {
+        setIsFired(false);
+        if (isOpen) {
+          x.set(targetX);
+          y.set(targetY);
+        }
+      }, 1000);
+    } else {
+      // Snap back to base position
+      x.set(targetX);
+      y.set(targetY);
+    }
+  };
+
+  return (
+    <>
+      {/* The Elastic Tether Line */}
+      {isOpen && !isFired && (
+        <svg
+          className="absolute inset-0 pointer-events-none"
+          style={{ width: "100%", height: "100%", overflow: "visible" }}
+        >
+          <motion.line
+            x1="50%"
+            y1="50%"
+            x2={tetherX2}
+            y2={tetherY2}
+            stroke={strokeColor}
+            strokeWidth={tetherWidth}
+            strokeLinecap="round"
+            style={{ opacity: tetherOpacity }}
+          />
+        </svg>
+      )}
+
+      {/* The Draggable Node */}
+      <motion.div
+        drag
+        dragElastic={0.6}
+        dragConstraints={{ left: targetX, right: targetX, top: targetY, bottom: targetY }}
+        onDragEnd={handleDragEnd}
+        style={{ x: springX, y: springY }}
+        className="absolute left-1/2 top-1/2 z-20 cursor-grab active:cursor-grabbing"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{
+          opacity: isOpen && !isFired ? 1 : 0,
+          scale: isOpen && !isFired ? (isHovered ? 1.1 : 1) : 0,
+        }}
+        transition={{ duration: 0.3, type: "spring", bounce: 0.4 }}
+      >
+        <div
+          className="flex -translate-x-1/2 -translate-y-1/2 items-center justify-center w-14 h-14 rounded-full bg-black/60 backdrop-blur-md border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.5)] transition-colors duration-300 relative group"
+          style={{ borderColor: isHovered ? data.color : "rgba(255,255,255,0.1)" }}
+        >
+          {/* Subtle noise texture */}
+        <div className="absolute inset-0 rounded-full opacity-20 mix-blend-overlay pointer-events-none" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')" }}></div>
+
+          <div style={{ color: isHovered ? data.color : "#fff" }} className="transition-colors duration-300">
+            {data.icon}
+          </div>
+
+          {/* Tooltip Label */}
+          <AnimatePresence>
+            {isHovered && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 5, scale: 0.9 }}
+                className="absolute top-full mt-3 px-3 py-1 rounded-md bg-white/10 backdrop-blur-md border border-white/10 text-xs font-mono font-medium text-white whitespace-nowrap pointer-events-none"
+              >
+                {data.label}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
+
+      {/* Explosion/Fire Animation */}
+      <AnimatePresence>
+        {isFired && (
+          <motion.div
+            initial={{ scale: 0.5, opacity: 1 }}
+            animate={{ scale: 3, opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="absolute left-1/2 top-1/2 z-10 w-14 h-14 rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2"
+            style={{
+              backgroundColor: data.color,
+              boxShadow: \`0 0 40px \${data.color}\`
+            }}
+          />
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
+
+// --- Main Component ---
+
+export function TetherNodeMenu({
+  actions = DEFAULT_ACTIONS,
+  centerIcon = <CenterIcon />,
+  ringColor = "#333",
+  className = "",
+  style,
+  ...props
+}: TetherNodeMenuProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const hubRadius = 120; // Distance nodes bloom out to
+
+  const handleFire = (id: string) => {
+    console.log(\`Action fired: \${id}\`);
+    // In a real app, you might trigger a toast or a router push here
+    // We auto-close the hub after a successful action
+    setTimeout(() => setIsOpen(false), 800);
+  };
+
+  return (
+    <div
+      className={\`relative flex items-center justify-center w-full min-h-[400px] \${className}\`}
+      style={style}
+      {...props}
+    >
+      {/* Background tracking rings to show drag threshold */}
+      <motion.div
+        initial={false}
+        animate={{
+          scale: isOpen ? 1 : 0,
+          opacity: isOpen ? 0.3 : 0,
+        }}
+        transition={{ duration: 0.6, type: "spring" }}
+        className="absolute rounded-full border border-dashed pointer-events-none"
+        style={{
+          width: hubRadius * 2 + 160,
+          height: hubRadius * 2 + 160,
+          borderColor: ringColor,
+        }}
+      />
+
+      {/* Nodes and Tethers */}
+      {actions.map((action, i) => (
+        <TetherNode
+          key={action.id}
+          data={action}
+          index={i}
+          total={actions.length}
+          hubRadius={hubRadius}
+          isOpen={isOpen}
+          onFire={handleFire}
+        />
+      ))}
+
+      {/* Central Hub Button */}
+      <motion.button
+        onClick={() => setIsOpen(!isOpen)}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="relative z-30 flex items-center justify-center w-20 h-20 rounded-full bg-black border border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.1)] text-white overflow-hidden group"
+      >
+        {/* Core glow effect */}
+        <div
+          className="absolute inset-0 opacity-50 blur-xl transition-all duration-500 group-hover:opacity-100 group-hover:bg-[#ff5c71]/20"
+        />
+
+        {/* Subtle noise */}
+        <div className="absolute inset-0 rounded-full opacity-20 mix-blend-overlay pointer-events-none" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')" }}></div>
+
+        <motion.div
+          animate={{ rotate: isOpen ? 135 : 0 }}
+          transition={{ duration: 0.4, type: "spring" }}
+          className="relative z-10"
+        >
+          {isOpen ? (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+          ) : (
+             centerIcon
+          )}
+        </motion.div>
+      </motion.button>
+
+      {/* Help text */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="absolute bottom-8 text-white/50 font-mono text-sm pointer-events-none"
+          >
+            Drag nodes outward to trigger
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// Default export for the dynamic registry
+export default TetherNodeMenu;
 `,
       componentPath: "FlipCard",
       usageCode: `import { FlipCard } from "@/components/community/demos/FlipCard";
@@ -2023,22 +2203,22 @@ FlipCard.displayName = "FlipCard";
       ]
     },
   {
-      id: "fluid-magnetic-dial",
-      slug: "fluid-magnetic-dial",
+      id: "fluid-control-dial",
+      slug: "fluid-control-dial",
       title: "Fluid Control Dial",
       description: "A highly interactive, fluid-like control dial featuring magnetic Framer Motion physics, gooey SVG filters, and dynamic glitching text. Perfect for premium, futuristic dashboard interfaces.",
       category: "Inputs",
       tags: ["framer-motion", "magnetic", "Gooey", "Experimental"],
-      cliCommand: "npx @melonui-dev/cli add fluid-magnetic-dial",
-      codeSnippet: "// See FluidMagneticDial.tsx",
-      componentPath: "FluidMagneticDial",
+      cliCommand: "npx @melonui-dev/cli add fluid-control-dial",
+      codeSnippet: "// See FluidControlDial.tsx",
+      componentPath: "FluidControlDial",
       scrollable: false,
-      usageCode: `import { FluidMagneticDial } from "@/components/community/demos/FluidMagneticDial";
+      usageCode: `import { FluidControlDial } from "@/components/community/demos/FluidControlDial";
 
   export default function Demo() {
     return (
       <div className="flex items-center justify-center p-20 min-h-[400px]">
-        <FluidMagneticDial
+        <FluidControlDial
           size={240}
           label="SYSTEM LOAD"
           primaryColor="#00f0ff"
@@ -2086,13 +2266,13 @@ FlipCard.displayName = "FlipCard";
       ]
     },
   {
-      id: "glitch-pulse-core",
-      slug: "glitch-pulse-core",
+      id: "glitch-status-indicator",
+      slug: "glitch-status-indicator",
       title: "Glitch Status Indicator",
       description: "A highly interactive cybernetic core utilizing Framer Motion for magnetic hover physics, states (STABLE, UNSTABLE, CRITICAL) and SVG-based escalating glitch effects.",
       category: "Widgets",
       tags: ["framer-motion", "Glitch", "SVG Filter"],
-      cliCommand: "npx @melonui-dev/cli add glitch-pulse-core",
+      cliCommand: "npx @melonui-dev/cli add glitch-status-indicator",
       codeSnippet: `"use client";
 
 import React, { useRef, useState, useEffect } from "react";
@@ -2100,14 +2280,14 @@ import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from
 
 type CoreState = "STABLE" | "UNSTABLE" | "CRITICAL";
 
-export interface GlitchPulseCoreProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface GlitchStatusIndicatorProps extends React.ComponentPropsWithoutRef<"div"> {
   initialCoreState?: CoreState;
   stableColor?: string;
   unstableColor?: string;
   criticalColor?: string;
 }
 
-export function GlitchPulseCore({
+export function GlitchStatusIndicator({
   initialCoreState = "STABLE",
   stableColor = "#7fff5e",
   unstableColor = "#ffaa00",
@@ -2115,7 +2295,7 @@ export function GlitchPulseCore({
   className = "",
   style,
   ...props
-}: GlitchPulseCoreProps) {
+}: GlitchStatusIndicatorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [coreState, setCoreState] = useState<CoreState>(initialCoreState);
   const [mounted, setMounted] = useState(false);
@@ -2328,7 +2508,7 @@ export function GlitchPulseCore({
   );
 }
 `,
-      componentPath: "GlitchPulseCore",
+      componentPath: "GlitchStatusIndicator",
       props: [
         { name: "initialCoreState", type: "string", defaultValue: `"STABLE"`, description: "Starting state of the core: STABLE, UNSTABLE, or CRITICAL.", control: { type: "text" } },
         { name: "stableColor", type: "string", defaultValue: `"#7fff5e"`, description: "Hex color of the core in STABLE state.", control: { type: "color" } },
@@ -2614,19 +2794,19 @@ export function VineInput({
       ]
     },
   {
-      id: "holo-ticket",
-      slug: "holo-ticket",
+      id: "ticket-card",
+      slug: "ticket-card",
       title: "Ticket Card",
       description: "Premium holographic ticket component with 3D pointer-tracking reflection, dynamic CSS clipping, and elastic tearing physics.",
       category: "Cards",
       tags: ["gsap", "Clip", "glassmorphism", "Holographic"],
-      cliCommand: "npx @melonui-dev/cli add holo-ticket",
+      cliCommand: "npx @melonui-dev/cli add ticket-card",
       codeSnippet: `"use client";
 
 import React, { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 
-export interface HoloTicketProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface TicketCardProps extends React.ComponentPropsWithoutRef<"div"> {
   width?: string | number;
   height?: string | number;
   
@@ -2656,7 +2836,7 @@ export interface HoloTicketProps extends React.ComponentPropsWithoutRef<"div"> {
   bottomChildren?: React.ReactNode;
 }
 
-export const HoloTicket = React.forwardRef<HTMLDivElement, HoloTicketProps>(
+export const TicketCard = React.forwardRef<HTMLDivElement, TicketCardProps>(
   (
     {
       width = 256,
@@ -3021,16 +3201,16 @@ export const HoloTicket = React.forwardRef<HTMLDivElement, HoloTicketProps>(
   }
 );
 
-HoloTicket.displayName = "HoloTicket";
+TicketCard.displayName = "TicketCard";
 `,
-      componentPath: "HoloTicket",
-      usageCode: `import { HoloTicket } from "@/components/community/demos/HoloTicket";
+      componentPath: "TicketCard",
+      usageCode: `import { TicketCard } from "@/components/community/demos/TicketCard";
 
   export default function Demo() {
     return (
       <div className="flex items-center justify-center p-12">
         {/* Hover over ticket to tilt in 3D or drag bottom stub to tear off */}
-        <HoloTicket 
+        <TicketCard 
           topEyebrow="Developer Conf"
           topSerial="No. 1337"
           topTitle={<>Melon<br/>Con</>}
@@ -3051,16 +3231,16 @@ HoloTicket.displayName = "HoloTicket";
       ]
     },
   {
-      id: "hypermorph-bento",
-      slug: "hypermorph-bento",
+      id: "dynamic-bento-layout",
+      slug: "dynamic-bento-layout",
       title: "Dynamic Bento Layout",
       description: "A highly dynamic 2x2 grid of layout items expanding to flex columns/rows with spring animations.",
       category: "Cards",
       tags: ["framer-motion", "Layout", "Bento"],
-      cliCommand: "npx @melonui-dev/cli add hypermorph-bento",
-      codeSnippet: "// See HyperMorphBento.tsx",
-      componentPath: "HyperMorphBento",
-      usageCode: `import { HyperMorphBento } from "@/components/community/demos/HyperMorphBento";
+      cliCommand: "npx @melonui-dev/cli add dynamic-bento-layout",
+      codeSnippet: "// See DynamicBentoLayout.tsx",
+      componentPath: "DynamicBentoLayout",
+      usageCode: `import { DynamicBentoLayout } from "@/components/community/demos/DynamicBentoLayout";
 
   export default function Demo() {
     // Customize bento grid content by passing custom cards, icons, colors, and stats
@@ -3085,7 +3265,7 @@ HoloTicket.displayName = "HoloTicket";
 
     return (
       <div className="w-full">
-        <HyperMorphBento items={customItems} />
+        <DynamicBentoLayout items={customItems} />
       </div>
     );
   }`,
@@ -3318,13 +3498,13 @@ export const InfinityMirrorCard: React.FC<InfinityMirrorCardProps> = ({
       ]
     },
   {
-      id: "kinetic-glass-grid",
-      slug: "kinetic-glass-grid",
+      id: "proximity-glass-grid",
+      slug: "proximity-glass-grid",
       title: "Proximity Glass Grid",
       description: "A physical, reactive glass grid that elevates and glows intelligently based on cursor proximity, using complex distance-based spring physics.",
       category: "Backgrounds",
       tags: ["framer-motion", "physics", "glassmorphism", "Interactive Grid"],
-      cliCommand: "npx @melonui-dev/cli add kinetic-glass-grid",
+      cliCommand: "npx @melonui-dev/cli add proximity-glass-grid",
       codeSnippet: `"use client";
 
 import React, { useRef } from "react";
@@ -3410,7 +3590,7 @@ const Tile: React.FC<TileProps> = ({ mouseX, mouseY, primaryColor, accentColor, 
   );
 };
 
-export interface KineticGlassGridProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface ProximityGlassGridProps extends React.ComponentPropsWithoutRef<"div"> {
   gridSize?: number;
   primaryColor?: string;
   accentColor?: string;
@@ -3420,7 +3600,7 @@ export interface KineticGlassGridProps extends React.ComponentPropsWithoutRef<"d
   maxDistance?: number;
 }
 
-export const KineticGlassGrid: React.FC<KineticGlassGridProps> = ({
+export const ProximityGlassGrid: React.FC<ProximityGlassGridProps> = ({
   gridSize = 8,
   primaryColor = "#ff5c71",
   accentColor = "#7fff5e",
@@ -3527,7 +3707,7 @@ export const KineticGlassGrid: React.FC<KineticGlassGridProps> = ({
   );
 };
 `,
-      componentPath: "KineticGlassGrid",
+      componentPath: "ProximityGlassGrid",
       props: [
         { name: "title", type: "string", defaultValue: `""`, description: "Optional title header to render in top left corner.", control: { type: "text" } },
         { name: "eyebrow", type: "string", defaultValue: `""`, description: "Optional smaller eyebrow label placed above the title.", control: { type: "text" } },
@@ -3539,13 +3719,13 @@ export const KineticGlassGrid: React.FC<KineticGlassGridProps> = ({
       ]
     },
   {
-      id: "kinetic-holo-stack",
-      slug: "kinetic-holo-stack",
+      id: "layered-blueprint-stack",
+      slug: "layered-blueprint-stack",
       title: "Layered Blueprint Stack",
       description: "A highly interactive 'Holo-Stack' card that reveals its layered 3D structural blueprints on hover using physical spring separation and glowing lasers.",
       category: "Cards",
       tags: ["framer-motion", "3d", "glassmorphism"],
-      cliCommand: "npx @melonui-dev/cli add kinetic-holo-stack",
+      cliCommand: "npx @melonui-dev/cli add layered-blueprint-stack",
       codeSnippet: `"use client";
 
 import React, { useRef, useState } from "react";
@@ -3559,7 +3739,7 @@ export interface StackLayer {
   content?: React.ReactNode;
 }
 
-export interface KineticHoloStackProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface LayeredBlueprintStackProps extends React.ComponentPropsWithoutRef<"div"> {
   layers?: StackLayer[];
   baseColor?: string;
   accentColor?: string;
@@ -3575,7 +3755,7 @@ const DEFAULT_LAYERS: StackLayer[] = [
   { id: "L4", title: "Accent Depth", type: "hologram", color: "#00f0ff" }
 ];
 
-export const KineticHoloStack = React.forwardRef<HTMLDivElement, KineticHoloStackProps>(
+export const LayeredBlueprintStack = React.forwardRef<HTMLDivElement, LayeredBlueprintStackProps>(
   (
     {
       layers = DEFAULT_LAYERS,
@@ -3778,9 +3958,9 @@ export const KineticHoloStack = React.forwardRef<HTMLDivElement, KineticHoloStac
   }
 );
 
-KineticHoloStack.displayName = "KineticHoloStack";
+LayeredBlueprintStack.displayName = "LayeredBlueprintStack";
 `,
-      componentPath: "KineticHoloStack",
+      componentPath: "LayeredBlueprintStack",
       props: [
         {
           name: "baseColor",
@@ -3806,311 +3986,251 @@ KineticHoloStack.displayName = "KineticHoloStack";
       ]
     },
   {
-      id: "kinetic-magnet",
-      slug: "kinetic-magnet",
+      id: "magnetic-pointer-grid",
+      slug: "magnetic-pointer-grid",
       title: "Magnetic Pointer Grid",
       description: "A mechanical grid of interactive SVG lines/needles that act as magnetic nodes pointing directly at your cursor, emitting elastic spring waves on clicks.",
       category: "Cursors",
       tags: ["gsap", "svg", "Elastic"],
-      cliCommand: "npx @melonui-dev/cli add kinetic-magnet",
+      cliCommand: "npx @melonui-dev/cli add magnetic-pointer-grid",
       codeSnippet: "",
-      componentPath: "KineticMagnet",
+      componentPath: "MagneticPointerGrid",
     },
   {
-      id: "kinetic-shard-terminal",
-      slug: "kinetic-shard-terminal",
+      id: "data-shard-terminal",
+      slug: "data-shard-terminal",
       title: "Data Shard Terminal",
       description: "A highly interactive cyberpunk-style terminal that unlocks via dragging and dropping a 'Data Shard' into a magnetic slot.",
       category: "Cards",
       tags: ["framer-motion", "drag"],
-      cliCommand: "npx @melonui-dev/cli add kinetic-shard-terminal",
+      cliCommand: "npx @melonui-dev/cli add data-shard-terminal",
       codeSnippet: `"use client";
 
-import React, { useState, useRef } from "react";
-import { motion, AnimatePresence, useAnimation, PanInfo } from "framer-motion";
+import React, { useRef, useEffect } from "react";
+import gsap from "gsap";
 
-export interface KineticShardTerminalProps extends React.ComponentPropsWithoutRef<"div"> {
-  title?: string;
-  lockedSubtitle?: string;
-  unlockedSubtitle?: string;
+export interface MagneticPointerGridProps extends React.ComponentPropsWithoutRef<"div"> {
+  cols?: number;
+  rows?: number;
   primaryColor?: string;
-  accentColor?: string;
-  bgColor?: string;
+  secondaryColor?: string;
+  bg?: string;
+  innerBg?: string;
+  borderColor?: string;
+  showFooter?: boolean;
 }
 
-export function KineticShardTerminal({
-  title = "DATA CONTAINER",
-  lockedSubtitle = "AWAITING ACCESS KEY CARD",
-  unlockedSubtitle = "CONTAINER SUCCESSFULLY MOUNTED",
+export function MagneticPointerGrid({
+  cols = 14,
+  rows = 8,
   primaryColor = "#7fff5e",
-  accentColor = "#ff5c71",
-  bgColor = "#050505",
+  secondaryColor = "#ff5c71",
+  bg = "#050505",
+  innerBg = "#0a0a0c",
+  borderColor = "rgba(255,255,255,0.05)",
+  showFooter = true,
   className = "",
   style,
   ...props
-}: KineticShardTerminalProps) {
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
+}: MagneticPointerGridProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const slotRef = useRef<HTMLDivElement>(null);
-  const shardControls = useAnimation();
+  const needlesRef = useRef<(SVGSVGElement | null)[]>([]);
+  const needleCount = cols * rows;
 
-  // Reset to locked state after some time in demo (optional) or provide a reset button.
-  // We will provide an "Eject" button inside the unlocked dashboard.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-  const handleDragStart = () => {
-    setIsDragging(true);
-  };
+    // Cache needle positions
+    let needlePositions = needlesRef.current.map((needle) => {
+      if (!needle) return { x: 0, y: 0 };
+      const rect = needle.getBoundingClientRect();
+      const parentRect = container.getBoundingClientRect();
+      return {
+        x: rect.left - parentRect.left + rect.width / 2,
+        y: rect.top - parentRect.top + rect.height / 2,
+      };
+    });
 
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    setIsDragging(false);
+    // We use GSAP's quickSetter for maximum rendering performance
+    const setters = needlesRef.current.map((needle) => {
+      if (!needle) return null;
+      return gsap.quickSetter(needle, "rotation", "deg");
+    });
 
-    if (!slotRef.current || !containerRef.current) {
-      shardControls.start({ x: 0, y: 0 });
-      return;
-    }
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const slotRect = slotRef.current.getBoundingClientRect();
+    const handleMouseMove = (e: MouseEvent) => {
+      if (prefersReducedMotion) return;
 
-    // The shard is roughly 120x60, check if drop point is inside the slot area
-    const dropX = info.point.x;
-    const dropY = info.point.y;
+      const parentRect = container.getBoundingClientRect();
+      const mouseX = e.clientX - parentRect.left;
+      const mouseY = e.clientY - parentRect.top;
 
-    // Expand the hit area slightly for easier interaction
-    const hitArea = {
-      left: slotRect.left - 40,
-      right: slotRect.right + 40,
-      top: slotRect.top - 40,
-      bottom: slotRect.bottom + 40
+      needlesRef.current.forEach((needle, i) => {
+        if (!needle || !setters[i]) return;
+
+        // Skip animating if currently in a click spin tween to prevent overrides
+        if (gsap.isTweening(needle)) return;
+
+        const pos = needlePositions[i];
+        if (!pos) return;
+        const dx = mouseX - pos.x;
+        const dy = mouseY - pos.y;
+        
+        // Calculate angle pointing towards cursor
+        const angleRad = Math.atan2(dy, dx);
+        const angleDeg = angleRad * (180 / Math.PI);
+
+        // Instantly update rotation bypass React rendering
+        setters[i]!(angleDeg);
+      });
     };
 
-    if (
-      dropX >= hitArea.left &&
-      dropX <= hitArea.right &&
-      dropY >= hitArea.top &&
-      dropY <= hitArea.bottom
-    ) {
-      // Success! Snap in place then unlock
-      setIsUnlocked(true);
-    } else {
-      // Snap back
-      shardControls.start({ x: 0, y: 0, transition: { type: "spring", stiffness: 300, damping: 20 } });
-    }
-  };
+    const handleClick = (e: MouseEvent) => {
+      if (prefersReducedMotion) return;
 
-  const handleEject = () => {
-    setIsUnlocked(false);
-    // Reset shard position after layout change
-    setTimeout(() => {
-      shardControls.start({ x: 0, y: 0, transition: { duration: 0 } });
-    }, 100);
-  };
+      const parentRect = container.getBoundingClientRect();
+      const clickX = e.clientX - parentRect.left;
+      const clickY = e.clientY - parentRect.top;
+
+      needlesRef.current.forEach((needle, i) => {
+        if (!needle) return;
+
+        const pos = needlePositions[i];
+        if (!pos) return;
+        const dx = clickX - pos.x;
+        const dy = clickY - pos.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Ripple delay based on distance from click point
+        const delay = distance * 0.0018; 
+
+        // Satisfying mechanical spin with elastic spring easing
+        gsap.to(needle, {
+          rotation: "+=360",
+          duration: 1.4,
+          ease: "elastic.out(1, 0.55)",
+          delay: delay,
+          overwrite: "auto",
+        });
+      });
+    };
+
+    container.addEventListener("mousemove", handleMouseMove);
+    container.addEventListener("click", handleClick);
+
+    // Re-cache coordinates on resize
+    const handleResize = () => {
+      needlesRef.current.forEach((needle, i) => {
+        if (!needle) return;
+        const rect = needle.getBoundingClientRect();
+        const parentRect = container.getBoundingClientRect();
+        needlePositions[i] = {
+          x: rect.left - parentRect.left + rect.width / 2,
+          y: rect.top - parentRect.top + rect.height / 2,
+        };
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      container.removeEventListener("mousemove", handleMouseMove);
+      container.removeEventListener("click", handleClick);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [cols, rows]);
 
   return (
     <div
-      ref={containerRef}
-      className={\`relative w-full h-[500px] rounded-2xl overflow-hidden flex flex-col items-center justify-center font-['Outfit',sans-serif] \${className}\`}
+      className={\`relative flex flex-col items-center justify-center w-full min-h-[500px] overflow-hidden select-none rounded-xl border p-8 \${className}\`}
       style={{
-        backgroundColor: bgColor,
-        backgroundImage: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 100%)",
+        backgroundColor: bg,
+        borderColor: borderColor,
         ...style
       }}
       {...props}
     >
-      {/* Subtle Noise Overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03] z-0"
-        style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')" }}
+      {/* Decorative Interactive Grid Glow */}
+      <div 
+        className="absolute inset-0 pointer-events-none" 
+        style={{
+          background: \`radial-gradient(ellipse at center, \${primaryColor}08 0%, rgba(0,0,0,0) 70%)\`
+        }}
       />
 
-      {/* Main Terminal Area */}
-      <div className="relative z-10 w-full max-w-2xl h-full flex items-center justify-center p-6">
-        <AnimatePresence mode="wait">
-          {!isUnlocked ? (
-            <motion.div
-              key="locked"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
-              className="flex flex-col items-center gap-12 w-full"
+      {/* Grid Container */}
+      <div 
+        ref={containerRef}
+        className="relative grid gap-4 p-8 border rounded-xl cursor-crosshair overflow-hidden"
+        style={{
+          gridTemplateColumns: \`repeat(\${cols}, minmax(0, 1fr))\`,
+          backgroundColor: innerBg,
+          borderColor: borderColor,
+          boxShadow: "inset 0 0 40px rgba(0,0,0,0.8), 0 10px 40px rgba(0,0,0,0.5)",
+        }}
+      >
+        {Array.from({ length: needleCount }).map((_, i) => {
+          // Color variance to make grid look dynamic
+          const isCoreNode = (i % 7 === 0 || i % 9 === 0);
+          const needleColor = isCoreNode ? secondaryColor : primaryColor;
+          const opacity = isCoreNode ? "opacity-90" : "opacity-40 hover:opacity-100";
+
+          return (
+            <svg
+              key={i}
+              ref={(el) => { needlesRef.current[i] = el; }}
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              className={\`transition-opacity duration-300 \${opacity}\`}
+              style={{ transformOrigin: "center center" }}
             >
-              {/* Terminal Frame */}
-              <div className="relative border border-white/10 rounded-xl bg-black/40 backdrop-blur-md p-8 w-full max-w-md shadow-2xl flex flex-col items-center">
-                <div className="absolute -top-px left-1/2 -translate-x-1/2 w-1/3 h-px" style={{ background: \`linear-gradient(90deg, transparent, \${accentColor}, transparent)\` }} />
-
-                <h2 className="text-white/80 text-xl tracking-[0.2em] font-bold mb-2">
-                  {title}
-                </h2>
-                <div className="flex items-center gap-2 mb-8">
-                  <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: accentColor }} />
-                  <span className="text-xs tracking-widest text-white/50">{lockedSubtitle}</span>
-                </div>
-
-                {/* The Slot */}
-                <div
-                  ref={slotRef}
-                  className="w-[140px] h-[70px] rounded-lg border-2 border-dashed flex items-center justify-center relative overflow-hidden transition-colors duration-300"
-                  style={{
-                    borderColor: isDragging ? primaryColor : "rgba(255,255,255,0.2)",
-                    backgroundColor: isDragging ? \`\${primaryColor}10\` : "rgba(0,0,0,0.5)"
-                  }}
-                >
-                  <motion.div
-                    className="absolute inset-0 opacity-20"
-                    animate={{
-                      backgroundPosition: ["0% 0%", "100% 100%"],
-                    }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                    style={{
-                      backgroundImage: \`repeating-linear-gradient(45deg, transparent, transparent 10px, \${primaryColor} 10px, \${primaryColor} 20px)\`,
-                      backgroundSize: "200% 200%",
-                      display: isDragging ? "block" : "none"
-                    }}
-                  />
-                  <span className="text-white/30 text-[10px] tracking-widest uppercase z-10">Drop Key Card</span>
-                </div>
-              </div>
-
-              {/* The Draggable Shard */}
-              <motion.div
-                drag
-                dragConstraints={containerRef}
-                dragElastic={0.1}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-                animate={shardControls}
-                whileHover={{ scale: 1.05 }}
-                whileDrag={{ scale: 1.1, cursor: "grabbing" }}
-                className="w-[120px] h-[60px] rounded-md cursor-grab flex items-center justify-center relative shadow-lg z-50 group"
+              {/* Compass Ring Outer Circle */}
+              <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
+              
+              {/* Magnetic Pointer Needle */}
+              <path
+                d="M12 2L15 12H9L12 2Z"
+                fill={needleColor}
                 style={{
-                  background: \`linear-gradient(135deg, \${primaryColor}30, \${primaryColor}10)\`,
-                  border: \`1px solid \${primaryColor}80\`,
-                  boxShadow: \`0 0 20px \${primaryColor}40\`
+                  filter: \`drop-shadow(0 0 3px \${needleColor}33)\`,
                 }}
-              >
-                {/* Glowing edge */}
-                <div className="absolute inset-0 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                     style={{ boxShadow: \`inset 0 0 15px \${primaryColor}\` }} />
-
-                {/* Circuit lines decorative */}
-                <div className="absolute top-2 left-2 w-4 h-px bg-white/50" />
-                <div className="absolute top-2 left-2 w-px h-4 bg-white/50" />
-                <div className="absolute bottom-2 right-2 w-4 h-px bg-white/50" />
-                <div className="absolute bottom-2 right-2 w-px h-4 bg-white/50" />
-
-                <span className="text-white font-bold tracking-widest text-[10px] sm:text-xs" style={{ textShadow: \`0 0 10px \${primaryColor}\` }}>
-                  KEY CARD
-                </span>
-              </motion.div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="unlocked"
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-              className="w-full h-full flex flex-col"
-            >
-              {/* Dashboard Header */}
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-white text-2xl font-bold tracking-widest flex items-center gap-3">
-                    <span style={{ color: primaryColor }}>{"//"}</span> {title}
-                  </h2>
-                  <p className="text-white/50 text-sm tracking-wider mt-1">{unlockedSubtitle}</p>
-                </div>
-                <button
-                  onClick={handleEject}
-                  className="px-4 py-2 rounded-md bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 hover:text-white text-xs tracking-widest transition-all uppercase flex items-center gap-2"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                  Eject
-                </button>
-              </div>
-
-              {/* Bento Grid Layout */}
-              <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4 auto-rows-min sm:grid-rows-2">
-                {/* Main Graph Card */}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="col-span-1 sm:col-span-2 row-span-1 sm:row-span-2 rounded-xl bg-white/[0.02] border border-white/5 p-6 flex flex-col relative overflow-hidden min-h-[180px]"
-                >
-                  <div className="absolute top-0 right-0 w-32 h-32 blur-3xl opacity-20" style={{ backgroundColor: primaryColor }} />
-                  <h3 className="text-white/40 text-xs tracking-widest uppercase mb-4">Network Activity</h3>
-
-                  {/* Fake Graph */}
-                  <div className="flex-1 flex items-end gap-2 mt-4 min-h-[60px]">
-                    {[40, 70, 45, 90, 65, 85, 30, 55, 75, 100, 60, 80].map((h, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ height: 0 }}
-                        animate={{ height: \`\${h}%\` }}
-                        transition={{ delay: 0.3 + (i * 0.05), type: "spring" }}
-                        className="flex-1 rounded-t-sm opacity-80 hover:opacity-100 transition-opacity"
-                        style={{ backgroundColor: i % 3 === 0 ? accentColor : primaryColor }}
-                      />
-                    ))}
-                  </div>
-
-                  <div className="flex justify-between mt-4 text-white/30 text-[10px] font-mono">
-                    <span>00:00</span>
-                    <span>LIVE</span>
-                  </div>
-                </motion.div>
-
-                {/* Stats Card 1 */}
-                <motion.div
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="rounded-xl bg-white/[0.02] border border-white/5 p-4 flex flex-col justify-between min-h-[100px]"
-                >
-                  <h3 className="text-white/40 text-xs tracking-widest uppercase">Nodes</h3>
-                  <div className="text-2xl sm:text-4xl font-light text-white mt-2">1,024</div>
-                  <div className="text-[10px] tracking-wider text-white/50 mt-1 flex items-center gap-1">
-                    <span style={{ color: primaryColor }}>↑ 12%</span> active
-                  </div>
-                </motion.div>
-
-                {/* Stats Card 2 */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="rounded-xl bg-white/[0.02] border border-white/5 p-4 flex flex-col justify-between relative overflow-hidden min-h-[100px]"
-                >
-                  <div className="absolute inset-0 opacity-10" style={{
-                    backgroundImage: \`repeating-linear-gradient(-45deg, transparent, transparent 5px, \${primaryColor} 5px, \${primaryColor} 10px)\`
-                  }} />
-                  <h3 className="text-white/40 text-xs tracking-widest uppercase relative z-10">Access Level</h3>
-                  <div className="text-xl sm:text-2xl font-bold mt-2 relative z-10" style={{ color: primaryColor }}>ADMIN</div>
-                  <div className="text-[10px] tracking-wider text-white/50 mt-1 relative z-10">
-                    Session Authenticated
-                  </div>
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              />
+              <path
+                d="M12 22L15 12H9L12 22Z"
+                fill="rgba(255,255,255,0.15)"
+              />
+              
+              {/* Frictionless Center Pivot Pin */}
+              <circle cx="12" cy="12" r="1.5" fill="#ffffff" />
+            </svg>
+          );
+        })}
       </div>
+
+      {/* Footer Info */}
+      {showFooter && (
+        <footer className="z-10 text-center pointer-events-none mt-4">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-white/30">
+            move mouse to polarize needles • click grid to trigger shockwave
+          </span>
+        </footer>
+      )}
     </div>
   );
 }
 `,
-      componentPath: "KineticShardTerminal",
+      componentPath: "DataShardTerminal",
       scrollable: false,
-      usageCode: `import { KineticShardTerminal } from "@/components/community/demos/KineticShardTerminal";
+      usageCode: `import { DataShardTerminal } from "@/components/community/demos/DataShardTerminal";
 
   export default function Demo() {
     return (
       <div className="flex items-center justify-center p-12">
-        <KineticShardTerminal />
+        <DataShardTerminal />
       </div>
     );
   }`,
@@ -4137,22 +4257,22 @@ export function KineticShardTerminal({
       ]
     },
   {
-      id: "kinetic-shatter-card",
-      slug: "kinetic-shatter-card",
+      id: "shatter-on-hover-card",
+      slug: "shatter-on-hover-card",
       title: "Shatter-on-Hover Card",
       description: "A premium glassmorphic enclosure that violently shatters into 3D floating shards on hover, revealing a cybernetic glowing core inside.",
       category: "Cards",
       tags: ["framer-motion", "3d", "Shatter"],
-      cliCommand: "npx @melonui-dev/cli add kinetic-shatter-card",
-      codeSnippet: "// See KineticShatterCard.tsx",
-      componentPath: "KineticShatterCard",
+      cliCommand: "npx @melonui-dev/cli add shatter-on-hover-card",
+      codeSnippet: "// See ShatterOnHoverCard.tsx",
+      componentPath: "ShatterOnHoverCard",
       scrollable: false,
-      usageCode: `import { KineticShatterCard } from "@/components/community/demos/KineticShatterCard";
+      usageCode: `import { ShatterOnHoverCard } from "@/components/community/demos/ShatterOnHoverCard";
 
   export default function Demo() {
     return (
       <div className="flex items-center justify-center p-12 min-h-[500px]">
-        <KineticShatterCard
+        <ShatterOnHoverCard
           title="SHATTER CORE"
           subtitle="LOCKED ENCLOSURE"
           revealTitle="SYSTEM EXPOSED"
@@ -4217,335 +4337,227 @@ export function KineticShardTerminal({
       componentPath: "LiquidDimensionalNav",
       codeSnippet: `"use client";
 
-import React, { useRef, useState, useEffect } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import React, { useState, useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 
-export interface NavItem {
-  id: string;
-  label: string;
-  icon: React.ReactNode;
-  content: React.ReactNode;
-}
-
-export interface LiquidDimensionalNavProps extends React.ComponentPropsWithoutRef<"div"> {
-  items?: NavItem[];
+export interface ShatterOnHoverCardProps extends React.ComponentPropsWithoutRef<"div"> {
+  title?: string;
+  subtitle?: string;
+  revealTitle?: string;
+  revealText?: string;
   primaryColor?: string;
   accentColor?: string;
-  bg?: string;
-  borderColor?: string;
+  bgColor?: string;
 }
 
-const DEFAULT_ITEMS: NavItem[] = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="7" height="9" />
-        <rect x="14" y="3" width="7" height="5" />
-        <rect x="14" y="12" width="7" height="9" />
-        <rect x="3" y="16" width="7" height="5" />
-      </svg>
-    ),
-    content: (
-      <div className="h-full w-full flex flex-col gap-4">
-        <h3 className="font-['Outfit'] font-bold text-2xl text-white">System Metrics</h3>
-        <div className="flex-1 grid grid-cols-2 gap-3">
-          <div className="bg-[#111] rounded-xl border border-white/5 p-4 flex flex-col justify-center items-center">
-            <span className="text-[#7fff5e] text-3xl font-mono">99%</span>
-            <span className="text-white/50 text-xs mt-1">UPTIME</span>
-          </div>
-          <div className="bg-[#111] rounded-xl border border-white/5 p-4 flex flex-col justify-center items-center">
-            <span className="text-[#00f0ff] text-3xl font-mono">12ms</span>
-            <span className="text-white/50 text-xs mt-1">LATENCY</span>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: "network",
-    label: "Network",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 20h9" />
-        <path d="M16.5 14h.01" />
-        <path d="M12 14h.01" />
-        <path d="M7.5 14h.01" />
-        <path d="M12 8h.01" />
-        <path d="M3 20h6v-6H3v6z" />
-        <path d="M12 14v6" />
-        <path d="M12 8v6" />
-      </svg>
-    ),
-    content: (
-      <div className="h-full w-full flex flex-col gap-4">
-        <h3 className="font-['Outfit'] font-bold text-2xl text-white">Connectivity Net</h3>
-        <div className="flex-1 bg-[#111] rounded-xl border border-white/5 p-4 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(#ff5c71 1px, transparent 1px)", backgroundSize: "16px 16px" }} />
-          <motion.div
-            animate={{ x: [0, 100, 0], y: [0, 50, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-            className="w-8 h-8 rounded-full bg-[#ff5c71] blur-xl absolute top-1/4 left-1/4"
-          />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: "security",
-    label: "Security",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-      </svg>
-    ),
-    content: (
-      <div className="h-full w-full flex flex-col gap-4">
-        <h3 className="font-['Outfit'] font-bold text-2xl text-white">Access Protection</h3>
-        <div className="flex-1 border border-[#ff5c71]/30 bg-[#ff5c71]/5 rounded-xl flex items-center justify-center p-4">
-          <div className="text-center">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ff5c71" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-2">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
-            <span className="text-[#ff5c71] font-mono text-sm uppercase tracking-widest">All Sessions Secured</span>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: "settings",
-    label: "Settings",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-      </svg>
-    ),
-    content: (
-      <div className="h-full w-full flex flex-col gap-4">
-        <h3 className="font-['Outfit'] font-bold text-2xl text-white">Configuration Settings</h3>
-        <div className="flex-1 bg-[#111] rounded-xl border border-white/5 p-4 flex flex-col gap-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="flex items-center justify-between">
-              <div className="h-2 w-16 bg-white/20 rounded-full" />
-              <div className="w-8 h-4 rounded-full bg-white/10 relative">
-                <div className="absolute right-0 top-0 bottom-0 w-4 bg-[#7fff5e] rounded-full" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
-  },
-];
-
-const MagneticIcon = ({
-  children,
-  isActive,
-  onClick,
-  onHover,
-  accentColor
-}: {
-  children: React.ReactNode;
-  isActive: boolean;
-  onClick: () => void;
-  onHover: () => void;
-  accentColor: string;
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
+export function ShatterOnHoverCard({
+  title = "DEPTH FOCUS",
+  subtitle = "INTERACTIVE SHARDS",
+  revealTitle = "INNER DETAIL",
+  revealText = "PHYSICAL SPRING SEPARATION.",
+  primaryColor = "#ff5c71",
+  accentColor = "#7fff5e",
+  bgColor = "#050505",
+  className = "",
+  style,
+  ...props
+}: ShatterOnHoverCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+  // Parallax / 3D tracking
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
-  const springX = useSpring(x, { stiffness: 150, damping: 15, mass: 0.1 });
-  const springY = useSpring(y, { stiffness: 150, damping: 15, mass: 0.1 });
+  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  const rotateX = useTransform(smoothY, [-0.5, 0.5], [15, -15]);
+  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-15, 15]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    // Calculate distance for magnetic pull
-    const distanceX = e.clientX - centerX;
-    const distanceY = e.clientY - centerY;
-
-    x.set(distanceX * 0.4);
-    y.set(distanceY * 0.4);
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    mouseX.set(x);
+    mouseY.set(y);
   };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    x.set(0);
-    y.set(0);
+    mouseX.set(0);
+    mouseY.set(0);
   };
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    onHover();
-  };
+  // Define shatter pieces (SVG paths or absolute divs)
+  // We'll use absolute positioned polygon divs for distinct shards.
+  const shards = [
+    { clipPath: "polygon(0 0, 50% 0, 30% 50%, 0 40%)", x: -80, y: -60, rot: -25, delay: 0.05 },
+    { clipPath: "polygon(50% 0, 100% 0, 100% 30%, 60% 40%)", x: 90, y: -70, rot: 35, delay: 0.1 },
+    { clipPath: "polygon(100% 30%, 100% 70%, 70% 60%, 60% 40%)", x: 100, y: 10, rot: 15, delay: 0.02 },
+    { clipPath: "polygon(100% 70%, 100% 100%, 50% 100%, 60% 80%, 70% 60%)", x: 80, y: 80, rot: 45, delay: 0.08 },
+    { clipPath: "polygon(50% 100%, 0 100%, 20% 70%, 40% 80%, 60% 80%)", x: -40, y: 90, rot: -20, delay: 0.15 },
+    { clipPath: "polygon(0 100%, 0 40%, 30% 50%, 40% 70%, 20% 70%)", x: -90, y: 40, rot: -40, delay: 0.06 },
+    { clipPath: "polygon(30% 50%, 60% 40%, 70% 60%, 40% 80%, 40% 70%)", x: 10, y: -20, rot: 60, delay: 0.12 }, // Center piece 1
+    { clipPath: "polygon(20% 70%, 40% 70%, 40% 80%)", x: -10, y: 30, rot: -80, delay: 0.04 }, // Center piece 2
+  ];
 
   return (
     <div
-      className="relative p-4 cursor-pointer flex items-center justify-center"
+      ref={containerRef}
       onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      onMouseEnter={handleMouseEnter}
-      onClick={onClick}
-    >
-      <motion.div
-        ref={ref}
-        style={{ x: springX, y: springY }}
-        className="relative z-10 w-10 h-10 flex items-center justify-center transition-colors duration-300"
-        animate={{ color: isActive || isHovered ? accentColor : "rgba(255,255,255,0.4)" }}
-      >
-        {children}
-      </motion.div>
-    </div>
-  );
-};
-
-export function LiquidDimensionalNav({
-  items = DEFAULT_ITEMS,
-  primaryColor = "#7fff5e",
-  accentColor = "#ff5c71",
-  bg = "#050505",
-  borderColor = "rgba(255, 255, 255, 0.05)",
-  className = "",
-  style,
-  ...props
-}: LiquidDimensionalNavProps) {
-  const [activeItem, setActiveItem] = useState<string>(items[0].id);
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(t);
-  }, []);
-
-  if (!mounted) return null;
-
-  const currentHover = hoveredItem || activeItem;
-  const activeContent = items.find((item) => item.id === activeItem)?.content;
-
-  return (
-    <div
-      className={\`relative w-full h-[500px] flex items-center justify-center font-['Outfit'] overflow-hidden \${className}\`}
-      style={{ backgroundColor: bg, ...style }}
+      className={\`relative w-full max-w-[320px] h-[400px] flex items-center justify-center font-['Outfit',sans-serif] perspective-[1200px] \${className}\`}
+      style={{ ...style }}
       {...props}
     >
-      {/* Background Grid */}
-      <div
-        className="absolute inset-0 opacity-[0.07] pointer-events-none"
-        style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "30px 30px" }}
-      />
-
-      {/* Ambient Backplate Glow */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] rounded-full blur-[120px] pointer-events-none opacity-20"
+        className="relative w-full h-full rounded-2xl flex items-center justify-center transform-style-3d"
         style={{
-          background: \`radial-gradient(circle, \${primaryColor} 0%, \${accentColor} 100%)\`
+          rotateX,
+          rotateY,
         }}
-      />
+      >
+        {/* Core (Revealed State) */}
+        <div className="absolute inset-0 rounded-2xl border border-white/10 p-6 flex flex-col items-center justify-center overflow-hidden z-0"
+             style={{ backgroundColor: bgColor }}>
 
-      <div className="relative flex items-center h-full max-h-[400px] scale-[0.82] min-[390px]:scale-[0.9] sm:scale-100 transition-transform duration-300">
-        {/* The Navigation Bar */}
-        <motion.div
-          className="relative z-20 w-20 bg-black/70 backdrop-blur-xl border rounded-[2rem] py-4 flex flex-col items-center justify-between gap-2 shadow-[0_0_40px_rgba(0,0,0,0.8)]"
-          style={{ borderColor: "rgba(255, 255, 255, 0.12)" }}
-          layout
-        >
-          {/* Liquid Indicator */}
-          <div className="absolute inset-y-4 left-0 w-full pointer-events-none flex flex-col items-center gap-2">
-            {items.map((item) => (
-              <div key={\`indicator-\${item.id}\`} className="relative h-[72px] w-full flex items-center justify-center">
-                <AnimatePresence>
-                  {currentHover === item.id && (
-                    <motion.div
-                      layoutId="liquid-blob"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 25,
-                        mass: 1
-                      }}
-                      className="absolute w-12 h-12 rounded-2xl bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)]"
-                    >
-                      {/* Inner glow dot */}
-                      <motion.div
-                        className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-4 rounded-full shadow-[0_0_10px_currentColor]"
-                        style={{ backgroundColor: primaryColor, color: primaryColor }}
-                        layoutId="liquid-dot"
-                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
-          </div>
-
-          {/* Nav Items */}
-          <div className="flex flex-col gap-2 w-full relative z-10" onMouseLeave={() => setHoveredItem(null)}>
-            {items.map((item) => (
-              <MagneticIcon
-                key={item.id}
-                isActive={activeItem === item.id}
-                onHover={() => setHoveredItem(item.id)}
-                onClick={() => setActiveItem(item.id)}
-                accentColor={primaryColor}
-              >
-                {item.icon}
-              </MagneticIcon>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* The Content Panel (3D Peeling) */}
-        <div className="relative z-10 w-[320px] h-[360px] ml-6 perspective-[1000px]">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeItem}
-              initial={{ opacity: 0, rotateY: -30, x: -40, scale: 0.95 }}
-              animate={{ opacity: 1, rotateY: 0, x: 0, scale: 1 }}
-              exit={{ opacity: 0, rotateY: 10, x: 20, scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 200, damping: 20, mass: 0.8 }}
-              className="absolute inset-0 bg-black/80 backdrop-blur-2xl border rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.7)] transform-origin-left overflow-hidden"
-              style={{ borderColor: "rgba(255, 255, 255, 0.12)", transformStyle: "preserve-3d" }}
-            >
-              {/* Decorative top right tech corner */}
-              <div className="absolute top-0 right-0 w-16 h-16 pointer-events-none">
-                <svg viewBox="0 0 100 100" fill="none" className="w-full h-full opacity-20">
-                  <path d="M100 0 L100 100 L0 0 Z" fill="currentColor" />
-                  <line x1="80" y1="10" x2="90" y2="20" stroke="white" strokeWidth="2" />
-                  <line x1="70" y1="20" x2="80" y2="30" stroke="white" strokeWidth="2" />
-                </svg>
-              </div>
-
-              {/* Inner glowing edge */}
-              <div className="absolute inset-0 border border-white/5 rounded-3xl pointer-events-none" />
-              <div
-                className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay"
+          <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-screen"
                 style={{
-                  background: \`linear-gradient(135deg, \${primaryColor} 0%, transparent 50%, \${accentColor} 100%)\`
-                }}
-              />
+                  backgroundImage: \`radial-gradient(circle at 50% 50%, \${primaryColor} 0%, transparent 70%)\`
+                }} />
 
-              <div className="relative z-10 h-full">
-                {activeContent}
-              </div>
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
+            style={{
+               backgroundImage: \`url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")\`,
+            }}
+          />
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ 
+              opacity: isHovered ? 1 : 0,
+              scale: isHovered ? 1 : 0.92,
+            }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="w-full h-full flex flex-col items-center justify-center relative z-10"
+          >
+            {/* Cyber Core Graphic */}
+            <motion.div
+              animate={{
+                scale: isHovered ? [1, 1.05, 1] : 1,
+                opacity: isHovered ? 1 : 0.4
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-24 h-24 rounded-full border-4 flex items-center justify-center mb-6 relative"
+              style={{ borderColor: \`\${primaryColor}50\`, boxShadow: isHovered ? \`0 0 40px \${primaryColor}40\` : 'none' }}
+            >
+               <div className="absolute w-full h-full border-2 border-dashed rounded-full animate-[spin_10s_linear_infinite]" style={{ borderColor: accentColor }} />
+               <div className="w-8 h-8 rounded-full animate-pulse" style={{ backgroundColor: primaryColor, boxShadow: \`0 0 20px \${primaryColor}\` }} />
             </motion.div>
+
+            <h3 className="text-white text-xl font-bold tracking-[0.2em] mb-2 text-center" style={{ textShadow: isHovered ? \`0 0 10px \${primaryColor}\` : 'none' }}>
+              {revealTitle}
+            </h3>
+            <p className="text-white/50 text-xs tracking-widest text-center uppercase max-w-[200px]">
+              {revealText}
+            </p>
+
+            <div className="mt-8 flex gap-4">
+              <div className="px-3 py-1 rounded-full border text-[10px] tracking-widest bg-black/50" style={{ borderColor: primaryColor, color: primaryColor }}>SPRING</div>
+              <div className="px-3 py-1 rounded-full border text-[10px] tracking-widest bg-black/50" style={{ borderColor: accentColor, color: accentColor }}>INTERACTIVE</div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Shatter Shell (Front Layer) */}
+        <div className="absolute inset-0 pointer-events-none z-10 perspective-[1000px]">
+          <AnimatePresence>
+            {shards.map((shard, index) => {
+
+              // Base shell design logic applied to each shard
+              return (
+                <motion.div
+                  key={index}
+                  initial={false}
+                  animate={
+                    isHovered
+                      ? {
+                          x: shard.x * 2.2,
+                          y: shard.y * 2.2 + 260, // Throw outward and drop downwards (gravity fall)
+                          z: 160 + index * 10,
+                          rotateX: shard.rot * 2.2,
+                          rotateY: shard.rot * 2.4,
+                          rotateZ: shard.rot * 2.8,
+                          opacity: 0, // Fade out as shards fall off
+                          scale: 0.5,
+                          filter: "blur(2px)"
+                        }
+                      : {
+                          x: 0,
+                          y: 0,
+                          z: 0,
+                          rotateX: 0,
+                          rotateY: 0,
+                          rotateZ: 0,
+                          opacity: 1,
+                          scale: 1,
+                          filter: "blur(0px)"
+                        }
+                  }
+                  transition={{
+                    type: "spring",
+                    stiffness: 120,
+                    damping: 20,
+                    mass: 0.8,
+                    delay: isHovered ? shard.delay : shard.delay * 0.3,
+                  }}
+                  className="absolute inset-0 w-full h-full transform-style-3d origin-center"
+                  style={{
+                    clipPath: shard.clipPath,
+                  }}
+                >
+                  {/* The actual continuous UI of the front card */}
+                  <div className="w-full h-full bg-white/[0.03] backdrop-blur-xl border border-white/10 flex flex-col items-center justify-between p-8 shadow-2xl relative overflow-hidden"
+                       style={{
+                         background: \`linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)\`,
+                         boxShadow: \`inset 0 0 0 1px rgba(255,255,255,0.1)\`
+                       }}>
+
+                    {/* Glowing Edge on top */}
+                    <div className="absolute top-0 left-0 right-0 h-px w-full" style={{ background: \`linear-gradient(90deg, transparent, \${primaryColor}, transparent)\` }} />
+
+                    {/* Fake Scanline */}
+                    <div className="absolute top-0 left-0 w-full h-1/2 opacity-10 bg-gradient-to-b from-transparent to-white pointer-events-none mix-blend-overlay" />
+
+                    <div className="w-full flex justify-between items-start">
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: accentColor }} />
+                      <span className="text-[10px] tracking-widest text-white/40 font-mono">ID: 809.X</span>
+                    </div>
+
+                    <div className="flex flex-col items-center text-center">
+                      <h2 className="text-2xl font-bold text-white tracking-[0.15em] mb-2">{title}</h2>
+                      <p className="text-white/50 text-xs tracking-widest">{subtitle}</p>
+                    </div>
+
+                    <div className="w-full flex justify-center">
+                      <div className="px-4 py-2 border border-white/20 rounded-md text-white/70 text-[10px] uppercase tracking-widest flex items-center gap-2 bg-black/20">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                        Hover to Disengage
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -5526,13 +5538,13 @@ export function MorphTransition({
       componentPath: "MorphTransition",
     },
   {
-      id: "morphing-cyber-node",
-      slug: "morphing-cyber-node",
+      id: "morphing-control-node",
+      slug: "morphing-control-node",
       title: "Morphing Control Node",
       description: "A multi-state, fluid-morphing interactive widget with magnetic hover physics and dynamic glassmorphism.",
       category: "Widgets",
       tags: ["framer-motion", "Morph", "glassmorphism"],
-      cliCommand: "npx @melonui-dev/cli add morphing-cyber-node",
+      cliCommand: "npx @melonui-dev/cli add morphing-control-node",
       codeSnippet: `"use client";
 
 import React, { useRef, useState, useEffect, useMemo } from "react";
@@ -5540,7 +5552,7 @@ import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from
 
 export type NodeState = "IDLE" | "SCANNING" | "AUDIO" | "ALERT";
 
-export interface MorphingCyberNodeProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface MorphingControlNodeProps extends React.ComponentPropsWithoutRef<"div"> {
   initialState?: NodeState;
   primaryColor?: string;
   secondaryColor?: string;
@@ -5557,7 +5569,7 @@ export interface MorphingCyberNodeProps extends React.ComponentPropsWithoutRef<"
   lockdownText?: string;
 }
 
-export function MorphingCyberNode({
+export function MorphingControlNode({
   initialState = "IDLE",
   primaryColor = "#7fff5e",
   secondaryColor = "#ff5c71",
@@ -5575,7 +5587,7 @@ export function MorphingCyberNode({
   className = "",
   style,
   ...props
-}: MorphingCyberNodeProps) {
+}: MorphingControlNodeProps) {
   const [nodeState, setNodeState] = useState<NodeState>(initialState);
   const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -5839,7 +5851,7 @@ export function MorphingCyberNode({
   );
 }
 `,
-      componentPath: "MorphingCyberNode",
+      componentPath: "MorphingControlNode",
       props: [
         { name: "idleText", type: "string", defaultValue: `"System Ready"`, description: "Label shown in ready/idle state.", control: { type: "text" } },
         { name: "scanningText", type: "string", defaultValue: `"Scanning"`, description: "Status label shown during scanner active state.", control: { type: "text" } },
@@ -6461,8 +6473,8 @@ export function OrbitalCommandRing({
     const customOptions = [
       { id: "home", label: "Home", icon: "≡ƒÅá", color: "#7fff5e", path: "/" },
       { id: "docs", label: "Docs", icon: "≡ƒôû", color: "#00f0ff", path: "/docs/introduction" },
-      { id: "loom", label: "Loom", icon: "≡ƒº╢", color: "#ff5c71", path: "/components/signal-loom" },
-      { id: "bento", label: "Bento", icon: "≡ƒì▒", color: "#ff8c00", path: "/components/hypermorph-bento" }
+      { id: "loom", label: "Loom", icon: "≡ƒº╢", color: "#ff5c71", path: "/components/thread-route-board" },
+      { id: "bento", label: "Bento", icon: "≡ƒì▒", color: "#ff8c00", path: "/components/dynamic-bento-layout" }
     ];
 
     return (
@@ -6477,7 +6489,7 @@ export function OrbitalCommandRing({
     );
   }`,
       props: [
-        { name: "options", type: "CommandItem[]", defaultValue: "DEFAULT_COMMANDS", description: "Array of options mapping radial menu nodes. Link custom pages by setting path properties: e.g. path: '/components/signal-loom'." },
+        { name: "options", type: "CommandItem[]", defaultValue: "DEFAULT_COMMANDS", description: "Array of options mapping radial menu nodes. Link custom pages by setting path properties: e.g. path: '/components/thread-route-board'." },
         { name: "onNavigate", type: "(path: string) => void", defaultValue: "undefined", description: "Optional custom router navigation callback: e.g. (path) => router.push(path). Defers navigation until execution animations play." },
         { name: "title", type: "string", defaultValue: `"Orbital Command Ring"`, description: "Ambient background watermark text.", control: { type: "text" } },
         { name: "eyebrow", type: "string", defaultValue: `"Hold & drag anywhere to summon"`, description: "Action instruction hint displayed under the watermark.", control: { type: "text" } },
@@ -7329,15 +7341,15 @@ export function PrismVault({
       aiPrompt: "Generate a PrismVault component that acts as a 3D cryptographic data vault, expanding into a bento dashboard using framer-motion layout animations, with a magnetic hover effect and glassmorphic styling."
     },
   {
-      id: "quantum-lens-decoder",
-      slug: "quantum-lens-decoder",
+      id: "lens-text-decoder",
+      slug: "lens-text-decoder",
       title: "Lens Text Decoder",
       description: "An interactive code-breaking surface revealing clear text through a cursor-tracking lens.",
       category: "Cards",
       tags: ["framer-motion", "Clip Path", "Scramble"],
-      cliCommand: "npx @melonui-dev/cli add quantum-lens-decoder",
-      codeSnippet: "// See QuantumLensDecoder.tsx",
-      componentPath: "QuantumLensDecoder",
+      cliCommand: "npx @melonui-dev/cli add lens-text-decoder",
+      codeSnippet: "// See LensTextDecoder.tsx",
+      componentPath: "LensTextDecoder",
       props: [
         { name: "title", type: "string", defaultValue: `"TOP SECRET"`, description: "The reveal title header.", control: { type: "text" } },
         { name: "clearText", type: "string", defaultValue: `"PROJECT MELON IS THE FUTURE OF UI. INITIATING PROTOCOL NEON. BYPASSING SECURITY. SYSTEM COMPROMISED. FULL ACCESS GRANTED. PREPARE FOR DEPLOYMENT."`, description: "The underlying decrypted text revealed inside the lens.", control: { type: "text" } },
@@ -8310,39 +8322,39 @@ export function SeedwaveText({
       ],
     },
   {
-      id: "signal-loom",
-      slug: "signal-loom",
+      id: "thread-route-board",
+      slug: "thread-route-board",
       title: "Thread Route Board",
       description: "A transparent pointer-reactive glass command surface where luminous workflow threads bend toward the cursor and layered inspection wafers morph into focus.",
       category: "Cards",
       tags: ["framer-motion", "glassmorphism", "Pointer Physics", "Workflow"],
-      cliCommand: "npx @melonui-dev/cli add signal-loom",
+      cliCommand: "npx @melonui-dev/cli add thread-route-board",
       codeSnippet: `"use client";
 
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion";
 
-export interface SignalLoomMetric {
+export interface ThreadRouteBoardMetric {
   label: string;
   value: string;
 }
 
-export interface SignalLoomThread {
+export interface ThreadRouteBoardThread {
   id: string;
   title: string;
   meta: string;
   value: string;
   color: string;
   copy: string;
-  metrics?: SignalLoomMetric[];
+  metrics?: ThreadRouteBoardMetric[];
 }
 
-export interface SignalLoomProps extends Omit<HTMLMotionProps<"section">, "title"> {
+export interface ThreadRouteBoardProps extends Omit<HTMLMotionProps<"section">, "title"> {
   title?: string;
   eyebrow?: string;
   statusLabel?: string;
   lensLabel?: string;
-  threads?: SignalLoomThread[];
+  threads?: ThreadRouteBoardThread[];
   containerBg?: string;
   cardBgLeft?: string;
   cardBgRight?: string;
@@ -8354,7 +8366,7 @@ export interface SignalLoomProps extends Omit<HTMLMotionProps<"section">, "title
   metricLabel3?: string;
 }
 
-const DEFAULT_THREADS: SignalLoomThread[] = [
+const DEFAULT_THREADS: ThreadRouteBoardThread[] = [
   {
     id: "brief",
     title: "Brief",
@@ -8396,7 +8408,7 @@ const DEFAULT_THREADS: SignalLoomThread[] = [
   },
 ];
 
-export function SignalLoom({
+export function ThreadRouteBoard({
   title = "Route the next best action",
   eyebrow = "Signal Loom",
   statusLabel = "Live sprint",
@@ -8414,7 +8426,7 @@ export function SignalLoom({
   className = "",
   style,
   ...props
-}: SignalLoomProps) {
+}: ThreadRouteBoardProps) {
   const [active, setActive] = useState(1);
   const [hovered, setHovered] = useState<number | null>(null);
   const [logs, setLogs] = useState<string[]>([]);
@@ -8698,14 +8710,14 @@ export function SignalLoom({
   );
 }
 `,
-      componentPath: "SignalLoom",
-      usageCode: `import { SignalLoom } from "@/components/community/demos/SignalLoom";
+      componentPath: "ThreadRouteBoard",
+      usageCode: `import { ThreadRouteBoard } from "@/components/community/demos/ThreadRouteBoard";
 
   export default function Demo() {
     return (
       <div className="w-full">
         {/* Customize the label text below using the eyebrow, title, and lensLabel props */}
-        <SignalLoom 
+        <ThreadRouteBoard 
           eyebrow="Workflow telemetry"
           title="Bespoke Pipeline Controller"
           statusLabel="Active"
@@ -9666,22 +9678,22 @@ export function RindWipeTransition({
       componentPath: "RindWipeTransition",
     },
   {
-      id: "synapse-terminal",
-      slug: "synapse-terminal",
+      id: "interactive-graph-network",
+      slug: "interactive-graph-network",
       title: "Interactive Graph Network",
       description: "A Gen-Z premium interactive graph node UI with animated bezier tethers, glassmorphic floating elements, and a reactive custom cursor. Perfect for data visualization, SaaS dashboards, or cyber-aesthetic landing pages.",
       category: "Widgets",
       tags: ["Graph", "Network", "framer-motion", "Dashboard"],
-      cliCommand: "npx @melonui-dev/cli add synapse-terminal",
-      codeSnippet: "// See SynapseTerminal.tsx",
-      componentPath: "SynapseTerminal",
+      cliCommand: "npx @melonui-dev/cli add interactive-graph-network",
+      codeSnippet: "// See InteractiveGraphNetwork.tsx",
+      componentPath: "InteractiveGraphNetwork",
       scrollable: false,
-      usageCode: `import { SynapseTerminal } from "@/components/community/demos/SynapseTerminal";
+      usageCode: `import { InteractiveGraphNetwork } from "@/components/community/demos/InteractiveGraphNetwork";
 
   export default function MyPage() {
     return (
       <div className="w-full max-w-4xl p-8">
-        <SynapseTerminal />
+        <InteractiveGraphNetwork />
       </div>
     );
   }`,
@@ -10053,13 +10065,13 @@ export function TerminalCursor({
       componentPath: "TerminalCursor",
   },
 {
-      id: "zero-gravity-shards",
-      slug: "zero-gravity-shards",
+      id: "zero-gravity-bento-grid",
+      slug: "zero-gravity-bento-grid",
       title: "Zero-Gravity Bento Grid",
       description: "A highly interactive 'zero gravity' shard interface where glassmorphic cards drift organically using Framer Motion physics, snap to the cursor on hover, and seamlessly morph into full-screen bento grids using layoutId when clicked.",
       category: "Cards",
       tags: ["framer-motion", "morphing", "Layout ID", "Zero Gravity", "Bento"],
-      cliCommand: "npx @melonui-dev/cli add zero-gravity-shards",
+      cliCommand: "npx @melonui-dev/cli add zero-gravity-bento-grid",
       codeSnippet: `"use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -10077,7 +10089,7 @@ export interface ShardData {
   rotation: number;
 }
 
-export interface ZeroGravityShardsProps extends Omit<HTMLMotionProps<"div">, "children"> {
+export interface ZeroGravityBentoGridProps extends Omit<HTMLMotionProps<"div">, "children"> {
   shards?: ShardData[];
   coreLabel?: string;
   coreSublabel?: string;
@@ -10293,14 +10305,14 @@ const ShardNode: React.FC<{
   );
 };
 
-export function ZeroGravityShards({
+export function ZeroGravityBentoGrid({
   shards = DEFAULT_SHARDS,
   coreLabel = "Initialize",
   coreSublabel = "Core Offline",
   glowColor = "#7fff5e",
   className = "",
   ...props
-}: ZeroGravityShardsProps) {
+}: ZeroGravityBentoGridProps) {
   const [activeShard, setActiveShard] = useState<string | null>(null);
   const [isCoreActive, setIsCoreActive] = useState(false);
 
@@ -10471,13 +10483,13 @@ export function ZeroGravityShards({
   );
 }
 `,
-      componentPath: "ZeroGravityShards",
+      componentPath: "ZeroGravityBentoGrid",
       scrollable: false,
-      usageCode: `import { ZeroGravityShards } from "@/components/ZeroGravityShards";
+      usageCode: `import { ZeroGravityBentoGrid } from "@/components/ZeroGravityBentoGrid";
 
 export default function App() {
   return (
-    <ZeroGravityShards
+    <ZeroGravityBentoGrid
       coreLabel="System"
       coreSublabel="Initialize Core"
       glowColor="#ff5c71"
@@ -11130,22 +11142,22 @@ export const SingularityControlNode: React.FC<SingularityControlNodeProps> = ({
       aiPrompt: "Create a singularity control node component that acts as a central magnetic hub. When clicked, it expands via spring physics into a circular array of glassmorphic nodes connected by animated SVG lines. It should have a Gen-Z premium aesthetic with layered depth, noise textures, and smooth Framer Motion animations."
   },
 {
-      id: "tethered-orbital-vault",
-      slug: "tethered-orbital-vault",
+      id: "orbital-key-vault",
+      slug: "orbital-key-vault",
       title: "Orbital Key Vault",
       description: "A highly tactile digital lock where users drag orbiting cryptographic keys into a central core via magnetic tethers, morphing into a futuristic dashboard upon decryption.",
       category: "Widgets",
       tags: ["framer-motion", "drag", "Dashboard"],
-      cliCommand: "npx @melonui-dev/cli add tethered-orbital-vault",
-      codeSnippet: "// See TetheredOrbitalVault.tsx",
-      componentPath: "TetheredOrbitalVault",
+      cliCommand: "npx @melonui-dev/cli add orbital-key-vault",
+      codeSnippet: "// See OrbitalKeyVault.tsx",
+      componentPath: "OrbitalKeyVault",
       scrollable: false,
-      usageCode: `import { TetheredOrbitalVault } from "@/components/community/demos/TetheredOrbitalVault";
+      usageCode: `import { OrbitalKeyVault } from "@/components/community/demos/OrbitalKeyVault";
 
   export default function MyPage() {
     return (
       <div className="w-full max-w-4xl p-8">
-        <TetheredOrbitalVault />
+        <OrbitalKeyVault />
       </div>
     );
   }`,
@@ -11178,19 +11190,19 @@ export const SingularityControlNode: React.FC<SingularityControlNodeProps> = ({
       ]
     },
 {
-      id: "cyber-biometric-scanner",
-      slug: "cyber-biometric-scanner",
+      id: "biometric-touch-scanner",
+      slug: "biometric-touch-scanner",
       title: "Biometric Touch Scanner",
       description: "A highly interactive, press-and-hold biometric scanner featuring dynamic SVG topography, glowing laser sweeps, and glitching cybernetic states.",
       category: "Widgets",
       tags: ["framer-motion", "Biometric", "Scanner"],
-      cliCommand: "npx @melonui-dev/cli add cyber-biometric-scanner",
+      cliCommand: "npx @melonui-dev/cli add biometric-touch-scanner",
       codeSnippet: `"use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useAnimation, PanInfo } from "framer-motion";
 
-export interface TetheredOrbitalVaultProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface OrbitalKeyVaultProps extends React.ComponentPropsWithoutRef<"div"> {
   title?: string;
   lockedSubtitle?: string;
   unlockedSubtitle?: string;
@@ -11200,7 +11212,7 @@ export interface TetheredOrbitalVaultProps extends React.ComponentPropsWithoutRe
   bgColor?: string;
 }
 
-export function TetheredOrbitalVault({
+export function OrbitalKeyVault({
   title = "ORBITAL VAULT",
   lockedSubtitle = "ALIGN KEYS TO CORE",
   unlockedSubtitle = "VAULT SECURED. FULL ACCESS.",
@@ -11211,7 +11223,7 @@ export function TetheredOrbitalVault({
   className = "",
   style,
   ...props
-}: TetheredOrbitalVaultProps) {
+}: OrbitalKeyVaultProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const coreRef = useRef<HTMLDivElement>(null);
 
@@ -11544,18 +11556,18 @@ function DraggableKey({
   );
 }
 `,
-      componentPath: "CyberBiometricScanner",
+      componentPath: "BiometricTouchScanner",
       scrollable: false,
-      usageCode: `import { CyberBiometricScanner } from "@/components/community/demos/CyberBiometricScanner";
+      usageCode: `import { BiometricTouchScanner } from "@/components/community/demos/BiometricTouchScanner";
 
   export default function Demo() {
     return (
       <div className="flex items-center justify-center p-12">
-        <CyberBiometricScanner />
+        <BiometricTouchScanner />
       </div>
     );
   }`,
-      aiPrompt: "Generate a CyberBiometricScanner component that uses framer-motion to create a press-and-hold biometric scanner featuring dynamic SVG topography, glowing laser sweeps, and glitching cybernetic states.",
+      aiPrompt: "Generate a BiometricTouchScanner component that uses framer-motion to create a press-and-hold biometric scanner featuring dynamic SVG topography, glowing laser sweeps, and glitching cybernetic states.",
       props: [
         {
           name: "title",
@@ -11602,19 +11614,19 @@ function DraggableKey({
       ]
     },
 {
-    id: "holo-seal-vault",
-    slug: "holo-seal-vault",
+    id: "tear-security-seal",
+    slug: "tear-security-seal",
     title: "Tear Security Seal",
     description: "A tactile unboxing experience where users physically drag and tear a holographic security seal to reveal encrypted content.",
     category: "Cards",
     tags: ["framer-motion", "physics", "Tactile"],
-    cliCommand: "npx @melonui-dev/cli add holo-seal-vault",
+    cliCommand: "npx @melonui-dev/cli add tear-security-seal",
     codeSnippet: `"use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 
-export interface HoloSealVaultProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface TearSecuritySealProps extends React.ComponentPropsWithoutRef<"div"> {
   vaultTitle?: string;
   vaultDescription?: string;
   sealColor?: string;
@@ -11622,7 +11634,7 @@ export interface HoloSealVaultProps extends React.ComponentPropsWithoutRef<"div"
   contentNode?: React.ReactNode;
 }
 
-export function HoloSealVault({
+export function TearSecuritySeal({
   vaultTitle = "CLASSIFIED_DATA",
   vaultDescription = "ENCRYPTED SECTOR. AUTHORIZATION REQUIRED.",
   sealColor = "#ff5c71",
@@ -11630,7 +11642,7 @@ export function HoloSealVault({
   contentNode,
   className,
   style,
-}: HoloSealVaultProps) {
+}: TearSecuritySealProps) {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -11839,7 +11851,7 @@ export function HoloSealVault({
   );
 }
 `,
-      componentPath: "HoloSealVault",
+      componentPath: "TearSecuritySeal",
     props: [
       {
         name: "vaultTitle",
@@ -11872,21 +11884,21 @@ export function HoloSealVault({
     ]
   },
 {
-    id: "holo-deploy-card",
-    slug: "holo-deploy-card",
+    id: "unfolding-panel-card",
+    slug: "unfolding-panel-card",
     title: "Unfolding Panel Card",
     description: "A highly kinetic, tactile 3D card. On hover, glassmorphic panels deploy outwardly like a satellite or an unfolding sci-fi interface, expanding the interface area.",
     category: "Cards",
     tags: ["framer-motion", "3d"],
-    cliCommand: "npx @melonui-dev/cli add holo-deploy-card",
-    codeSnippet: "// HoloDeployCard.tsx",
-    componentPath: "HoloDeployCard",
-    usageCode: `import { HoloDeployCard } from "@/components/community/demos/HoloDeployCard";
+    cliCommand: "npx @melonui-dev/cli add unfolding-panel-card",
+    codeSnippet: "// UnfoldingPanelCard.tsx",
+    componentPath: "UnfoldingPanelCard",
+    usageCode: `import { UnfoldingPanelCard } from "@/components/community/demos/UnfoldingPanelCard";
 
 export default function Demo() {
   return (
     <div className="w-full py-32 flex justify-center items-center">
-      <HoloDeployCard
+      <UnfoldingPanelCard
         title="MAIN TERMINAL"
         subtitle="HOVER TO INITIALIZE"
       />
@@ -11910,231 +11922,253 @@ export default function Demo() {
     cliCommand: "npx @melonui-dev/cli add tactile-id-card",
     codeSnippet: `"use client";
 
-import React, { useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 
-export interface TactileIDCardProps extends React.ComponentPropsWithoutRef<"div"> {
-  name?: string;
-  role?: string;
-  idNumber?: string;
+export interface UnfoldingPanelCardProps extends React.ComponentPropsWithoutRef<"div"> {
+  title?: string;
+  subtitle?: string;
   primaryColor?: string;
-  accentColor?: string;
-  companyName?: string;
+  secondaryColor?: string;
+  topContent?: React.ReactNode;
+  bottomContent?: React.ReactNode;
+  leftContent?: React.ReactNode;
+  rightContent?: React.ReactNode;
 }
 
-export const TactileIDCard: React.FC<TactileIDCardProps> = ({
-  name = "ALEX CHEN",
-  role = "LEAD ENGINEER",
-  idNumber = "M-99201",
+export function UnfoldingPanelCard({
+  title = "CORE SYSTEM",
+  subtitle = "HOVER TO DEPLOY",
   primaryColor = "#ff5c71",
-  accentColor = "#7fff5e",
-  companyName = "MELON_UI //",
+  secondaryColor = "#7fff5e",
+  topContent,
+  bottomContent,
+  leftContent,
+  rightContent,
   className = "",
   style,
   ...props
-}) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+}: UnfoldingPanelCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
 
-  // Motion values for drag
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  // Smooth springs for physics
-  const springConfig = { damping: 15, stiffness: 120, mass: 1.2 };
-  const springX = useSpring(x, springConfig);
-  const springY = useSpring(y, springConfig);
-
-  // 3D Tilt based on drag offset
-  const rotateX = useTransform(springY, [-300, 300], [25, -25]);
-  const rotateY = useTransform(springX, [-300, 300], [-25, 25]);
-
-  // Lanyard string physics
-  const lanyardPath = useTransform([springX, springY], ([latestX, latestY]) => {
-    const bX = latestX as number;
-    const bY = latestY as number;
-
-    // Top-center anchor point (assuming 600px container, so -300 from center)
-    const startX = 0;
-    const startY = -300;
-
-    // Badge attachment point (top center of the badge)
-    const endX = bX;
-    const endY = bY - 180;
-
-    // Control point for realistic gravity sag
-    const ctrlX = (startX + endX) / 2;
-    // Add extra slack when badge is pulled up
-    const slack = Math.max(0, 150 - Math.abs(endY - startY));
-    const ctrlY = Math.max(startY, endY) + 50 + slack;
-
-    return \`M \${startX} \${startY} Q \${ctrlX} \${ctrlY} \${endX} \${endY}\`;
-  });
+  // Physics for the flaps
+  const springConfig = { type: "spring" as const, stiffness: 180, damping: 15, mass: 1 };
 
   return (
     <div
-      ref={containerRef}
-      className={\`relative w-full h-[600px] bg-[#050505] overflow-hidden flex items-center justify-center [perspective:1200px] \${className}\`}
-      style={style}
+      className={\`relative flex items-center justify-center \${className}\`}
+      style={{
+        perspective: "1200px",
+        ...style,
+      }}
       {...props}
     >
-      {/* Background Subtle Grid */}
       <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: \`linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)\`,
-          backgroundSize: "40px 40px"
-        }}
-      />
-
-      {/* Floating Ambience Particles (Deterministic) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: (i % 3 + 1) * 3 + 'px',
-              height: (i % 3 + 1) * 3 + 'px',
-              backgroundColor: i % 2 === 0 ? primaryColor : accentColor,
-              left: \`\${15 + (i * 17)}%\`,
-              top: \`\${20 + (i * 13)}%\`,
-              opacity: 0.3,
-              filter: "blur(2px)"
-            }}
-            animate={{
-              y: [0, -30, 0],
-              opacity: [0.1, 0.5, 0.1]
-            }}
-            transition={{
-              duration: 4 + (i % 3),
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.5
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Dynamic Lanyard SVG (Centered origin) */}
-      <div className="absolute top-1/2 left-1/2 w-0 h-0 z-0 pointer-events-none">
-        <svg className="overflow-visible w-0 h-0 pointer-events-none">
-          <motion.path
-            d={lanyardPath}
-            fill="none"
-            stroke="url(#lanyard-gradient)"
-            strokeWidth="8"
-            strokeLinecap="round"
-            style={{ filter: "drop-shadow(0px 10px 10px rgba(0,0,0,0.5))" }}
-          />
-          <defs>
-            <linearGradient id="lanyard-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#111" />
-              <stop offset="100%" stopColor={primaryColor} />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-
-      {/* The Badge */}
-      <motion.div
-        style={{
-          x,
-          y,
-          rotateX,
-          rotateY,
-          transformStyle: "preserve-3d"
-        }}
-        drag
-        dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-        dragElastic={0.4}
-        whileHover={{ scale: 1.02 }}
-        whileDrag={{ scale: 1.05, cursor: "grabbing" }}
-        className="relative z-10 w-[260px] h-[360px] cursor-grab"
+        className="relative z-10 w-48 h-48 sm:w-64 sm:h-64 cursor-pointer"
+        style={{ transformStyle: "preserve-3d" }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onTouchStart={() => setIsHovered((prev) => !prev)}
       >
-        {/* Badge Glass Body */}
-        <div className="absolute inset-0 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/10 overflow-hidden shadow-2xl flex flex-col">
-
-          {/* Subtle noise texture */}
-          <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-
-          {/* Top Metallic Clip Section */}
-          <div className="h-16 w-full border-b border-white/10 bg-white/[0.02] relative flex items-center justify-center">
-            {/* The Hole for Lanyard */}
-            <div className="w-14 h-3 rounded-full bg-black/60 shadow-inner border border-white/5 absolute top-3" />
-            <div className="mt-6 font-mono text-[10px] text-white/30 tracking-[0.2em]">{companyName}</div>
-          </div>
-
-          {/* Holographic Element */}
-          <div className="absolute top-20 right-5 w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/40 overflow-hidden shadow-inner">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-              className="w-full h-full"
-              style={{
-                background: \`conic-gradient(from 0deg, transparent 0%, \${accentColor} 50%, transparent 100%)\`,
-                opacity: 0.8
-              }}
-            />
-            <div className="absolute inset-[2px] rounded-full bg-[#111] flex items-center justify-center shadow-inner border border-white/5">
-              <div className="w-3 h-3 rounded-full bg-white/20 animate-pulse" />
-            </div>
-          </div>
-
-          {/* Profile Section */}
-          <div className="px-6 pt-6 flex-1 flex flex-col justify-end pb-6 relative z-10">
-            {/* Avatar Mock */}
-            <div className="w-20 h-20 rounded-2xl mb-4 bg-gradient-to-br from-white/10 to-transparent border border-white/10 p-1 backdrop-blur-md shadow-lg">
-              <div className="w-full h-full rounded-xl bg-[#0a0a0a] overflow-hidden relative flex items-end justify-center">
-                <div className="absolute inset-0 opacity-30" style={{ background: \`linear-gradient(135deg, \${primaryColor}, \${accentColor})\` }} />
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-16 h-16 text-white/60 translate-y-3">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-            </div>
-
-            <div className="space-y-1 mb-6">
-              <h2 className="font-['Outfit'] text-2xl font-bold text-white tracking-tight uppercase leading-none drop-shadow-md">{name}</h2>
-              <p className="font-mono text-[10px] text-white/60 tracking-wider" style={{ color: primaryColor }}>{role}</p>
-            </div>
-
-            <div className="pt-4 border-t border-white/10 flex justify-between items-end">
-              <div>
-                <p className="font-mono text-[8px] text-white/40 mb-1">ID NO.</p>
-                <p className="font-mono text-xs text-white/80">{idNumber}</p>
-              </div>
-
-              {/* Barcode Mock */}
-              <div className="flex gap-[2px] h-6 opacity-50">
-                {[2,1,3,1,1,2,3,1,2,1].map((w, i) => (
-                  <div key={i} className="bg-white h-full rounded-sm" style={{ width: \`\${w * 2}px\` }} />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Edge LED Strip */}
-          <div className="h-[3px] w-full mt-auto" style={{ background: \`linear-gradient(90deg, \${primaryColor}, \${accentColor})\`, boxShadow: \`0 -5px 15px \${primaryColor}40\` }} />
-        </div>
-
-        {/* 3D Glare Overlay Effect */}
+        {/* CENTER CARD */}
         <motion.div
-          className="absolute inset-0 rounded-3xl pointer-events-none mix-blend-overlay"
-          style={{
-            background: useTransform(
-              [springX, springY],
-              ([x, y]) => {
-                // Normalize position relative to drag bounds
-                const posX = ((x as number) + 300) / 600 * 100;
-                const posY = ((y as number) + 300) / 600 * 100;
-                return \`radial-gradient(circle at \${posX}% \${posY}%, rgba(255,255,255,0.4) 0%, transparent 50%)\`;
-              }
-            )
+          className="absolute inset-0 z-20 flex flex-col items-center justify-center rounded-xl overflow-hidden border border-white/10 backdrop-blur-md shadow-2xl bg-black/60"
+          animate={{
+            translateZ: isHovered ? 40 : 0,
+            boxShadow: isHovered
+              ? \`0 20px 40px -10px \${primaryColor}40, 0 0 20px -5px \${secondaryColor}30\`
+              : "0 10px 30px -10px rgba(0,0,0,0.5)",
           }}
-        />
-      </motion.div>
+          transition={{ ...springConfig, delay: 0 }}
+        >
+          {/* Noise layer */}
+          <div
+            className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            style={{
+              backgroundImage: \`url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")\`,
+            }}
+          />
+          <motion.div
+            className="text-center p-4 relative z-10"
+            animate={{ scale: isHovered ? 1.05 : 1 }}
+            transition={springConfig}
+          >
+            <div
+              className="text-2xl font-black mb-1 uppercase tracking-widest"
+              style={{
+                background: \`linear-gradient(135deg, \${primaryColor}, \${secondaryColor})\`,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              {title}
+            </div>
+            <div className="text-[10px] font-mono tracking-widest text-white/50 uppercase">
+              {subtitle}
+            </div>
+          </motion.div>
+          {/* Animated glow orb inside center */}
+          <motion.div
+            className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full blur-[40px] opacity-30 pointer-events-none"
+            style={{ backgroundColor: primaryColor }}
+            animate={{
+              scale: isHovered ? 1.5 : 1,
+              opacity: isHovered ? 0.5 : 0.3,
+            }}
+            transition={{ ...springConfig, delay: 0.1 }}
+          />
+        </motion.div>
+
+        {/* TOP FLAP */}
+        <motion.div
+          className="absolute left-0 right-0 h-40 sm:h-48 origin-bottom flex items-center justify-center p-4 rounded-t-xl border border-white/10 backdrop-blur-md bg-black/80 overflow-hidden"
+          style={{
+            bottom: "100%",
+            transformStyle: "preserve-3d",
+            borderColor: \`\${primaryColor}60\`,
+            borderBottom: "none",
+          }}
+          initial={{ rotateX: -90, opacity: 0 }}
+          animate={{
+            rotateX: isHovered ? 0 : -90,
+            opacity: isHovered ? 1 : 0,
+          }}
+          transition={{ ...springConfig, delay: isHovered ? 0.1 : 0.3 }}
+        >
+          {/* Glass noise */}
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E')]" />
+          <div className="relative z-10 w-full h-full text-white/80 font-mono text-xs flex flex-col justify-end pb-2">
+            {topContent || (
+              <div className="flex flex-col gap-2 opacity-80">
+                <div className="text-[10px] text-white/40 mb-1 border-b border-white/10 pb-1">UPLINK_DATA</div>
+                <div className="flex justify-between"><span>PACKETS</span> <span style={{ color: primaryColor }}>9,214</span></div>
+                <div className="flex justify-between"><span>LATENCY</span> <span style={{ color: secondaryColor }}>12ms</span></div>
+                <div className="flex justify-between"><span>NODE_ID</span> <span>0x8F21</span></div>
+              </div>
+            )}
+          </div>
+          {/* Hinge Line */}
+          <div className="absolute bottom-0 left-4 right-4 h-[1px]" style={{ background: \`linear-gradient(90deg, transparent, \${primaryColor}, transparent)\` }} />
+        </motion.div>
+
+        {/* BOTTOM FLAP */}
+        <motion.div
+          className="absolute left-0 right-0 h-40 sm:h-48 origin-top flex items-center justify-center p-4 rounded-b-xl border border-white/10 backdrop-blur-md bg-black/80 overflow-hidden"
+          style={{
+            top: "100%",
+            transformStyle: "preserve-3d",
+            borderColor: \`\${secondaryColor}60\`,
+            borderTop: "none",
+          }}
+          initial={{ rotateX: 90, opacity: 0 }}
+          animate={{
+            rotateX: isHovered ? 0 : 90,
+            opacity: isHovered ? 1 : 0,
+          }}
+          transition={{ ...springConfig, delay: isHovered ? 0.2 : 0.2 }}
+        >
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E')]" />
+          <div className="relative z-10 w-full h-full text-white/80 font-mono text-xs flex flex-col pt-2">
+            {bottomContent || (
+              <div className="flex flex-col gap-2 opacity-80 h-full">
+                <div className="text-[10px] text-white/40 mb-1 border-b border-white/10 pb-1">TERMINAL_OUTPUT</div>
+                <div className="text-[10px] text-white/50 leading-relaxed font-mono">
+                  &gt; Establishing secure connection... <br/>
+                  &gt; Bypassing firewall protocols... <br/>
+                  &gt; <span style={{ color: secondaryColor }}>Access granted.</span> <br/>
+                  <span className="animate-pulse">_</span>
+                </div>
+              </div>
+            )}
+          </div>
+          {/* Hinge Line */}
+          <div className="absolute top-0 left-4 right-4 h-[1px]" style={{ background: \`linear-gradient(90deg, transparent, \${secondaryColor}, transparent)\` }} />
+        </motion.div>
+
+        {/* LEFT FLAP */}
+        <motion.div
+          className="absolute top-0 bottom-0 w-32 sm:w-40 origin-right flex items-center justify-center p-4 rounded-l-xl border border-white/10 backdrop-blur-md bg-black/80 overflow-hidden"
+          style={{
+            right: "100%",
+            transformStyle: "preserve-3d",
+            borderRight: "none",
+          }}
+          initial={{ rotateY: 90, opacity: 0 }}
+          animate={{
+            rotateY: isHovered ? 0 : 90,
+            opacity: isHovered ? 1 : 0,
+          }}
+          transition={{ ...springConfig, delay: isHovered ? 0.3 : 0.1 }}
+        >
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E')]" />
+          <div className="relative z-10 w-full h-full text-white/80 font-mono flex flex-col justify-between items-end pr-2 opacity-80">
+            {leftContent || (
+              <>
+                <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden flex justify-end">
+                  <div className="h-full bg-white w-1/3" />
+                </div>
+                <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden flex justify-end">
+                  <div className="h-full w-2/3" style={{ backgroundColor: primaryColor }} />
+                </div>
+                <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden flex justify-end">
+                  <div className="h-full w-1/2" style={{ backgroundColor: secondaryColor }} />
+                </div>
+                <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden flex justify-end">
+                  <div className="h-full w-5/6 bg-white/30" />
+                </div>
+                <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden flex justify-end">
+                  <div className="h-full w-1/4 bg-white/50" />
+                </div>
+              </>
+            )}
+          </div>
+          {/* Hinge Line */}
+          <div className="absolute top-4 bottom-4 right-0 w-[1px]" style={{ background: \`linear-gradient(180deg, transparent, rgba(255,255,255,0.3), transparent)\` }} />
+        </motion.div>
+
+        {/* RIGHT FLAP */}
+        <motion.div
+          className="absolute top-0 bottom-0 w-32 sm:w-40 origin-left flex items-center justify-center p-4 rounded-r-xl border border-white/10 backdrop-blur-md bg-black/80 overflow-hidden"
+          style={{
+            left: "100%",
+            transformStyle: "preserve-3d",
+            borderLeft: "none",
+          }}
+          initial={{ rotateY: -90, opacity: 0 }}
+          animate={{
+            rotateY: isHovered ? 0 : -90,
+            opacity: isHovered ? 1 : 0,
+          }}
+          transition={{ ...springConfig, delay: isHovered ? 0.4 : 0 }}
+        >
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E')]" />
+          <div className="relative z-10 w-full h-full text-white/80 font-mono flex flex-col justify-between pl-2 opacity-80">
+            {rightContent || (
+              <>
+                <div className="text-[10px] text-right text-white/40">SYSTEMS</div>
+                <div className="flex gap-2 items-center">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: secondaryColor }} /> <span className="text-xs">PWR</span>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <div className="w-2 h-2 rounded-full bg-white" /> <span className="text-xs">NET</span>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: primaryColor }} /> <span className="text-xs">SEC</span>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <div className="w-2 h-2 rounded-full bg-white/20" /> <span className="text-xs text-white/40">AUX</span>
+                </div>
+              </>
+            )}
+          </div>
+          {/* Hinge Line */}
+          <div className="absolute top-4 bottom-4 left-0 w-[1px]" style={{ background: \`linear-gradient(180deg, transparent, rgba(255,255,255,0.3), transparent)\` }} />
+        </motion.div>
+
+      </div>
     </div>
   );
-};
+}
 `,
       componentPath: "TactileIDCard",
     scrollable: false,
@@ -12471,19 +12505,19 @@ export default function Demo() {
       ]
     },
 {
-      id: "kinetic-swing-tag",
-      slug: "kinetic-swing-tag",
+      id: "interactive-swing-tag",
+      slug: "interactive-swing-tag",
       title: "Interactive Swing Tag",
       description: "A Gen-Z digital streetwear fashion tag with realistic string physics, draggable swinging motion, and holographic glare.",
       category: "Cards",
       tags: ["framer-motion", "physics"],
-      cliCommand: "npx @melonui-dev/cli add kinetic-swing-tag",
+      cliCommand: "npx @melonui-dev/cli add interactive-swing-tag",
       codeSnippet: `"use client";
 
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform, useVelocity, useAnimationFrame } from "framer-motion";
 
-export interface KineticSwingTagProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface InteractiveSwingTagProps extends React.ComponentPropsWithoutRef<"div"> {
   tagWidth?: number;
   tagHeight?: number;
   primaryColor?: string;
@@ -12492,7 +12526,7 @@ export interface KineticSwingTagProps extends React.ComponentPropsWithoutRef<"di
   seriesText?: string;
 }
 
-export function KineticSwingTag({
+export function InteractiveSwingTag({
   tagWidth = 260,
   tagHeight = 400,
   primaryColor = "#ff5c71",
@@ -12502,7 +12536,7 @@ export function KineticSwingTag({
   className = "",
   style,
   ...props
-}: KineticSwingTagProps) {
+}: InteractiveSwingTagProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
 
@@ -12622,8 +12656,8 @@ export function KineticSwingTag({
         dragMomentum={true}
         dragTransition={{ bounceStiffness: 200, bounceDamping: 20 }}
         style={{
-          x: springX,
-          y: springY,
+          x,
+          y,
           rotateZ: smoothRotateZ,
           cursor: "grab",
           touchAction: "none"
@@ -12743,7 +12777,7 @@ export function KineticSwingTag({
   );
 }
 `,
-      componentPath: "KineticSwingTag",
+      componentPath: "InteractiveSwingTag",
       props: [
         { name: "primaryColor", type: "string", defaultValue: `"#ff5c71"`, description: "Left accent gradient color.", control: { type: "color" } },
         { name: "secondaryColor", type: "string", defaultValue: `"#7fff5e"`, description: "Right accent gradient color.", control: { type: "color" } },
@@ -12752,20 +12786,20 @@ export function KineticSwingTag({
       ]
     },
 {
-    id: "void-portal-reveal",
-    slug: "void-portal-reveal",
+    id: "3d-portal-reveal",
+    slug: "3d-portal-reveal",
     title: "3D Portal Reveal",
     description: "A highly interactive, gyroscopic 3D ring portal that massively scales on hover to simulate flying through, revealing a glassmorphic hidden dashboard or UI beneath.",
     category: "Backgrounds",
     tags: ["portal", "3d", "reveal", "glassmorphism", "framer-motion"],
-    cliCommand: "npx @melonui-dev/cli add void-portal-reveal",
-    componentPath: "VoidPortalReveal",
+    cliCommand: "npx @melonui-dev/cli add 3d-portal-reveal",
+    componentPath: "ThreeDPortalReveal",
     codeSnippet: `"use client";
 
 import React, { useState, useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 
-export interface VoidPortalRevealProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface ThreeDPortalRevealProps extends React.ComponentPropsWithoutRef<"div"> {
   portalText?: string;
   primaryColor?: string;
   secondaryColor?: string;
@@ -12773,7 +12807,7 @@ export interface VoidPortalRevealProps extends React.ComponentPropsWithoutRef<"d
   revealedContent?: React.ReactNode;
 }
 
-export function VoidPortalReveal({
+export function ThreeDPortalReveal({
   portalText = "ENTER THE VOID",
   primaryColor = "#ff5c71",
   secondaryColor = "#7fff5e",
@@ -12782,7 +12816,7 @@ export function VoidPortalReveal({
   className = "",
   style,
   ...props
-}: VoidPortalRevealProps) {
+}: ThreeDPortalRevealProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -13073,14 +13107,14 @@ export function VoidPortalReveal({
     ]
   },
 {
-    id: "holo-hexagon-map",
-    slug: "holo-hexagon-map",
+    id: "hexagon-status-grid",
+    slug: "hexagon-status-grid",
     title: "Hexagon Status Grid",
     description: "A 3D interactive, glassmorphic hexagon grid with magnetic hover and status nodes.",
     category: "Widgets",
     tags: ["hex", "grid", "3d", "map", "nodes", "dashboard"],
-    componentPath: "HoloHexagonMap",
-    cliCommand: "npx melonui add HoloHexagonMap",
+    componentPath: "HexagonStatusGrid",
+    cliCommand: "npx melonui add HexagonStatusGrid",
     codeSnippet: `"use client";
 
 import React, { useRef, useState, useEffect } from "react";
@@ -13095,7 +13129,7 @@ export interface HexNode {
   status?: "online" | "offline" | "warning";
 }
 
-export interface HoloHexagonMapProps extends React.ComponentPropsWithoutRef<"div"> {
+export interface HexagonStatusGridProps extends React.ComponentPropsWithoutRef<"div"> {
   nodes?: HexNode[];
   rows?: number;
   cols?: number;
@@ -13109,7 +13143,7 @@ export interface HoloHexagonMapProps extends React.ComponentPropsWithoutRef<"div
 
 const SQRT3 = Math.sqrt(3);
 
-export function HoloHexagonMap({
+export function HexagonStatusGrid({
   nodes = [
     { id: "core", row: 2, col: 2, title: "CORE", status: "online" },
     { id: "db", row: 1, col: 3, title: "DB_01", status: "online" },
@@ -13128,7 +13162,7 @@ export function HoloHexagonMap({
   style,
   onNodeClick,
   ...props
-}: HoloHexagonMapProps) {
+}: HexagonStatusGridProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);

@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { SeedBurstButton } from "../community/demos/SeedBurstButton";
 import { InfinityMirrorCard } from "../community/demos/InfinityMirrorCard";
-import { HoloTicket } from "../community/demos/HoloTicket";
+import { TicketCard } from "../community/demos/TicketCard";
 import { MagneticNav } from "../community/demos/MagneticNav";
 
 const DROPS = [
   { name: "Seed Burst", type: "particles / canvas", href: "/components/burst-button", color: "#ff5c71", id: "burst" },
   { name: "Infinity Mirror", type: "3d depth illusion", href: "/components/infinity-mirror-card", color: "#7fff5e", id: "mirror" },
-  { name: "Holo Ticket", type: "shimmer & 3d tilt", href: "/components/holo-ticket", color: "#ff5c71", id: "ticket" },
+  { name: "Ticket Card", type: "shimmer & 3d tilt", href: "/components/ticket-card", color: "#ff5c71", id: "ticket" },
   { name: "Magnet Dock", type: "gsap magnetic icon", href: "/components/magnetic-nav", color: "#e0f2dc", id: "dock" },
 ] as const;
 
@@ -40,7 +40,7 @@ function RealPreview({ id }: { id: string }) {
   if (id === "ticket") {
     return (
       <div className="relative flex items-center justify-center p-2 scale-[0.7] sm:scale-[0.8] md:scale-90 xl:scale-95">
-        <HoloTicket 
+        <TicketCard 
           topTitle={<>Melon<br/>UI</>}
           topSubtitle="PREMIUM CORE"
           bottomText="Unlock Access"
