@@ -21,19 +21,19 @@ export interface SynapseTerminalProps {
 }
 
 const DEFAULT_NODES: SynapseNode[] = [
-  { id: "core", label: "CORE_PROCESS", x: 50, y: 50, color: "#ff5c71", connections: ["data", "net", "sys"] },
-  { id: "data", label: "DATA_STREAM", x: 20, y: 80, color: "#7fff5e", connections: ["auth"] },
-  { id: "auth", label: "AUTH_MATRIX", x: 80, y: 20, color: "#00f0ff", connections: ["sys"] },
-  { id: "sys", label: "SYS_KERNEL", x: 80, y: 80, color: "#b026ff", connections: ["core"] },
-  { id: "net", label: "NET_PROTOCOL", x: 20, y: 20, color: "#ffb800", connections: ["auth"] },
+  { id: "core", label: "Core Router", x: 50, y: 50, color: "#ff5c71", connections: ["data", "net", "sys"] },
+  { id: "data", label: "Data Gateway", x: 20, y: 80, color: "#7fff5e", connections: ["auth"] },
+  { id: "auth", label: "Auth Manager", x: 80, y: 20, color: "#00f0ff", connections: ["sys"] },
+  { id: "sys", label: "System Monitor", x: 80, y: 80, color: "#b026ff", connections: ["core"] },
+  { id: "net", label: "Network Policy", x: 20, y: 20, color: "#ffb800", connections: ["auth"] },
 ];
 
 export const SynapseTerminal: React.FC<SynapseTerminalProps> = ({
   nodes = DEFAULT_NODES,
   containerBg = "#050505",
   accentColor = "#ff5c71",
-  title = "SYNAPSE_TERMINAL",
-  subtitle = "SYSTEM STATUS: ONLINE",
+  title = "SYNAPSE TERMINAL",
+  subtitle = "SERVICE STATUS: ACTIVE",
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });

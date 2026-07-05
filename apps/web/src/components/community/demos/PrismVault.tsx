@@ -21,18 +21,18 @@ export interface PrismVaultProps extends HTMLMotionProps<"div"> {
 }
 
 const DEFAULT_VAULT_ITEMS = [
-  { title: "Quantum Key", value: "Qz-892A", icon: "🔑" },
-  { title: "Neuro-Hash", value: "0x7F...A1B", icon: "🧠" },
-  { title: "Void Credits", value: "9,431.00", icon: "💎" },
-  { title: "Sector", value: "Alpha-7", icon: "🪐" },
+  { title: "Access Key", value: "K-892A", icon: "🔑" },
+  { title: "Verification Hash", value: "0x7F...A1B", icon: "🧠" },
+  { title: "Account Balance", value: "9,430.00", icon: "💎" },
+  { title: "Region", value: "East-1", icon: "🪐" },
 ];
 
 export function PrismVault({
   primaryColor = "#ff5c71",
   secondaryColor = "#7fff5e",
   glowColor = "rgba(255, 92, 113, 0.4)",
-  title = "SECURE PRISM VAULT",
-  description = "AWAITING DECRYPTION SEQUENCE...",
+  title = "SECURE DATA STORAGE",
+  description = "AWAITING ACCESS SEQUENCE...",
   vaultItems = DEFAULT_VAULT_ITEMS,
   className = "",
   style,
@@ -178,18 +178,34 @@ export function PrismVault({
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                     >
-                      <p className="text-sm text-gray-400 font-mono mb-4">
-                        {description}
-                      </p>
-                      <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
-                        <motion.div
-                          className="h-full rounded-full"
-                          style={{ backgroundColor: primaryColor }}
-                          animate={{ width: ["0%", "100%", "0%"] }}
-                          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                        />
-                      </div>
-                    </motion.div>
+                       <div className="w-full flex justify-center items-center py-4 h-24 relative overflow-visible my-3">
+                         <div className="absolute w-20 h-20 rounded-full blur-2xl opacity-40 bg-[radial-gradient(circle,_#ff5c71_0%,_transparent_70%)] animate-pulse" />
+                         <svg width="72" height="72" viewBox="0 0 100 100" className="relative z-10 overflow-visible">
+                           <motion.g
+                             animate={{ rotateY: 360, rotateX: [15, 25, 15] }}
+                             transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
+                             style={{ originX: "50px", originY: "50px", transformStyle: "preserve-3d" }}
+                           >
+                             <polygon points="50,15 20,70 50,85" fill="none" stroke={primaryColor} strokeWidth="1" opacity="0.8" />
+                             <polygon points="50,15 50,85 80,70" fill="none" stroke={primaryColor} strokeWidth="1" opacity="0.6" strokeDasharray="2,2" />
+                             <line x1="20" y1="70" x2="80" y2="70" stroke={primaryColor} strokeWidth="0.5" opacity="0.4" />
+                             <circle cx="50" cy="56" r="4" fill={secondaryColor} opacity="0.9" className="animate-ping" style={{ transformOrigin: "50px 56px" }} />
+                             <circle cx="50" cy="56" r="3" fill={secondaryColor} />
+                           </motion.g>
+                         </svg>
+                       </div>
+                       <p className="text-[10px] text-gray-400 font-mono mb-3 tracking-wider text-center uppercase">
+                         {description}
+                       </p>
+                       <div className="h-[2px] w-full bg-white/10 rounded-full overflow-hidden">
+                         <motion.div
+                           className="h-full rounded-full"
+                           style={{ backgroundColor: primaryColor }}
+                           animate={{ width: ["0%", "100%", "0%"] }}
+                           transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                         />
+                       </div>
+                     </motion.div>
                   ) : (
                     <motion.div
                       key="expanded-content"
@@ -201,7 +217,7 @@ export function PrismVault({
                     >
                        <div className="p-4 bg-white/5 rounded-xl border border-white/10">
                           <p className="text-xs text-gray-400 font-mono mb-1">STATUS</p>
-                          <p className="text-sm text-white font-bold" style={{ color: secondaryColor }}>ONLINE</p>
+                          <p className="text-sm text-white font-bold" style={{ color: secondaryColor }}>AUTHORIZED</p>
                        </div>
                        <div className="p-4 bg-white/5 rounded-xl border border-white/10">
                           <p className="text-xs text-gray-400 font-mono mb-1">ENCRYPTION</p>

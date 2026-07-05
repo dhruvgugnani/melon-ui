@@ -64,6 +64,7 @@ const componentsMap: Record<string, React.ComponentType<any>> = {
   SynapseTerminal: dynamic(() => import('@/components/community/demos/SynapseTerminal').then(m => m.SynapseTerminal), { ssr: false }),
   TagInput: dynamic(() => import('@/components/community/demos/TagInput').then(m => m.TagInput), { ssr: false }),
   VineInput: dynamic(() => import('@/components/community/demos/VineInput').then(m => m.VineInput), { ssr: false }),
+  TerminalCursor: dynamic(() => import('@/components/community/demos/TerminalCursor').then(m => m.TerminalCursor), { ssr: false }),
 };
 
 // Beautiful custom preview placeholders for the cards (to avoid heavy WebGL contexts)
@@ -412,7 +413,7 @@ export default function ComponentsIndexPage() {
             // Determine preview theme color based on category
             const color = comp.category === "Buttons" 
               ? "#ff5c71" 
-              : comp.category === "Navigations" 
+              : comp.category === "Navigation" 
                 ? "#e0f2dc" 
                 : comp.category === "Cards" 
                   ? "#7fff5e" 

@@ -1107,5 +1107,26 @@
       "Interactive"
     ],
     "preview": "/preview/prism-vault.png"
+  },
+  "terminal-cursor": {
+    "name": "Terminal Cursor",
+    "description": "A precision spring-velocity cursor containing crosshair ticks and vector neon glow.",
+    "category": "Cursors",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "terminal-cursor.tsx",
+        "path": "components/terminal-cursor.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Spring",
+      "Cursor",
+      "Precision"
+    ],
+    "preview": "/preview/terminal-cursor.png"
   }
 }

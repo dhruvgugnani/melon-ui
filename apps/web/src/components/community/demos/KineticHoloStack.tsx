@@ -21,10 +21,10 @@ export interface KineticHoloStackProps extends React.ComponentPropsWithoutRef<"d
 }
 
 const DEFAULT_LAYERS: StackLayer[] = [
-  { id: "L1", title: "Glass Casing", type: "glass" },
-  { id: "L2", title: "Neural Matrix", type: "grid", color: "#7fff5e" },
-  { id: "L3", title: "Logic Circuit", type: "circuit", color: "#ff5c71" },
-  { id: "L4", title: "Core Projection", type: "hologram", color: "#00f0ff" }
+  { id: "L1", title: "Visual Casing", type: "glass" },
+  { id: "L2", title: "Grid Layer", type: "grid", color: "#7fff5e" },
+  { id: "L3", title: "Vector Wireframe", type: "circuit", color: "#ff5c71" },
+  { id: "L4", title: "Accent Depth", type: "hologram", color: "#00f0ff" }
 ];
 
 export const KineticHoloStack = React.forwardRef<HTMLDivElement, KineticHoloStackProps>(
@@ -44,38 +44,24 @@ export const KineticHoloStack = React.forwardRef<HTMLDivElement, KineticHoloStac
     const internalRef = useRef<HTMLDivElement>(null);
     const ref = (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
     const [isHovered, setIsHovered] = useState(false);
-
-    // Mouse tracking for tilt
-    const mouseX = useMotionValue(0.5);
-    const mouseY = useMotionValue(0.5);
-
-    // Smooth spring physics for tilt
-    const springX = useSpring(mouseX, { damping: 20, stiffness: 100, mass: 0.5 });
-    const springY = useSpring(mouseY, { damping: 20, stiffness: 100, mass: 0.5 });
-
-    // 2D to 3D Transform Map
-    const rotateX = useTransform(springY, [0, 1], [isHovered ? 25 : 5, isHovered ? -25 : -5]);
-    const rotateY = useTransform(springX, [0, 1], [isHovered ? -25 : -5, isHovered ? 25 : 5]);
-    const rotateZ = useTransform(springX, [0, 1], [isHovered ? -10 : 0, isHovered ? 10 : 0]);
-
-    // Overall Isometric transform when hovered
-    const isoRotateX = useSpring(isHovered ? 60 : 0, { damping: 25, stiffness: 120 });
-    const isoRotateZ = useSpring(isHovered ? -45 : 0, { damping: 25, stiffness: 120 });
+    const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
       if (!ref.current) return;
       const rect = ref.current.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width;
       const y = (e.clientY - rect.top) / rect.height;
-      mouseX.set(x);
-      mouseY.set(y);
+      setMousePos({ x, y });
     };
 
     const handleMouseLeave = () => {
       setIsHovered(false);
-      mouseX.set(0.5);
-      mouseY.set(0.5);
+      setMousePos({ x: 0.5, y: 0.5 });
     };
+
+    const rotateXVal = isHovered ? 60 : (mousePos.y - 0.5) * -30;
+    const rotateYVal = isHovered ? 0 : (mousePos.x - 0.5) * 30;
+    const rotateZVal = isHovered ? -45 : 0;
 
     // Layer styles
     const renderLayerContent = (layer: StackLayer, index: number) => {
@@ -147,7 +133,7 @@ export const KineticHoloStack = React.forwardRef<HTMLDivElement, KineticHoloStac
                   animate={{ opacity: 1, x: 0 }}
                   className="font-mono text-[8px] text-white/40 uppercase"
                 >
-                  Active
+                  Render Active
                 </motion.div>
               )}
             </div>
@@ -173,9 +159,17 @@ export const KineticHoloStack = React.forwardRef<HTMLDivElement, KineticHoloStac
           className="w-full h-full relative"
           style={{
             transformStyle: "preserve-3d",
-            rotateX: isHovered ? isoRotateX : rotateX,
-            rotateY: isHovered ? 0 : rotateY,
-            rotateZ: isHovered ? isoRotateZ : rotateZ,
+          }}
+          animate={{
+            rotateX: rotateXVal,
+            rotateY: rotateYVal,
+            rotateZ: rotateZVal,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 120,
+            damping: 20,
+            mass: 0.5
           }}
         >
           {/* Base Shadow */}

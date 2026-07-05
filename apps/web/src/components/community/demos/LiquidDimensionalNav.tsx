@@ -32,7 +32,7 @@ const DEFAULT_ITEMS: NavItem[] = [
     ),
     content: (
       <div className="h-full w-full flex flex-col gap-4">
-        <h3 className="font-['Outfit'] font-bold text-2xl text-white">System Core</h3>
+        <h3 className="font-['Outfit'] font-bold text-2xl text-white">System Metrics</h3>
         <div className="flex-1 grid grid-cols-2 gap-3">
           <div className="bg-[#111] rounded-xl border border-white/5 p-4 flex flex-col justify-center items-center">
             <span className="text-[#7fff5e] text-3xl font-mono">99%</span>
@@ -63,7 +63,7 @@ const DEFAULT_ITEMS: NavItem[] = [
     ),
     content: (
       <div className="h-full w-full flex flex-col gap-4">
-        <h3 className="font-['Outfit'] font-bold text-2xl text-white">Neural Net</h3>
+        <h3 className="font-['Outfit'] font-bold text-2xl text-white">Connectivity Net</h3>
         <div className="flex-1 bg-[#111] rounded-xl border border-white/5 p-4 relative overflow-hidden">
           <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(#ff5c71 1px, transparent 1px)", backgroundSize: "16px 16px" }} />
           <motion.div
@@ -86,13 +86,13 @@ const DEFAULT_ITEMS: NavItem[] = [
     ),
     content: (
       <div className="h-full w-full flex flex-col gap-4">
-        <h3 className="font-['Outfit'] font-bold text-2xl text-white">Firewall</h3>
+        <h3 className="font-['Outfit'] font-bold text-2xl text-white">Access Protection</h3>
         <div className="flex-1 border border-[#ff5c71]/30 bg-[#ff5c71]/5 rounded-xl flex items-center justify-center p-4">
           <div className="text-center">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ff5c71" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-2">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
-            <span className="text-[#ff5c71] font-mono text-sm uppercase tracking-widest">Breach Attempt Blocked</span>
+            <span className="text-[#ff5c71] font-mono text-sm uppercase tracking-widest">All Sessions Secured</span>
           </div>
         </div>
       </div>
@@ -109,7 +109,7 @@ const DEFAULT_ITEMS: NavItem[] = [
     ),
     content: (
       <div className="h-full w-full flex flex-col gap-4">
-        <h3 className="font-['Outfit'] font-bold text-2xl text-white">Parameters</h3>
+        <h3 className="font-['Outfit'] font-bold text-2xl text-white">Configuration Settings</h3>
         <div className="flex-1 bg-[#111] rounded-xl border border-white/5 p-4 flex flex-col gap-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="flex items-center justify-between">
@@ -218,21 +218,29 @@ export function LiquidDimensionalNav({
 
   return (
     <div
-      className={`relative w-full h-[500px] flex items-center justify-center font-['Outfit'] ${className}`}
+      className={`relative w-full h-[500px] flex items-center justify-center font-['Outfit'] overflow-hidden ${className}`}
       style={{ backgroundColor: bg, ...style }}
       {...props}
     >
       {/* Background Grid */}
       <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        className="absolute inset-0 opacity-[0.07] pointer-events-none"
         style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "30px 30px" }}
       />
 
-      <div className="relative flex items-center h-full max-h-[400px]">
+      {/* Ambient Backplate Glow */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] rounded-full blur-[120px] pointer-events-none opacity-20"
+        style={{
+          background: `radial-gradient(circle, ${primaryColor} 0%, ${accentColor} 100%)`
+        }}
+      />
+
+      <div className="relative flex items-center h-full max-h-[400px] scale-[0.82] min-[390px]:scale-[0.9] sm:scale-100 transition-transform duration-300">
         {/* The Navigation Bar */}
         <motion.div
-          className="relative z-20 w-20 bg-black/40 backdrop-blur-xl border rounded-[2rem] py-4 flex flex-col items-center justify-between gap-2 shadow-[0_0_40px_rgba(0,0,0,0.5)]"
-          style={{ borderColor }}
+          className="relative z-20 w-20 bg-black/70 backdrop-blur-xl border rounded-[2rem] py-4 flex flex-col items-center justify-between gap-2 shadow-[0_0_40px_rgba(0,0,0,0.8)]"
+          style={{ borderColor: "rgba(255, 255, 255, 0.12)" }}
           layout
         >
           {/* Liquid Indicator */}
@@ -293,8 +301,8 @@ export function LiquidDimensionalNav({
               animate={{ opacity: 1, rotateY: 0, x: 0, scale: 1 }}
               exit={{ opacity: 0, rotateY: 10, x: 20, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 200, damping: 20, mass: 0.8 }}
-              className="absolute inset-0 bg-black/60 backdrop-blur-2xl border rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform-origin-left overflow-hidden"
-              style={{ borderColor, transformStyle: "preserve-3d" }}
+              className="absolute inset-0 bg-black/80 backdrop-blur-2xl border rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.7)] transform-origin-left overflow-hidden"
+              style={{ borderColor: "rgba(255, 255, 255, 0.12)", transformStyle: "preserve-3d" }}
             >
               {/* Decorative top right tech corner */}
               <div className="absolute top-0 right-0 w-16 h-16 pointer-events-none">

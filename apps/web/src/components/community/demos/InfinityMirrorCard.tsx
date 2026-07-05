@@ -13,8 +13,8 @@ export interface InfinityMirrorCardProps {
 }
 
 export const InfinityMirrorCard: React.FC<InfinityMirrorCardProps> = ({
-  title = "VOID",
-  subtitle = "SYSTEM_READY",
+  title = "MIRROR",
+  subtitle = "ACTIVE DEPTH",
   layers = 5,
   glowColor = "#7fff5e",
   borderColor = "rgba(255, 255, 255, 0.1)",
@@ -66,7 +66,7 @@ export const InfinityMirrorCard: React.FC<InfinityMirrorCardProps> = ({
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="relative w-[280px] h-[400px] cursor-pointer group"
+        className="relative w-full max-w-[280px] h-[400px] cursor-pointer group"
       >
         {/* Infinity Mirror Backwards Layers */}
         {Array.from({ length: layers }).map((_, i) => {

@@ -13,9 +13,9 @@ export interface KineticShardTerminalProps extends React.ComponentPropsWithoutRe
 }
 
 export function KineticShardTerminal({
-  title = "CORE TERMINAL",
-  lockedSubtitle = "AWAITING DATA SHARD",
-  unlockedSubtitle = "SYSTEM OVERRIDE SUCCESSFUL",
+  title = "DATA CONTAINER",
+  lockedSubtitle = "AWAITING ACCESS KEY CARD",
+  unlockedSubtitle = "CONTAINER SUCCESSFULLY MOUNTED",
   primaryColor = "#7fff5e",
   accentColor = "#ff5c71",
   bgColor = "#050505",
@@ -142,7 +142,7 @@ export function KineticShardTerminal({
                       display: isDragging ? "block" : "none"
                     }}
                   />
-                  <span className="text-white/30 text-[10px] tracking-widest uppercase z-10">Insert Shard</span>
+                  <span className="text-white/30 text-[10px] tracking-widest uppercase z-10">Drop Key Card</span>
                 </div>
               </div>
 
@@ -173,8 +173,8 @@ export function KineticShardTerminal({
                 <div className="absolute bottom-2 right-2 w-4 h-px bg-white/50" />
                 <div className="absolute bottom-2 right-2 w-px h-4 bg-white/50" />
 
-                <span className="text-white font-bold tracking-widest text-xs" style={{ textShadow: `0 0 10px ${primaryColor}` }}>
-                  0xSHARD
+                <span className="text-white font-bold tracking-widest text-[10px] sm:text-xs" style={{ textShadow: `0 0 10px ${primaryColor}` }}>
+                  KEY CARD
                 </span>
               </motion.div>
             </motion.div>
@@ -207,19 +207,19 @@ export function KineticShardTerminal({
               </div>
 
               {/* Bento Grid Layout */}
-              <div className="flex-1 grid grid-cols-3 gap-4 grid-rows-2">
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4 auto-rows-min sm:grid-rows-2">
                 {/* Main Graph Card */}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="col-span-2 row-span-2 rounded-xl bg-white/[0.02] border border-white/5 p-6 flex flex-col relative overflow-hidden"
+                  className="col-span-1 sm:col-span-2 row-span-1 sm:row-span-2 rounded-xl bg-white/[0.02] border border-white/5 p-6 flex flex-col relative overflow-hidden min-h-[180px]"
                 >
                   <div className="absolute top-0 right-0 w-32 h-32 blur-3xl opacity-20" style={{ backgroundColor: primaryColor }} />
                   <h3 className="text-white/40 text-xs tracking-widest uppercase mb-4">Network Activity</h3>
 
                   {/* Fake Graph */}
-                  <div className="flex-1 flex items-end gap-2 mt-4">
+                  <div className="flex-1 flex items-end gap-2 mt-4 min-h-[60px]">
                     {[40, 70, 45, 90, 65, 85, 30, 55, 75, 100, 60, 80].map((h, i) => (
                       <motion.div
                         key={i}
@@ -243,10 +243,10 @@ export function KineticShardTerminal({
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="rounded-xl bg-white/[0.02] border border-white/5 p-4 flex flex-col justify-between"
+                  className="rounded-xl bg-white/[0.02] border border-white/5 p-4 flex flex-col justify-between min-h-[100px]"
                 >
                   <h3 className="text-white/40 text-xs tracking-widest uppercase">Nodes</h3>
-                  <div className="text-4xl font-light text-white mt-2">1,024</div>
+                  <div className="text-2xl sm:text-4xl font-light text-white mt-2">1,024</div>
                   <div className="text-[10px] tracking-wider text-white/50 mt-1 flex items-center gap-1">
                     <span style={{ color: primaryColor }}>↑ 12%</span> active
                   </div>
@@ -257,15 +257,15 @@ export function KineticShardTerminal({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="rounded-xl bg-white/[0.02] border border-white/5 p-4 flex flex-col justify-between relative overflow-hidden"
+                  className="rounded-xl bg-white/[0.02] border border-white/5 p-4 flex flex-col justify-between relative overflow-hidden min-h-[100px]"
                 >
                   <div className="absolute inset-0 opacity-10" style={{
-                    backgroundImage: `repeating-linear-gradient(-45deg, transparent, transparent 5px, ${accentColor} 5px, ${accentColor} 10px)`
+                    backgroundImage: `repeating-linear-gradient(-45deg, transparent, transparent 5px, ${primaryColor} 5px, ${primaryColor} 10px)`
                   }} />
-                  <h3 className="text-white/40 text-xs tracking-widest uppercase relative z-10">Security</h3>
-                  <div className="text-2xl font-bold mt-2 relative z-10" style={{ color: accentColor }}>COMPROMISED</div>
+                  <h3 className="text-white/40 text-xs tracking-widest uppercase relative z-10">Access Level</h3>
+                  <div className="text-xl sm:text-2xl font-bold mt-2 relative z-10" style={{ color: primaryColor }}>ADMIN</div>
                   <div className="text-[10px] tracking-wider text-white/50 mt-1 relative z-10">
-                    Bypassed via Shard
+                    Session Authenticated
                   </div>
                 </motion.div>
               </div>

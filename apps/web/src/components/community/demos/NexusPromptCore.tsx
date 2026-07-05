@@ -68,7 +68,7 @@ export function NexusPromptCore({
                   type="text"
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
-                  placeholder="Initialize quantum prompt..."
+                  placeholder="Enter search prompt..."
                   className="w-full bg-transparent text-white placeholder-white/30 outline-none text-lg tracking-wide"
                 />
                 <button
@@ -148,7 +148,7 @@ export function NexusPromptCore({
                       <span className="text-white text-xs">AI</span>
                    </div>
                    <div>
-                     <h3 className="text-white/40 text-xs tracking-widest uppercase mb-1">Original Prompt</h3>
+                     <h3 className="text-white/40 text-xs tracking-widest uppercase mb-1">Search Request</h3>
                      <p className="text-white/90 text-sm">{prompt}</p>
                    </div>
                  </div>
@@ -170,10 +170,10 @@ export function NexusPromptCore({
                     <div className="h-4 w-full bg-white/10 rounded animate-pulse mb-4" style={{ animationDelay: "150ms" }} />
                     <div className="h-4 w-5/6 bg-white/10 rounded animate-pulse mb-8" style={{ animationDelay: "300ms" }} />
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="h-24 rounded-lg border border-white/5 bg-white/[0.01] p-4 flex flex-col justify-end relative overflow-hidden group">
                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                         <span className="relative z-10 text-white/60 text-xs font-mono uppercase tracking-wider">Generated Asset_01</span>
+                         <span className="relative z-10 text-white/60 text-xs font-mono uppercase tracking-wider">Result Asset 01</span>
                          <motion.div
                            className="absolute top-0 right-0 w-16 h-16 blur-xl opacity-0 group-hover:opacity-40 transition-opacity"
                            style={{ backgroundColor: primaryColor }}
@@ -181,7 +181,7 @@ export function NexusPromptCore({
                       </div>
                       <div className="h-24 rounded-lg border border-white/5 bg-white/[0.01] p-4 flex flex-col justify-end relative overflow-hidden group">
                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                         <span className="relative z-10 text-white/60 text-xs font-mono uppercase tracking-wider">Generated Asset_02</span>
+                         <span className="relative z-10 text-white/60 text-xs font-mono uppercase tracking-wider">Result Asset 02</span>
                          <motion.div
                            className="absolute top-0 right-0 w-16 h-16 blur-xl opacity-0 group-hover:opacity-40 transition-opacity"
                            style={{ backgroundColor: accentColor }}

@@ -13,8 +13,8 @@ export interface ChromaticSliceCardProps extends Omit<React.ComponentPropsWithou
 }
 
 export function ChromaticSliceCard({
-  title = "VOID",
-  subtitle = "SYSTEM OVERRIDE",
+  title = "CHROMA",
+  subtitle = "INTERACTIVE SLICES",
   slices = 5,
   glowColor = "#7fff5e",
   accentColor = "#ff5c71",
@@ -79,7 +79,7 @@ export function ChromaticSliceCard({
   return (
     <motion.div
       ref={containerRef}
-      className={`relative w-80 h-[26rem] rounded-xl cursor-pointer perspective-1000 ${className}`}
+      className={`relative w-full max-w-[320px] h-[26rem] rounded-xl cursor-pointer perspective-1000 ${className}`}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
@@ -116,11 +116,13 @@ export function ChromaticSliceCard({
                }}
           />
 
-          <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 transition-opacity duration-500"
+          <div className="absolute inset-0 opacity-0 transition-opacity duration-500"
                style={{ opacity: isHovered ? 1 : 0 }}>
-             <div className="text-4xl mb-2" style={{ color: glowColor }}>✧</div>
-             <div className="text-xs tracking-[0.3em] font-mono" style={{ color: glowColor }}>
-               CORE EXPOSED
+             <div className="absolute inset-0 flex flex-col items-center justify-center">
+               <div className="text-4xl mb-2" style={{ color: glowColor }}>✧</div>
+               <div className="text-xs tracking-[0.3em] font-mono" style={{ color: glowColor }}>
+                 INNER VIEW
+               </div>
              </div>
           </div>
         </div>

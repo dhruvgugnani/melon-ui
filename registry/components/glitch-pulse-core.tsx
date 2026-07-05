@@ -87,21 +87,19 @@ export function GlitchPulseCore({
       }}
       {...props}
     >
-      {/* SVG Glitch Filter */}
-      <svg className="absolute w-0 h-0 pointer-events-none">
-        <defs>
-          <filter id="glitch-filter">
-            <feTurbulence type="fractalNoise" baseFrequency={coreState === "CRITICAL" ? "0.8 0.1" : coreState === "UNSTABLE" ? "0.2 0.05" : "0.01 0.01"} numOctaves="3" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={coreState === "CRITICAL" ? "30" : coreState === "UNSTABLE" ? "10" : "0"} xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-      </svg>
-
       {/* Ambient Glow */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[120px] pointer-events-none opacity-30"
-        animate={{ backgroundColor: currentColor }}
-        transition={{ duration: 1.5 }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[120px] pointer-events-none opacity-30 animate-pulse"
+        style={{ backgroundColor: currentColor }}
+      />
+
+      {/* Background Grid Pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `radial-gradient(${currentColor} 1px, transparent 1px)`,
+          backgroundSize: "24px 24px"
+        }}
       />
 
       {/* Background Data Stream (only active in CRITICAL) */}
@@ -137,59 +135,90 @@ export function GlitchPulseCore({
       >
         {/* Orbital Rings */}
         <motion.div
-          className="absolute inset-0 rounded-full border border-dashed border-white/20"
+          className="absolute inset-0 pointer-events-none"
           animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: coreState === "CRITICAL" ? 4 : 20, ease: "linear" }}
-          style={{ transform: "translateZ(-40px)", borderWidth: "2px" }}
-        />
+          transition={{ repeat: Infinity, duration: coreState === "CRITICAL" ? 6 : coreState === "UNSTABLE" ? 12 : 24, ease: "linear" }}
+          style={{ transform: "translateZ(-40px)" }}
+        >
+          <svg className="w-full h-full opacity-40" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="48" fill="none" stroke={currentColor} strokeWidth="0.5" strokeDasharray="3 3" />
+            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+            {/* Outer ticks */}
+            <path d="M50 0 L50 4 M50 96 L50 100 M0 50 L4 50 M96 50 L100 50" stroke={currentColor} strokeWidth="1" />
+          </svg>
+        </motion.div>
 
         <motion.div
-          className="absolute inset-4 rounded-full border border-solid border-white/10"
+          className="absolute inset-4 pointer-events-none"
           animate={{ rotate: -360 }}
-          transition={{ repeat: Infinity, duration: coreState === "CRITICAL" ? 6 : 30, ease: "linear" }}
+          transition={{ repeat: Infinity, duration: coreState === "CRITICAL" ? 8 : coreState === "UNSTABLE" ? 18 : 36, ease: "linear" }}
           style={{ transform: "translateZ(20px)" }}
-        />
+        >
+          <svg className="w-full h-full opacity-35" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="none" stroke={currentColor} strokeWidth="1.5" strokeDasharray="20 10 5 10" />
+          </svg>
+        </motion.div>
 
         <motion.div
-          className="absolute inset-10 rounded-full border border-dotted border-white/30"
-          animate={{ rotate: 360, scale: coreState === "UNSTABLE" ? [1, 1.05, 1] : 1 }}
-          transition={{ rotate: { repeat: Infinity, duration: 10, ease: "linear" }, scale: { repeat: Infinity, duration: 2 } }}
-          style={{ transform: "translateZ(60px)", borderColor: currentColor }}
-        />
+          className="absolute inset-10 pointer-events-none"
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: coreState === "CRITICAL" ? 4 : coreState === "UNSTABLE" ? 10 : 20, ease: "linear" }}
+          style={{ transform: "translateZ(60px)" }}
+        >
+          <svg className="w-full h-full opacity-50" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="30" fill="none" stroke={currentColor} strokeWidth="1" strokeDasharray="6 2" />
+            {/* Rotating nodes */}
+            <circle cx="50" cy="20" r="2" fill={currentColor} />
+            <circle cx="50" cy="80" r="2" fill={currentColor} />
+          </svg>
+        </motion.div>
 
         {/* Central Core */}
         <motion.div
           onClick={handleCoreClick}
           whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className="relative w-24 h-24 rounded-full flex items-center justify-center overflow-hidden"
+          whileTap={{ scale: 0.95 }}
+          className="relative w-28 h-28 rounded-full flex items-center justify-center overflow-hidden"
           style={{
             transform: "translateZ(100px)",
             backdropFilter: "blur(15px)",
-            background: "rgba(20, 20, 20, 0.4)",
-            border: `1px solid ${currentColor}`,
-            boxShadow: `0 0 30px ${currentColor}40, inset 0 0 20px ${currentColor}20`,
-            filter: "url(#glitch-filter)",
+            background: "rgba(10, 10, 10, 0.7)",
+            border: `1.5px solid ${currentColor}`,
+            boxShadow: `0 0 40px ${currentColor}33, inset 0 0 25px ${currentColor}20`,
           }}
         >
+          {/* Inner Glowing Ring */}
+          <div className="absolute inset-2 rounded-full border border-white/5" />
+
           {/* Core Inner Energy */}
           <motion.div
-            className="w-12 h-12 rounded-full blur-[8px]"
+            className="w-14 h-14 rounded-full blur-[8px]"
             animate={{
-              scale: coreState === "CRITICAL" ? [1, 1.5, 1] : coreState === "UNSTABLE" ? [1, 1.2, 1] : [1, 1.05, 1],
-              opacity: [0.5, 1, 0.5],
+              scale: coreState === "CRITICAL" ? [1, 1.4, 1] : coreState === "UNSTABLE" ? [1, 1.2, 1] : [1, 1.05, 1],
+              opacity: [0.6, 0.9, 0.6],
               backgroundColor: currentColor
             }}
-            transition={{ repeat: Infinity, duration: coreState === "CRITICAL" ? 0.2 : coreState === "UNSTABLE" ? 0.5 : 2 }}
+            transition={{ repeat: Infinity, duration: coreState === "CRITICAL" ? 0.3 : coreState === "UNSTABLE" ? 0.8 : 2 }}
           />
 
-          {/* Glitch Overlay */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;utf8,%3Csvg%20viewBox=%220%200%20200%20200%22%20xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter%20id=%22noise%22%3E%3CfeTurbulence%20type=%22fractalNoise%22%20baseFrequency=%220.65%22%20numOctaves=%223%22%20stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect%20width=%22100%25%22%20height=%22100%25%22%20filter=%22url(%23noise)%22%20opacity=%220.5%22/%3E%3C/svg%3E')] mix-blend-overlay opacity-30 pointer-events-none" />
+          {/* Core Center Solid Bead */}
+          <motion.div
+            className="absolute w-6 h-6 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.8)]"
+            style={{ backgroundColor: "#ffffff" }}
+            animate={coreState === "CRITICAL" ? { scale: [0.8, 1.2, 0.8] } : { scale: 1 }}
+            transition={{ repeat: Infinity, duration: 0.5 }}
+          />
+
+          {/* Tech Subdivisions */}
+          <svg className="absolute inset-0 w-full h-full opacity-20 pointer-events-none" viewBox="0 0 100 100">
+            <line x1="50" y1="0" x2="50" y2="100" stroke="white" strokeWidth="0.5" />
+            <line x1="0" y1="50" x2="100" y2="50" stroke="white" strokeWidth="0.5" />
+          </svg>
         </motion.div>
 
         {/* State Label Floating Element */}
         <motion.div
-          className="absolute -bottom-16 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-white/5 border border-white/10 font-mono text-xs tracking-[0.2em] uppercase backdrop-blur-sm"
+          className="absolute -bottom-16 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-white/5 border border-white/10 font-mono text-xs tracking-[0.2em] uppercase backdrop-blur-sm shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
           style={{ transform: "translateZ(80px)", color: currentColor }}
           animate={{
              y: [0, -5, 0],

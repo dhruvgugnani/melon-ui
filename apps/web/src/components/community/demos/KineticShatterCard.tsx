@@ -14,10 +14,10 @@ export interface KineticShatterCardProps extends React.ComponentPropsWithoutRef<
 }
 
 export function KineticShatterCard({
-  title = "SHATTER CORE",
-  subtitle = "LOCKED ENCLOSURE",
-  revealTitle = "SYSTEM EXPOSED",
-  revealText = "INTERNAL MECHANISMS ONLINE.",
+  title = "DEPTH FOCUS",
+  subtitle = "INTERACTIVE SHARDS",
+  revealTitle = "INNER DETAIL",
+  revealText = "PHYSICAL SPRING SEPARATION.",
   primaryColor = "#ff5c71",
   accentColor = "#7fff5e",
   bgColor = "#050505",
@@ -73,7 +73,7 @@ export function KineticShatterCard({
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className={`relative w-[320px] h-[400px] flex items-center justify-center font-['Outfit',sans-serif] perspective-[1200px] ${className}`}
+      className={`relative w-full max-w-[320px] h-[400px] flex items-center justify-center font-['Outfit',sans-serif] perspective-[1200px] ${className}`}
       style={{ ...style }}
       {...props}
     >
@@ -95,7 +95,7 @@ export function KineticShatterCard({
 
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
             style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+               backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
             }}
           />
 
@@ -121,8 +121,8 @@ export function KineticShatterCard({
           </p>
 
           <div className="mt-8 flex gap-4">
-            <div className="px-3 py-1 rounded-full border text-[10px] tracking-widest bg-black/50" style={{ borderColor: primaryColor, color: primaryColor }}>ACTIVE</div>
-            <div className="px-3 py-1 rounded-full border text-[10px] tracking-widest bg-black/50" style={{ borderColor: accentColor, color: accentColor }}>SECURE</div>
+            <div className="px-3 py-1 rounded-full border text-[10px] tracking-widest bg-black/50" style={{ borderColor: primaryColor, color: primaryColor }}>SPRING</div>
+            <div className="px-3 py-1 rounded-full border text-[10px] tracking-widest bg-black/50" style={{ borderColor: accentColor, color: accentColor }}>INTERACTIVE</div>
           </div>
         </div>
 
@@ -139,15 +139,15 @@ export function KineticShatterCard({
                   animate={
                     isHovered
                       ? {
-                          x: shard.x,
-                          y: shard.y,
-                          z: 150 + ((index * 37) % 100), // Pop outwards, pseudo-random
-                          rotateX: shard.rot * 0.5,
-                          rotateY: shard.rot * 0.8,
-                          rotateZ: shard.rot,
-                          opacity: 0,
-                          scale: 0.5 + (((index * 13) % 50) / 100), // pseudo-random scale
-                          filter: "blur(4px)"
+                          x: shard.x * 2.2,
+                          y: shard.y * 2.2 + 260, // Throw outward and drop downwards (gravity fall)
+                          z: 160 + index * 10,
+                          rotateX: shard.rot * 2.2,
+                          rotateY: shard.rot * 2.4,
+                          rotateZ: shard.rot * 2.8,
+                          opacity: 0, // Fade out as shards fall off
+                          scale: 0.5,
+                          filter: "blur(2px)"
                         }
                       : {
                           x: 0,
@@ -163,8 +163,9 @@ export function KineticShatterCard({
                   }
                   transition={{
                     type: "spring",
-                    stiffness: isHovered ? 120 : 300,
-                    damping: isHovered ? 12 : 25,
+                    stiffness: 120,
+                    damping: 20,
+                    mass: 0.8,
                     delay: isHovered ? shard.delay : shard.delay * 0.3,
                   }}
                   className="absolute inset-0 w-full h-full transform-style-3d origin-center"

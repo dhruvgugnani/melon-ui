@@ -64,7 +64,7 @@ export default function CommunitySubmitPage() {
 
   const categories = [
     "Buttons",
-    "Navigations",
+    "Navigation",
     "Cards",
     "Inputs",
     "Cursors",

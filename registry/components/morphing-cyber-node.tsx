@@ -157,14 +157,20 @@ export function MorphingCyberNode({
               className="flex items-center gap-4 px-6 w-full justify-between"
               style={{ transform: "translateZ(30px)" }}
             >
-              <div className="w-3 h-3 rounded-full bg-white/20 animate-pulse" />
-              <span className="font-mono text-sm tracking-widest text-white/50 uppercase select-none">{idleText}</span>
+              <div className="flex items-center gap-2">
+                <div className="relative w-2.5 h-2.5 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full bg-[#7fff5e] opacity-40 animate-ping" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#7fff5e]" />
+                </div>
+                <span className="font-mono text-[10px] tracking-[0.25em] text-white/70 uppercase select-none">Monitor</span>
+              </div>
+              <span className="font-sans font-bold text-xs text-white/95">{idleText}</span>
               <button 
                 onClick={(e) => { e.stopPropagation(); setNodeState("SCANNING"); }} 
-                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors group"
                 aria-label="Start Scanning"
               >
-                <span style={{ color: primaryColor }}>⛶</span>
+                <span className="text-white/60 group-hover:text-[#7fff5e] transition-colors text-xs font-mono">⛶</span>
               </button>
             </motion.div>
           )}
@@ -175,52 +181,46 @@ export function MorphingCyberNode({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
-              className="flex flex-col items-center p-6 w-full h-full relative"
+              className="flex flex-col items-center p-5 w-full h-full relative"
               style={{ transform: "translateZ(40px)" }}
             >
-              <div className="flex w-full justify-between items-center mb-4 mt-2">
-                <span className="font-mono text-xs uppercase tracking-[0.3em]" style={{ color: primaryColor }}>{scanningText}</span>
-                <span className="font-mono text-[10px] text-white/40">{scanningIp}</span>
+              <div className="flex w-full justify-between items-center mb-3">
+                <span className="font-mono text-[10px] uppercase tracking-[0.3em] font-semibold" style={{ color: primaryColor }}>{scanningText}</span>
+                <span className="font-mono text-[9px] text-white/30">{scanningIp}</span>
               </div>
 
-              <div className="flex-1 w-full border rounded bg-black/50 overflow-hidden relative mb-4" style={{ borderColor: `${primaryColor}33` }}>
-                {/* Radar sweep effect */}
-                <motion.div
-                  className="absolute inset-0"
-                  style={{
-                    background: `linear-gradient(to right, transparent, ${primaryColor}33, transparent)`
-                  }}
-                  animate={{ x: ["-100%", "100%"] }}
-                  transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                />
-                
-                {/* Neon green scan line sweep */}
-                <motion.div 
-                  className="absolute left-0 w-full h-[2px] z-10"
-                  style={{
-                    backgroundColor: primaryColor,
-                    boxShadow: `0 0 10px ${primaryColor}`,
-                  }}
-                  animate={{ top: ["0%", "100%"] }}
-                  transition={{ repeat: Infinity, duration: 1.8, ease: "linear" }}
-                />
+              <div className="flex-1 w-full border rounded bg-black/40 overflow-hidden relative mb-3 flex items-center justify-center" style={{ borderColor: `${primaryColor}22` }}>
+                <svg className="w-full h-full absolute inset-0 opacity-20 pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <circle cx="50" cy="50" r="15" fill="none" stroke={primaryColor} strokeWidth="0.5" />
+                  <circle cx="50" cy="50" r="30" fill="none" stroke={primaryColor} strokeWidth="0.5" />
+                  <circle cx="50" cy="50" r="45" fill="none" stroke={primaryColor} strokeWidth="0.5" />
+                  <line x1="50" y1="0" x2="50" y2="100" stroke={primaryColor} strokeWidth="0.25" />
+                  <line x1="0" y1="50" x2="100" y2="50" stroke={primaryColor} strokeWidth="0.25" />
+                </svg>
 
-                <div className="absolute inset-0 grid grid-cols-6 grid-rows-3 gap-1 p-2 opacity-50">
-                   {radarConfig.map((config, i) => (
-                     <motion.div
-                        key={i}
-                        className="rounded-[1px]"
-                        style={{ backgroundColor: `${primaryColor}4d` }}
-                        animate={{ opacity: [0.1, 1, 0.1] }}
-                        transition={{ duration: config.duration, repeat: Infinity, delay: config.delay }}
-                     />
-                   ))}
+                {/* Rotating vector line scanner */}
+                <motion.div
+                  className="w-full h-full absolute origin-center flex items-center justify-center pointer-events-none"
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+                >
+                  <div className="w-[150px] h-[150px] absolute right-1/2 bottom-1/2 origin-bottom-right" style={{
+                    background: `conic-gradient(from 180deg, ${primaryColor}22, transparent)`
+                  }} />
+                  <div className="w-[150px] h-[1.5px] absolute right-1/2" style={{
+                    backgroundColor: primaryColor,
+                    boxShadow: `0 0 8px ${primaryColor}`
+                  }} />
+                </motion.div>
+
+                <div className="relative font-mono text-[8px] text-white/40 tracking-[0.3em] text-center uppercase select-none">
+                  SEARCHING NET...
                 </div>
               </div>
 
               <div className="flex gap-2 w-full">
-                <button onClick={(e) => { e.stopPropagation(); setNodeState("AUDIO"); }} className="flex-1 py-1.5 rounded bg-white/5 hover:bg-white/10 font-mono text-[10px] uppercase text-white/70 transition-colors">{audioModeText}</button>
-                <button onClick={(e) => { e.stopPropagation(); setNodeState("IDLE"); }} className="px-3 py-1.5 rounded bg-red-500/10 hover:bg-red-500/20 font-mono text-[10px] uppercase transition-colors" style={{ color: secondaryColor }}>{cancelText}</button>
+                <button onClick={(e) => { e.stopPropagation(); setNodeState("AUDIO"); }} className="flex-1 py-1 rounded bg-white/5 hover:bg-white/10 font-mono text-[9px] uppercase text-white/70 transition-colors border border-white/5">{audioModeText}</button>
+                <button onClick={(e) => { e.stopPropagation(); setNodeState("IDLE"); }} className="px-3 py-1 rounded bg-[#ff5c71]/10 hover:bg-[#ff5c71]/20 font-mono text-[9px] uppercase transition-colors border border-[#ff5c71]/20" style={{ color: secondaryColor }}>{cancelText}</button>
               </div>
             </motion.div>
           )}
@@ -231,38 +231,42 @@ export function MorphingCyberNode({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-              className="flex items-center w-full px-6 gap-6"
+              className="flex items-center w-full px-6 gap-5"
               style={{ transform: "translateZ(50px)" }}
             >
               <div 
-                className="w-12 h-12 rounded-full border-2 flex items-center justify-center"
+                className="w-10 h-10 rounded-full border flex items-center justify-center shrink-0"
                 style={{
-                  borderColor: `${secondaryColor}4d`,
-                  backgroundColor: `${secondaryColor}1a`
+                  borderColor: `${secondaryColor}33`,
+                  backgroundColor: `${secondaryColor}11`
                 }}
               >
                 <motion.div
-                  className="w-4 h-4 rounded-full"
+                  className="w-3.5 h-3.5 rounded-full"
                   style={{ backgroundColor: secondaryColor }}
-                  animate={{ scale: [1, 1.5, 1] }}
-                  transition={{ repeat: Infinity, duration: 0.8, ease: "easeInOut" }}
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
                 />
               </div>
 
-              <div className="flex-1 flex items-center gap-1 h-8">
-                 {audioDurations.map((duration, i) => (
-                   <motion.div
-                     key={i}
-                     className="flex-1 rounded-full"
-                     style={{ backgroundColor: `${secondaryColor}cc` }}
-                     animate={{ height: ["20%", "100%", "20%"] }}
-                     transition={{ repeat: Infinity, duration, delay: i * 0.05 }}
-                   />
-                 ))}
+              <div className="flex-1 flex items-center gap-[3px] h-7 max-w-[140px]">
+                {audioDurations.map((duration, i) => (
+                  <motion.div
+                    key={i}
+                    className="flex-1 rounded-full"
+                    style={{ backgroundColor: `${secondaryColor}b3` }}
+                    animate={{ height: ["25%", "100%", "25%"] }}
+                    transition={{ repeat: Infinity, duration, delay: i * 0.04 }}
+                  />
+                ))}
               </div>
 
-              <button onClick={(e) => { e.stopPropagation(); setNodeState("ALERT"); }} className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors" aria-label="Trigger Alert">
-                <span style={{ color: secondaryColor }}>⚠</span>
+              <button 
+                onClick={(e) => { e.stopPropagation(); setNodeState("ALERT"); }} 
+                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors border border-white/5 group" 
+                aria-label="Trigger Alert"
+              >
+                <span className="text-white/60 group-hover:text-[#ff5c71] transition-colors text-[10px]">⚠</span>
               </button>
             </motion.div>
           )}
@@ -273,25 +277,24 @@ export function MorphingCyberNode({
               initial={{ opacity: 0, rotateX: -90 }}
               animate={{ opacity: 1, rotateX: 0 }}
               exit={{ opacity: 0, rotateX: 90, filter: "blur(10px)" }}
-              className="flex flex-col items-center justify-center w-full h-full p-6 text-center"
+              className="flex flex-col items-center justify-center w-full h-full p-5 text-center"
               style={{ transform: "translateZ(60px)", transformOrigin: "bottom" }}
             >
               <motion.div
-                className="text-[4rem] leading-none mb-2"
-                style={{ fontFamily: "var(--font-anton)" }}
-                animate={{ scale: [1, 1.05, 1], color: [secondaryColor, "#ffffff", secondaryColor] }}
-                transition={{ repeat: Infinity, duration: 1 }}
+                className="text-2xl font-black uppercase tracking-[0.1em] mb-1"
+                animate={{ scale: [1, 1.03, 1] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                style={{ color: secondaryColor }}
               >
                 {alertTitle}
               </motion.div>
-              <p className="font-mono text-xs tracking-widest mb-6" style={{ color: `${secondaryColor}b3` }}>{alertSubtitle}</p>
+              <p className="font-mono text-[9px] tracking-widest text-white/50 mb-5 uppercase">{alertSubtitle}</p>
 
               <button
                 onClick={(e) => { e.stopPropagation(); setNodeState("IDLE"); }}
-                className="px-6 py-2 rounded-sm text-black font-black uppercase tracking-widest text-xs hover:bg-white transition-colors"
-                style={{ backgroundColor: secondaryColor }}
+                className="px-5 py-1.5 rounded bg-white/5 border border-white/10 text-white font-mono uppercase tracking-widest text-[9px] hover:bg-white/10 transition-colors shadow-[0_4px_12px_rgba(255,92,113,0.15)]"
               >
-                {lockdownText}
+                Reset System
               </button>
             </motion.div>
           )}

@@ -34,30 +34,33 @@ export function FluidMagneticDial({
   const [isDragging, setIsDragging] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  // We use standard React state for the display text to allow for "glitch" effects
+  // We use standard React state for the display text
   const [displayText, setDisplayText] = useState(defaultValue.toFixed(0));
 
-  // Framer Motion values for the knob position
-  const knobX = useMotionValue(0);
-  const knobY = useMotionValue(0);
+  const radius = size / 2;
+  const trackRadius = radius * 0.7; // Inner track for the knob
+
+  // Calculate the progress percent
+  const progressPercent = (value - min) / (max - min);
+
+  // Initialize Framer Motion values for the knob on the track circumference
+  const initialAngle = progressPercent * (Math.PI * 2) - Math.PI / 2;
+  const knobX = useMotionValue(Math.cos(initialAngle) * trackRadius);
+  const knobY = useMotionValue(Math.sin(initialAngle) * trackRadius);
 
   // Smooth springs for a magnetic, fluid feel
-  const springConfig = { damping: 15, stiffness: 150, mass: 0.5 };
+  const springConfig = { damping: 20, stiffness: 200, mass: 0.5 };
   const smoothKnobX = useSpring(knobX, springConfig);
   const smoothKnobY = useSpring(knobY, springConfig);
 
   // Filter out hydration mismatches by setting an ID only once mounted
   const [filterId, setFilterId] = useState("");
   useEffect(() => {
-    // Generate a unique ID to prevent conflicts if multiple dials exist
     const timer = setTimeout(() => {
       setFilterId(`gooey-filter-${Math.random().toString(36).substring(2, 9)}`);
     }, 0);
     return () => clearTimeout(timer);
   }, []);
-
-  const radius = size / 2;
-  const trackRadius = radius * 0.7; // Inner track for the knob
 
   const updateValueFromPosition = (clientX: number, clientY: number) => {
     if (!containerRef.current) return;
@@ -67,30 +70,22 @@ export function FluidMagneticDial({
 
     const dx = clientX - centerX;
     const dy = clientY - centerY;
+    const dist = Math.hypot(dx, dy);
 
-    // Calculate angle in radians, then degrees
-    // We want 0 at the bottom (or top)
-    // Math.atan2(dy, dx) is 0 at right, PI/2 at bottom
-    // Let's make bottom = 0 progress, and it goes clockwise, opening at bottom.
-    // Or just a full 360 circle. Let's do top = 0.
     let angle = Math.atan2(dy, dx) + Math.PI / 2;
     if (angle < 0) angle += Math.PI * 2;
 
-    // Map angle (0 to 2PI) to progress (0 to 1)
     const progress = angle / (Math.PI * 2);
-
-    // Limit value
     const newValue = min + progress * (max - min);
     setValue(newValue);
     if (onValueChange) onValueChange(newValue);
 
-    // Position the knob magnetically on the edge
+    // Keep the knob on the circumference during dragging
+    const dragX = (dx / (dist || 1)) * trackRadius;
+    const dragY = (dy / (dist || 1)) * trackRadius;
 
-    // When dragging, we pull the knob out to the exact angle but bounded by the track radius.
-    // Actually, for a fluid dial, let's make it freely draggable inside the circle,
-    // and the angle defines the value, while the distance adds a satisfying "pull" tension.
-    knobX.set(dx);
-    knobY.set(dy);
+    knobX.set(dragX);
+    knobY.set(dragY);
   };
 
   const handlePointerDown = (e: React.PointerEvent) => {
@@ -101,32 +96,30 @@ export function FluidMagneticDial({
   const handlePointerMove = (e: React.PointerEvent) => {
     if (isDragging) {
       updateValueFromPosition(e.clientX, e.clientY);
-
-      // Glitch text effect while dragging
-      if (Math.random() > 0.7) {
-        setDisplayText(
-          value.toFixed(0).split('').map(c => Math.random() > 0.5 ? '0123456789!@#$%'[Math.floor(Math.random() * 15)] : c).join('')
-        );
-      } else {
-        setDisplayText(value.toFixed(0));
-      }
+      setDisplayText(value.toFixed(0));
     } else if (isHovered && containerRef.current) {
-      // Magnetic hover effect (subtle pull towards cursor)
+      // Hover magnetic effect: pull slightly towards pointer, but keep anchored to current angle!
       const rect = containerRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      const dx = e.clientX - centerX;
-      const dy = e.clientY - centerY;
-      knobX.set(dx * 0.2); // Only pull 20% towards cursor
-      knobY.set(dy * 0.2);
+      const mouseDx = e.clientX - centerX;
+      const mouseDy = e.clientY - centerY;
+
+      const angle = progressPercent * (Math.PI * 2) - Math.PI / 2;
+      const restingX = Math.cos(angle) * trackRadius;
+      const restingY = Math.sin(angle) * trackRadius;
+
+      // Pull slightly toward mouse pointer (15% weight)
+      knobX.set(restingX + (mouseDx - restingX) * 0.15);
+      knobY.set(restingY + (mouseDy - restingY) * 0.15);
     }
   };
 
   const handlePointerUp = () => {
     setIsDragging(false);
-    // Snap back to center
-    knobX.set(0);
-    knobY.set(0);
+    const angle = progressPercent * (Math.PI * 2) - Math.PI / 2;
+    knobX.set(Math.cos(angle) * trackRadius);
+    knobY.set(Math.sin(angle) * trackRadius);
     setDisplayText(value.toFixed(0));
   };
 
@@ -137,10 +130,20 @@ export function FluidMagneticDial({
   const handlePointerLeave = () => {
     setIsHovered(false);
     if (!isDragging) {
-      knobX.set(0);
-      knobY.set(0);
+      const angle = progressPercent * (Math.PI * 2) - Math.PI / 2;
+      knobX.set(Math.cos(angle) * trackRadius);
+      knobY.set(Math.sin(angle) * trackRadius);
     }
   };
+
+  // Sync knob position when value is changed externally or on mount/unmount
+  useEffect(() => {
+    if (!isDragging) {
+      const angle = progressPercent * (Math.PI * 2) - Math.PI / 2;
+      knobX.set(Math.cos(angle) * trackRadius);
+      knobY.set(Math.sin(angle) * trackRadius);
+    }
+  }, [value, isDragging, progressPercent, trackRadius, knobX, knobY]);
 
   // Ensure text settles when dragging stops
   useEffect(() => {
@@ -152,8 +155,6 @@ export function FluidMagneticDial({
     }
   }, [value, isDragging]);
 
-  // Calculate the SVG circle progress
-  const progressPercent = (value - min) / (max - min);
   const strokeDasharray = 2 * Math.PI * trackRadius;
   const strokeDashoffset = strokeDasharray * (1 - progressPercent);
 
@@ -182,7 +183,7 @@ export function FluidMagneticDial({
         <svg className="absolute w-0 h-0">
           <defs>
             <filter id={filterId}>
-              <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
               <feColorMatrix
                 in="blur"
                 mode="matrix"
@@ -227,7 +228,7 @@ export function FluidMagneticDial({
             cy={size / 2}
             r={trackRadius}
             fill="none"
-            stroke="rgba(255,255,255,0.05)"
+            stroke="rgba(255,255,255,0.12)"
             strokeWidth="8"
             strokeLinecap="round"
           />
@@ -253,9 +254,9 @@ export function FluidMagneticDial({
           style={{
             width: 48,
             height: 48,
-            background: "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(0,0,0,0.8))",
+            background: "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(15,15,15,0.9))",
             boxShadow: `0 0 20px ${progressColor}40`,
-            border: "1px solid rgba(255,255,255,0.2)"
+            border: "1px solid rgba(255,255,255,0.25)"
           }}
         />
 
@@ -271,13 +272,13 @@ export function FluidMagneticDial({
             boxShadow: `0 0 15px ${progressColor}`,
           }}
         >
-          <div className="w-2 h-2 rounded-full bg-black/50" />
+          <div className="w-3 h-3 rounded-full bg-black/40 border border-white/20" />
         </motion.div>
       </div>
 
       {/* Decorative Outer Rings */}
-      <div className="absolute inset-0 rounded-full border border-white/5 pointer-events-none" style={{ margin: "-10px" }} />
-      <div className="absolute inset-0 rounded-full border border-white/[0.02] pointer-events-none" style={{ margin: "-20px" }} />
+      <div className="absolute inset-0 rounded-full border border-white/10 pointer-events-none" style={{ margin: "-10px" }} />
+      <div className="absolute inset-0 rounded-full border border-white/[0.04] pointer-events-none" style={{ margin: "-20px" }} />
 
       {/* Noise Texture Overlay */}
       <div

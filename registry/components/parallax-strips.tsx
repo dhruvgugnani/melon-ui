@@ -46,8 +46,6 @@ export function ParallaxStrips({
     const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) return;
 
-    const wrapper = document.querySelector("[data-lenis-wrapper]");
-
     const ctx = gsap.context(() => {
       stripRefs.current.forEach((strip, i) => {
         if (!strip || !strips[i]) return;
@@ -56,7 +54,6 @@ export function ParallaxStrips({
           ease: "none",
           scrollTrigger: {
             trigger: containerRef.current,
-            scroller: wrapper || undefined,
             start: "top bottom",
             end: "bottom top",
             scrub: true,

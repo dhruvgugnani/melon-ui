@@ -17,7 +17,7 @@ export interface AntiGravityBentoProps {
 const DEFAULT_ITEMS = [
   <div key="1" className="h-full w-full bg-[#111] rounded-xl border border-white/10 flex items-center justify-center overflow-hidden">
     <div className="w-8 h-8 rounded-full bg-[#ff5c71] blur-md absolute opacity-50 mix-blend-screen" />
-    <span className="text-white font-['Outfit'] font-bold text-lg relative z-10">SYS_01</span>
+    <span className="text-white font-['Outfit'] font-bold text-lg relative z-10">METRICS</span>
   </div>,
   <div key="2" className="h-full w-full bg-[#111] rounded-xl border border-white/10 flex items-center justify-center overflow-hidden">
     <div className="w-12 h-[2px] bg-[#7fff5e] rotate-45" />
@@ -25,7 +25,7 @@ const DEFAULT_ITEMS = [
   </div>,
   <div key="3" className="h-full w-full bg-[#111] rounded-xl border border-white/10 p-4 flex flex-col justify-between">
     <div className="w-4 h-4 rounded-full border border-[#00f0ff] animate-pulse" />
-    <span className="text-[#00f0ff] font-mono text-xs">DATA.SYNC</span>
+    <span className="text-[#00f0ff] font-mono text-xs">SYNCING</span>
   </div>,
   <div key="4" className="h-full w-full bg-[#111] rounded-xl border border-white/10 flex items-center justify-center relative">
     <svg className="w-1/2 h-1/2 text-white/20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
