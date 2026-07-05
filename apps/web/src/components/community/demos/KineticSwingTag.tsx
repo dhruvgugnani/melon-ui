@@ -142,8 +142,8 @@ export function KineticSwingTag({
         dragMomentum={true}
         dragTransition={{ bounceStiffness: 200, bounceDamping: 20 }}
         style={{
-          x: springX,
-          y: springY,
+          x,
+          y,
           rotateZ: smoothRotateZ,
           cursor: "grab",
           touchAction: "none"

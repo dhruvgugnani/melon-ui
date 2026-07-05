@@ -1784,7 +1784,7 @@ export function MelonDripText({
   {
       id: "elastic-tether-hub",
       slug: "elastic-tether-hub",
-      title: "Elastic Tether Hub",
+      title: "Tether Node Menu",
       description: "A centralized command core that blooms draggable action nodes on click, featuring elastic spring physics, real-time distance tracking, and a dramatic pull-to-fire release mechanic.",
       category: "Widgets",
       tags: ["framer-motion", "physics", "drag", "Menu"],
@@ -2025,7 +2025,7 @@ FlipCard.displayName = "FlipCard";
   {
       id: "fluid-magnetic-dial",
       slug: "fluid-magnetic-dial",
-      title: "Fluid Magnetic Dial",
+      title: "Fluid Control Dial",
       description: "A highly interactive, fluid-like control dial featuring magnetic Framer Motion physics, gooey SVG filters, and dynamic glitching text. Perfect for premium, futuristic dashboard interfaces.",
       category: "Inputs",
       tags: ["framer-motion", "magnetic", "Gooey", "Experimental"],
@@ -2088,7 +2088,7 @@ FlipCard.displayName = "FlipCard";
   {
       id: "glitch-pulse-core",
       slug: "glitch-pulse-core",
-      title: "Glitch Pulse Core",
+      title: "Glitch Status Indicator",
       description: "A highly interactive cybernetic core utilizing Framer Motion for magnetic hover physics, states (STABLE, UNSTABLE, CRITICAL) and SVG-based escalating glitch effects.",
       category: "Widgets",
       tags: ["framer-motion", "Glitch", "SVG Filter"],
@@ -2616,7 +2616,7 @@ export function VineInput({
   {
       id: "holo-ticket",
       slug: "holo-ticket",
-      title: "Holo Ticket",
+      title: "Ticket Card",
       description: "Premium holographic ticket component with 3D pointer-tracking reflection, dynamic CSS clipping, and elastic tearing physics.",
       category: "Cards",
       tags: ["gsap", "Clip", "glassmorphism", "Holographic"],
@@ -3053,7 +3053,7 @@ HoloTicket.displayName = "HoloTicket";
   {
       id: "hypermorph-bento",
       slug: "hypermorph-bento",
-      title: "HyperMorph Bento",
+      title: "Dynamic Bento Layout",
       description: "A highly dynamic 2x2 grid of layout items expanding to flex columns/rows with spring animations.",
       category: "Cards",
       tags: ["framer-motion", "Layout", "Bento"],
@@ -3320,7 +3320,7 @@ export const InfinityMirrorCard: React.FC<InfinityMirrorCardProps> = ({
   {
       id: "kinetic-glass-grid",
       slug: "kinetic-glass-grid",
-      title: "Kinetic Glass Grid",
+      title: "Proximity Glass Grid",
       description: "A physical, reactive glass grid that elevates and glows intelligently based on cursor proximity, using complex distance-based spring physics.",
       category: "Backgrounds",
       tags: ["framer-motion", "physics", "glassmorphism", "Interactive Grid"],
@@ -3541,7 +3541,7 @@ export const KineticGlassGrid: React.FC<KineticGlassGridProps> = ({
   {
       id: "kinetic-holo-stack",
       slug: "kinetic-holo-stack",
-      title: "Kinetic Holo Stack",
+      title: "Layered Blueprint Stack",
       description: "A highly interactive 'Holo-Stack' card that reveals its layered 3D structural blueprints on hover using physical spring separation and glowing lasers.",
       category: "Cards",
       tags: ["framer-motion", "3d", "glassmorphism"],
@@ -3808,7 +3808,7 @@ KineticHoloStack.displayName = "KineticHoloStack";
   {
       id: "kinetic-magnet",
       slug: "kinetic-magnet",
-      title: "Kinetic Magnet",
+      title: "Magnetic Pointer Grid",
       description: "A mechanical grid of interactive SVG lines/needles that act as magnetic nodes pointing directly at your cursor, emitting elastic spring waves on clicks.",
       category: "Cursors",
       tags: ["gsap", "svg", "Elastic"],
@@ -3819,7 +3819,7 @@ KineticHoloStack.displayName = "KineticHoloStack";
   {
       id: "kinetic-shard-terminal",
       slug: "kinetic-shard-terminal",
-      title: "Kinetic Shard Terminal",
+      title: "Data Shard Terminal",
       description: "A highly interactive cyberpunk-style terminal that unlocks via dragging and dropping a 'Data Shard' into a magnetic slot.",
       category: "Cards",
       tags: ["framer-motion", "drag"],
@@ -4139,7 +4139,7 @@ export function KineticShardTerminal({
   {
       id: "kinetic-shatter-card",
       slug: "kinetic-shatter-card",
-      title: "Kinetic Shatter Card",
+      title: "Shatter-on-Hover Card",
       description: "A premium glassmorphic enclosure that violently shatters into 3D floating shards on hover, revealing a cybernetic glowing core inside.",
       category: "Cards",
       tags: ["framer-motion", "3d", "Shatter"],
@@ -5528,7 +5528,7 @@ export function MorphTransition({
   {
       id: "morphing-cyber-node",
       slug: "morphing-cyber-node",
-      title: "Morphing Cyber Node",
+      title: "Morphing Control Node",
       description: "A multi-state, fluid-morphing interactive widget with magnetic hover physics and dynamic glassmorphism.",
       category: "Widgets",
       tags: ["framer-motion", "Morph", "glassmorphism"],
@@ -7331,7 +7331,7 @@ export function PrismVault({
   {
       id: "quantum-lens-decoder",
       slug: "quantum-lens-decoder",
-      title: "Quantum Lens Decoder",
+      title: "Lens Text Decoder",
       description: "An interactive code-breaking surface revealing clear text through a cursor-tracking lens.",
       category: "Cards",
       tags: ["framer-motion", "Clip Path", "Scramble"],
@@ -8312,7 +8312,7 @@ export function SeedwaveText({
   {
       id: "signal-loom",
       slug: "signal-loom",
-      title: "Signal Loom",
+      title: "Thread Route Board",
       description: "A transparent pointer-reactive glass command surface where luminous workflow threads bend toward the cursor and layered inspection wafers morph into focus.",
       category: "Cards",
       tags: ["framer-motion", "glassmorphism", "Pointer Physics", "Workflow"],
@@ -9668,7 +9668,7 @@ export function RindWipeTransition({
   {
       id: "synapse-terminal",
       slug: "synapse-terminal",
-      title: "Synapse Terminal",
+      title: "Interactive Graph Network",
       description: "A Gen-Z premium interactive graph node UI with animated bezier tethers, glassmorphic floating elements, and a reactive custom cursor. Perfect for data visualization, SaaS dashboards, or cyber-aesthetic landing pages.",
       category: "Widgets",
       tags: ["Graph", "Network", "framer-motion", "Dashboard"],
@@ -10055,7 +10055,7 @@ export function TerminalCursor({
 {
       id: "zero-gravity-shards",
       slug: "zero-gravity-shards",
-      title: "Zero Gravity Shards",
+      title: "Zero-Gravity Bento Grid",
       description: "A highly interactive 'zero gravity' shard interface where glassmorphic cards drift organically using Framer Motion physics, snap to the cursor on hover, and seamlessly morph into full-screen bento grids using layoutId when clicked.",
       category: "Cards",
       tags: ["framer-motion", "morphing", "Layout ID", "Zero Gravity", "Bento"],
@@ -11132,7 +11132,7 @@ export const SingularityControlNode: React.FC<SingularityControlNodeProps> = ({
 {
       id: "tethered-orbital-vault",
       slug: "tethered-orbital-vault",
-      title: "Tethered Orbital Vault",
+      title: "Orbital Key Vault",
       description: "A highly tactile digital lock where users drag orbiting cryptographic keys into a central core via magnetic tethers, morphing into a futuristic dashboard upon decryption.",
       category: "Widgets",
       tags: ["framer-motion", "drag", "Dashboard"],
@@ -11180,7 +11180,7 @@ export const SingularityControlNode: React.FC<SingularityControlNodeProps> = ({
 {
       id: "cyber-biometric-scanner",
       slug: "cyber-biometric-scanner",
-      title: "Cyber Biometric Scanner",
+      title: "Biometric Touch Scanner",
       description: "A highly interactive, press-and-hold biometric scanner featuring dynamic SVG topography, glowing laser sweeps, and glitching cybernetic states.",
       category: "Widgets",
       tags: ["framer-motion", "Biometric", "Scanner"],
@@ -11604,7 +11604,7 @@ function DraggableKey({
 {
     id: "holo-seal-vault",
     slug: "holo-seal-vault",
-    title: "Holo Seal Vault",
+    title: "Tear Security Seal",
     description: "A tactile unboxing experience where users physically drag and tear a holographic security seal to reveal encrypted content.",
     category: "Cards",
     tags: ["framer-motion", "physics", "Tactile"],
@@ -11874,7 +11874,7 @@ export function HoloSealVault({
 {
     id: "holo-deploy-card",
     slug: "holo-deploy-card",
-    title: "Holo Deploy Card",
+    title: "Unfolding Panel Card",
     description: "A highly kinetic, tactile 3D card. On hover, glassmorphic panels deploy outwardly like a satellite or an unfolding sci-fi interface, expanding the interface area.",
     category: "Cards",
     tags: ["framer-motion", "3d"],
@@ -12473,7 +12473,7 @@ export default function Demo() {
 {
       id: "kinetic-swing-tag",
       slug: "kinetic-swing-tag",
-      title: "Kinetic Swing Tag",
+      title: "Interactive Swing Tag",
       description: "A Gen-Z digital streetwear fashion tag with realistic string physics, draggable swinging motion, and holographic glare.",
       category: "Cards",
       tags: ["framer-motion", "physics"],
@@ -12754,7 +12754,7 @@ export function KineticSwingTag({
 {
     id: "void-portal-reveal",
     slug: "void-portal-reveal",
-    title: "Void Portal Reveal",
+    title: "3D Portal Reveal",
     description: "A highly interactive, gyroscopic 3D ring portal that massively scales on hover to simulate flying through, revealing a glassmorphic hidden dashboard or UI beneath.",
     category: "Backgrounds",
     tags: ["portal", "3d", "reveal", "glassmorphism", "framer-motion"],
@@ -13075,7 +13075,7 @@ export function VoidPortalReveal({
 {
     id: "holo-hexagon-map",
     slug: "holo-hexagon-map",
-    title: "Holo Hexagon Map",
+    title: "Hexagon Status Grid",
     description: "A 3D interactive, glassmorphic hexagon grid with magnetic hover and status nodes.",
     category: "Widgets",
     tags: ["hex", "grid", "3d", "map", "nodes", "dashboard"],
