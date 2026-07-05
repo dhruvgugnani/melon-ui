@@ -30,7 +30,7 @@ export const CyberBiometricScanner = React.forwardRef<HTMLDivElement, CyberBiome
     const [isScanning, setIsScanning] = useState(false);
     const [progress, setProgress] = useState(0);
     const [status, setStatus] = useState<"IDLE" | "SCANNING" | "SUCCESS" | "FAILED">("IDLE");
-    const scanIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const scanIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const scanControls = useAnimation();
     const ringControls = useAnimation();
 

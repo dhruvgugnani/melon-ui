@@ -1,4 +1,4 @@
-export interface ComponentProp {
+﻿export interface ComponentProp {
   name: string;
   type: string;
   defaultValue: string;
@@ -1990,7 +1990,7 @@ FlipCard.displayName = "FlipCard";
         <FlipCard 
           frontTitle="Click to open" 
           frontCategory="MelonUI"
-          backEmoji="🚀"
+          backEmoji="≡ƒÜÇ"
           backTitle="Welcome!" 
           backHint="Click to close"
         />
@@ -2005,7 +2005,7 @@ FlipCard.displayName = "FlipCard";
         { name: "frontHint", type: "string", defaultValue: `"Click to reveal >"`, description: "Helper action text on the front face.", control: { type: "text" } },
         { name: "backTitle", type: "string", defaultValue: `"Surprise!"`, description: "The title shown on the back of the card after flipping.", control: { type: "text" } },
         { name: "backHint", type: "string", defaultValue: `"Click again to flip back"`, description: "Helper action text on the back face.", control: { type: "text" } },
-        { name: "backEmoji", type: "string", defaultValue: `"🍉"`, description: "Emoji icon displayed on the back face.", control: { type: "text" } }
+        { name: "backEmoji", type: "string", defaultValue: `"≡ƒìë"`, description: "Emoji icon displayed on the back face.", control: { type: "text" } }
       ]
     },
   {
@@ -6454,10 +6454,10 @@ export function OrbitalCommandRing({
 
     // Define custom options linked to your application routes
     const customOptions = [
-      { id: "home", label: "Home", icon: "🏠", color: "#7fff5e", path: "/" },
-      { id: "docs", label: "Docs", icon: "📖", color: "#00f0ff", path: "/docs/introduction" },
-      { id: "loom", label: "Loom", icon: "🧶", color: "#ff5c71", path: "/components/signal-loom" },
-      { id: "bento", label: "Bento", icon: "🍱", color: "#ff8c00", path: "/components/hypermorph-bento" }
+      { id: "home", label: "Home", icon: "≡ƒÅá", color: "#7fff5e", path: "/" },
+      { id: "docs", label: "Docs", icon: "≡ƒôû", color: "#00f0ff", path: "/docs/introduction" },
+      { id: "loom", label: "Loom", icon: "≡ƒº╢", color: "#ff5c71", path: "/components/signal-loom" },
+      { id: "bento", label: "Bento", icon: "≡ƒì▒", color: "#ff8c00", path: "/components/hypermorph-bento" }
     ];
 
     return (
@@ -6967,7 +6967,7 @@ RindPeelCard.displayName = "RindPeelCard";
         { name: "peelTitle", type: "string", defaultValue: `"Rind Peel Card"`, description: "The title shown on the front peel layer. Set this prop to your own title text.", control: { type: "text" } },
         { name: "peelCategory", type: "string", defaultValue: `"Component"`, description: "The small category text on the front layer.", control: { type: "text" } },
         { name: "peelHint", type: "string", defaultValue: `"Hover to reveal"`, description: "The helper text on the front layer.", control: { type: "text" } },
-        { name: "revealTitle", type: "string", defaultValue: `"Fresh 🍉"`, description: "The title revealed underneath the peel.", control: { type: "text" } },
+        { name: "revealTitle", type: "string", defaultValue: `"Fresh ≡ƒìë"`, description: "The title revealed underneath the peel.", control: { type: "text" } },
         { name: "revealDesc", type: "string", defaultValue: `"Underneath the rind, something juicy."`, description: "The description text revealed underneath the peel.", control: { type: "text" } }
       ]
     },
@@ -9485,7 +9485,7 @@ export function StickerWall({
 `,
       componentPath: "StickerWall",
       props: [
-        { name: "stickers", type: "string", defaultValue: `"🍉 MELON, 🌱 SEED, 💦 JUICY, 🍈 RIND, ⭐ PRO, 🍃 FRESH, 🔪 SLICE, 🍭 SWEET"`, description: "Custom comma-separated list of stickers: 'Emoji Label, Emoji Label, ...'", control: { type: "text" } },
+        { name: "stickers", type: "string", defaultValue: `"≡ƒìë MELON, ≡ƒî▒ SEED, ≡ƒÆª JUICY, ≡ƒìê RIND, Γ¡É PRO, ≡ƒìâ FRESH, ≡ƒö¬ SLICE, ≡ƒì¡ SWEET"`, description: "Custom comma-separated list of stickers: 'Emoji Label, Emoji Label, ...'", control: { type: "text" } },
         { name: "stickerDensity", type: "number", defaultValue: "12", description: "Number of stickers scattered on the wall.", control: { type: "slider", min: 4, max: 24, step: 1 } },
         { name: "scaleOnHover", type: "number", defaultValue: "1.15", description: "Scale enlargement factor on hover.", control: { type: "slider", min: 1.0, max: 1.4, step: 0.05 } },
         { name: "stickerTheme", type: "string", defaultValue: `"melon"`, description: "Sticker label presets: 'melon', 'tech', or 'mixed'.", control: { type: "text" } }
@@ -9686,7 +9686,7 @@ export function RindWipeTransition({
       id: "tag-input",
       slug: "tag-input",
       title: "Tag Input",
-      description: "Animated tag management — press Enter or comma to add, backspace to remove.",
+      description: "Animated tag management ΓÇö press Enter or comma to add, backspace to remove.",
       category: "Inputs",
       tags: ["GSAP", "Input"],
       cliCommand: "npx @melonui-dev/cli add tag-input",
@@ -13336,66 +13336,13 @@ export function HoloHexagonMap({
   );
 }
 `,
-    }}
-                    />
-                    {node.title && (
-                      <span
-                        className="text-[10px] font-bold tracking-wider"
-                        style={{ color: isHovered ? "#fff" : color }}
-                      >
-                        {node.title}
-                      </span>
-                    )}
-                  </motion.div>
-                )}
-              </div>
-            </motion.div>
-          );
-        })}
-      </motion.div>
-
-      {/* Floating Info Panel when a node is hovered */}
-      <AnimatePresence>
-        {hoveredNode && nodes.find((n) => n.id === hoveredNode) && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="absolute bottom-8 right-8 bg-black/80 backdrop-blur-xl border p-4 min-w-[200px]"
-            style={{
-              borderColor: "rgba(255,255,255,0.1)",
-              clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)"
-            }}
-          >
-            {(() => {
-              const node = nodes.find((n) => n.id === hoveredNode)!;
-              const color = getStatusColor(node.status);
-              return (
-                <div className="flex flex-col gap-2 text-white">
-                  <div className="flex items-center gap-2 border-b pb-2" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-                     <div className="w-3 h-3 rounded-none bg-transparent border-2 animate-pulse" style={{ borderColor: color }} />
-                     <span className="font-mono text-sm tracking-widest uppercase" style={{ color }}>
-                       {node.title || "UNKNOWN"}
-                     </span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs text-white/50 font-mono mt-1">
-                    <span>STATUS</span>
-                    <span style={{ color }}>{node.status?.toUpperCase() || "N/A"}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs text-white/50 font-mono mt-1">
-                    <span>COORDS</span>
-                    <span>[{node.row}, {node.col}]</span>
-                  </div>
-                </div>
-              );
-            })()}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-`,
+      props: [
+      { name: "rows", type: "number", defaultValue: "4", description: "Number of hexagon rows.", control: { type: "slider", min: 2, max: 8, step: 1 } },
+      { name: "cols", type: "number", defaultValue: "6", description: "Number of columns.", control: { type: "slider", min: 3, max: 12, step: 1 } },
+      { name: "hexSize", type: "number", defaultValue: "60", description: "Hexagon cell size.", control: { type: "slider", min: 40, max: 100, step: 5 } },
+      { name: "primaryColor", type: "string", defaultValue: "\"#ff5c71\"", description: "Primary accent color.", control: { type: "color" } },
+      { name: "accentColor", type: "string", defaultValue: "\"#7fff5e\"", description: "Secondary accent color.", control: { type: "color" } }
+    ]
   }
 ];
 
