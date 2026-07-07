@@ -73,4 +73,5 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   OrbitalKeyVault: dynamic(() => import('./demos/OrbitalKeyVault').then(m => m.OrbitalKeyVault), { ssr: false }),
   ThreeDPortalReveal: dynamic(() => import('./demos/ThreeDPortalReveal').then(m => m.ThreeDPortalReveal), { ssr: false }),
   ZeroGravityBentoGrid: dynamic(() => import('./demos/ZeroGravityBentoGrid').then(m => m.ZeroGravityBentoGrid), { ssr: false }),
+  GyroscopeCommandCore: dynamic(() => import('./demos/GyroscopeCommandCore').then(m => m.GyroscopeCommandCore), { ssr: false }),
 };
