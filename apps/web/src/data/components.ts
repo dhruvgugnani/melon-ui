@@ -29,6 +29,53 @@ export interface ComponentData {
 
 export const componentsData: ComponentData[] = [
   {
+    id: "hyper-magnet-card",
+    slug: "hyper-magnet-card",
+    title: "Hyper Magnet Card",
+    description: "A futuristic card with magnetic physics, floating sticker elements, glassmorphism, and radial cursor tracking.",
+    category: "cards",
+    tags: ["framer-motion", "magnetic", "glassmorphism", "3d", "interactive"],
+    componentPath: "components/community/demos/HyperMagnetCard.tsx",
+    codeSnippet: "\"use client\";\n\nimport React, { useRef, useState, useEffect } from \"react\";\nimport { motion, useMotionValue, useSpring, useTransform } from \"framer-motion\";\n\nexport interface HyperMagnetCardProps {\n  title?: string;\n  subtitle?: string;\n  stickerText?: string;\n  primaryColor?: string;\n  accentColor?: string;\n  bg?: string;\n  width?: number | string;\n  height?: number | string;\n  className?: string;\n  style?: React.CSSProperties;\n}\n\nfunction HyperMagnetCard({\n  title = \"HYPER\",\n  subtitle = \"MAGNETIC STICKER\",\n  stickerText = \"100% PURE\",\n  primaryColor = \"#7fff5e\",\n  accentColor = \"#ff5c71\",\n  bg = \"#050505\",\n  width = 340,\n  height = 420,\n  className = \"\",\n  style,\n}: HyperMagnetCardProps) {\n  const containerRef = useRef<HTMLDivElement>(null);\n  const [isHovered, setIsHovered] = useState(false);\n  const [mounted, setMounted] = useState(false);\n\n  useEffect(() => {\n    const t = setTimeout(() => setMounted(true), 0);\n    return () => clearTimeout(t);\n  }, []);\n\n  const mouseX = useMotionValue(0);\n  const mouseY = useMotionValue(0);\n\n  const springConfig = { damping: 20, stiffness: 150, mass: 0.5 };\n  const smoothX = useSpring(mouseX, springConfig);\n  const smoothY = useSpring(mouseY, springConfig);\n\n  const stickerX = useSpring(mouseX, { damping: 12, stiffness: 200, mass: 0.8 });\n  const stickerY = useSpring(mouseY, { damping: 12, stiffness: 200, mass: 0.8 });\n\n  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {\n    if (!containerRef.current) return;\n    const { left, top, width, height } = containerRef.current.getBoundingClientRect();\n    \n    const x = (e.clientX - left) / width - 0.5;\n    const y = (e.clientY - top) / height - 0.5;\n    \n    mouseX.set(x);\n    mouseY.set(y);\n  };\n\n  const handleMouseLeave = () => {\n    setIsHovered(false);\n    mouseX.set(0);\n    mouseY.set(0);\n  };\n\n  const handleMouseEnter = () => setIsHovered(true);\n\n  const stickerTranslateX = useTransform(stickerX, [-0.5, 0.5], [-120, 120]);\n  const stickerTranslateY = useTransform(stickerY, [-0.5, 0.5], [-120, 120]);\n  const stickerRotate = useTransform(stickerX, [-0.5, 0.5], [-20, 20]);\n\n  const ambientGlow = useTransform(\n    [smoothX, smoothY],\n    ([x, y]: number[]) => `radial-gradient(circle at ${(x + 0.5) * 100}% ${(y + 0.5) * 100}%, ${primaryColor}40, transparent 60%)`\n  );\n\n  const sheenPosition = useTransform(stickerX, [-0.5, 0.5], [\"100% 0\", \"0 0\"]);\n\n  if (!mounted) return <div style={{ width, height, ...style }} className={className} />;\n\n  return (\n    <motion.div\n      ref={containerRef}\n      onMouseMove={handleMouseMove}\n      onMouseLeave={handleMouseLeave}\n      onMouseEnter={handleMouseEnter}\n      className={`relative perspective-[1200px] cursor-crosshair group ${className}`}\n      style={{ width, height, ...style }}\n    >\n      <motion.div\n        className=\"w-full h-full relative rounded-2xl border border-white/10 overflow-hidden\"\n        style={{\n          background: bg,\n          boxShadow: isHovered ? `0 20px 40px -10px ${primaryColor}20` : \"0 10px 30px -10px rgba(0,0,0,0.5)\",\n          rotateX: useTransform(smoothY, [-0.5, 0.5], [15, -15]),\n          rotateY: useTransform(smoothX, [-0.5, 0.5], [-15, 15]),\n          transformStyle: \"preserve-3d\",\n        }}\n        transition={{ type: \"spring\", stiffness: 300, damping: 20 }}\n      >\n        <motion.div\n          className=\"absolute inset-0 z-0 opacity-50 transition-opacity duration-300\"\n          style={{ background: ambientGlow, opacity: isHovered ? 1 : 0.4 }}\n        />\n\n        <div className=\"absolute inset-0 z-0 opacity-20 pointer-events-none mix-blend-overlay\">\n          <svg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\" width=\"100%\" height=\"100%\">\n            <filter id=\"noiseFilter\">\n              <feTurbulence type=\"fractalNoise\" baseFrequency=\"0.85\" numOctaves=\"3\" stitchTiles=\"stitch\" />\n            </filter>\n            <rect width=\"100%\" height=\"100%\" filter=\"url(#noiseFilter)\" />\n          </svg>\n        </div>\n\n        <div className=\"absolute bottom-6 left-6 z-10 flex flex-col pointer-events-none\">\n          <h3 className=\"font-outfit text-3xl font-black text-white leading-none tracking-tight\">\n            {title}\n          </h3>\n          <p className=\"font-mono text-xs mt-2 uppercase tracking-widest\" style={{ color: accentColor }}>\n            {subtitle}\n          </p>\n        </div>\n\n        <motion.div\n          className=\"absolute top-1/2 left-1/2 flex items-center justify-center z-20 pointer-events-none\"\n          style={{\n            x: stickerTranslateX,\n            y: stickerTranslateY,\n            rotate: stickerRotate,\n            marginLeft: \"-60px\",\n            marginTop: \"-30px\",\n          }}\n        >\n          <motion.div\n            className=\"w-[120px] h-[60px] rounded-xl flex items-center justify-center relative overflow-hidden backdrop-blur-md\"\n            style={{\n              background: `linear-gradient(135deg, ${primaryColor}cc, ${primaryColor}88)`,\n              border: `1px solid ${primaryColor}aa`,\n              boxShadow: `0 10px 20px -5px ${primaryColor}60`,\n            }}\n          >\n            <motion.div\n              className=\"absolute inset-0 z-0 opacity-40\"\n              style={{\n                background: \"linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.8) 45%, transparent 70%)\",\n                backgroundSize: \"200% 100%\",\n                backgroundPosition: sheenPosition,\n              }}\n            />\n            \n            <div \n              className=\"absolute inset-0 z-0 opacity-10 mix-blend-overlay pointer-events-none\" \n              style={{ backgroundImage: \"repeating-linear-gradient(0deg, transparent, transparent 2px, black 2px, black 4px)\" }}\n            />\n\n            <span className=\"font-londrina text-lg tracking-wider text-black z-10 drop-shadow-sm\">\n              {stickerText}\n            </span>\n            \n            <div className=\"absolute top-1.5 left-1.5 w-1 h-1 rounded-full bg-black/40 z-10\" />\n            <div className=\"absolute top-1.5 right-1.5 w-1 h-1 rounded-full bg-black/40 z-10\" />\n            <div className=\"absolute bottom-1.5 left-1.5 w-1 h-1 rounded-full bg-black/40 z-10\" />\n            <div className=\"absolute bottom-1.5 right-1.5 w-1 h-1 rounded-full bg-black/40 z-10\" />\n          </motion.div>\n        </motion.div>\n        \n        <div className=\"absolute inset-0 z-0 opacity-10 pointer-events-none flex items-center justify-center\">\n            <div className=\"w-[80%] h-[80%] border border-dashed border-white rounded-full opacity-30\" />\n            <div className=\"absolute w-[2px] h-[120%] bg-white/20 rotate-45 mix-blend-overlay\" />\n            <div className=\"absolute w-[2px] h-[120%] bg-white/20 -rotate-45 mix-blend-overlay\" />\n        </div>\n\n        <div className=\"absolute top-4 left-4 z-10 font-mono text-[9px] text-white/40 flex items-center gap-2\">\n            <div className=\"w-1.5 h-1.5 rounded-full bg-green-400\" />\n            <span>SYS_REQ: VALID</span>\n        </div>\n\n      </motion.div>\n    </motion.div>\n  );\n}\n\nexport default HyperMagnetCard;\n",
+    props: [
+      {
+        name: "title",
+        type: "string",
+        defaultValue: '"HYPER"',
+        description: "Main title text",
+        control: { type: "text" }
+      },
+      {
+        name: "stickerText",
+        type: "string",
+        defaultValue: '"100% PURE"',
+        description: "Floating sticker text",
+        control: { type: "text" }
+      },
+      {
+        name: "primaryColor",
+        type: "string",
+        defaultValue: '"#7fff5e"',
+        description: "Primary glow/accent color",
+        control: { type: "color" }
+      },
+      {
+        name: "width",
+        type: "number",
+        defaultValue: "340",
+        description: "Card width in px",
+        control: { type: "slider", min: 200, max: 600, step: 10 }
+      },
+      {
+        name: "height",
+        type: "number",
+        defaultValue: "420",
+        description: "Card height in px",
+        control: { type: "slider", min: 300, max: 800, step: 10 }
+      }
+    ]
+  },
+  {
       id: "anti-gravity-bento",
       slug: "anti-gravity-bento",
       title: "Anti-Gravity Bento",
