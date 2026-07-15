@@ -265,44 +265,47 @@ export function FeaturesSection() {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Header Block */}
-        <div className="mb-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-          <div className="col-span-12 md:col-span-3">
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-[#ff5c71]">
-              Chapter 02 / Platform Insights
-            </p>
-            <h2
-              className="mt-1 font-black uppercase leading-[0.82] text-white text-[clamp(2.5rem,10vw,3.8rem)] md:text-[clamp(3rem,5vw,4.5rem)]"
-              style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
-            >
-              WHAT'S{" "}
-              <span className="text-[#7fff5e]">INSIDE.</span>
-            </h2>
-          </div>
-          <div className="col-span-12 md:col-span-9 flex md:justify-end">
-            <p className="max-w-xl font-sans text-xs leading-5 text-white/68 md:text-right">
-              { "Explore the core architecture, community growth metrics, and organic lifecycle timeline that makes MelonUI the premier choice for high-fidelity animations."
-                .split(" ")
-                .map((word, idx) => (
-                  <span
-                    key={idx}
-                    ref={(el) => {
-                      if (el) titleWordsRef.current[idx] = el;
-                    }}
-                    className="inline-block mr-1 cursor-default transition-colors duration-150"
-                  >
-                    {word}
-                  </span>
-                ))
-              }
-            </p>
-          </div>
+        {/* Header Block (Title Only) */}
+        <div className="mb-4">
+          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[#ff5c71]">
+            Chapter 02 / Platform Insights
+          </p>
+          <h2
+            className="mt-1 font-black uppercase leading-[0.82] text-white text-[clamp(2.5rem,10vw,3.8rem)] md:text-[clamp(3rem,5vw,4.5rem)]"
+            style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
+          >
+            WHAT'S <span className="text-[#7fff5e]">INSIDE.</span>
+          </h2>
         </div>
 
         {/* Bento Grid */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-6 lg:grid-cols-12 relative z-10">
-          {/* Card 1: 50+ Premium Components (Floating Tag Cloud) */}
-          <div className={`${cardStyle} col-span-12 md:col-span-3`}>
+          {/* Card 1: Platform Description (Physics Repel Words) */}
+          <div className={`${cardStyle} col-span-12 md:col-span-5 flex flex-col justify-center`}>
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <span className="font-mono text-[9px] uppercase tracking-wider text-white/32 block mb-2">MelonUI core</span>
+              <p className="font-sans text-xs leading-5 text-white/90">
+                { "Explore the core architecture, community growth metrics, and organic lifecycle timeline that makes MelonUI the premier choice for high-fidelity animations."
+                  .split(" ")
+                  .map((word, idx) => (
+                    <span
+                      key={idx}
+                      ref={(el) => {
+                        if (el) titleWordsRef.current[idx] = el;
+                      }}
+                      className="inline-block mr-1 cursor-default transition-colors duration-150"
+                    >
+                      {word}
+                    </span>
+                  ))
+                }
+              </p>
+            </div>
+          </div>
+
+          {/* Card 2: 50+ Premium Components (Floating Tag Cloud) */}
+          <div className={`${cardStyle} col-span-12 md:col-span-4`}>
             <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.01] pointer-events-none" />
             <div
               ref={tagsRef}
@@ -327,8 +330,42 @@ export function FeaturesSection() {
             </div>
           </div>
 
-          {/* Card 2: Community Growth (GitHub Stars graph) */}
-          <div className={`${cardStyle} col-span-12 md:col-span-6`}>
+          {/* Card 3: Pick Your Stack Toggle */}
+          <div className={`${cardStyle} col-span-12 md:col-span-3`}>
+            <div className="flex flex-col gap-1.5">
+              <p className="font-mono text-[9px] uppercase tracking-wider text-white/40">Developer Stack</p>
+              <div className="grid grid-cols-2 gap-1 rounded border border-white/10 bg-black/75 p-0.5 relative z-10">
+                {[
+                  { id: 0, label: "JS + CSS" },
+                  { id: 1, label: "TS + CSS" },
+                  { id: 2, label: "JS + TW" },
+                  { id: 3, label: "TS + TW" },
+                ].map((stack) => (
+                  <button
+                    key={stack.id}
+                    onClick={() => setActiveStack(stack.id)}
+                    className={`rounded py-1 font-mono text-[8px] uppercase transition-all ${
+                      activeStack === stack.id
+                        ? "bg-[#7fff5e] text-black font-black"
+                        : "text-white/62 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    {stack.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-2 pt-2 border-t border-white/8">
+              <h3 className="text-xs font-bold text-white">Full Stack Versatility</h3>
+              <p className="mt-0.5 text-[9px] text-white/54">
+                Every component is modularized across four distinct flavors to integrate natively into any setup.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 4: Community Growth (GitHub Stars graph) */}
+          <div className={`${cardStyle} col-span-12 md:col-span-4`}>
             {/* Background SVG Sparkline */}
             <div className="absolute inset-0 z-0 h-32 overflow-hidden pointer-events-none">
               <svg className="w-full h-full" viewBox="0 0 320 180" preserveAspectRatio="none">
@@ -374,42 +411,8 @@ export function FeaturesSection() {
             </div>
           </div>
 
-          {/* Card 3: Pick Your Stack Toggle */}
-          <div className={`${cardStyle} col-span-12 md:col-span-3`}>
-            <div className="flex flex-col gap-1.5">
-              <p className="font-mono text-[9px] uppercase tracking-wider text-white/40">Developer Stack</p>
-              <div className="grid grid-cols-2 gap-1 rounded border border-white/10 bg-black/75 p-0.5 relative z-10">
-                {[
-                  { id: 0, label: "JS + CSS" },
-                  { id: 1, label: "TS + CSS" },
-                  { id: 2, label: "JS + TW" },
-                  { id: 3, label: "TS + TW" },
-                ].map((stack) => (
-                  <button
-                    key={stack.id}
-                    onClick={() => setActiveStack(stack.id)}
-                    className={`rounded py-1 font-mono text-[8px] uppercase transition-all ${
-                      activeStack === stack.id
-                        ? "bg-[#7fff5e] text-black font-black"
-                        : "text-white/62 hover:bg-white/[0.04]"
-                    }`}
-                  >
-                    {stack.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-2 pt-2 border-t border-white/8">
-              <h3 className="text-xs font-bold text-white">Full Stack Versatility</h3>
-              <p className="mt-0.5 text-[9px] text-white/54">
-                Every component is modularized across four distinct flavors to integrate natively into any setup.
-              </p>
-            </div>
-          </div>
-
-          {/* Card 4: Dev-Ready CLI Terminal Mockup */}
-          <div className={`${cardStyle} col-span-12 md:col-span-7`}>
+          {/* Card 5: Dev-Ready CLI Terminal Mockup */}
+          <div className={`${cardStyle} col-span-12 md:col-span-4`}>
             {/* Terminal Window Header */}
             <div className="flex items-center justify-between border-b border-white/8 pb-2">
               <div className="flex items-center gap-1.5">
@@ -445,8 +448,8 @@ export function FeaturesSection() {
             </div>
           </div>
 
-          {/* Card 5: Modular Categories circular node menu */}
-          <div className={`${cardStyle} col-span-12 md:col-span-5`}>
+          {/* Card 6: Modular Categories circular node menu */}
+          <div className={`${cardStyle} col-span-12 md:col-span-4`}>
             <div className="relative flex h-20 items-center justify-center overflow-hidden">
               {/* Outer Orbit Line */}
               <div className="absolute h-16 w-16 rounded-full border border-white/[0.05] animate-[spin_12s_linear_infinite]" />

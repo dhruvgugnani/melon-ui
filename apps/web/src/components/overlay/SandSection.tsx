@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { TactileIDCard } from "../community/demos/TactileIDCard";
 
 export function SandSection() {
   return (
@@ -9,13 +10,13 @@ export function SandSection() {
       className="snap-start relative z-10 flex h-screen w-full flex-col overflow-hidden bg-transparent"
       style={{ scrollSnapStop: "always" }}
     >
-      {/* Header aligned on vertical axis */}
+      {/* Header aligned on vertical axis and size-standardized */}
       <div className="flex-none w-full max-w-7xl mx-auto px-6 pt-[12vh] md:px-10 lg:px-16">
         <p className="mb-3 font-mono text-xs uppercase text-[#ff5c71]" style={{ letterSpacing: 0 }}>
           Chapter 03 / Seeds hit code
         </p>
         <h2
-          className="font-black uppercase leading-[0.82] text-white text-[clamp(3rem,9vw,8.5rem)]"
+          className="font-black uppercase leading-[0.82] text-white text-[clamp(2.5rem,10vw,3.8rem)] md:text-[clamp(3rem,5vw,4.5rem)]"
           style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
         >
           Drop It
@@ -59,9 +60,9 @@ export function SandSection() {
 
           {/* Right Column: Premium CSS Device Mockups (Laptop + Phone) */}
           <div className="col-span-12 lg:col-span-7 flex items-center justify-center p-4">
-            <div className="relative w-full max-w-[440px] h-[270px]">
+            <div className="relative w-full max-w-[480px] h-[310px]">
               {/* Laptop mockup frame */}
-              <div className="absolute left-0 top-0 rounded-xl border border-white/12 bg-[#0a0a0a]/80 shadow-[0_25px_60px_rgba(0,0,0,0.85)] overflow-hidden aspect-video h-[200px] w-[320px] md:h-[230px] md:w-[370px] backdrop-blur-2xl select-none transition-all duration-300 hover:scale-[1.01] hover:border-white/20">
+              <div className="absolute left-0 top-0 rounded-xl border border-white/12 bg-[#0a0a0a]/85 shadow-[0_25px_60px_rgba(0,0,0,0.85)] overflow-hidden aspect-video h-[240px] w-[380px] md:h-[280px] md:w-[440px] backdrop-blur-2xl select-none transition-all duration-300 hover:scale-[1.01] hover:border-white/20">
                 {/* Top browser tab header */}
                 <div className="flex items-center justify-between bg-black/40 border-b border-white/8 px-3 py-1.5">
                   <div className="flex gap-1.5">
@@ -75,93 +76,35 @@ export function SandSection() {
                   <span className="h-1.5 w-1.5 rounded-full bg-white/20" />
                 </div>
 
-                {/* Laptop contents */}
-                <div className="p-3 font-sans h-[calc(100%-25px)] flex flex-col justify-between">
-                  {/* Navbar desktop */}
-                  <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                    <span className="text-[10px] font-black text-white uppercase animate-pulse" style={{ fontFamily: "var(--font-londrina-solid)" }}>
-                      Melon<span className="text-[#ff5c71]">UI</span>
-                    </span>
-                    <div className="flex gap-3 text-[8px] font-medium text-white/45">
-                      <span className="text-[#7fff5e] font-bold">Docs</span>
-                      <span>Showcase</span>
-                      <span>Blog</span>
-                    </div>
-                    <span className="rounded bg-[#ff5c71] px-1.5 py-0.5 text-[6px] font-bold text-white uppercase">
-                      Get Started
-                    </span>
-                  </div>
-
-                  {/* Dashboard stats row (3 cards) */}
-                  <div className="grid grid-cols-3 gap-2 mt-2">
-                    {[
-                      { title: "Active", val: "94.2%", col: "text-[#7fff5e]" },
-                      { title: "Latency", val: "14ms", col: "text-white" },
-                      { title: "Load", val: "2.1k/s", col: "text-[#ff5c71]" }
-                    ].map((stat) => (
-                      <div key={stat.title} className="rounded border border-white/5 bg-white/[0.02] p-1.5">
-                        <p className="text-[6px] uppercase tracking-wider text-white/32">{stat.title}</p>
-                        <p className={`text-[10px] font-black mt-0.5 ${stat.col}`}>{stat.val}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Desktop sparkline */}
-                  <div className="mt-auto h-8 w-full border-t border-white/5 pt-1.5 flex items-end">
-                    <svg className="w-full h-full" viewBox="0 0 300 30" preserveAspectRatio="none">
-                      <path d="M0,25 Q40,10 80,18 T160,8 T240,15 T300,5" fill="none" stroke="#ff5c71" strokeWidth="1.5" strokeLinecap="round" />
-                      <path d="M0,25 Q40,10 80,18 T160,8 T240,15 T300,5 L300,30 L0,30 Z" fill="rgba(255,92,113,0.05)" />
-                    </svg>
+                {/* Laptop contents (Renders scaled interactive TactileIDCard) */}
+                <div className="relative h-[calc(100%-25px)] w-full overflow-hidden flex items-center justify-center">
+                  <div className="absolute inset-0 scale-[0.62] origin-center flex items-center justify-center transform translate-y-[-15px]">
+                    <TactileIDCard 
+                      style={{ height: "400px", width: "560px", background: "transparent" }}
+                      name="DHRUV G."
+                      role="CREATIVE DIR"
+                      idNumber="M-01992"
+                    />
                   </div>
                 </div>
               </div>
 
               {/* Phone mockup frame (overlapping foreground) */}
-              <div className="absolute right-0 bottom-0 rounded-2xl border-2 border-white/12 bg-[#0c0c0c]/92 shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden h-[230px] w-[110px] md:h-[260px] md:w-[125px] backdrop-blur-2xl select-none transition-all duration-300 hover:scale-[1.03] hover:border-[#ff5c71]/40">
+              <div className="absolute right-0 bottom-0 rounded-2xl border-2 border-white/12 bg-[#0c0c0c]/95 shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden h-[270px] w-[130px] md:h-[310px] md:w-[150px] backdrop-blur-2xl select-none transition-all duration-300 hover:scale-[1.03] hover:border-[#ff5c71]/40">
                 {/* Phone camera notch */}
                 <div className="flex justify-center pt-1.5 pb-1 bg-black/40">
                   <div className="h-1 w-7 rounded-full bg-white/20" />
                 </div>
 
-                {/* Phone screen contents */}
-                <div className="p-2.5 font-sans h-[calc(100%-25px)] flex flex-col justify-between">
-                  {/* Navbar mobile */}
-                  <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                    <span className="text-[10px] font-black text-white uppercase" style={{ fontFamily: "var(--font-londrina-solid)" }}>
-                      M<span className="text-[#ff5c71]">UI</span>
-                    </span>
-                    <div className="flex flex-col gap-0.5 w-3 justify-center items-end">
-                      <span className="h-0.5 w-full bg-[#ff5c71] rounded-full animate-pulse" />
-                      <span className="h-0.5 w-2/3 bg-white rounded-full" />
-                      <span className="h-0.5 w-full bg-[#ff5c71] rounded-full" />
-                    </div>
-                  </div>
-
-                  {/* Stacked dashboard rows (mobile scale) */}
-                  <div className="flex flex-col gap-1.5 mt-2">
-                    {[
-                      { title: "Active", val: "94.2%", col: "text-[#7fff5e]" },
-                      { title: "Latency", val: "14ms", col: "text-white" },
-                    ].map((stat) => (
-                      <div key={stat.title} className="rounded border border-white/5 bg-white/[0.02] p-1.5 flex items-center justify-between">
-                        <span className="text-[6px] uppercase tracking-wider text-white/32">{stat.title}</span>
-                        <span className={`text-[8px] font-black ${stat.col}`}>{stat.val}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Mobile sparkline */}
-                  <div className="h-7 mt-2 border-t border-white/5 pt-1 flex items-end">
-                    <svg className="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
-                      <path d="M0,15 Q20,5 40,10 T80,5 T100,12" fill="none" stroke="#7fff5e" strokeWidth="1" strokeLinecap="round" />
-                    </svg>
-                  </div>
-
-                  {/* Phone navigation buttons */}
-                  <div className="mt-auto border-t border-white/5 pt-2 flex justify-between px-1 text-[8px] text-white/22">
-                    <span className="text-[#ff5c71] font-bold">●</span>
-                    <span>■</span>
-                    <span>▲</span>
+                {/* Phone screen contents (Renders scaled interactive TactileIDCard) */}
+                <div className="relative h-[calc(100%-25px)] w-full overflow-hidden flex items-center justify-center">
+                  <div className="absolute inset-0 scale-[0.34] origin-center flex items-center justify-center transform translate-y-[-10px]">
+                    <TactileIDCard 
+                      style={{ height: "760px", width: "380px", background: "transparent" }}
+                      name="DHRUV G."
+                      role="CREATIVE DIR"
+                      idNumber="M-01992"
+                    />
                   </div>
                 </div>
               </div>
