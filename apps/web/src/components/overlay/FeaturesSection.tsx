@@ -260,230 +260,217 @@ export function FeaturesSection() {
       className="snap-start relative z-10 flex min-h-screen w-full items-center py-6 lg:py-0 overflow-y-auto lg:overflow-hidden bg-transparent"
       style={{ scrollSnapStop: "always" }}
     >
-      <div 
+      <div
         className="mx-auto w-full max-w-7xl px-4 md:px-8"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Header Block (Title Only) */}
-        <div className="mb-4">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[#ff5c71]">
-            Chapter 02 / Platform Insights
-          </p>
-          <h2
-            className="mt-1 font-black uppercase leading-[0.82] text-white text-[clamp(2.5rem,10vw,3.8rem)] md:text-[clamp(3rem,5vw,4.5rem)]"
-            style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
-          >
-            WHAT'S <span className="text-[#7fff5e]">INSIDE.</span>
-          </h2>
-        </div>
+        {/* Chapter label */}
+        <p className="mb-3 font-mono text-xs uppercase tracking-[0.28em] text-[#ff5c71]">
+          Chapter 02 / Platform Insights
+        </p>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-6 lg:grid-cols-12 relative z-10">
-          {/* Card 1: Platform Description (Physics Repel Words) */}
-          <div className={`${cardStyle} col-span-12 md:col-span-5 flex flex-col justify-center`}>
-            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent pointer-events-none" />
-            <div className="relative z-10">
-              <span className="font-mono text-[9px] uppercase tracking-wider text-white/32 block mb-2">MelonUI core</span>
-              <p className="font-sans text-xs leading-5 text-white/90">
-                { "Explore the core architecture, community growth metrics, and organic lifecycle timeline that makes MelonUI the premier choice for high-fidelity animations."
-                  .split(" ")
-                  .map((word, idx) => (
-                    <span
-                      key={idx}
-                      ref={(el) => {
-                        if (el) titleWordsRef.current[idx] = el;
-                      }}
-                      className="inline-block mr-1 cursor-default transition-colors duration-150"
-                    >
-                      {word}
-                    </span>
-                  ))
+        {/* ── OUTER BENTO CONTAINER ── */}
+        <div
+          className="relative w-full rounded-2xl border border-white/10 bg-white/[0.018] backdrop-blur-xl p-5"
+          style={{
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 32px 80px rgba(0,0,0,0.72)",
+          }}
+        >
+          {/* Subtle inner noise glow */}
+          <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.015] via-transparent to-transparent" />
+
+          {/* ── 12-COL INNER GRID ── */}
+          <div className="relative grid grid-cols-12 gap-3" style={{ gridTemplateRows: "auto auto" }}>
+
+            {/* ── HEADING — top-left, no card ── */}
+            <div className="col-span-12 md:col-span-4 flex flex-col justify-between pb-1 pr-3">
+              <h2
+                className="font-black uppercase leading-[0.82] text-white text-[clamp(2rem,8vw,3.2rem)] md:text-[clamp(2.4rem,4vw,4rem)]"
+                style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
+              >
+                WHAT'S{" "}
+                <span className="text-[#7fff5e]">INSIDE.</span>
+              </h2>
+              {/* Description text — bottom of heading column */}
+              <p className="mt-4 hidden md:block font-sans text-[10px] leading-[1.65] text-white/38 max-w-[200px]">
+                {
+                  "Explore the core architecture, community growth metrics, and organic lifecycle timeline that makes MelonUI the premier choice for high-fidelity animations."
+                    .split(" ")
+                    .map((word, idx) => (
+                      <span
+                        key={idx}
+                        ref={(el) => {
+                          if (el) titleWordsRef.current[idx] = el;
+                        }}
+                        className="inline-block mr-1 cursor-default"
+                      >
+                        {word}
+                      </span>
+                    ))
                 }
               </p>
             </div>
-          </div>
 
-          {/* Card 2: 50+ Premium Components (Floating Tag Cloud) */}
-          <div className={`${cardStyle} col-span-12 md:col-span-4`}>
-            <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.01] pointer-events-none" />
+            {/* ── ROW 1 RIGHT: two cards side-by-side ── */}
+            {/* Card A — Tags cloud (top-middle) */}
             <div
-              ref={tagsRef}
-              className="flex flex-wrap gap-1.5 overflow-hidden h-20 select-none relative z-10"
+              className={`${cardStyle} col-span-12 md:col-span-4`}
+              style={{ height: "160px" }}
             >
-              {TAGS.map((tag) => (
-                <span key={tag} className="inline-block relative">
-                  <span
-                    className="inline-block rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] uppercase text-white/68 transition-all hover:text-[#7fff5e]"
-                    style={{ letterSpacing: 0 }}
-                  >
-                    {tag}
+              <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.01] pointer-events-none rounded-xl" />
+              <div
+                ref={tagsRef}
+                className="flex flex-wrap gap-1.5 overflow-hidden h-[72px] select-none relative z-10"
+              >
+                {TAGS.map((tag) => (
+                  <span key={tag} className="inline-block relative">
+                    <span
+                      className="inline-block rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] uppercase text-white/68 transition-all hover:text-[#7fff5e]"
+                      style={{ letterSpacing: 0 }}
+                    >
+                      {tag}
+                    </span>
                   </span>
-                </span>
-              ))}
-            </div>
-            <div className="relative z-15">
-              <h3 className="text-sm font-bold text-white">55+ Premium Components</h3>
-              <p className="mt-0.5 text-[10px] text-white/54 leading-normal">
-                Physics-based card layouts, volumetric hologram projections, typography sliders, and responsive spring menus.
-              </p>
-            </div>
-          </div>
-
-          {/* Card 3: Pick Your Stack Toggle */}
-          <div className={`${cardStyle} col-span-12 md:col-span-3`}>
-            <div className="flex flex-col gap-1.5">
-              <p className="font-mono text-[9px] uppercase tracking-wider text-white/40">Developer Stack</p>
-              <div className="grid grid-cols-2 gap-1 rounded border border-white/10 bg-black/75 p-0.5 relative z-10">
-                {[
-                  { id: 0, label: "JS + CSS" },
-                  { id: 1, label: "TS + CSS" },
-                  { id: 2, label: "JS + TW" },
-                  { id: 3, label: "TS + TW" },
-                ].map((stack) => (
-                  <button
-                    key={stack.id}
-                    onClick={() => setActiveStack(stack.id)}
-                    className={`rounded py-1 font-mono text-[8px] uppercase transition-all ${
-                      activeStack === stack.id
-                        ? "bg-[#7fff5e] text-black font-black"
-                        : "text-white/62 hover:bg-white/[0.04]"
-                    }`}
-                  >
-                    {stack.label}
-                  </button>
                 ))}
               </div>
-            </div>
-
-            <div className="mt-2 pt-2 border-t border-white/8">
-              <h3 className="text-xs font-bold text-white">Full Stack Versatility</h3>
-              <p className="mt-0.5 text-[9px] text-white/54">
-                Every component is modularized across four distinct flavors to integrate natively into any setup.
-              </p>
-            </div>
-          </div>
-
-          {/* Card 4: Community Growth (GitHub Stars graph) */}
-          <div className={`${cardStyle} col-span-12 md:col-span-4`}>
-            {/* Background SVG Sparkline */}
-            <div className="absolute inset-0 z-0 h-32 overflow-hidden pointer-events-none">
-              <svg className="w-full h-full" viewBox="0 0 320 180" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#7fff5e" stopOpacity="0.12" />
-                    <stop offset="100%" stopColor="#7fff5e" stopOpacity="0.0" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M 0 170 Q 50 160 80 130 T 160 110 T 240 60 T 320 20"
-                  fill="none"
-                  stroke="rgba(255,255,255,0.06)"
-                  strokeWidth="2.5"
-                />
-                <path
-                  ref={chartPathRef}
-                  d="M 0 170 Q 50 160 80 130 T 160 110 T 240 60 T 320 20"
-                  fill="url(#chart-grad)"
-                  stroke="#7fff5e"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-
-            <div className="relative z-10 flex items-start justify-between">
-              <div>
-                <p className="font-mono text-[9px] uppercase tracking-wider text-white/40">GitHub Stars</p>
-                <h4 className="text-2xl font-black text-white mt-0.5">43.5K+</h4>
+              <div className="relative z-10 mt-auto">
+                <h3 className="text-xs font-bold text-white">55+ Premium Components</h3>
+                <p className="mt-0.5 text-[9px] text-white/50">Physics-based, volumetric & spring-driven.</p>
               </div>
-              <span className="flex items-center gap-1 rounded-full border border-[#7fff5e]/22 bg-[#7fff5e]/5 px-2.5 py-0.5 font-mono text-[8px] uppercase text-[#7fff5e]">
-                <span className="h-1 w-1 rounded-full bg-[#7fff5e] animate-pulse" />
-                Growing Fast
-              </span>
             </div>
 
-            <div className="relative z-10 mt-auto">
-              <h3 className="text-xs font-bold text-white">Active Community Growth</h3>
-              <p className="mt-0.5 text-[9px] text-white/54">
-                Our repository is backed by thousands of developers contributing custom layout primitives weekly.
-              </p>
-            </div>
-          </div>
-
-          {/* Card 5: Dev-Ready CLI Terminal Mockup */}
-          <div className={`${cardStyle} col-span-12 md:col-span-4`}>
-            {/* Terminal Window Header */}
-            <div className="flex items-center justify-between border-b border-white/8 pb-2">
-              <div className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-[#ff5c71]" />
-                <span className="h-2 w-2 rounded-full bg-[#e0f2dc]" />
-                <span className="h-2 w-2 rounded-full bg-[#7fff5e]" />
-              </div>
-              <p className="font-mono text-[9px] uppercase tracking-wider text-white/32">CLI terminal</p>
-              <button
-                onClick={copyCommand}
-                className="rounded border border-white/8 bg-white/[0.03] px-2 py-0.5 font-mono text-[8px] uppercase text-white/54 hover:bg-white/10 hover:text-white"
-              >
-                {copied ? "Copied" : "Copy"}
-              </button>
-            </div>
-
-            {/* Typewriter Command lines */}
-            <div className="mt-2.5 font-mono text-[11px] text-white/70 space-y-1 leading-4 select-all">
-              <p className="text-white/90">
-                <span className="text-[#ff5c71] font-black">$</span> {cliText}
-                {cliStep === 0 && <span className="inline-block w-1.5 h-3 bg-[#7fff5e] ml-0.5 animate-pulse" />}
-              </p>
-              {cliStep >= 1 && (
-                <p className="text-[#e0f2dc]/70 text-[10px]">
-                  <span className="text-[#7fff5e] font-black">❯</span> Copying component primitives...
-                </p>
-              )}
-              {cliStep >= 2 && (
-                <p className="text-[#7fff5e] text-[10px] font-bold">
-                  ✔ Installed glow-terminal.tsx in 1.2s!
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Card 6: Modular Categories circular node menu */}
-          <div className={`${cardStyle} col-span-12 md:col-span-4`}>
-            <div className="relative flex h-20 items-center justify-center overflow-hidden">
-              {/* Outer Orbit Line */}
-              <div className="absolute h-16 w-16 rounded-full border border-white/[0.05] animate-[spin_12s_linear_infinite]" />
-              
-              {/* Central Core */}
-              <div className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full border border-[#7fff5e]/22 bg-[#7fff5e]/5 text-center text-xs">
-                🍉
+            {/* Card B — Community / GitHub Stars (top-right, row-span-2) */}
+            <div
+              className={`${cardStyle} col-span-12 md:col-span-4 md:row-span-2`}
+              style={{ height: "auto", minHeight: "332px" }}
+            >
+              {/* Background SVG Sparkline */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none rounded-xl">
+                <svg className="w-full h-[55%]" viewBox="0 0 320 180" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="chart-grad-b" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#7fff5e" stopOpacity="0.1" />
+                      <stop offset="100%" stopColor="#7fff5e" stopOpacity="0.0" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M 0 170 Q 50 160 80 130 T 160 110 T 240 60 T 320 20" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="2" />
+                  <path
+                    ref={chartPathRef}
+                    d="M 0 170 Q 50 160 80 130 T 160 110 T 240 60 T 320 20"
+                    fill="url(#chart-grad-b)"
+                    stroke="#7fff5e"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
               </div>
 
-              {/* Orbiting Nodes */}
-              {[
-                { label: "Btn", pos: "top-1 left-1/2 -translate-x-1/2" },
-                { label: "Crd", pos: "bottom-1 left-1/2 -translate-x-1/2" },
-                { label: "Nav", pos: "left-2 top-1/2 -translate-y-1/2" },
-                { label: "Fx", pos: "right-2 top-1/2 -translate-y-1/2" },
-              ].map((node) => (
-                <span
-                  key={node.label}
-                  className={`absolute flex h-4.5 w-4.5 items-center justify-center rounded-full border border-white/12 bg-black/80 font-mono text-[6px] font-black uppercase text-white/54 transition-transform duration-300 hover:scale-125 hover:border-[#7fff5e] hover:text-white ${node.pos}`}
-                  style={{ transformOrigin: "center" }}
-                >
-                  {node.label}
+              <div className="relative z-10 flex items-start justify-between">
+                <div>
+                  <p className="font-mono text-[9px] uppercase tracking-wider text-white/38">GitHub Stars</p>
+                  <h4 className="text-3xl font-black text-white mt-0.5 leading-none">43.5K+</h4>
+                </div>
+                <span className="flex items-center gap-1 rounded-full border border-[#7fff5e]/22 bg-[#7fff5e]/5 px-2.5 py-0.5 font-mono text-[8px] uppercase text-[#7fff5e]">
+                  <span className="h-1 w-1 rounded-full bg-[#7fff5e] animate-pulse" />
+                  Growing
                 </span>
-              ))}
+              </div>
+
+              <div className="relative z-10 mt-auto">
+                {/* Stack Toggle */}
+                <p className="font-mono text-[9px] uppercase tracking-wider text-white/38 mb-2">Developer Stack</p>
+                <div className="grid grid-cols-2 gap-1 rounded border border-white/10 bg-black/70 p-0.5 mb-4">
+                  {[{ id: 0, label: "JS + CSS" }, { id: 1, label: "TS + CSS" }, { id: 2, label: "JS + TW" }, { id: 3, label: "TS + TW" }].map((stack) => (
+                    <button
+                      key={stack.id}
+                      onClick={() => setActiveStack(stack.id)}
+                      className={`rounded py-1 font-mono text-[8px] uppercase transition-all ${activeStack === stack.id ? "bg-[#7fff5e] text-black font-black" : "text-white/54 hover:bg-white/[0.04]"}`}
+                    >
+                      {stack.label}
+                    </button>
+                  ))}
+                </div>
+                <h3 className="text-xs font-bold text-white">Active Community Growth</h3>
+                <p className="mt-0.5 text-[9px] text-white/50">
+                  Thousands of devs. Supported across JS, TS, Tailwind & plain CSS.
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xs font-bold text-white">Highly Organized</h3>
-              <p className="mt-0.5 text-[9px] text-white/54">
-                Five discrete categories of clean, production-taste components.
-              </p>
+
+            {/* ── ROW 2 LEFT: Large CLI terminal card ── */}
+            <div
+              className={`${cardStyle} col-span-12 md:col-span-5`}
+              style={{ height: "168px" }}
+            >
+              {/* Terminal Window Header */}
+              <div className="flex items-center justify-between border-b border-white/8 pb-2">
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-[#ff5c71]" />
+                  <span className="h-2 w-2 rounded-full bg-[#ffc338]" />
+                  <span className="h-2 w-2 rounded-full bg-[#7fff5e]" />
+                </div>
+                <p className="font-mono text-[9px] uppercase tracking-wider text-white/30">CLI terminal</p>
+                <button
+                  onClick={copyCommand}
+                  className="rounded border border-white/8 bg-white/[0.03] px-2 py-0.5 font-mono text-[8px] uppercase text-white/50 hover:bg-white/10 hover:text-white"
+                >
+                  {copied ? "Copied ✓" : "Copy"}
+                </button>
+              </div>
+              <div className="mt-2.5 font-mono text-[11px] text-white/70 space-y-1 leading-4 select-all">
+                <p className="text-white/90">
+                  <span className="text-[#ff5c71] font-black">$</span> {cliText}
+                  {cliStep === 0 && <span className="inline-block w-1.5 h-3 bg-[#7fff5e] ml-0.5 animate-pulse" />}
+                </p>
+                {cliStep >= 1 && (
+                  <p className="text-[#e0f2dc]/70 text-[10px]">
+                    <span className="text-[#7fff5e] font-black">❯</span> Copying component primitives...
+                  </p>
+                )}
+                {cliStep >= 2 && (
+                  <p className="text-[#7fff5e] text-[10px] font-bold">✔ Installed glow-terminal.tsx in 1.2s!</p>
+                )}
+              </div>
+              <div className="mt-auto">
+                <h3 className="text-[10px] font-bold text-white">Drop It Into Your Stack</h3>
+                <p className="mt-0.5 text-[9px] text-white/50">One CLI command, zero config required.</p>
+              </div>
             </div>
+
+            {/* Card D — Orbital categories (row 2 middle) */}
+            <div
+              className={`${cardStyle} col-span-12 md:col-span-3`}
+              style={{ height: "168px" }}
+            >
+              <div className="relative flex flex-1 items-center justify-center overflow-hidden">
+                <div className="absolute h-16 w-16 rounded-full border border-white/[0.05] animate-[spin_12s_linear_infinite]" />
+                <div className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border border-[#7fff5e]/22 bg-[#7fff5e]/5 text-sm">🍉</div>
+                {[
+                  { label: "Btn", pos: "top-0 left-1/2 -translate-x-1/2" },
+                  { label: "Crd", pos: "bottom-0 left-1/2 -translate-x-1/2" },
+                  { label: "Nav", pos: "left-1 top-1/2 -translate-y-1/2" },
+                  { label: "Fx",  pos: "right-1 top-1/2 -translate-y-1/2" },
+                ].map((node) => (
+                  <span
+                    key={node.label}
+                    className={`absolute flex h-5 w-5 items-center justify-center rounded-full border border-white/12 bg-black/80 font-mono text-[6px] font-black uppercase text-white/50 hover:scale-125 hover:border-[#7fff5e] hover:text-white transition-transform duration-300 ${node.pos}`}
+                  >
+                    {node.label}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-auto">
+                <h3 className="text-[10px] font-bold text-white">Highly Organized</h3>
+                <p className="mt-0.5 text-[9px] text-white/50">5 categories. Zero ambiguity.</p>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
     </section>
   );
 }
+
+
