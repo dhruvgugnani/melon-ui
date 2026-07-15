@@ -92,11 +92,11 @@ export function FeaturesSection() {
     const tagsContainer = tagsRef.current;
     if (!tagsContainer) return;
 
-    const chips = Array.from(tagsContainer.children) as HTMLSpanElement[];
+    const wrappers = Array.from(tagsContainer.children) as HTMLSpanElement[];
     const ctx = gsap.context(() => {
-      chips.forEach((chip) => {
-        // Gently float randomly
-        gsap.to(chip, {
+      wrappers.forEach((wrapper) => {
+        // Gently float wrappers randomly
+        gsap.to(wrapper, {
           x: "random(-10, 10)",
           y: "random(-10, 10)",
           rotation: "random(-4, 4)",
@@ -113,10 +113,13 @@ export function FeaturesSection() {
       const relativeX = e.clientX - rect.left;
       const relativeY = e.clientY - rect.top;
 
-      chips.forEach((chip) => {
-        const chipRect = chip.getBoundingClientRect();
-        const cx = chipRect.left + chipRect.width / 2 - rect.left;
-        const cy = chipRect.top + chipRect.height / 2 - rect.top;
+      wrappers.forEach((wrapper) => {
+        const innerChip = wrapper.firstElementChild as HTMLSpanElement;
+        if (!innerChip) return;
+
+        const wrapperRect = wrapper.getBoundingClientRect();
+        const cx = wrapperRect.left + wrapperRect.width / 2 - rect.left;
+        const cy = wrapperRect.top + wrapperRect.height / 2 - rect.top;
         const dx = relativeX - cx;
         const dy = relativeY - cy;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -124,20 +127,26 @@ export function FeaturesSection() {
 
         if (dist < radius) {
           const force = ((radius - dist) / radius) ** 2;
-          gsap.to(chip, {
-            x: `-=${(dx / dist) * 12 * force}`,
-            y: `-=${(dy / dist) * 12 * force}`,
+          const pushX = -(dx / dist) * 14 * force;
+          const pushY = -(dy / dist) * 14 * force;
+
+          gsap.to(innerChip, {
+            x: pushX,
+            y: pushY,
             scale: 1.05,
-            borderColor: "rgba(127, 255, 94, 0.4)",
-            duration: 0.3,
+            borderColor: "rgba(127, 255, 94, 0.55)",
+            duration: 0.35,
             overwrite: "auto",
           });
         } else {
-          // Allow float to take back control slowly
-          gsap.to(chip, {
+          // Spring back exactly to its center inside the wrapper
+          gsap.to(innerChip, {
+            x: 0,
+            y: 0,
             scale: 1,
-            borderColor: "rgba(255, 255, 255, 0.05)",
+            borderColor: "rgba(255, 255, 255, 0.12)",
             duration: 0.6,
+            ease: "power2.out",
             overwrite: "auto",
           });
         }
@@ -242,6 +251,8 @@ export function FeaturesSection() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const cardStyle = "group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-xl border border-white/12 bg-[#0c0c0c]/62 backdrop-blur-2xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_12px_40px_rgba(0,0,0,0.7)] hover:border-white/22 hover:bg-[#0f0f0f]/80 hover:scale-[1.015] hover:shadow-[0_20px_50px_rgba(0,0,0,0.85)] duration-300 ease-out h-[185px] p-4";
+
   return (
     <section
       id="features-section"
@@ -268,7 +279,7 @@ export function FeaturesSection() {
               <span className="text-[#7fff5e]">INSIDE.</span>
             </h2>
           </div>
-          <p className="max-w-md font-sans text-xs leading-5 text-white/54">
+          <p className="max-w-md font-sans text-xs leading-5 text-white/68">
             { "Explore the core architecture, community growth metrics, and organic lifecycle timeline that makes MelonUI the premier choice for high-fidelity animations."
               .split(" ")
               .map((word, idx) => (
@@ -289,32 +300,33 @@ export function FeaturesSection() {
         {/* Bento Grid */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-6 lg:grid-cols-12 relative z-10">
           {/* Card 1: 50+ Premium Components (Floating Tag Cloud) */}
-          <div className="group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-xl border border-white/5 bg-[#030303]/10 px-4 py-3.5 backdrop-blur-2xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.03),0_8px_32px_rgba(0,0,0,0.55)] hover:border-white/10 md:col-span-4 h-[185px]">
+          <div className={cardStyle}>
             <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.01] pointer-events-none" />
             <div
               ref={tagsRef}
               className="flex flex-wrap gap-1.5 overflow-hidden h-20 select-none relative z-10"
             >
               {TAGS.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-white/5 bg-white/[0.02] px-2 py-0.5 font-mono text-[9px] uppercase text-white/54 transition-all hover:text-[#7fff5e]"
-                  style={{ letterSpacing: 0 }}
-                >
-                  {tag}
+                <span key={tag} className="inline-block relative">
+                  <span
+                    className="inline-block rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] uppercase text-white/68 transition-all hover:text-[#7fff5e]"
+                    style={{ letterSpacing: 0 }}
+                  >
+                    {tag}
+                  </span>
                 </span>
               ))}
             </div>
             <div className="relative z-15">
               <h3 className="text-sm font-bold text-white">55+ Premium Components</h3>
-              <p className="mt-0.5 text-[10px] text-white/45 leading-normal">
+              <p className="mt-0.5 text-[10px] text-white/54 leading-normal">
                 Physics-based card layouts, volumetric hologram projections, typography sliders, and responsive spring menus.
               </p>
             </div>
           </div>
 
           {/* Card 2: Community Growth (GitHub Stars graph) */}
-          <div className="group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-xl border border-white/5 bg-[#030303]/10 px-4 py-3.5 backdrop-blur-2xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.03),0_8px_32px_rgba(0,0,0,0.55)] hover:border-white/10 md:col-span-5 h-[185px]">
+          <div className={`${cardStyle} md:col-span-5`}>
             {/* Background SVG Sparkline */}
             <div className="absolute inset-0 z-0 h-32 overflow-hidden pointer-events-none">
               <svg className="w-full h-full" viewBox="0 0 320 180" preserveAspectRatio="none">
@@ -327,7 +339,7 @@ export function FeaturesSection() {
                 <path
                   d="M 0 170 Q 50 160 80 130 T 160 110 T 240 60 T 320 20"
                   fill="none"
-                  stroke="rgba(255,255,255,0.04)"
+                  stroke="rgba(255,255,255,0.06)"
                   strokeWidth="2.5"
                 />
                 <path
@@ -343,10 +355,10 @@ export function FeaturesSection() {
 
             <div className="relative z-10 flex items-start justify-between">
               <div>
-                <p className="font-mono text-[9px] uppercase tracking-wider text-white/35">GitHub Stars</p>
+                <p className="font-mono text-[9px] uppercase tracking-wider text-white/40">GitHub Stars</p>
                 <h4 className="text-2xl font-black text-white mt-0.5">43.5K+</h4>
               </div>
-              <span className="flex items-center gap-1 rounded-full border border-[#7fff5e]/15 bg-[#7fff5e]/5 px-2 py-0.5 font-mono text-[8px] uppercase text-[#7fff5e]">
+              <span className="flex items-center gap-1 rounded-full border border-[#7fff5e]/22 bg-[#7fff5e]/5 px-2.5 py-0.5 font-mono text-[8px] uppercase text-[#7fff5e]">
                 <span className="h-1 w-1 rounded-full bg-[#7fff5e] animate-pulse" />
                 Growing Fast
               </span>
@@ -354,17 +366,17 @@ export function FeaturesSection() {
 
             <div className="relative z-10 mt-auto">
               <h3 className="text-xs font-bold text-white">Active Community Growth</h3>
-              <p className="mt-0.5 text-[9px] text-white/45">
+              <p className="mt-0.5 text-[9px] text-white/54">
                 Our repository is backed by thousands of developers contributing custom layout primitives weekly.
               </p>
             </div>
           </div>
 
           {/* Card 3: Pick Your Stack Toggle */}
-          <div className="group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-xl border border-white/5 bg-[#030303]/10 px-4 py-3.5 backdrop-blur-2xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.03),0_8px_32px_rgba(0,0,0,0.55)] hover:border-white/10 md:col-span-3 h-[185px]">
+          <div className={`${cardStyle} md:col-span-3`}>
             <div className="flex flex-col gap-1.5">
-              <p className="font-mono text-[9px] uppercase tracking-wider text-white/32">Developer Stack</p>
-              <div className="grid grid-cols-2 gap-1 rounded border border-white/5 bg-black/60 p-0.5 relative z-10">
+              <p className="font-mono text-[9px] uppercase tracking-wider text-white/40">Developer Stack</p>
+              <div className="grid grid-cols-2 gap-1 rounded border border-white/10 bg-black/75 p-0.5 relative z-10">
                 {[
                   { id: 0, label: "JS + CSS" },
                   { id: 1, label: "TS + CSS" },
@@ -377,7 +389,7 @@ export function FeaturesSection() {
                     className={`rounded py-1 font-mono text-[8px] uppercase transition-all ${
                       activeStack === stack.id
                         ? "bg-[#7fff5e] text-black font-black"
-                        : "text-white/54 hover:bg-white/[0.04]"
+                        : "text-white/62 hover:bg-white/[0.04]"
                     }`}
                   >
                     {stack.label}
@@ -386,27 +398,27 @@ export function FeaturesSection() {
               </div>
             </div>
 
-            <div className="mt-2 pt-2 border-t border-white/5">
+            <div className="mt-2 pt-2 border-t border-white/8">
               <h3 className="text-xs font-bold text-white">Full Stack Versatility</h3>
-              <p className="mt-0.5 text-[9px] text-white/45">
+              <p className="mt-0.5 text-[9px] text-white/54">
                 Every component is modularized across four distinct flavors to integrate natively into any setup.
               </p>
             </div>
           </div>
 
           {/* Card 4: Dev-Ready CLI Terminal Mockup */}
-          <div className="group relative col-span-1 overflow-hidden rounded-xl border border-white/5 bg-[#030303]/10 px-4 py-3.5 backdrop-blur-2xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.03),0_8px_32px_rgba(0,0,0,0.55)] hover:border-white/10 md:col-span-7 h-[185px]">
+          <div className={`${cardStyle} md:col-span-7`}>
             {/* Terminal Window Header */}
-            <div className="flex items-center justify-between border-b border-white/5 pb-2">
-              <div className="flex items-center gap-1">
+            <div className="flex items-center justify-between border-b border-white/8 pb-2">
+              <div className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-[#ff5c71]" />
                 <span className="h-2 w-2 rounded-full bg-[#e0f2dc]" />
                 <span className="h-2 w-2 rounded-full bg-[#7fff5e]" />
               </div>
-              <p className="font-mono text-[9px] uppercase tracking-wider text-white/22">CLI terminal</p>
+              <p className="font-mono text-[9px] uppercase tracking-wider text-white/32">CLI terminal</p>
               <button
                 onClick={copyCommand}
-                className="rounded border border-white/5 bg-white/[0.02] px-2 py-0.5 font-mono text-[8px] uppercase text-white/54 hover:bg-white/5 hover:text-white"
+                className="rounded border border-white/8 bg-white/[0.03] px-2 py-0.5 font-mono text-[8px] uppercase text-white/54 hover:bg-white/10 hover:text-white"
               >
                 {copied ? "Copied" : "Copy"}
               </button>
@@ -414,12 +426,12 @@ export function FeaturesSection() {
 
             {/* Typewriter Command lines */}
             <div className="mt-2.5 font-mono text-[11px] text-white/70 space-y-1 leading-4 select-all">
-              <p className="text-white/87">
+              <p className="text-white/90">
                 <span className="text-[#ff5c71] font-black">$</span> {cliText}
                 {cliStep === 0 && <span className="inline-block w-1.5 h-3 bg-[#7fff5e] ml-0.5 animate-pulse" />}
               </p>
               {cliStep >= 1 && (
-                <p className="text-[#e0f2dc]/60 text-[10px]">
+                <p className="text-[#e0f2dc]/70 text-[10px]">
                   <span className="text-[#7fff5e] font-black">❯</span> Copying component primitives...
                 </p>
               )}
@@ -432,10 +444,10 @@ export function FeaturesSection() {
           </div>
 
           {/* Card 5: Modular Categories circular node menu */}
-          <div className="group relative col-span-1 overflow-hidden rounded-xl border border-white/5 bg-[#030303]/10 px-4 py-3.5 backdrop-blur-2xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.03),0_8px_32px_rgba(0,0,0,0.55)] hover:border-white/10 md:col-span-5 h-[185px] flex flex-col justify-between">
+          <div className={`${cardStyle} md:col-span-5`}>
             <div className="relative flex h-20 items-center justify-center overflow-hidden">
               {/* Outer Orbit Line */}
-              <div className="absolute h-16 w-16 rounded-full border border-white/[0.03] animate-[spin_12s_linear_infinite]" />
+              <div className="absolute h-16 w-16 rounded-full border border-white/[0.05] animate-[spin_12s_linear_infinite]" />
               
               {/* Central Core */}
               <div className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full border border-[#7fff5e]/22 bg-[#7fff5e]/5 text-center text-xs">
@@ -451,7 +463,7 @@ export function FeaturesSection() {
               ].map((node) => (
                 <span
                   key={node.label}
-                  className={`absolute flex h-4.5 w-4.5 items-center justify-center rounded-full border border-white/8 bg-black/80 font-mono text-[6px] font-black uppercase text-white/45 transition-transform duration-300 hover:scale-125 hover:border-[#7fff5e] hover:text-white ${node.pos}`}
+                  className={`absolute flex h-4.5 w-4.5 items-center justify-center rounded-full border border-white/12 bg-black/80 font-mono text-[6px] font-black uppercase text-white/54 transition-transform duration-300 hover:scale-125 hover:border-[#7fff5e] hover:text-white ${node.pos}`}
                   style={{ transformOrigin: "center" }}
                 >
                   {node.label}
@@ -460,7 +472,7 @@ export function FeaturesSection() {
             </div>
             <div>
               <h3 className="text-xs font-bold text-white">Highly Organized</h3>
-              <p className="mt-0.5 text-[9px] text-white/45">
+              <p className="mt-0.5 text-[9px] text-white/54">
                 Five discrete categories of clean, production-taste components.
               </p>
             </div>
