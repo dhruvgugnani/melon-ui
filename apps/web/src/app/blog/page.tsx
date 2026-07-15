@@ -43,7 +43,7 @@ export default function BlogLandingPage() {
     <div className="w-full max-w-6xl mx-auto selection:bg-[#ff5c71]/20 selection:text-white">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
 
       <header className="max-w-4xl mb-16">
