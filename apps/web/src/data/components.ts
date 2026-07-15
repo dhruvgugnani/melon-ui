@@ -13383,6 +13383,1271 @@ export function HexagonStatusGrid({
       { name: "accentColor", type: "string", defaultValue: "\"#7fff5e\"", description: "Secondary accent color.", control: { type: "color" } }
     ]
   }
+,
+
+  {
+    id: "hologram-projector",
+    slug: "hologram-projector",
+    componentPath: "HologramProjector",
+    title: "Hologram Projector",
+    description: "An interactive 3D volumetric light projector showing stylized rotating content slides, laser diode lens controls, and glitch overlay animations.",
+    category: "Widgets",
+    tags: ["framer-motion", "Hologram", "Projector"],
+    cliCommand: "npx @melonui-dev/cli add hologram-projector",
+    codeSnippet: `"use client";
+
+import React, { useState, useRef, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+
+export interface HologramSlide {
+  id: string;
+  title: string;
+  content: React.ReactNode;
+}
+
+export interface HologramProjectorProps extends React.ComponentPropsWithoutRef<"div"> {
+  primaryColor?: string;
+  secondaryColor?: string;
+  glowColor?: string;
+  baseColor?: string;
+  slides?: HologramSlide[];
+}
+
+const DEFAULT_HOLOGRAM_SLIDES: HologramSlide[] = [
+  {
+    id: "sys-status",
+    title: "SYS.STATUS",
+    content: (
+      <div className="flex flex-col gap-2 h-full justify-center">
+        <div className="flex justify-between items-center text-xs opacity-70">
+          <span>CORE_TEMP</span>
+          <span className="font-mono text-[var(--glow-color)]">34.2°C</span>
+        </div>
+        <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-[var(--glow-color)]"
+            initial={{ width: "0%" }}
+            animate={{ width: "45%" }}
+            transition={{ duration: 1, ease: "easeOut" }}
+          />
+        </div>
+
+        <div className="flex justify-between items-center text-xs opacity-70 mt-2">
+          <span>NETWORK_LOAD</span>
+          <span className="font-mono text-[var(--secondary-color)]">89.4%</span>
+        </div>
+        <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-[var(--secondary-color)]"
+            initial={{ width: "0%" }}
+            animate={{ width: "89%" }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          />
+        </div>
+      </div>
+    )
+  },
+  {
+    id: "bio-scan",
+    title: "BIO.SCAN",
+    content: (
+      <div className="flex flex-col items-center justify-center h-full gap-3 relative">
+        {/* Animated fingerprint/scan visual */}
+        <div className="w-16 h-16 border-2 border-[var(--primary-color)] rounded-full flex items-center justify-center relative overflow-hidden">
+           <motion.div
+             className="absolute w-full h-[2px] bg-[var(--glow-color)] shadow-[0_0_10px_var(--glow-color)] z-10"
+             animate={{ top: ["0%", "100%", "0%"] }}
+             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+           />
+           <div className="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 bg-[var(--primary-color)] rounded-full animate-pulse" />
+           </div>
+        </div>
+        <div className="text-xs tracking-widest font-mono text-[var(--primary-color)]">
+          IDENTITY_VERIFIED
+        </div>
+      </div>
+    )
+  },
+  {
+    id: "neural-link",
+    title: "NEURAL.LINK",
+    content: (
+      <div className="flex flex-col h-full gap-2 justify-center relative">
+        <div className="flex justify-between items-end h-16 gap-1">
+           {[...Array(12)].map((_, i) => (
+             <motion.div
+               key={i}
+               className="w-full bg-[var(--secondary-color)] rounded-t-sm"
+               animate={{
+                 height: ["20%", \`\${40 + (i * 5 % 60)}%\`, "20%"]
+               }}
+               transition={{
+                 duration: 1 + (i % 2),
+                 repeat: Infinity,
+                 ease: "easeInOut",
+                 delay: (i * 0.1) % 0.5
+               }}
+             />
+           ))}
+        </div>
+        <div className="text-[10px] uppercase font-mono text-center tracking-widest opacity-70">
+          Syncing Cortex...
+        </div>
+      </div>
+    )
+  }
+];
+
+export function HologramProjector({
+  primaryColor = "#00f0ff",
+  secondaryColor = "#ff5c71",
+  glowColor = "#7fff5e",
+  baseColor = "#111111",
+  slides = DEFAULT_HOLOGRAM_SLIDES,
+  className = "",
+  style,
+  ...props
+}: HologramProjectorProps) {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isGlitching, setIsGlitching] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Mouse tracking for parallax
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // Calculate normalized offset (-1 to 1)
+    const offsetX = (e.clientX - centerX) / (rect.width / 2);
+    const offsetY = (e.clientY - centerY) / (rect.height / 2);
+
+    x.set(offsetX);
+    y.set(offsetY);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  // Parallax transforms
+  const rotateX = useTransform(useSpring(y, { stiffness: 150, damping: 20 }), [-1, 1], [15, -15]);
+  const rotateY = useTransform(useSpring(x, { stiffness: 150, damping: 20 }), [-1, 1], [-15, 15]);
+
+  // Beam interaction
+  const beamOpacity = useTransform(useSpring(y, { stiffness: 150, damping: 20 }), [-1, 1], [0.8, 0.4]);
+  const beamSkew = useTransform(useSpring(x, { stiffness: 150, damping: 20 }), [-1, 1], [-5, 5]);
+
+  const handleBaseClick = () => {
+    if (isGlitching) return;
+    setIsGlitching(true);
+
+    // Glitch sound/haptic simulation
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate([20, 30, 20]);
+    }
+
+    setTimeout(() => {
+      setActiveSlide((prev) => (prev + 1) % slides.length);
+      setTimeout(() => {
+        setIsGlitching(false);
+      }, 300);
+    }, 200);
+  };
+
+  const currentSlide = slides[activeSlide];
+
+  // Custom CSS variables for easy styling
+  const customStyle = {
+    "--primary-color": primaryColor,
+    "--secondary-color": secondaryColor,
+    "--glow-color": glowColor,
+    "--base-color": baseColor,
+    ...style
+  } as React.CSSProperties;
+
+  if (!mounted) return null; // Prevent hydration mismatch with random values in animations (if any)
+
+  return (
+    <div
+      className={\`relative flex flex-col items-center justify-end h-[400px] w-full max-w-sm mx-auto perspective-1000 \${className}\`}
+      style={customStyle}
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      {...props}
+    >
+
+      {/* Hologram Display Area */}
+      <div className="relative w-full h-[250px] mb-8 flex items-center justify-center transform-style-3d z-10 pointer-events-none">
+
+        {/* Hologram Card */}
+        <motion.div
+          style={{ rotateX, rotateY }}
+          className="relative w-64 h-48 rounded-xl border border-[var(--primary-color)]/30 p-4 flex flex-col overflow-hidden bg-black/40 backdrop-blur-md shadow-[0_0_30px_rgba(var(--primary-color),0.2)]"
+        >
+          {/* Scanlines Overlay */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-20 mix-blend-overlay z-20"
+            style={{
+              backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #fff 2px, #fff 4px)',
+              backgroundSize: '100% 4px'
+            }}
+          />
+
+          {/* Noise Overlay */}
+          <div
+            className="absolute inset-0 opacity-10 mix-blend-screen pointer-events-none z-20"
+            style={{
+              backgroundImage: \`url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")\`
+            }}
+          />
+
+          {/* Glitch Overlay */}
+          <AnimatePresence>
+            {isGlitching && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: [0, 1, 0.5, 1, 0],
+                  x: [0, -10, 10, -5, 0],
+                  filter: ["hue-rotate(0deg)", "hue-rotate(90deg)", "hue-rotate(-90deg)", "hue-rotate(0deg)"]
+                }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 bg-[var(--primary-color)]/20 z-30 mix-blend-difference pointer-events-none"
+              >
+                <div className="w-full h-1/3 bg-white/10 absolute top-1/4 -left-4 w-[120%]" />
+                <div className="w-full h-1/4 bg-white/20 absolute bottom-1/4 left-2 w-[110%]" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Content Wrapper */}
+          <motion.div
+            className="relative z-10 flex flex-col h-full"
+            animate={isGlitching ? { opacity: 0.3, scale: 0.98 } : { opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            {/* Header */}
+            <div className="flex justify-between items-center mb-4 border-b border-[var(--primary-color)]/20 pb-2">
+              <span className="text-[10px] font-mono tracking-widest text-[var(--primary-color)]">
+                {currentSlide.id.toUpperCase()}
+              </span>
+              <div className="flex gap-1">
+                 <div className="w-1.5 h-1.5 rounded-full bg-[var(--glow-color)] animate-pulse" />
+                 <div className="w-1.5 h-1.5 rounded-full bg-[var(--primary-color)]/50" />
+              </div>
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-hidden">
+               <AnimatePresence mode="wait">
+                 <motion.div
+                   key={currentSlide.id}
+                   initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                   exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+                   transition={{ duration: 0.3 }}
+                   className="h-full text-white/90"
+                 >
+                   {currentSlide.content}
+                 </motion.div>
+               </AnimatePresence>
+            </div>
+
+            {/* Footer */}
+            <div className="mt-4 flex justify-between items-end opacity-50 text-[8px] font-mono">
+              <span>OS_v2.4</span>
+              <span>{String(activeSlide + 1).padStart(2, '0')}/{String(slides.length).padStart(2, '0')}</span>
+            </div>
+          </motion.div>
+
+          {/* Hologram Corner Accents */}
+          <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[var(--primary-color)] rounded-tl-sm pointer-events-none" />
+          <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-[var(--primary-color)] rounded-tr-sm pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-[var(--primary-color)] rounded-bl-sm pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[var(--primary-color)] rounded-br-sm pointer-events-none" />
+        </motion.div>
+      </div>
+
+      {/* Volumetric Light Beam */}
+      <motion.div
+        style={{
+          opacity: beamOpacity,
+          skewX: beamSkew
+        }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 w-48 h-64 pointer-events-none z-0"
+      >
+        <div
+          className="w-full h-full"
+          style={{
+            background: \`linear-gradient(to top, var(--primary-color) 0%, transparent 100%)\`,
+            clipPath: 'polygon(20% 100%, 80% 100%, 100% 0, 0 0)',
+            maskImage: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%)',
+            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%)',
+            filter: 'blur(8px)',
+            opacity: 0.5
+          }}
+        />
+        {/* Core beam */}
+        <div
+          className="absolute inset-0 w-full h-full"
+          style={{
+            background: \`linear-gradient(to top, var(--glow-color) 0%, transparent 80%)\`,
+            clipPath: 'polygon(35% 100%, 65% 100%, 80% 0, 20% 0)',
+            maskImage: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%)',
+            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%)',
+            filter: 'blur(4px)',
+            opacity: 0.7
+          }}
+        />
+      </motion.div>
+
+      {/* Projector Base */}
+      <button
+        onClick={handleBaseClick}
+        className="relative w-40 h-16 cursor-pointer group z-20 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:ring-offset-2 focus:ring-offset-black rounded-full"
+        aria-label="Cycle hologram data"
+      >
+        {/* Shadow */}
+        <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-32 h-6 bg-black/50 blur-md rounded-[100%]" />
+
+        {/* Base Cylinder Layer */}
+        <div className="absolute inset-0 rounded-[100px_100px_40px_40px] bg-gradient-to-b from-[#2a2a2a] to-[#111] shadow-[inset_0_-2px_10px_rgba(0,0,0,0.8),_0_5px_15px_rgba(0,0,0,0.5)] border-b-2 border-black border-x border-x-white/5 transition-transform duration-100 group-active:translate-y-1 group-active:scale-[0.98]">
+
+          {/* Top Plate (Lens Area) */}
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-10 rounded-full bg-gradient-to-b from-[#333] to-[#1a1a1a] shadow-[inset_0_2px_5px_rgba(255,255,255,0.1),_0_2px_5px_rgba(0,0,0,0.5)] border border-black/50 flex items-center justify-center">
+
+            {/* The Lens */}
+            <div className="w-16 h-6 rounded-full bg-black flex items-center justify-center shadow-[inset_0_2px_4px_rgba(0,0,0,1)] relative overflow-hidden">
+               {/* Lens Glow */}
+               <motion.div
+                 className="absolute inset-0 bg-[var(--primary-color)]/40 blur-sm"
+                 animate={{ opacity: isGlitching ? [0.2, 0.8, 0.2] : 0.6 }}
+                 transition={{ duration: 0.1 }}
+               />
+
+               {/* Lens Inner Ring */}
+               <div className="w-10 h-3 rounded-full border border-[var(--primary-color)]/30 shadow-[0_0_10px_var(--primary-color)] flex items-center justify-center z-10 bg-[var(--primary-color)]/10">
+                  {/* Laser Diode */}
+                  <div className="w-2 h-1 rounded-full bg-[var(--glow-color)] shadow-[0_0_8px_var(--glow-color)]" />
+               </div>
+
+               {/* Lens reflection curve */}
+               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-2 bg-white/10 rounded-b-full blur-[1px]" />
+            </div>
+
+            {/* Base indicator lights */}
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-[var(--secondary-color)] shadow-[0_0_5px_var(--secondary-color)]" />
+              <div className="w-1.5 h-1.5 rounded-full bg-black border border-white/20" />
+            </div>
+          </div>
+
+          {/* Base detailing */}
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 flex justify-between px-2">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="w-1 h-full bg-black/60 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]" />
+            ))}
+          </div>
+
+        </div>
+      </button>
+
+      {/* Instructions / Label */}
+      <div className="absolute bottom-[-30px] text-xs font-mono text-white/30 tracking-widest pointer-events-none">
+        TAP BASE TO CYCLE DATA
+      </div>
+
+    </div>
+  );
+}
+`,
+      props: []
+  },
+  {
+    id: "gyroscope-core",
+    slug: "gyroscope-core",
+    componentPath: "GyroscopeCore",
+    title: "Gyroscope Core",
+    description: "A high-fidelity 3D gyroscopic controller featuring three independent concentric dashed rings rotating in physical space and deployable outer nodes.",
+    category: "Widgets",
+    tags: ["framer-motion", "3D", "Gyroscope"],
+    cliCommand: "npx @melonui-dev/cli add gyroscope-core",
+    codeSnippet: `"use client";
+
+import React, { useRef, useState, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+
+export interface GyroscopeNode {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  angle: number; // Angle in degrees (0-360) where it sits on the orbit
+  color?: string;
+}
+
+export interface GyroscopeCoreProps extends React.ComponentPropsWithoutRef<"div"> {
+  nodes?: GyroscopeNode[];
+  primaryColor?: string;
+  secondaryColor?: string;
+  glowColor?: string;
+  coreLabel?: string;
+  onNodeClick?: (node: GyroscopeNode) => void;
+}
+
+const DEFAULT_GYROSCOPE_NODES: GyroscopeNode[] = [
+  {
+    id: "nav-system",
+    label: "Nav System",
+    angle: 0,
+    color: "#ff5c71",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <polygon points="3 11 22 2 13 21 11 13 3 11" />
+      </svg>
+    ),
+  },
+  {
+    id: "shield-grid",
+    label: "Shield Grid",
+    angle: 72,
+    color: "#7fff5e",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+    ),
+  },
+  {
+    id: "hyper-drive",
+    label: "Hyper Drive",
+    angle: 144,
+    color: "#00f0ff",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      </svg>
+    ),
+  },
+  {
+    id: "comms-array",
+    label: "Comms Array",
+    angle: 216,
+    color: "#ff8c00",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    ),
+  },
+  {
+    id: "life-support",
+    label: "Life Support",
+    angle: 288,
+    color: "#e8d5b7",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z" />
+      </svg>
+    ),
+  },
+];
+
+export const GyroscopeCore = React.forwardRef<HTMLDivElement, GyroscopeCoreProps>(
+  (
+    {
+      nodes = DEFAULT_GYROSCOPE_NODES,
+      primaryColor = "#ff5c71",
+      secondaryColor = "#7fff5e",
+      glowColor = "#00f0ff",
+      coreLabel = "INITIALIZE",
+      onNodeClick,
+      className = "",
+      style,
+      ...props
+    },
+    forwardedRef
+  ) => {
+    const internalRef = useRef<HTMLDivElement>(null);
+    const containerRef = (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
+
+    const [isHovered, setIsHovered] = useState(false);
+    const [isDeployed, setIsDeployed] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+      setIsClient(true);
+    }, []);
+
+    // Mouse tracking for parallax
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    const springConfig = { damping: 20, stiffness: 100, mass: 0.5 };
+    const smoothX = useSpring(mouseX, springConfig);
+    const smoothY = useSpring(mouseY, springConfig);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!containerRef.current || isDeployed) return;
+
+      const rect = containerRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      const distanceX = e.clientX - centerX;
+      const distanceY = e.clientY - centerY;
+
+      // Normalize between -1 and 1
+      mouseX.set(distanceX / (rect.width / 2));
+      mouseY.set(distanceY / (rect.height / 2));
+    };
+
+    const handleMouseLeave = () => {
+      setIsHovered(false);
+      if (!isDeployed) {
+        mouseX.set(0);
+        mouseY.set(0);
+      }
+    };
+
+    const handleMouseEnter = () => {
+      setIsHovered(true);
+    };
+
+    const toggleDeploy = () => {
+      if (isDeployed) {
+        setIsDeployed(false);
+      } else {
+        setIsDeployed(true);
+        mouseX.set(0);
+        mouseY.set(0);
+      }
+    };
+
+    // Calculate ring rotations based on state and mouse position
+    // Ring 1 (Outer)
+    const ring1RotateX = useTransform(smoothY, [-1, 1], [60, -60]);
+    const ring1RotateY = useTransform(smoothX, [-1, 1], [-60, 60]);
+
+    // Ring 2 (Middle)
+    const ring2RotateX = useTransform(smoothY, [-1, 1], [-45, 45]);
+    const ring2RotateY = useTransform(smoothX, [-1, 1], [45, -45]);
+
+    // Ring 3 (Inner)
+    const ring3RotateX = useTransform(smoothY, [-1, 1], [30, -30]);
+    const ring3RotateY = useTransform(smoothX, [-1, 1], [-30, 30]);
+
+    if (!isClient) return <div className={\`w-96 h-96 \${className}\`} style={style} />;
+
+    return (
+      <div
+        ref={containerRef}
+        className={\`relative w-[400px] h-[400px] flex items-center justify-center perspective-[1200px] \${className}\`}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={style}
+        {...props}
+      >
+        {/* Core Component */}
+        <motion.div
+          className="relative w-full h-full flex items-center justify-center preserve-3d"
+          animate={{
+            scale: isDeployed ? 1.1 : isHovered ? 1.05 : 1,
+          }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            transformStyle: "preserve-3d",
+          }}
+        >
+          {/* Ring 1 (Outer) */}
+          <motion.div
+            className="absolute w-72 h-72 rounded-full border border-white/20"
+            style={{
+              rotateX: isDeployed ? 0 : ring1RotateX,
+              rotateY: isDeployed ? 0 : ring1RotateY,
+              boxShadow: isDeployed ? \`0 0 40px -10px \${primaryColor}40 inset\` : "none",
+              borderColor: isDeployed ? \`\${primaryColor}40\` : "rgba(255,255,255,0.2)",
+              transformStyle: "preserve-3d",
+            }}
+            animate={{
+              rotateZ: isDeployed ? 180 : 0,
+            }}
+            transition={{
+              rotateX: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+              rotateY: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+              rotateZ: { duration: 20, ease: "linear", repeat: Infinity },
+              borderColor: { duration: 0.8 },
+            }}
+          >
+            {/* Deploying nodes along the outer ring */}
+            <AnimatePresence>
+              {isDeployed && nodes.map((node, i) => {
+                const radius = 144; // Half of 288px (w-72)
+                const angleRad = (node.angle * Math.PI) / 180;
+                // Position on the circle
+                const x = Math.cos(angleRad) * radius;
+                const y = Math.sin(angleRad) * radius;
+
+                return (
+                  <motion.div
+                    key={node.id}
+                    className="absolute top-1/2 left-1/2 flex items-center justify-center"
+                    initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+                    animate={{ x, y, opacity: 1, scale: 1 }}
+                    exit={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: i * 0.05,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    style={{
+                      // Counter-rotate the nodes so they stay upright while the ring rotates
+                      rotateZ: isDeployed ? -180 : 0,
+                    }}
+                  >
+                    <motion.button
+                      className="group absolute flex flex-col items-center justify-center gap-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onNodeClick?.(node);
+                      }}
+                      whileHover={{ scale: 1.15 }}
+                      whileTap={{ scale: 0.95 }}
+                      style={{
+                        x: "-50%",
+                        y: "-50%",
+                      }}
+                    >
+                      <div
+                        className="w-12 h-12 rounded-full backdrop-blur-md flex items-center justify-center border border-white/20 transition-colors"
+                        style={{
+                          backgroundColor: "rgba(10, 10, 10, 0.8)",
+                          color: node.color || primaryColor,
+                          boxShadow: \`0 0 20px -5px \${node.color || primaryColor}60\`,
+                        }}
+                      >
+                        {node.icon}
+                      </div>
+                      <span
+                        className="absolute top-14 whitespace-nowrap text-xs font-mono font-semibold tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ color: node.color || primaryColor }}
+                      >
+                        {node.label}
+                      </span>
+                    </motion.button>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </motion.div>
+
+          {/* Ring 2 (Middle) */}
+          <motion.div
+            className="absolute w-52 h-52 rounded-full border border-dashed border-white/30"
+            style={{
+              rotateX: isDeployed ? 0 : ring2RotateX,
+              rotateY: isDeployed ? 0 : ring2RotateY,
+              transformStyle: "preserve-3d",
+            }}
+            animate={{
+              rotateZ: isDeployed ? -180 : 360,
+              borderColor: isDeployed ? \`\${secondaryColor}50\` : "rgba(255,255,255,0.3)",
+            }}
+            transition={{
+              rotateX: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+              rotateY: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+              rotateZ: { duration: 15, ease: "linear", repeat: Infinity },
+              borderColor: { duration: 0.8 },
+            }}
+          />
+
+          {/* Ring 3 (Inner) */}
+          <motion.div
+            className="absolute w-32 h-32 rounded-full border-[3px] border-transparent"
+            style={{
+              rotateX: isDeployed ? 0 : ring3RotateX,
+              rotateY: isDeployed ? 0 : ring3RotateY,
+              borderTopColor: \`\${glowColor}80\`,
+              borderBottomColor: \`\${glowColor}80\`,
+              transformStyle: "preserve-3d",
+            }}
+            animate={{
+              rotateZ: isDeployed ? 360 : -360,
+              scale: isDeployed ? 1.2 : 1,
+            }}
+            transition={{
+              rotateX: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+              rotateY: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+              rotateZ: { duration: 10, ease: "linear", repeat: Infinity },
+              scale: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+            }}
+          />
+
+          {/* Core Button */}
+          <motion.button
+            className="absolute z-10 w-20 h-20 rounded-full flex flex-col items-center justify-center cursor-pointer outline-none overflow-hidden backdrop-blur-md border border-white/20"
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              boxShadow: isDeployed
+                ? \`0 0 40px \${glowColor}80, 0 0 100px \${primaryColor}60 inset\`
+                : isHovered
+                  ? \`0 0 30px \${glowColor}40, 0 0 40px \${primaryColor}40 inset\`
+                  : \`0 0 15px \${glowColor}20, 0 0 20px \${primaryColor}20 inset\`,
+            }}
+            animate={{
+              scale: isDeployed ? 0.9 : isHovered ? 1.1 : 1,
+            }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.85 }}
+            onClick={toggleDeploy}
+          >
+            {/* Core glowing orb inner */}
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: \`radial-gradient(circle at 30% 30%, \${primaryColor} 0%, transparent 60%)\`,
+                opacity: 0.4,
+              }}
+              animate={{
+                rotate: isDeployed ? 360 : 0,
+              }}
+              transition={{
+                rotate: { duration: 5, ease: "linear", repeat: Infinity },
+              }}
+            />
+
+            <AnimatePresence mode="wait">
+              {isDeployed ? (
+                <motion.div
+                  key="close"
+                  initial={{ opacity: 0, scale: 0, rotate: -90 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  exit={{ opacity: 0, scale: 0, rotate: 90 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="open"
+                  initial={{ opacity: 0, scale: 0, rotate: 90 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  exit={{ opacity: 0, scale: 0, rotate: -90 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex flex-col items-center justify-center text-white"
+                >
+                  <span className="font-mono text-[8px] font-bold tracking-[0.2em] mb-1 opacity-70">CORE</span>
+                  <div className="w-6 h-[2px] bg-white rounded-full"></div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.button>
+
+          {/* Holographic floor plane */}
+          <motion.div
+            className="absolute bottom-[-100px] w-48 h-48 rounded-full pointer-events-none"
+            style={{
+              background: \`radial-gradient(circle, \${primaryColor} 0%, transparent 70%)\`,
+              rotateX: 80,
+              opacity: isDeployed ? 0.3 : 0.1,
+              filter: "blur(20px)",
+              scale: isDeployed ? 2 : 1,
+            }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          />
+        </motion.div>
+      </div>
+    );
+  }
+);
+
+GyroscopeCore.displayName = "GyroscopeCore";
+`,
+      props: []
+  },
+  {
+    id: "magnetic-card",
+    slug: "magnetic-card",
+    componentPath: "MagneticCard",
+    title: "Magnetic Card",
+    description: "A 3D perspective sticker card that shifts and pulls toward the user's cursor dynamically using spring magnetic physics.",
+    category: "Cards",
+    tags: ["framer-motion", "Interactive", "Magnetic"],
+    cliCommand: "npx @melonui-dev/cli add magnetic-card",
+    codeSnippet: `"use client";
+
+import React, { useRef, useState, useEffect } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+
+export interface MagneticCardProps {
+  title?: string;
+  subtitle?: string;
+  stickerText?: string;
+  primaryColor?: string;
+  accentColor?: string;
+  bg?: string;
+  width?: number | string;
+  height?: number | string;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+export function MagneticCard({
+  title = "HYPER",
+  subtitle = "MAGNETIC STICKER",
+  stickerText = "100% PURE",
+  primaryColor = "#7fff5e",
+  accentColor = "#ff5c71",
+  bg = "#050505",
+  width = 340,
+  height = 420,
+  className = "",
+  style,
+}: MagneticCardProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(t);
+  }, []);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const springConfig = { damping: 20, stiffness: 150, mass: 0.5 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  const stickerX = useSpring(mouseX, { damping: 12, stiffness: 200, mass: 0.8 });
+  const stickerY = useSpring(mouseY, { damping: 12, stiffness: 200, mass: 0.8 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const { left, top, width, height } = containerRef.current.getBoundingClientRect();
+
+    const x = (e.clientX - left) / width - 0.5;
+    const y = (e.clientY - top) / height - 0.5;
+
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  const handleMouseEnter = () => setIsHovered(true);
+
+  const stickerTranslateX = useTransform(stickerX, [-0.5, 0.5], [-120, 120]);
+  const stickerTranslateY = useTransform(stickerY, [-0.5, 0.5], [-120, 120]);
+  const stickerRotate = useTransform(stickerX, [-0.5, 0.5], [-20, 20]);
+
+  const ambientGlow = useTransform(
+    [smoothX, smoothY],
+    ([x, y]: number[]) => \`radial-gradient(circle at \${(x + 0.5) * 100}% \${(y + 0.5) * 100}%, \${primaryColor}40, transparent 60%)\`
+  );
+
+  const sheenPosition = useTransform(stickerX, [-0.5, 0.5], ["100% 0", "0 0"]);
+
+  if (!mounted) return <div style={{ width, height, ...style }} className={className} />;
+
+  return (
+    <motion.div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onMouseEnter={handleMouseEnter}
+      className={\`relative perspective-[1200px] cursor-crosshair group \${className}\`}
+      style={{ width, height, ...style }}
+    >
+      <motion.div
+        className="w-full h-full relative rounded-2xl border border-white/10 overflow-hidden"
+        style={{
+          background: bg,
+          boxShadow: isHovered ? \`0 20px 40px -10px \${primaryColor}20\` : "0 10px 30px -10px rgba(0,0,0,0.5)",
+          rotateX: useTransform(smoothY, [-0.5, 0.5], [15, -15]),
+          rotateY: useTransform(smoothX, [-0.5, 0.5], [-15, 15]),
+          transformStyle: "preserve-3d",
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
+        <motion.div
+          className="absolute inset-0 z-0 opacity-50 transition-opacity duration-300"
+          style={{ background: ambientGlow, opacity: isHovered ? 1 : 0.4 }}
+        />
+
+        <div className="absolute inset-0 z-0 opacity-20 pointer-events-none mix-blend-overlay">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+            <filter id="noiseFilter">
+              <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" />
+            </filter>
+            <rect width="100%" height="100%" filter="url(#noiseFilter)" />
+          </svg>
+        </div>
+
+        <div className="absolute bottom-6 left-6 z-10 flex flex-col pointer-events-none">
+          <h3 className="font-outfit text-3xl font-black text-white leading-none tracking-tight">
+            {title}
+          </h3>
+          <p className="font-mono text-xs mt-2 uppercase tracking-widest" style={{ color: accentColor }}>
+            {subtitle}
+          </p>
+        </div>
+
+        <motion.div
+          className="absolute top-1/2 left-1/2 flex items-center justify-center z-20 pointer-events-none"
+          style={{
+            x: stickerTranslateX,
+            y: stickerTranslateY,
+            rotate: stickerRotate,
+            marginLeft: "-60px",
+            marginTop: "-30px",
+          }}
+        >
+          <motion.div
+            className="w-[120px] h-[60px] rounded-xl flex items-center justify-center relative overflow-hidden backdrop-blur-md"
+            style={{
+              background: \`linear-gradient(135deg, \${primaryColor}cc, \${primaryColor}88)\`,
+              border: \`1px solid \${primaryColor}aa\`,
+              boxShadow: \`0 10px 20px -5px \${primaryColor}60\`,
+            }}
+          >
+            <motion.div
+              className="absolute inset-0 z-0 opacity-40"
+              style={{
+                background: "linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.8) 45%, transparent 70%)",
+                backgroundSize: "200% 100%",
+                backgroundPosition: sheenPosition,
+              }}
+            />
+
+            <div
+              className="absolute inset-0 z-0 opacity-10 mix-blend-overlay pointer-events-none"
+              style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, black 2px, black 4px)" }}
+            />
+
+            <span className="font-londrina text-lg tracking-wider text-black z-10 drop-shadow-sm">
+              {stickerText}
+            </span>
+
+            <div className="absolute top-1.5 left-1.5 w-1 h-1 rounded-full bg-black/40 z-10" />
+            <div className="absolute top-1.5 right-1.5 w-1 h-1 rounded-full bg-black/40 z-10" />
+            <div className="absolute bottom-1.5 left-1.5 w-1 h-1 rounded-full bg-black/40 z-10" />
+            <div className="absolute bottom-1.5 right-1.5 w-1 h-1 rounded-full bg-black/40 z-10" />
+          </motion.div>
+        </motion.div>
+
+        <div className="absolute inset-0 z-0 opacity-10 pointer-events-none flex items-center justify-center">
+            <div className="w-[80%] h-[80%] border border-dashed border-white rounded-full opacity-30" />
+            <div className="absolute w-[2px] h-[120%] bg-white/20 rotate-45 mix-blend-overlay" />
+            <div className="absolute w-[2px] h-[120%] bg-white/20 -rotate-45 mix-blend-overlay" />
+        </div>
+
+        <div className="absolute top-4 left-4 z-10 font-mono text-[9px] text-white/40 flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
+            <span>SYS_REQ: VALID</span>
+        </div>
+
+      </motion.div>
+    </motion.div>
+  );
+}
+
+
+`,
+      props: []
+  },
+  {
+    id: "glow-terminal",
+    slug: "glow-terminal",
+    componentPath: "GlowTerminal",
+    title: "Glow Terminal",
+    description: "A micro-interactive terminal that transitions from a compact glowing orb to a fully featured layout displaying status logs and system prompts.",
+    category: "Widgets",
+    tags: ["framer-motion", "Terminal", "Aura"],
+    cliCommand: "npx @melonui-dev/cli add glow-terminal",
+    codeSnippet: `"use client";
+
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+
+interface GlowTerminalProps extends React.HTMLAttributes<HTMLDivElement> {
+  primaryColor?: string;
+  secondaryColor?: string;
+  bgColor?: string;
+  logs?: { id: string; time: string; message: string; type: "info" | "success" | "warning" | "error" }[];
+}
+
+const DEFAULT_GLOW_LOGS: GlowTerminalProps["logs"] = [
+  { id: "1", time: "00:00:01", message: "SYSTEM_BOOT: AURA_CORE_INITIALIZED", type: "info" },
+  { id: "2", time: "00:00:03", message: "NEURAL LINK ESTABLISHED", type: "success" },
+  { id: "3", time: "00:00:05", message: "AURA SYNC IN PROGRESS...", type: "warning" },
+  { id: "4", time: "00:00:07", message: "MORPH SEQUENCE READY", type: "success" },
+];
+
+export function GlowTerminal({
+  primaryColor = "#ff5c71",
+  secondaryColor = "#7fff5e",
+  bgColor = "#0a0a0a",
+  logs = DEFAULT_GLOW_LOGS,
+  className = "",
+  style,
+  ...props
+}: GlowTerminalProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Mouse tracking for magnetic effect (when closed) and 3D parallax (when open)
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Smooth springs
+  const springConfig = { damping: 25, stiffness: 150 };
+  const springX = useSpring(mouseX, springConfig);
+  const springY = useSpring(mouseY, springConfig);
+
+  // 3D Parallax rotations (only active when expanded)
+  const rotateX = useTransform(springY, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(springX, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  // Magnetic translation (only active when closed)
+  const translateX = useTransform(springX, [-0.5, 0.5], [-30, 30]);
+  const translateY = useTransform(springY, [-0.5, 0.5], [-30, 30]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Normalize to -0.5 to 0.5
+    const xPct = x / rect.width - 0.5;
+    const yPct = y / rect.height - 0.5;
+
+    mouseX.set(xPct);
+    mouseY.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  const toggleExpand = () => {
+    setIsExpanded((prev) => !prev);
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  if (!mounted) return null;
+
+  return (
+    <div
+      ref={containerRef}
+      className={\`relative w-full min-h-[500px] flex items-center justify-center perspective-1000 \${className}\`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={style}
+      {...props}
+    >
+      <motion.div
+        className="relative flex items-center justify-center z-10 w-full h-full"
+        style={{
+          rotateX: isExpanded ? rotateX : 0,
+          rotateY: isExpanded ? rotateY : 0,
+          x: isExpanded ? 0 : translateX,
+          y: isExpanded ? 0 : translateY,
+          transformStyle: "preserve-3d",
+        }}
+      >
+        <motion.div
+          layout
+          onClick={toggleExpand}
+          className={\`
+            cursor-pointer overflow-hidden backdrop-blur-xl border border-white/10
+            \${isExpanded ? "w-full max-w-2xl h-[400px] rounded-2xl" : "w-24 h-24 rounded-[2rem]"}
+          \`}
+          style={{
+            background: \`linear-gradient(145deg, \${bgColor}ee, rgba(5,5,5,0.9))\`,
+            boxShadow: isExpanded
+              ? \`0 30px 60px rgba(0,0,0,0.8), 0 0 40px \${primaryColor}20, inset 0 0 20px rgba(255,255,255,0.05)\`
+              : \`0 10px 30px rgba(0,0,0,0.8), 0 0 30px \${primaryColor}40, inset 0 0 10px \${secondaryColor}30\`,
+          }}
+          transition={{
+            layout: { type: "spring", bounce: 0.2, duration: 0.8 },
+          }}
+          whileHover={{ scale: isExpanded ? 1 : 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {/* Subtle noise overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.15] pointer-events-none mix-blend-overlay"
+            style={{
+              backgroundImage: \`url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")\`,
+            }}
+          />
+
+          <AnimatePresence mode="wait">
+            {!isExpanded ? (
+              <motion.div
+                key="closed"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.3 }}
+                className="w-full h-full flex items-center justify-center relative"
+              >
+                {/* Glowing Core */}
+                <motion.div
+                  className="w-8 h-8 rounded-full"
+                  style={{
+                    background: primaryColor,
+                    boxShadow: \`0 0 20px \${primaryColor}, 0 0 40px \${secondaryColor}\`,
+                  }}
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [0.8, 1, 0.8],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+
+                {/* Orbiting Ring */}
+                <motion.div
+                  className="absolute inset-2 rounded-full border border-white/20"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                >
+                  <div className="absolute top-0 left-1/2 w-2 h-2 -ml-1 -mt-1 rounded-full" style={{ background: secondaryColor, boxShadow: \`0 0 10px \${secondaryColor}\` }} />
+                </motion.div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="open"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+                className="w-full h-full flex flex-col p-6"
+              >
+                {/* Terminal Header */}
+                <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                      <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                    </div>
+                    <span className="text-xs font-mono text-gray-400 tracking-widest uppercase ml-2">
+                      Aura_Morph_Term v1.0
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: secondaryColor }}></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: secondaryColor }}></span>
+                    </span>
+                    <span className="text-xs font-mono" style={{ color: secondaryColor }}>ONLINE</span>
+                  </div>
+                </div>
+
+                {/* Terminal Body */}
+                <div className="flex-1 overflow-hidden flex flex-col gap-2 font-mono text-sm">
+                  {logs?.map((log, index) => (
+                    <motion.div
+                      key={log.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + index * 0.1 }}
+                      className="flex items-start gap-4"
+                    >
+                      <span className="text-gray-500 shrink-0">[{log.time}]</span>
+                      <span
+                        style={{
+                          color:
+                            log.type === "error" ? primaryColor :
+                            log.type === "success" ? secondaryColor :
+                            log.type === "warning" ? "#fbbf24" :
+                            "#9ca3af"
+                        }}
+                      >
+                        {log.message}
+                      </span>
+                    </motion.div>
+                  ))}
+
+                  {/* Blinking Cursor line */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4 + (logs?.length || 0) * 0.1 }}
+                    className="flex items-center gap-2 mt-2"
+                  >
+                    <span className="text-gray-500">root@melonui:~#</span>
+                    <motion.span
+                      animate={{ opacity: [1, 0] }}
+                      transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+                      className="w-2 h-4"
+                      style={{ backgroundColor: primaryColor }}
+                    />
+                  </motion.div>
+                </div>
+
+                {/* Decorative Grid Background for Terminal */}
+                <div
+                  className="absolute inset-0 pointer-events-none z-[-1] opacity-20"
+                  style={{
+                    backgroundImage: \`linear-gradient(to right, \${primaryColor}10 1px, transparent 1px), linear-gradient(to bottom, \${primaryColor}10 1px, transparent 1px)\`,
+                    backgroundSize: '20px 20px',
+                    maskImage: 'radial-gradient(ellipse at center, black 0%, transparent 80%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 0%, transparent 80%)'
+                  }}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
+`,
+      props: []
+  }
+
 ];
 
 // Helper to group components by category

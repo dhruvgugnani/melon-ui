@@ -297,6 +297,10 @@ const STATIC_PREVIEW_SLUGS = new Set([
   "interactive-swing-tag",
   "3d-portal-reveal",
   "hexagon-status-grid",
+  "hologram-projector",
+  "gyroscope-core",
+  "magnetic-card",
+  "glow-terminal",
 ]);
 
 function CardPreview({ comp, color }: { comp: typeof componentsData[number]; color: string }) {

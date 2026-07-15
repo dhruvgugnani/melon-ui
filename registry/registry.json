@@ -1391,5 +1391,89 @@
       "dashboard"
     ],
     "preview": "/preview/hexagon-status-grid.png"
+  },
+  "hologram-projector": {
+    "name": "Hologram Projector",
+    "description": "An interactive 3D volumetric light projector showing stylized rotating content slides, laser diode lens controls, and glitch overlay animations.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "hologram-projector.tsx",
+        "path": "components/hologram-projector.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Hologram",
+      "Projector",
+      "Interactive"
+    ],
+    "preview": "/preview/hologram-projector.png"
+  },
+  "gyroscope-core": {
+    "name": "Gyroscope Core",
+    "description": "A high-fidelity 3D gyroscopic controller featuring three independent concentric dashed rings rotating in physical space and deployable outer nodes.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "gyroscope-core.tsx",
+        "path": "components/gyroscope-core.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "3D",
+      "Gyroscope",
+      "Interactive"
+    ],
+    "preview": "/preview/gyroscope-core.png"
+  },
+  "magnetic-card": {
+    "name": "Magnetic Card",
+    "description": "A 3D perspective sticker card that shifts and pulls toward the user's cursor dynamically using spring magnetic physics.",
+    "category": "Cards",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "magnetic-card.tsx",
+        "path": "components/magnetic-card.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Interactive",
+      "Magnetic",
+      "Card"
+    ],
+    "preview": "/preview/magnetic-card.png"
+  },
+  "glow-terminal": {
+    "name": "Glow Terminal",
+    "description": "A micro-interactive terminal that transitions from a compact glowing orb to a fully featured layout displaying status logs and system prompts.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "glow-terminal.tsx",
+        "path": "components/glow-terminal.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Terminal",
+      "Aura",
+      "Interactive"
+    ],
+    "preview": "/preview/glow-terminal.png"
   }
 }
