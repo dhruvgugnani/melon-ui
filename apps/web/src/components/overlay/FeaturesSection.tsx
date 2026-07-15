@@ -251,7 +251,7 @@ export function FeaturesSection() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const cardStyle = "group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-xl border border-white/12 bg-[#0c0c0c]/62 backdrop-blur-2xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_12px_40px_rgba(0,0,0,0.7)] hover:border-white/22 hover:bg-[#0f0f0f]/80 hover:scale-[1.015] hover:shadow-[0_20px_50px_rgba(0,0,0,0.85)] duration-300 ease-out h-[185px] p-4";
+  const cardStyle = "group relative flex flex-col justify-between overflow-hidden rounded-xl border border-white/12 bg-[#0c0c0c]/62 backdrop-blur-2xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_12px_40px_rgba(0,0,0,0.7)] hover:border-white/22 hover:bg-[#0f0f0f]/80 hover:scale-[1.015] hover:shadow-[0_20px_50px_rgba(0,0,0,0.85)] duration-300 ease-out h-[185px] p-4";
 
   return (
     <section
@@ -300,7 +300,7 @@ export function FeaturesSection() {
         {/* Bento Grid */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-6 lg:grid-cols-12 relative z-10">
           {/* Card 1: 50+ Premium Components (Floating Tag Cloud) */}
-          <div className={cardStyle}>
+          <div className={`${cardStyle} col-span-12 md:col-span-4`}>
             <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.01] pointer-events-none" />
             <div
               ref={tagsRef}
@@ -326,7 +326,7 @@ export function FeaturesSection() {
           </div>
 
           {/* Card 2: Community Growth (GitHub Stars graph) */}
-          <div className={`${cardStyle} md:col-span-5`}>
+          <div className={`${cardStyle} col-span-12 md:col-span-5`}>
             {/* Background SVG Sparkline */}
             <div className="absolute inset-0 z-0 h-32 overflow-hidden pointer-events-none">
               <svg className="w-full h-full" viewBox="0 0 320 180" preserveAspectRatio="none">
@@ -373,7 +373,7 @@ export function FeaturesSection() {
           </div>
 
           {/* Card 3: Pick Your Stack Toggle */}
-          <div className={`${cardStyle} md:col-span-3`}>
+          <div className={`${cardStyle} col-span-12 md:col-span-3`}>
             <div className="flex flex-col gap-1.5">
               <p className="font-mono text-[9px] uppercase tracking-wider text-white/40">Developer Stack</p>
               <div className="grid grid-cols-2 gap-1 rounded border border-white/10 bg-black/75 p-0.5 relative z-10">
@@ -407,7 +407,7 @@ export function FeaturesSection() {
           </div>
 
           {/* Card 4: Dev-Ready CLI Terminal Mockup */}
-          <div className={`${cardStyle} md:col-span-7`}>
+          <div className={`${cardStyle} col-span-12 md:col-span-7`}>
             {/* Terminal Window Header */}
             <div className="flex items-center justify-between border-b border-white/8 pb-2">
               <div className="flex items-center gap-1.5">
@@ -444,7 +444,7 @@ export function FeaturesSection() {
           </div>
 
           {/* Card 5: Modular Categories circular node menu */}
-          <div className={`${cardStyle} md:col-span-5`}>
+          <div className={`${cardStyle} col-span-12 md:col-span-5`}>
             <div className="relative flex h-20 items-center justify-center overflow-hidden">
               {/* Outer Orbit Line */}
               <div className="absolute h-16 w-16 rounded-full border border-white/[0.05] animate-[spin_12s_linear_infinite]" />

@@ -134,7 +134,7 @@ export function FasterSection() {
         <div className="col-span-12 lg:col-span-5 flex flex-col justify-center select-none w-full">
           <div>
             <p className="mb-3 font-mono text-xs uppercase tracking-[0.25em] text-[#e0f2dc]/60">
-              Chapter 02 / Component Lab
+              Chapter 01 / Component Lab
             </p>
             <h2
               ref={titleRef}
