@@ -266,8 +266,8 @@ export function FeaturesSection() {
         onMouseLeave={handleMouseLeave}
       >
         {/* Header Block */}
-        <div className="mb-4 flex flex-col items-start justify-between gap-2 lg:flex-row lg:items-end">
-          <div>
+        <div className="mb-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+          <div className="col-span-12 md:col-span-3">
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-[#ff5c71]">
               Chapter 02 / Platform Insights
             </p>
@@ -279,28 +279,30 @@ export function FeaturesSection() {
               <span className="text-[#7fff5e]">INSIDE.</span>
             </h2>
           </div>
-          <p className="max-w-md font-sans text-xs leading-5 text-white/68">
-            { "Explore the core architecture, community growth metrics, and organic lifecycle timeline that makes MelonUI the premier choice for high-fidelity animations."
-              .split(" ")
-              .map((word, idx) => (
-                <span
-                  key={idx}
-                  ref={(el) => {
-                    if (el) titleWordsRef.current[idx] = el;
-                  }}
-                  className="inline-block mr-1 cursor-default transition-colors duration-150"
-                >
-                  {word}
-                </span>
-              ))
-            }
-          </p>
+          <div className="col-span-12 md:col-span-9 flex md:justify-end">
+            <p className="max-w-xl font-sans text-xs leading-5 text-white/68 md:text-right">
+              { "Explore the core architecture, community growth metrics, and organic lifecycle timeline that makes MelonUI the premier choice for high-fidelity animations."
+                .split(" ")
+                .map((word, idx) => (
+                  <span
+                    key={idx}
+                    ref={(el) => {
+                      if (el) titleWordsRef.current[idx] = el;
+                    }}
+                    className="inline-block mr-1 cursor-default transition-colors duration-150"
+                  >
+                    {word}
+                  </span>
+                ))
+              }
+            </p>
+          </div>
         </div>
 
         {/* Bento Grid */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-6 lg:grid-cols-12 relative z-10">
           {/* Card 1: 50+ Premium Components (Floating Tag Cloud) */}
-          <div className={`${cardStyle} col-span-12 md:col-span-4`}>
+          <div className={`${cardStyle} col-span-12 md:col-span-3`}>
             <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.01] pointer-events-none" />
             <div
               ref={tagsRef}
@@ -326,7 +328,7 @@ export function FeaturesSection() {
           </div>
 
           {/* Card 2: Community Growth (GitHub Stars graph) */}
-          <div className={`${cardStyle} col-span-12 md:col-span-5`}>
+          <div className={`${cardStyle} col-span-12 md:col-span-6`}>
             {/* Background SVG Sparkline */}
             <div className="absolute inset-0 z-0 h-32 overflow-hidden pointer-events-none">
               <svg className="w-full h-full" viewBox="0 0 320 180" preserveAspectRatio="none">
