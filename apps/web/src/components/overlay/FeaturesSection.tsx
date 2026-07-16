@@ -251,7 +251,7 @@ export function FeaturesSection() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const cardStyle = "group relative flex flex-col justify-between overflow-hidden rounded-xl border border-white/12 bg-[#0c0c0c]/62 backdrop-blur-2xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_12px_40px_rgba(0,0,0,0.7)] hover:border-white/22 hover:bg-[#0f0f0f]/80 hover:scale-[1.015] hover:shadow-[0_20px_50px_rgba(0,0,0,0.85)] duration-300 ease-out h-[185px] p-4";
+  const cardStyle = "group relative flex flex-col justify-between overflow-hidden rounded-xl border border-white/12 bg-[#0c0c0c]/62 backdrop-blur-2xl transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_12px_40px_rgba(0,0,0,0.7)] hover:border-white/22 hover:bg-[#0f0f0f]/80 hover:scale-[1.015] hover:shadow-[0_20px_50px_rgba(0,0,0,0.85)] duration-300 ease-out h-[200px] p-5";
 
   return (
     <section
@@ -261,7 +261,7 @@ export function FeaturesSection() {
       style={{ scrollSnapStop: "always" }}
     >
       <div
-        className="mx-auto w-full max-w-7xl px-4 md:px-8"
+        className="mx-auto w-full max-w-[88rem] px-4 md:px-8 lg:px-10"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -272,28 +272,22 @@ export function FeaturesSection() {
 
         {/* ── OUTER BENTO CONTAINER ── */}
         <div
-          className="relative w-full rounded-2xl border border-white/10 bg-white/[0.018] backdrop-blur-xl p-5"
-          style={{
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 32px 80px rgba(0,0,0,0.72)",
-          }}
+          className="relative w-full rounded-2xl border border-white/5 p-6 md:p-7"
         >
-          {/* Subtle inner noise glow */}
-          <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.015] via-transparent to-transparent" />
-
           {/* ── 12-COL INNER GRID ── */}
-          <div className="relative grid grid-cols-12 gap-3" style={{ gridTemplateRows: "auto auto" }}>
+          <div className="relative grid grid-cols-12 gap-4" style={{ gridTemplateRows: "auto auto" }}>
 
             {/* ── HEADING — top-left, no card ── */}
-            <div className="col-span-12 md:col-span-4 flex flex-col justify-between pb-1 pr-3">
+            <div className="col-span-12 md:col-span-4 flex flex-col justify-between pb-1">
               <h2
                 className="font-black uppercase leading-[0.82] text-white text-[clamp(2rem,8vw,3.2rem)] md:text-[clamp(2.4rem,4vw,4rem)]"
                 style={{ fontFamily: "var(--font-londrina-solid)", letterSpacing: 0 }}
               >
-                WHAT'S{" "}
+                WHAT&apos;S{" "}
                 <span className="text-[#7fff5e]">INSIDE.</span>
               </h2>
               {/* Description text — bottom of heading column */}
-              <p className="mt-4 hidden md:block font-sans text-[10px] leading-[1.65] text-white/38 max-w-[200px]">
+              <p className="mt-3 hidden max-w-[315px] font-sans text-[13px] font-semibold leading-[1.52] text-white/58 md:block">
                 {
                   "Explore the core architecture, community growth metrics, and organic lifecycle timeline that makes MelonUI the premier choice for high-fidelity animations."
                     .split(" ")
@@ -316,12 +310,12 @@ export function FeaturesSection() {
             {/* Card A — Tags cloud (top-middle) */}
             <div
               className={`${cardStyle} col-span-12 md:col-span-4`}
-              style={{ height: "160px" }}
+              style={{ height: "172px" }}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.01] pointer-events-none rounded-xl" />
               <div
                 ref={tagsRef}
-                className="flex flex-wrap gap-1.5 overflow-hidden h-[72px] select-none relative z-10"
+                className="flex h-[84px] flex-wrap gap-1.5 overflow-hidden select-none relative z-10"
               >
                 {TAGS.map((tag) => (
                   <span key={tag} className="inline-block relative">
@@ -343,7 +337,7 @@ export function FeaturesSection() {
             {/* Card B — Community / GitHub Stars (top-right, row-span-2) */}
             <div
               className={`${cardStyle} col-span-12 md:col-span-4 md:row-span-2`}
-              style={{ height: "auto", minHeight: "332px" }}
+              style={{ height: "auto", minHeight: "360px" }}
             >
               {/* Background SVG Sparkline */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none rounded-xl">
@@ -401,7 +395,7 @@ export function FeaturesSection() {
             {/* ── ROW 2 LEFT: Large CLI terminal card ── */}
             <div
               className={`${cardStyle} col-span-12 md:col-span-5`}
-              style={{ height: "168px" }}
+              style={{ height: "184px" }}
             >
               {/* Terminal Window Header */}
               <div className="flex items-center justify-between border-b border-white/8 pb-2">
@@ -441,7 +435,7 @@ export function FeaturesSection() {
             {/* Card D — Orbital categories (row 2 middle) */}
             <div
               className={`${cardStyle} col-span-12 md:col-span-3`}
-              style={{ height: "168px" }}
+              style={{ height: "184px" }}
             >
               <div className="relative flex flex-1 items-center justify-center overflow-hidden">
                 <div className="absolute h-16 w-16 rounded-full border border-white/[0.05] animate-[spin_12s_linear_infinite]" />
@@ -472,5 +466,3 @@ export function FeaturesSection() {
     </section>
   );
 }
-
-

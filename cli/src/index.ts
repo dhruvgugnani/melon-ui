@@ -6,18 +6,17 @@ import { initCommand } from "./commands/init";
 import { addCommand } from "./commands/add";
 import { MELON_BANNER } from "./utils/logger";
 import { readFileSync } from "fs";
-import { join } from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = join(__filename, "..");
+import { dirname, join, resolve } from "path";
 
 // Read package.json version
-const packageJsonPath = join(__dirname, "../../package.json");
+const entryDir = process.argv[1] ? dirname(resolve(process.argv[1])) : process.cwd();
+const packageJsonPath = join(entryDir, "../package.json");
 let version = "0.1.0";
 try {
   const pkg = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
-  version = pkg.version;
+  if (typeof pkg.version === "string") {
+    version = pkg.version;
+  }
 } catch (e) {}
 
 console.log(MELON_BANNER);
