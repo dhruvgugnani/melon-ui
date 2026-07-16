@@ -77,4 +77,5 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   GyroscopeCore: dynamic(() => import('./demos/GyroscopeCore').then(m => m.GyroscopeCore), { ssr: false }),
   MagneticCard: dynamic(() => import('./demos/MagneticCard').then(m => m.MagneticCard), { ssr: false }),
   GlowTerminal: dynamic(() => import('./demos/GlowTerminal').then(m => m.GlowTerminal), { ssr: false }),
+  VoidNexus: dynamic(() => import('./demos/VoidNexus').then(m => m.VoidNexus), { ssr: false }),
 };

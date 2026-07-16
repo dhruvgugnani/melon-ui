@@ -14648,6 +14648,51 @@ export function GlowTerminal({
       props: []
   }
 
+,
+
+  {
+    id: "void-nexus",
+    slug: "void-nexus",
+    title: "Void Nexus",
+    description: "A premium 3D glassmorphic diamond core that shatters into interactive shards on hover, revealing a pulsating neon core. Perfect for experimental navigation.",
+    category: "Navigation",
+    tags: ["framer-motion", "3d", "glassmorphism", "interactive", "neon"],
+    cliCommand: "npx @melonui-dev/cli add void-nexus",
+    codeSnippet: "\"use client\";\n\nimport React, { useRef, useState, useEffect } from \"react\";\nimport { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from \"framer-motion\";\n\nexport interface VoidNexusProps {\n  size?: number;\n  coreColor?: string;\n  shardColor?: string;\n  glowColor?: string;\n}\n\nexport const VoidNexus: React.FC<VoidNexusProps> = ({\n  size = 400,\n  coreColor = \"#ff5c71\",\n  shardColor = \"rgba(255, 255, 255, 0.05)\",\n  glowColor = \"#7fff5e\",\n}) => {\n  const containerRef = useRef<HTMLDivElement>(null);\n  const [isHovered, setIsHovered] = useState(false);\n  const [mounted, setMounted] = useState(false);\n\n  useEffect(() => {\n    const timer = setTimeout(() => setMounted(true), 0);\n    return () => clearTimeout(timer);\n  }, []);\n\n  // Cursor tracking for magnetic tilt\n  const mouseX = useMotionValue(0);\n  const mouseY = useMotionValue(0);\n\n  const springConfig = { damping: 25, stiffness: 150, mass: 1 };\n  const springX = useSpring(mouseX, springConfig);\n  const springY = useSpring(mouseY, springConfig);\n\n  const rotateX = useTransform(springY, [-0.5, 0.5], [15, -15]);\n  const rotateY = useTransform(springX, [-0.5, 0.5], [-15, 15]);\n\n  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {\n    if (!containerRef.current) return;\n    const rect = containerRef.current.getBoundingClientRect();\n    \n    // Calculate normalized position (-0.5 to 0.5)\n    const normalizedX = (e.clientX - rect.left - rect.width / 2) / rect.width;\n    const normalizedY = (e.clientY - rect.top - rect.height / 2) / rect.height;\n    \n    mouseX.set(normalizedX);\n    mouseY.set(normalizedY);\n  };\n\n  const handleMouseLeave = () => {\n    mouseX.set(0);\n    mouseY.set(0);\n    setIsHovered(false);\n  };\n\n  if (!mounted) return null;\n\n  // Shard definitions (Top, Right, Bottom, Left)\n  const shards = [\n    { id: 1, label: \"Explore\", rotateZ: 0, hoverTransform: { x: 0, y: -40, rotateZ: 0 } },\n    { id: 2, label: \"Systems\", rotateZ: 90, hoverTransform: { x: 40, y: 0, rotateZ: 90 } },\n    { id: 3, label: \"Network\", rotateZ: 180, hoverTransform: { x: 0, y: 40, rotateZ: 180 } },\n    { id: 4, label: \"Deploy\", rotateZ: 270, hoverTransform: { x: -40, y: 0, rotateZ: 270 } },\n  ];\n\n  // Deterministic particles\n  const particles = Array.from({ length: 20 }).map((_, i) => ({\n    id: i,\n    x: ((i * 137.5) % 100) - 50,\n    y: ((i * 93.2) % 100) - 50,\n    scale: 0.5 + ((i * 7) % 10) / 10,\n    duration: 2 + ((i * 3) % 5),\n  }));\n\n  return (\n    <div\n      ref={containerRef}\n      style={{ width: size, height: size, perspective: 1200 }}\n      className=\"relative flex items-center justify-center rounded-2xl overflow-hidden bg-black/40 backdrop-blur-sm border border-white/5\"\n      onMouseMove={handleMouseMove}\n      onMouseEnter={() => setIsHovered(true)}\n      onMouseLeave={handleMouseLeave}\n    >\n      {/* Background ambient glow */}\n      <motion.div \n        className=\"absolute inset-0 opacity-20\"\n        style={{\n          background: `radial-gradient(circle at 50% 50%, ${glowColor} 0%, transparent 70%)`,\n        }}\n        animate={{\n          scale: isHovered ? 1.2 : 1,\n          opacity: isHovered ? 0.4 : 0.2,\n        }}\n        transition={{ duration: 0.8, ease: \"easeInOut\" }}\n      />\n\n      <motion.div\n        style={{\n          rotateX,\n          rotateY,\n          transformStyle: \"preserve-3d\",\n        }}\n        className=\"relative flex items-center justify-center w-full h-full\"\n      >\n        {/* Core Element */}\n        <motion.div\n          className=\"absolute z-10 w-24 h-24 rounded-full flex items-center justify-center shadow-2xl cursor-pointer\"\n          style={{\n            background: `radial-gradient(circle, ${coreColor} 0%, #000 80%)`,\n            boxShadow: `0 0 30px ${coreColor}80`,\n          }}\n          animate={{\n            scale: isHovered ? 1.1 : 0.8,\n            rotateZ: isHovered ? 45 : 0,\n          }}\n          transition={{ type: \"spring\", stiffness: 200, damping: 20 }}\n          whileHover={{ scale: 1.2 }}\n        >\n          <div className=\"w-12 h-12 border-2 border-white/30 rotate-45 rounded-sm flex items-center justify-center\">\n            <div className=\"w-4 h-4 bg-white rounded-full animate-pulse\" />\n          </div>\n        </motion.div>\n\n        {/* Orbiting Particles */}\n        <AnimatePresence>\n          {isHovered && (\n            <motion.div \n              initial={{ opacity: 0 }}\n              animate={{ opacity: 1 }}\n              exit={{ opacity: 0 }}\n              className=\"absolute inset-0 pointer-events-none\"\n            >\n              {particles.map((p) => (\n                <motion.div\n                  key={p.id}\n                  className=\"absolute left-1/2 top-1/2 w-1.5 h-1.5 rounded-full\"\n                  style={{\n                    backgroundColor: glowColor,\n                    boxShadow: `0 0 10px ${glowColor}`,\n                  }}\n                  animate={{\n                    x: [p.x * 0.5, p.x * 1.5, p.x * 0.5],\n                    y: [p.y * 0.5, p.y * 1.5, p.y * 0.5],\n                    scale: [p.scale, p.scale * 1.5, p.scale],\n                    opacity: [0.3, 0.8, 0.3],\n                  }}\n                  transition={{\n                    duration: p.duration,\n                    repeat: Infinity,\n                    ease: \"linear\",\n                  }}\n                />\n              ))}\n            </motion.div>\n          )}\n        </AnimatePresence>\n\n        {/* 4 Shards */}\n        {shards.map((shard) => (\n          <motion.div\n            key={shard.id}\n            className=\"absolute flex items-center justify-center origin-center cursor-pointer group\"\n            style={{\n              width: 160,\n              height: 160,\n              clipPath: \"polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)\", // Diamond shape\n            }}\n            initial={{ \n              x: 0, \n              y: 0, \n              rotateZ: shard.rotateZ,\n              scale: 0.95\n            }}\n            animate={{\n              x: isHovered ? shard.hoverTransform.x : 0,\n              y: isHovered ? shard.hoverTransform.y : 0,\n              rotateZ: shard.rotateZ, // Keep orientation\n              scale: isHovered ? 1 : 0.95,\n              z: isHovered ? 40 : 0,\n            }}\n            transition={{ type: \"spring\", stiffness: 150, damping: 15, mass: 0.8 }}\n          >\n            {/* Shard Background */}\n            <div \n              className=\"absolute inset-0 backdrop-blur-md transition-colors duration-300\"\n              style={{\n                backgroundColor: shardColor,\n                border: `1px solid ${coreColor}30`,\n              }}\n            />\n            \n            {/* Inner Content (Counter-rotate so text is upright) */}\n            <motion.div\n              style={{ rotateZ: -shard.rotateZ }}\n              className=\"relative z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center\"\n            >\n              <span className=\"text-white text-sm font-bold tracking-widest uppercase\" style={{ textShadow: \"0 0 10px rgba(255,255,255,0.5)\"}}>\n                {shard.label}\n              </span>\n              <div className=\"w-8 h-px bg-white/50 mt-2 group-hover:w-12 transition-all duration-300\" />\n            </motion.div>\n          </motion.div>\n        ))}\n\n        {/* Floating geometric overlay lines */}\n        <motion.div \n          className=\"absolute inset-0 pointer-events-none border border-white/5 rounded-full\"\n          animate={{\n            scale: isHovered ? [1, 1.05, 1] : 1,\n            rotateZ: isHovered ? [0, 90] : 0,\n          }}\n          transition={{\n            duration: 8,\n            repeat: Infinity,\n            ease: \"linear\"\n          }}\n          style={{ width: size * 0.8, height: size * 0.8, left: \"10%\", top: \"10%\" }}\n        />\n      </motion.div>\n    </div>\n  );\n};\n",
+    componentPath: "VoidNexus",
+    scrollable: false,
+    aiPrompt: "A premium 3D glassmorphic diamond core that shatters into interactive shards on hover, revealing a pulsating neon core. Perfect for experimental navigation.",
+    props: [
+      {
+        name: "size",
+        type: "number",
+        defaultValue: "400",
+        description: "The width and height of the component container.",
+        control: { type: "slider", min: 200, max: 800, step: 10 }
+      },
+      {
+        name: "coreColor",
+        type: "string",
+        defaultValue: '"#ff5c71"',
+        description: "The color of the inner core element.",
+        control: { type: "color" }
+      },
+      {
+        name: "shardColor",
+        type: "string",
+        defaultValue: '"rgba(255, 255, 255, 0.05)"',
+        description: "The background color of the shattered shards.",
+        control: { type: "text" }
+      },
+      {
+        name: "glowColor",
+        type: "string",
+        defaultValue: '"#7fff5e"',
+        description: "The color of the ambient glow and particles.",
+        control: { type: "color" }
+      }
+    ]
+  }
 ];
 
 // Helper to group components by category
