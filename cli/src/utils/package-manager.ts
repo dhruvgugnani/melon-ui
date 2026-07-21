@@ -15,16 +15,15 @@ export async function detectPackageManager(cwd: string = process.cwd()) {
   return "npm"; // fallback
 }
 
-export function getInstallCommand(packageManager: string, dependencies: string[]) {
-  const deps = dependencies.join(" ");
+export function getInstallCommand(packageManager: string, dependencies: string[]): { command: string, args: string[] } {
   switch (packageManager) {
     case "pnpm":
-      return `pnpm add ${deps}`;
+      return { command: "pnpm", args: ["add", ...dependencies] };
     case "yarn":
-      return `yarn add ${deps}`;
+      return { command: "yarn", args: ["add", ...dependencies] };
     case "bun":
-      return `bun add ${deps}`;
+      return { command: "bun", args: ["add", ...dependencies] };
     default:
-      return `npm install ${deps} --legacy-peer-deps`;
+      return { command: "npm", args: ["install", ...dependencies, "--legacy-peer-deps"] };
   }
 }

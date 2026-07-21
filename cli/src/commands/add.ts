@@ -75,7 +75,7 @@ export async function addCommand(component?: string) {
         spinner.text = `Installing dependencies for ${comp} (${componentData.dependencies.join(", ")})...`;
         const packageManager = await detectPackageManager(cwd);
         const installCmd = getInstallCommand(packageManager, componentData.dependencies);
-        await execa(installCmd.split(" ")[0], installCmd.split(" ").slice(1), { cwd, shell: true });
+        await execa(installCmd.command, installCmd.args, { cwd });
       }
 
       // Download files
@@ -84,7 +84,10 @@ export async function addCommand(component?: string) {
         const fileRes = await axios.get(`${REGISTRY_URL}/files?path=${file.path}`);
         const fileContent = fileRes.data;
 
-        const targetPath = path.join(componentsDir, file.name);
+        const targetPath = path.resolve(componentsDir, file.name);
+        if (!targetPath.startsWith(componentsDir + path.sep)) {
+          throw new Error("Invalid file path: path traversal detected");
+        }
         await fs.ensureDir(path.dirname(targetPath));
         await fs.writeFile(targetPath, fileContent, "utf-8");
       }
