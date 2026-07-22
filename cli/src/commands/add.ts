@@ -5,7 +5,7 @@ import axios from "axios";
 import { execa } from "execa";
 import prompts from "prompts";
 import { getProjectInfo, getComponentsDir } from "../utils/project-info";
-import { detectPackageManager, getInstallCommand } from "../utils/package-manager";
+import { detectPackageManager, getInstallArgs } from "../utils/package-manager";
 import { logger } from "../utils/logger";
 
 const REGISTRY_URL = process.env.REGISTRY_URL || "https://melonui.dev/api/registry";
@@ -74,8 +74,9 @@ export async function addCommand(component?: string) {
       if (componentData.dependencies && componentData.dependencies.length > 0) {
         spinner.text = `Installing dependencies for ${comp} (${componentData.dependencies.join(", ")})...`;
         const packageManager = await detectPackageManager(cwd);
-        const installCmd = getInstallCommand(packageManager, componentData.dependencies);
-        await execa(installCmd.split(" ")[0], installCmd.split(" ").slice(1), { cwd, shell: true });
+        const { command, args } = getInstallArgs(packageManager, componentData.dependencies);
+        // SEC-FIX: Removed shell: true and use array of args to prevent command injection
+        await execa(command, args, { cwd });
       }
 
       // Download files
