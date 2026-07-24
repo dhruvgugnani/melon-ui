@@ -74,8 +74,9 @@ export async function addCommand(component?: string) {
       if (componentData.dependencies && componentData.dependencies.length > 0) {
         spinner.text = `Installing dependencies for ${comp} (${componentData.dependencies.join(", ")})...`;
         const packageManager = await detectPackageManager(cwd);
-        const installCmd = getInstallCommand(packageManager, componentData.dependencies);
-        await execa(installCmd.split(" ")[0], installCmd.split(" ").slice(1), { cwd, shell: true });
+        const { cmd, args } = getInstallCommand(packageManager, componentData.dependencies);
+        // Security Fix: Execute command and arguments separately to avoid command injection from registry metadata
+        await execa(cmd, args, { cwd, shell: false });
       }
 
       // Download files
