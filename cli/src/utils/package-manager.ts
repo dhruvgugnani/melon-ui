@@ -28,3 +28,14 @@ export function getInstallCommand(packageManager: string, dependencies: string[]
       return `npm install ${deps} --legacy-peer-deps`;
   }
 }
+
+export function getInstallArgs(packageManager: string, dependencies: string[]): { command: string, args: string[] } {
+  switch (packageManager) {
+    case "pnpm":
+    case "yarn":
+    case "bun":
+      return { command: packageManager, args: ["add", ...dependencies] };
+    default:
+      return { command: "npm", args: ["install", ...dependencies, "--legacy-peer-deps"] };
+  }
+}
