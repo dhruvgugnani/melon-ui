@@ -36,7 +36,7 @@ export async function initCommand() {
     const installCmd = getInstallCommand(packageManager, depsToInstall);
 
     // We run this in the actual project cwd
-    await execa(installCmd.split(" ")[0], installCmd.split(" ").slice(1), { cwd, shell: true });
+    await execa(installCmd.command, installCmd.args, { cwd });
 
     // Setup utils file
     const utilsDir = await getUtilsDir(cwd, projectInfo);
