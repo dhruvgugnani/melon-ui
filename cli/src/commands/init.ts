@@ -33,10 +33,10 @@ export async function initCommand() {
     const depsToInstall = ["clsx", "tailwind-merge"];
 
     spinner.text = `Installing core utilities using ${packageManager}...`;
-    const installCmd = getInstallCommand(packageManager, depsToInstall);
+    const { command, args } = getInstallCommand(packageManager, depsToInstall);
 
     // We run this in the actual project cwd
-    await execa(installCmd.split(" ")[0], installCmd.split(" ").slice(1), { cwd, shell: true });
+    await execa(command, args, { cwd });
 
     // Setup utils file
     const utilsDir = await getUtilsDir(cwd, projectInfo);

@@ -74,8 +74,8 @@ export async function addCommand(component?: string) {
       if (componentData.dependencies && componentData.dependencies.length > 0) {
         spinner.text = `Installing dependencies for ${comp} (${componentData.dependencies.join(", ")})...`;
         const packageManager = await detectPackageManager(cwd);
-        const installCmd = getInstallCommand(packageManager, componentData.dependencies);
-        await execa(installCmd.split(" ")[0], installCmd.split(" ").slice(1), { cwd, shell: true });
+        const { command, args } = getInstallCommand(packageManager, componentData.dependencies);
+        await execa(command, args, { cwd });
       }
 
       // Download files
