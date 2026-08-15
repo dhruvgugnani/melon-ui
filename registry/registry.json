@@ -1,4 +1,24 @@
 {
+  "morphing-bento-matrix": {
+    "name": "Morphing Bento Matrix",
+    "description": "A spring-driven bento matrix with reactive cells and pointer parallax.",
+    "category": "Layout",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "morphing-bento-matrix.tsx",
+        "path": "components/morphing-bento-matrix.tsx"
+      }
+    ],
+    "tags": [
+      "Bento",
+      "Morphing",
+      "Parallax"
+    ],
+    "preview": "/preview/morphing-bento-matrix.png"
+  },
   "kinetic-timeline": {
     "name": "Kinetic Timeline",
     "description": "A physical timeline whose connector bends toward the pointer and pulls its nodes.",

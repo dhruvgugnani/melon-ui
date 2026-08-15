@@ -12,6 +12,7 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   DimensionalDataPad: dynamic(() => import('./demos/DimensionalDataPad').then(m => m.DimensionalDataPad), { ssr: false }),
   AntiGravityBento: dynamic(() => import('./demos/AntiGravityBento').then(m => m.AntiGravityBento), { ssr: false }),
   CliTerminal: dynamic(() => import('./demos/CliTerminal').then(m => m.CliTerminal), { ssr: false }),
+  MorphingBentoMatrix: dynamic(() => import('./demos/MorphingBentoMatrix').then(m => m.MorphingBentoMatrix), { ssr: false }),
   ChangelogCard: dynamic(() => import('./demos/ChangelogCard').then(m => m.ChangelogCard), { ssr: false }),
   SeedBurstButton: dynamic(() => import('./demos/SeedBurstButton').then(m => m.SeedBurstButton), { ssr: false }),
   RippleButton: dynamic(() => import('./demos/RippleButton').then(m => m.RippleButton), { ssr: false }),

@@ -290,6 +290,41 @@ async function testKineticTimeline(page) {
   await page.setViewportSize({ width: 1440, height: 1000 });
 }
 
+async function testMorphingBentoMatrix(page) {
+  await page.setViewportSize({ width: 320, height: 900 });
+  const neuralCell = page.getByRole("group", { name: "Neural Link matrix cell" });
+  const quantumCell = page.getByRole("group", { name: "Quantum Flux matrix cell" });
+  await neuralCell.waitFor({ state: "visible" });
+  const matrix = neuralCell.locator('xpath=ancestor::div[contains(@class, "rounded-3xl")][1]');
+  const matrixBox = await matrix.boundingBox();
+  assert(matrixBox && matrixBox.x + matrixBox.width <= 320,
+    "Morphing Bento Matrix overflowed a 320px viewport");
+
+  const initialNeuralBox = await neuralCell.boundingBox();
+  const initialQuantumBox = await quantumCell.boundingBox();
+  await neuralCell.focus();
+  await page.getByText("Establishing high-bandwidth connection", { exact: false })
+    .waitFor({ state: "visible" });
+  await page.waitForTimeout(450);
+  const expandedNeuralBox = await neuralCell.boundingBox();
+  const contractedQuantumBox = await quantumCell.boundingBox();
+  assert(initialNeuralBox && initialQuantumBox && expandedNeuralBox && contractedQuantumBox &&
+    expandedNeuralBox.width > initialNeuralBox.width &&
+    contractedQuantumBox.width < initialQuantumBox.width,
+  "Morphing Bento Matrix cells did not resize for keyboard focus");
+
+  assert(matrixBox, "Morphing Bento Matrix has no measurable interaction area");
+  await page.mouse.move(matrixBox.x + matrixBox.width * 0.2, matrixBox.y + matrixBox.height * 0.2);
+  await page.waitForTimeout(350);
+  const firstTransform = await matrix.evaluate((element) => getComputedStyle(element).transform);
+  await page.mouse.move(matrixBox.x + matrixBox.width * 0.8, matrixBox.y + matrixBox.height * 0.8);
+  await page.waitForTimeout(350);
+  const secondTransform = await matrix.evaluate((element) => getComputedStyle(element).transform);
+  assert(firstTransform !== secondTransform,
+    "Morphing Bento Matrix parallax did not respond to pointer movement");
+  await page.setViewportSize({ width: 1440, height: 1000 });
+}
+
 const componentChecks = {
   "astral-morph-node": testAstralMorphNode,
   "aura-morph-terminal": testAuraMorphTerminal,
@@ -297,6 +332,7 @@ const componentChecks = {
   "holo-drop-surface": testHoloDropSurface,
   "hyper-core-reactor": testHyperCoreReactor,
   "kinetic-timeline": testKineticTimeline,
+  "morphing-bento-matrix": testMorphingBentoMatrix,
   "magnetic-card": testMagneticCard,
   "tactile-zipper-card": testTactileZipperCard,
 };
