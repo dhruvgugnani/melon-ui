@@ -42,7 +42,43 @@ async function testMagneticCard(page) {
   );
 }
 
+async function testHoloDropSurface(page) {
+  const title = page.getByText("HOLO LENS", { exact: true });
+  await title.waitFor({ state: "visible" });
+  const titleColor = await title.evaluate((element) => getComputedStyle(element).color);
+  const colorChannels = titleColor.match(/[\d.]+/g)?.slice(0, 3).map(Number) || [];
+  const isBright = titleColor.startsWith("oklab(")
+    ? colorChannels[0] > 0.75
+    : colorChannels.length === 3 &&
+      colorChannels.reduce((sum, channel) => sum + channel, 0) > 600;
+  assert(
+    isBright,
+    `Holo Drop Surface title has insufficient contrast: ${titleColor}`,
+  );
+
+  const surface = title.locator(
+    'xpath=ancestor::div[contains(concat(" ", normalize-space(@class), " "), " group ")][1]',
+  );
+  const coordinates = surface.getByText(/^X:\d+ Y:\d+$/);
+  const box = await surface.boundingBox();
+  assert(box, "Holo Drop Surface has no measurable interaction area");
+
+  await page.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.2);
+  await page.waitForTimeout(350);
+  const firstCoordinates = await coordinates.textContent();
+
+  await page.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.8);
+  await page.waitForTimeout(350);
+  const secondCoordinates = await coordinates.textContent();
+
+  assert(
+    firstCoordinates !== secondCoordinates,
+    "Holo Drop Surface coordinates did not respond to pointer movement",
+  );
+}
+
 const componentChecks = {
+  "holo-drop-surface": testHoloDropSurface,
   "magnetic-card": testMagneticCard,
 };
 
@@ -74,10 +110,16 @@ async function testComponent(page, slug) {
   await page.getByRole("tab", { name: "Preview", exact: true }).click();
   const previewPanel = page.getByRole("tabpanel").first();
   await previewPanel.waitFor({ state: "visible" });
-  await page.getByLabel("Toggle Local Preview Theme").click();
+  const themeToggle = page.getByLabel("Toggle Local Preview Theme");
+  await themeToggle.click();
   assert(
     (await previewPanel.getAttribute("class"))?.includes("light"),
     `${slug}: preview theme toggle did not update the panel`,
+  );
+  await themeToggle.click();
+  assert(
+    !(await previewPanel.getAttribute("class"))?.includes("light"),
+    `${slug}: preview theme toggle did not restore dark mode`,
   );
 
   if (componentChecks[slug]) {

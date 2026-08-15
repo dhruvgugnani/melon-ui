@@ -1475,5 +1475,25 @@
       "Interactive"
     ],
     "preview": "/preview/glow-terminal.png"
+  },
+  "holo-drop-surface": {
+    "name": "Holo Drop Surface",
+    "description": "A highly tactile, magnetic glassmorphic surface that reacts to cursor proximity, creating an animated liquid depth displacement effect using Framer Motion.",
+    "category": "Widgets",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "holo-drop-surface.tsx",
+        "path": "components/holo-drop-surface.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Holo",
+      "Interactive"
+    ],
+    "preview": "/preview/holo-drop-surface.png"
   }
 }
