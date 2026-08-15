@@ -200,7 +200,43 @@ async function testHyperCoreReactor(page) {
   );
 }
 
+async function testAuraMorphTerminal(page) {
+  const activate = page.getByRole("button", { name: "Expand Terminal" });
+  await activate.waitFor({ state: "visible" });
+  await activate.press("Enter");
+
+  const close = page.getByRole("button", { name: "Close Terminal" });
+  await close.waitFor({ state: "visible" });
+  assert(await close.evaluate((element) => element === document.activeElement),
+    "Aura Morph Terminal did not move focus to its close control");
+  const finalLine = page.getByText("UPLINK READY.", { exact: true });
+  await finalLine.waitFor({ state: "attached" });
+  await page.waitForTimeout(2200);
+  const finalLineOpacity = Number(await finalLine.locator("..").evaluate(
+    (element) => getComputedStyle(element).opacity,
+  ));
+  assert(finalLineOpacity > 0.9, "Aura Morph Terminal typewriter did not reveal its final line");
+
+  const terminal = close.locator('xpath=ancestor::div[contains(@class, "max-w-2xl")][1]');
+  const box = await terminal.boundingBox();
+  assert(box, "Aura Morph Terminal has no measurable interaction area");
+  await page.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.2);
+  await page.waitForTimeout(350);
+  const firstTransform = await terminal.evaluate((element) => getComputedStyle(element).transform);
+  await page.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.8);
+  await page.waitForTimeout(350);
+  const secondTransform = await terminal.evaluate((element) => getComputedStyle(element).transform);
+  assert(firstTransform !== secondTransform,
+    "Aura Morph Terminal parallax did not respond to pointer movement");
+
+  await close.click();
+  await activate.waitFor({ state: "visible" });
+  assert(await activate.evaluate((element) => element === document.activeElement),
+    "Aura Morph Terminal did not restore focus after closing");
+}
+
 const componentChecks = {
+  "aura-morph-terminal": testAuraMorphTerminal,
   "dimensional-data-pad": testDimensionalDataPad,
   "holo-drop-surface": testHoloDropSurface,
   "hyper-core-reactor": testHyperCoreReactor,
