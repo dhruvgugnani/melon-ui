@@ -1,4 +1,24 @@
 {
+  "hyper-core-reactor": {
+    "name": "Hyper Core Reactor",
+    "description": "A magnetic reactor control with an animated hold-to-unlock sequence.",
+    "category": "Interaction",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "hyper-core-reactor.tsx",
+        "path": "components/hyper-core-reactor.tsx"
+      }
+    ],
+    "tags": [
+      "Magnetic",
+      "Hold Gesture",
+      "Interactive"
+    ],
+    "preview": "/preview/hyper-core-reactor.png"
+  },
   "dimensional-data-pad": {
     "name": "Dimensional Data Pad",
     "description": "A futuristic 3D data pad that unfolds into a layered, pointer-responsive interface.",

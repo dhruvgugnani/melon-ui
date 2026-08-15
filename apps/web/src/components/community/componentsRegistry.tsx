@@ -5,6 +5,7 @@ import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const componentsRegistry: Record<string, React.ComponentType<any>> = {
+  HyperCoreReactor: dynamic(() => import('./demos/HyperCoreReactor').then(m => m.HyperCoreReactor), { ssr: false }),
   DimensionalDataPad: dynamic(() => import('./demos/DimensionalDataPad').then(m => m.DimensionalDataPad), { ssr: false }),
   AntiGravityBento: dynamic(() => import('./demos/AntiGravityBento').then(m => m.AntiGravityBento), { ssr: false }),
   CliTerminal: dynamic(() => import('./demos/CliTerminal').then(m => m.CliTerminal), { ssr: false }),

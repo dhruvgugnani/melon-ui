@@ -175,9 +175,35 @@ async function testDimensionalDataPad(page) {
   );
 }
 
+async function testHyperCoreReactor(page) {
+  const reactor = page.getByRole("button", { name: "Hold to ignite reactor" });
+  await reactor.waitFor({ state: "visible" });
+  await reactor.focus();
+
+  await page.keyboard.down("Enter");
+  await page.waitForTimeout(2250);
+  await page.keyboard.up("Enter");
+  await page.getByRole("heading", { name: "REACTOR ONLINE" }).waitFor({
+    state: "visible",
+  });
+
+  await page.getByRole("button", { name: "Initiate Shutdown" }).click();
+  await reactor.waitFor({ state: "visible" });
+  await reactor.focus();
+  await page.keyboard.down(" ");
+  await page.waitForTimeout(250);
+  await page.keyboard.up(" ");
+  await page.waitForTimeout(400);
+  assert(
+    await page.getByText("Hold to Ignite", { exact: true }).isVisible(),
+    "Hyper Core Reactor did not cancel a short keyboard charge",
+  );
+}
+
 const componentChecks = {
   "dimensional-data-pad": testDimensionalDataPad,
   "holo-drop-surface": testHoloDropSurface,
+  "hyper-core-reactor": testHyperCoreReactor,
   "magnetic-card": testMagneticCard,
   "tactile-zipper-card": testTactileZipperCard,
 };
