@@ -1,4 +1,24 @@
 {
+  "dimensional-data-pad": {
+    "name": "Dimensional Data Pad",
+    "description": "A futuristic 3D data pad that unfolds into a layered, pointer-responsive interface.",
+    "category": "Interaction",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "dimensional-data-pad.tsx",
+        "path": "components/dimensional-data-pad.tsx"
+      }
+    ],
+    "tags": [
+      "3D",
+      "Parallax",
+      "Interactive"
+    ],
+    "preview": "/preview/dimensional-data-pad.png"
+  },
   "cli-terminal": {
     "name": "CLI Terminal",
     "description": "Live animated terminal showing the installation flow. Drop it in your docs.",

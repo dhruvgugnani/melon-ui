@@ -137,7 +137,46 @@ async function testTactileZipperCard(page) {
   );
 }
 
+async function testDimensionalDataPad(page) {
+  const title = page.getByRole("heading", { name: "QUANTUM.CORE", exact: true });
+  await title.waitFor({ state: "visible" });
+
+  const surface = title.locator('xpath=ancestor::div[@tabindex="0"][1]');
+  const dataPad = surface.locator(":scope > div").filter({ has: title }).first();
+  const initialTransform = await dataPad.evaluate(
+    (element) => getComputedStyle(element).transform,
+  );
+
+  await surface.focus();
+  await page.waitForTimeout(450);
+  const focusedTransform = await dataPad.evaluate(
+    (element) => getComputedStyle(element).transform,
+  );
+  assert(
+    initialTransform !== focusedTransform,
+    "Dimensional Data Pad did not expand for keyboard focus",
+  );
+
+  const box = await surface.boundingBox();
+  assert(box, "Dimensional Data Pad has no measurable interaction area");
+  await page.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.2);
+  await page.waitForTimeout(350);
+  const firstPointerTransform = await dataPad.evaluate(
+    (element) => getComputedStyle(element).transform,
+  );
+  await page.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.8);
+  await page.waitForTimeout(350);
+  const secondPointerTransform = await dataPad.evaluate(
+    (element) => getComputedStyle(element).transform,
+  );
+  assert(
+    firstPointerTransform !== secondPointerTransform,
+    "Dimensional Data Pad parallax did not respond to pointer movement",
+  );
+}
+
 const componentChecks = {
+  "dimensional-data-pad": testDimensionalDataPad,
   "holo-drop-surface": testHoloDropSurface,
   "magnetic-card": testMagneticCard,
   "tactile-zipper-card": testTactileZipperCard,
