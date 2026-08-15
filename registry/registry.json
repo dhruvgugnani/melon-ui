@@ -1,4 +1,24 @@
 {
+  "void-nexus": {
+    "name": "Void Nexus",
+    "description": "A glassmorphic diamond core that separates into interactive shards on hover.",
+    "category": "Navigation",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "void-nexus.tsx",
+        "path": "components/void-nexus.tsx"
+      }
+    ],
+    "tags": [
+      "3D",
+      "Glassmorphism",
+      "Interactive"
+    ],
+    "preview": "/preview/void-nexus.png"
+  },
   "morphing-bento-matrix": {
     "name": "Morphing Bento Matrix",
     "description": "A spring-driven bento matrix with reactive cells and pointer parallax.",

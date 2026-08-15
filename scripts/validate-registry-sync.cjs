@@ -41,7 +41,7 @@ function readCatalog() {
       const slug = getPropertyText(node, "slug", sourceFile);
       const codeSnippet = getPropertyText(node, "codeSnippet", sourceFile);
 
-      if (slug && codeSnippet) {
+      if (slug) {
         if (components.has(slug)) {
           throw new Error(`Duplicate catalog slug: ${slug}`);
         }
@@ -66,8 +66,13 @@ function validate() {
 
   for (const slug of selectedSlugs) {
     const snippet = catalog.get(slug);
-    if (!snippet) {
+    if (snippet === undefined) {
       errors.push(`${slug}: missing from the web catalog`);
+      continue;
+    }
+
+    if (snippet.length === 0) {
+      errors.push(`${slug}: catalog code snippet is empty`);
       continue;
     }
 
