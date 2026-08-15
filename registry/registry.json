@@ -1495,5 +1495,27 @@
       "Interactive"
     ],
     "preview": "/preview/holo-drop-surface.png"
+  },
+  "tactile-zipper-card": {
+    "name": "Tactile Zipper Card",
+    "description": "A premium interactive card featuring a magnetic draggable zipper that unzips a glassmorphic front cover using dynamic clip paths to reveal a glowing 3D core.",
+    "category": "Cards",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "tactile-zipper-card.tsx",
+        "path": "components/tactile-zipper-card.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "3D",
+      "Glassmorphism",
+      "Interactive",
+      "Drag"
+    ],
+    "preview": "/preview/tactile-zipper-card.png"
   }
 }

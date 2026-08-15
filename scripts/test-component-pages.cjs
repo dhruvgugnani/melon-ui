@@ -77,9 +77,70 @@ async function testHoloDropSurface(page) {
   );
 }
 
+async function testTactileZipperCard(page) {
+  const title = page.getByText("SECURE", { exact: true });
+  await title.waitFor({ state: "visible" });
+
+  const card = title.locator(
+    'xpath=ancestor::div[contains(@class, "perspective-")][1]',
+  );
+  const leftFlap = card.locator('div[class*="border-l"]').first();
+  const zipper = card.getByRole("button");
+  assert(
+    (await zipper.getAttribute("aria-label")) === "Unlock secure payload",
+    "Tactile Zipper Card did not expose an accessible unlock control",
+  );
+
+  await zipper.focus();
+  await zipper.press("Enter");
+  assert(
+    (await zipper.getAttribute("aria-pressed")) === "true",
+    "Tactile Zipper Card keyboard control did not unlock",
+  );
+
+  await zipper.press("Enter");
+  assert(
+    (await zipper.getAttribute("aria-pressed")) === "false",
+    "Tactile Zipper Card keyboard control did not relock",
+  );
+
+  const initialClipPath = await leftFlap.evaluate(
+    (element) => getComputedStyle(element).clipPath,
+  );
+  const cardBox = await card.boundingBox();
+  const zipperBox = await zipper.boundingBox();
+  assert(cardBox && zipperBox, "Tactile Zipper Card drag targets are not measurable");
+
+  await page.mouse.move(
+    zipperBox.x + zipperBox.width / 2,
+    zipperBox.y + zipperBox.height / 2,
+  );
+  await page.mouse.down();
+  await page.mouse.move(
+    zipperBox.x + zipperBox.width / 2,
+    cardBox.y + cardBox.height - 10,
+    { steps: 12 },
+  );
+  await page.mouse.up();
+  await page.waitForTimeout(400);
+
+  const finalClipPath = await leftFlap.evaluate(
+    (element) => getComputedStyle(element).clipPath,
+  );
+  assert(
+    initialClipPath !== finalClipPath,
+    "Tactile Zipper Card flaps did not respond to dragging",
+  );
+  assert(
+    (await zipper.getAttribute("aria-pressed")) === "true",
+    "Tactile Zipper Card did not reach its unlocked state after dragging",
+  );
+}
+
 const componentChecks = {
   "holo-drop-surface": testHoloDropSurface,
   "magnetic-card": testMagneticCard,
+  "tactile-zipper-card": testTactileZipperCard,
 };
 
 async function testComponent(page, slug) {

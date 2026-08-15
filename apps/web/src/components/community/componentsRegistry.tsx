@@ -79,4 +79,5 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   GlowTerminal: dynamic(() => import('./demos/GlowTerminal').then(m => m.GlowTerminal), { ssr: false }),
   VoidNexus: dynamic(() => import('./demos/VoidNexus').then(m => m.VoidNexus), { ssr: false }),
   HoloDropSurface: dynamic(() => import('./demos/HoloDropSurface').then(m => m.HoloDropSurface), { ssr: false }),
+  TactileZipperCard: dynamic(() => import('./demos/TactileZipperCard').then(m => m.TactileZipperCard), { ssr: false }),
 };
