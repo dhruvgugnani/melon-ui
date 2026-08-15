@@ -259,12 +259,44 @@ async function testAstralMorphNode(page) {
   await page.setViewportSize({ width: 1440, height: 1000 });
 }
 
+async function testKineticTimeline(page) {
+  await page.setViewportSize({ width: 320, height: 900 });
+  const timeline = page.getByRole("group", { name: "Kinetic timeline" });
+  await timeline.waitFor({ state: "visible" });
+  const timelineBox = await timeline.boundingBox();
+  const firstCard = page.getByRole("heading", { name: "System Initialization" })
+    .locator('xpath=ancestor::div[contains(@class, "rounded-2xl")][1]');
+  const cardBox = await firstCard.boundingBox();
+  assert(timelineBox && cardBox && cardBox.x + cardBox.width <= 320,
+    "Kinetic Timeline card overflowed a 320px viewport");
+
+  const line = timeline.locator(":scope > div").first().locator("svg path").last();
+  const initialPath = await line.getAttribute("d");
+  await timeline.focus();
+  await page.waitForTimeout(350);
+  const focusedPath = await line.getAttribute("d");
+  assert(initialPath !== focusedPath,
+    "Kinetic Timeline line did not respond to keyboard focus");
+
+  assert(timelineBox, "Kinetic Timeline has no measurable interaction area");
+  await page.mouse.move(timelineBox.x + 120, timelineBox.y + timelineBox.height * 0.25);
+  await page.waitForTimeout(350);
+  const firstPointerPath = await line.getAttribute("d");
+  await page.mouse.move(timelineBox.x + 70, timelineBox.y + timelineBox.height * 0.75);
+  await page.waitForTimeout(350);
+  const secondPointerPath = await line.getAttribute("d");
+  assert(firstPointerPath !== secondPointerPath,
+    "Kinetic Timeline line did not bend toward pointer movement");
+  await page.setViewportSize({ width: 1440, height: 1000 });
+}
+
 const componentChecks = {
   "astral-morph-node": testAstralMorphNode,
   "aura-morph-terminal": testAuraMorphTerminal,
   "dimensional-data-pad": testDimensionalDataPad,
   "holo-drop-surface": testHoloDropSurface,
   "hyper-core-reactor": testHyperCoreReactor,
+  "kinetic-timeline": testKineticTimeline,
   "magnetic-card": testMagneticCard,
   "tactile-zipper-card": testTactileZipperCard,
 };
@@ -312,6 +344,9 @@ async function testComponent(page, slug) {
   if (componentChecks[slug]) {
     await componentChecks[slug](page);
   }
+
+  await page.reload({ waitUntil: "networkidle" });
+  await page.locator("h1").waitFor({ state: "visible" });
 
   await page.screenshot({
     path: path.join(artifactDirectory, `${slug}.png`),

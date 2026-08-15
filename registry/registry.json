@@ -1,4 +1,24 @@
 {
+  "kinetic-timeline": {
+    "name": "Kinetic Timeline",
+    "description": "A physical timeline whose connector bends toward the pointer and pulls its nodes.",
+    "category": "Layout",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "kinetic-timeline.tsx",
+        "path": "components/kinetic-timeline.tsx"
+      }
+    ],
+    "tags": [
+      "Timeline",
+      "Physics",
+      "Interactive"
+    ],
+    "preview": "/preview/kinetic-timeline.png"
+  },
   "astral-morph-node": {
     "name": "Astral Morph Node",
     "description": "A responsive 3D astral node with orbiting labels and pointer-driven depth.",
