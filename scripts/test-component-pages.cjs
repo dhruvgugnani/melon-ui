@@ -235,7 +235,32 @@ async function testAuraMorphTerminal(page) {
     "Aura Morph Terminal did not restore focus after closing");
 }
 
+async function testAstralMorphNode(page) {
+  await page.setViewportSize({ width: 320, height: 900 });
+  const node = page.getByRole("group", { name: "Astral morph node visualization" });
+  await node.waitFor({ state: "visible" });
+  const compactBox = await node.boundingBox();
+  assert(compactBox && compactBox.width <= 320,
+    "Astral Morph Node overflowed a 320px viewport");
+
+  await node.focus();
+  await page.getByText("SYSTEM_ACTIVE", { exact: true }).waitFor({ state: "visible" });
+  const scene = node.locator(":scope > div").filter({ hasText: "SYSTEM_ACTIVE" }).first();
+  const box = await node.boundingBox();
+  assert(box, "Astral Morph Node has no measurable interaction area");
+  await page.mouse.move(box.x + box.width * 0.25, box.y + box.height * 0.25);
+  await page.waitForTimeout(350);
+  const firstTransform = await scene.evaluate((element) => getComputedStyle(element).transform);
+  await page.mouse.move(box.x + box.width * 0.75, box.y + box.height * 0.75);
+  await page.waitForTimeout(350);
+  const secondTransform = await scene.evaluate((element) => getComputedStyle(element).transform);
+  assert(firstTransform !== secondTransform,
+    "Astral Morph Node depth did not respond to pointer movement");
+  await page.setViewportSize({ width: 1440, height: 1000 });
+}
+
 const componentChecks = {
+  "astral-morph-node": testAstralMorphNode,
   "aura-morph-terminal": testAuraMorphTerminal,
   "dimensional-data-pad": testDimensionalDataPad,
   "holo-drop-surface": testHoloDropSurface,

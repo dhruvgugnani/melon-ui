@@ -1,4 +1,24 @@
 {
+  "astral-morph-node": {
+    "name": "Astral Morph Node",
+    "description": "A responsive 3D astral node with orbiting labels and pointer-driven depth.",
+    "category": "Interaction",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "astral-morph-node.tsx",
+        "path": "components/astral-morph-node.tsx"
+      }
+    ],
+    "tags": [
+      "3D",
+      "Orbit",
+      "Parallax"
+    ],
+    "preview": "/preview/astral-morph-node.png"
+  },
   "aura-morph-terminal": {
     "name": "Aura Morph Terminal",
     "description": "A compact aura control that morphs into a layered interactive terminal.",
