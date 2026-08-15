@@ -1,11 +1,10 @@
 import fs from "fs-extra";
-import path from "path";
 import ora from "ora";
 import axios from "axios";
-import { execa } from "execa";
 import prompts from "prompts";
 import { getProjectInfo, getComponentsDir } from "../utils/project-info";
-import { detectPackageManager, getInstallCommand } from "../utils/package-manager";
+import { detectPackageManager, installDependencies } from "../utils/package-manager";
+import { prepareSafeOutputPath } from "../utils/safe-path";
 import { logger } from "../utils/logger";
 
 const REGISTRY_URL = process.env.REGISTRY_URL || "https://melonui.dev/api/registry";
@@ -65,7 +64,7 @@ export async function addCommand(component?: string) {
     const spinner = ora(`Installing ${comp}...`).start();
     try {
       spinner.text = `Fetching metadata for ${comp}...`;
-      const response = await axios.get(`${REGISTRY_URL}?component=${comp}`).catch(err => {
+      const response = await axios.get(`${REGISTRY_URL}?component=${encodeURIComponent(comp)}`).catch(err => {
         throw new Error(err.response?.data?.error || `Failed to fetch registry data for ${comp}.`);
       });
       const componentData = response.data;
@@ -74,18 +73,16 @@ export async function addCommand(component?: string) {
       if (componentData.dependencies && componentData.dependencies.length > 0) {
         spinner.text = `Installing dependencies for ${comp} (${componentData.dependencies.join(", ")})...`;
         const packageManager = await detectPackageManager(cwd);
-        const installCmd = getInstallCommand(packageManager, componentData.dependencies);
-        await execa(installCmd.split(" ")[0], installCmd.split(" ").slice(1), { cwd, shell: true });
+        await installDependencies(packageManager, componentData.dependencies, cwd);
       }
 
       // Download files
       spinner.text = `Downloading files for ${comp}...`;
       for (const file of componentData.files) {
-        const fileRes = await axios.get(`${REGISTRY_URL}/files?path=${file.path}`);
+        const fileRes = await axios.get(`${REGISTRY_URL}/files?path=${encodeURIComponent(file.path)}`);
         const fileContent = fileRes.data;
 
-        const targetPath = path.join(componentsDir, file.name);
-        await fs.ensureDir(path.dirname(targetPath));
+        const targetPath = await prepareSafeOutputPath(componentsDir, file.name);
         await fs.writeFile(targetPath, fileContent, "utf-8");
       }
 

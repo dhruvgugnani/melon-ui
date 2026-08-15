@@ -1,9 +1,8 @@
 import fs from "fs-extra";
 import path from "path";
 import ora from "ora";
-import { execa } from "execa";
 import { getProjectInfo, getUtilsDir } from "../utils/project-info";
-import { detectPackageManager, getInstallCommand } from "../utils/package-manager";
+import { detectPackageManager, installDependencies } from "../utils/package-manager";
 import { logger } from "../utils/logger";
 
 const UTILS_TEMPLATE = `import { clsx, type ClassValue } from "clsx";
@@ -33,10 +32,8 @@ export async function initCommand() {
     const depsToInstall = ["clsx", "tailwind-merge"];
 
     spinner.text = `Installing core utilities using ${packageManager}...`;
-    const installCmd = getInstallCommand(packageManager, depsToInstall);
-
     // We run this in the actual project cwd
-    await execa(installCmd.split(" ")[0], installCmd.split(" ").slice(1), { cwd, shell: true });
+    await installDependencies(packageManager, depsToInstall, cwd);
 
     // Setup utils file
     const utilsDir = await getUtilsDir(cwd, projectInfo);
