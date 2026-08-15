@@ -14197,7 +14197,7 @@ GyroscopeCore.displayName = "GyroscopeCore";
     codeSnippet: `"use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from "framer-motion";
 
 export interface MagneticCardProps {
   title?: string;
@@ -14266,12 +14266,13 @@ export function MagneticCard({
   const stickerTranslateY = useTransform(stickerY, [-0.5, 0.5], [-120, 120]);
   const stickerRotate = useTransform(stickerX, [-0.5, 0.5], [-20, 20]);
 
-  const ambientGlow = useTransform(
-    [smoothX, smoothY],
-    ([x, y]: number[]) => \`radial-gradient(circle at \${(x + 0.5) * 100}% \${(y + 0.5) * 100}%, \${primaryColor}40, transparent 60%)\`
-  );
+  const glowX = useTransform(smoothX, (x) => (x + 0.5) * 100);
+  const glowY = useTransform(smoothY, (y) => (y + 0.5) * 100);
+  const ambientGlow = useMotionTemplate\`radial-gradient(circle at \${glowX}% \${glowY}%, \${primaryColor}40, transparent 60%)\`;
 
   const sheenPosition = useTransform(stickerX, [-0.5, 0.5], ["100% 0", "0 0"]);
+  const rotateX = useTransform(smoothY, [-0.5, 0.5], [15, -15]);
+  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-15, 15]);
 
   if (!mounted) return <div style={{ width, height, ...style }} className={className} />;
 
@@ -14289,8 +14290,8 @@ export function MagneticCard({
         style={{
           background: bg,
           boxShadow: isHovered ? \`0 20px 40px -10px \${primaryColor}20\` : "0 10px 30px -10px rgba(0,0,0,0.5)",
-          rotateX: useTransform(smoothY, [-0.5, 0.5], [15, -15]),
-          rotateY: useTransform(smoothX, [-0.5, 0.5], [-15, 15]),
+          rotateX,
+          rotateY,
           transformStyle: "preserve-3d",
         }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}

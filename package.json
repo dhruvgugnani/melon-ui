@@ -10,6 +10,8 @@
     "build": "npm run build --workspaces --if-present",
     "start": "npm run start -w melonui-web",
     "dev": "npm run dev -w melonui-web",
-    "lint": "npm run lint --workspaces --if-present"
+    "lint": "npm run lint --workspaces --if-present",
+    "test:components": "node scripts/test-component-pages.cjs",
+    "validate:registry": "node scripts/validate-registry-sync.cjs"
   }
 }
