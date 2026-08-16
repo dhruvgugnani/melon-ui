@@ -383,7 +383,7 @@ export const componentsData: ComponentData[] = [
       codeSnippet: `"use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "framer-motion";
 
 export interface AntiGravityBentoProps {
   width?: string | number;
@@ -416,6 +416,73 @@ const DEFAULT_ITEMS = [
     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
   </div>
 ];
+
+interface FloatingBentoItemProps {
+  index: number;
+  isHovered: boolean;
+  item: React.ReactNode;
+  smoothX: MotionValue<number>;
+  smoothY: MotionValue<number>;
+}
+
+function FloatingBentoItem({
+  index,
+  isHovered,
+  item,
+  smoothX,
+  smoothY,
+}: FloatingBentoItemProps) {
+  const seed = index * 137;
+  const randomX = ((seed % 100) / 100 - 0.5) * 150;
+  const randomY = (((seed * 7) % 100) / 100 - 0.5) * 150;
+  const randomRot = (((seed * 11) % 100) / 100 - 0.5) * 45;
+  const randomZ = (seed % 50) + 20;
+  const row = Math.floor(index / 2);
+  const col = index % 2;
+  const parallaxX = useTransform(smoothX, [-0.5, 0.5], [-randomZ, randomZ]);
+  const parallaxY = useTransform(smoothY, [-0.5, 0.5], [-randomZ, randomZ]);
+
+  return (
+    <motion.div
+      className="absolute"
+      initial={false}
+      animate={
+        isHovered
+          ? {
+              top: "50%",
+              left: "50%",
+              x: \`calc(-50% + \${randomX}px)\`,
+              y: \`calc(-50% + \${randomY}px)\`,
+              rotate: randomRot,
+              scale: 1.1,
+              z: randomZ,
+            }
+          : {
+              top: \`\${row * 50}%\`,
+              left: \`\${col * 50}%\`,
+              x: "0%",
+              y: "0%",
+              rotate: 0,
+              scale: 1,
+              z: 0,
+            }
+      }
+      transition={{
+        type: "spring",
+        stiffness: 150 + index * 20,
+        damping: 15,
+        mass: 0.8,
+      }}
+    >
+      <motion.div
+        style={isHovered ? { x: parallaxX, y: parallaxY } : { x: 0, y: 0 }}
+        className="h-full w-full p-2"
+      >
+        <div className="h-[160px] w-[160px] shadow-2xl">{item}</div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 export const AntiGravityBento: React.FC<AntiGravityBentoProps> = ({
   width = 400,
@@ -515,84 +582,16 @@ export const AntiGravityBento: React.FC<AntiGravityBentoProps> = ({
         {/* Inner Grid / Floating Area */}
         <div className="absolute inset-0 p-4">
           <div className="w-full h-full relative">
-            {items.map((item, index) => {
-              // Deterministic pseudo-random values for floating animation
-              const seed = index * 137;
-              const randomX = ((seed % 100) / 100 - 0.5) * 150; // -75 to 75
-              const randomY = (((seed * 7) % 100) / 100 - 0.5) * 150;
-              const randomRot = (((seed * 11) % 100) / 100 - 0.5) * 45;
-              const randomZ = ((seed % 50) + 20); // 20 to 70
-
-              // Base grid position logic (simple 2x2 assumption for 4 items)
-              const row = Math.floor(index / 2);
-              const col = index % 2;
-              const gridTop = \`\${row * 50}%\`;
-              const gridLeft = \`\${col * 50}%\`;
-
-              // Parallax effect based on mouse when floating
-              const parallaxX = useTransform(smoothX, [-0.5, 0.5], [-randomZ, randomZ]);
-              const parallaxY = useTransform(smoothY, [-0.5, 0.5], [-randomZ, randomZ]);
-
-              return (
-                <motion.div
-                  key={index}
-                  className="absolute"
-                  initial={false}
-                  animate={
-                    isHovered
-                      ? {
-                          // Floating State (Anti-Gravity)
-                          top: "50%",
-                          left: "50%",
-                          x: \`calc(-50% + \${randomX}px)\`,
-                          y: \`calc(-50% + \${randomY}px)\`,
-                          rotate: randomRot,
-                          scale: 1.1,
-                          z: randomZ,
-                        }
-                      : {
-                          // Snapped Grid State
-                          top: gridTop,
-                          left: gridLeft,
-                          x: "0%",
-                          y: "0%",
-                          rotate: 0,
-                          scale: 1,
-                          z: 0,
-                        }
-                  }
-                  style={
-                    isHovered
-                      ? {
-                          // Add mouse parallax on top of the base animation position
-                          // Framer motion allows combining animate state with style overwrites carefully,
-                          // but to keep it simple and clean we apply parallax as a secondary translation.
-                          // Wait, Framer motion style overrides animate's x/y if not careful.
-                          // Let's use a wrapper for parallax!
-                        }
-                      : {}
-                  }
-                  transition={{
-                    type: "spring",
-                    stiffness: 150 + (index * 20), // staggered spring
-                    damping: 15,
-                    mass: 0.8
-                  }}
-                >
-                  <motion.div
-                    style={
-                      isHovered ? { x: parallaxX, y: parallaxY } : { x: 0, y: 0 }
-                    }
-                    className="w-full h-full p-2"
-                  >
-                     {/* The item content wrapper */}
-                     <div className="w-[160px] h-[160px] shadow-2xl">
-                       {item}
-                     </div>
-                  </motion.div>
-                </motion.div>
-              );
-            })}
+            {items.map((item, index) => (
+              <FloatingBentoItem
+                key={index}
+                index={index}
+                isHovered={isHovered}
+                item={item}
+                smoothX={smoothX}
+                smoothY={smoothY}
+              />
+            ))}
           </div>
         </div>
 
@@ -730,12 +729,17 @@ export function JuicyCursor({
   const ringRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const posRef = useRef({ x: 0, y: 0, vx: 0, vy: 0, px: 0, py: 0 });
-  const [isVisible, setIsVisible] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (!containerRef) return;
+    const target = containerRef.current;
+    if (!target) return;
+
+    const frame = requestAnimationFrame(() => setPortalTarget(target));
+    return () => cancelAnimationFrame(frame);
+  }, [containerRef]);
 
   useEffect(() => {
     const blob = blobRef.current;
@@ -748,7 +752,7 @@ export function JuicyCursor({
     // Apply cursor-none to target
     const originalCursor = target.style.cursor;
     const originalPosition = target.style.position;
-    
+\x20\x20\x20\x20
     if (containerRef) {
       target.style.cursor = "none";
       const computedStyle = window.getComputedStyle(target);
@@ -810,9 +814,6 @@ export function JuicyCursor({
     target.addEventListener("mouseenter", onEnter);
     target.addEventListener("mouseleave", onLeave);
 
-    // Initial state check
-    setIsVisible(true);
-
     return () => {
       target.removeEventListener("mousemove", onMove);
       target.removeEventListener("mousedown", onDown);
@@ -824,7 +825,7 @@ export function JuicyCursor({
         target.style.position = originalPosition;
       }
     };
-  }, [containerRef, mounted]);
+  }, [containerRef, portalTarget]);
 
   const positionClass = "absolute";
 
@@ -866,8 +867,8 @@ export function JuicyCursor({
 
   // If containerRef is provided, render via Portal
   if (containerRef) {
-    if (!mounted || !containerRef.current) return null;
-    return createPortal(cursorElements, containerRef.current);
+    if (!portalTarget) return null;
+    return createPortal(cursorElements, portalTarget);
   }
 
   // Localized preview
@@ -1879,12 +1880,17 @@ export function CrosshairCursor({
   const labelRef = useRef<HTMLSpanElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const posRef = useRef({ x: 0, y: 0 });
-  const [isInside, setIsInside] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [isInside, setIsInside] = useState(true);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (!containerRef) return;
+    const target = containerRef.current;
+    if (!target) return;
+
+    const frame = requestAnimationFrame(() => setPortalTarget(target));
+    return () => cancelAnimationFrame(frame);
+  }, [containerRef]);
 
   useEffect(() => {
     const container = containerRef ? containerRef.current : previewRef.current;
@@ -1892,7 +1898,7 @@ export function CrosshairCursor({
 
     const originalCursor = container.style.cursor;
     const originalPosition = container.style.position;
-    
+\x20\x20\x20\x20
     if (containerRef) {
       container.style.cursor = "none";
       const computedStyle = window.getComputedStyle(container);
@@ -1928,8 +1934,6 @@ export function CrosshairCursor({
     container.addEventListener("mouseenter", onEnter);
     container.addEventListener("mouseleave", onLeave);
 
-    setIsInside(true);
-
     return () => {
       container.removeEventListener("mousemove", onMove);
       container.removeEventListener("mouseenter", onEnter);
@@ -1939,10 +1943,10 @@ export function CrosshairCursor({
         container.style.position = originalPosition;
       }
     };
-  }, [containerRef, mounted]);
+  }, [containerRef, portalTarget]);
 
   const crosshairElements = (
-    <div 
+    <div\x20
       className="absolute inset-0 pointer-events-none overflow-hidden z-[9999]"
       style={{ display: isInside ? "block" : "none" }}
     >
@@ -1989,8 +1993,8 @@ export function CrosshairCursor({
 
   // If containerRef is provided, render elements via Portal
   if (containerRef) {
-    if (!mounted || !containerRef.current) return null;
-    return createPortal(crosshairElements, containerRef.current);
+    if (!portalTarget) return null;
+    return createPortal(crosshairElements, portalTarget);
   }
 
   // Default localized preview
@@ -5429,7 +5433,7 @@ const Particles: React.FC<ParticlesProps> = ({
   });
 
   return (
-    <instancedMesh ref={mesh} args={[null as any, null as any, count]}>
+    <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
       {/* Small glowing tetrahedrons/diamonds */}
       <octahedronGeometry args={[particleSize, 0]} />
       <meshPhysicalMaterial
@@ -5472,12 +5476,13 @@ export const MagneticParticleField: React.FC<MagneticParticleFieldProps> = ({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   if (!mounted) {
     return (
-      <div 
+      <div\x20
         className={\`relative w-full h-[600px] overflow-hidden rounded-xl \${className}\`}
         style={{ backgroundColor: bg, ...style }}
         {...props}
@@ -5497,7 +5502,7 @@ export const MagneticParticleField: React.FC<MagneticParticleFieldProps> = ({
       <div className="absolute inset-0 z-0 pointer-events-none">
         <Canvas camera={{ position: [0, 0, 15], fov: 45 }}>
           <ambientLight intensity={0.5} />
-          <Particles 
+          <Particles\x20
             count={particleCount}
             particleColor={particleColor}
             particleSize={particleSize}
@@ -5529,7 +5534,8 @@ export const MagneticParticleField: React.FC<MagneticParticleFieldProps> = ({
       ) : null}
     </div>
   );
-};`,
+};
+`,
       componentPath: "MagneticParticleField",
       props: [
         { name: "particleCount", type: "number", defaultValue: "500", description: "Number of active physics particles.", control: { type: "slider", min: 100, max: 1000, step: 50 } },
@@ -5891,7 +5897,7 @@ export function MorphTransition({
       cliCommand: "npx @melonui-dev/cli add morphing-control-node",
       codeSnippet: `"use client";
 
-import React, { useRef, useState, useEffect, useMemo } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 export type NodeState = "IDLE" | "SCANNING" | "AUDIO" | "ALERT";
@@ -5933,24 +5939,9 @@ export function MorphingControlNode({
   ...props
 }: MorphingControlNodeProps) {
   const [nodeState, setNodeState] = useState<NodeState>(initialState);
-  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Use pseudo-random seeded values based on index to ensure deterministic rendering
-  // and prevent hydration mismatches
-  const radarConfig = useMemo(() => 
-    Array.from({ length: 18 }).map((_, i) => ({
-      delay: (i * 0.3) % 2,
-      duration: ((i * 0.7) % 2) + 0.5
-    })),
-    []
-  );
-
-  const audioDurations = useMemo(() => 
+  const audioDurations = useMemo(() =>\x20
     Array.from({ length: 12 }).map((_, i) => 0.5 + ((i * 0.4) % 0.5)),
     []
   );
@@ -5991,13 +5982,13 @@ export function MorphingControlNode({
   };
 
   return (
-    <div 
-      className={\`relative w-full h-[400px] flex items-center justify-center overflow-hidden rounded-xl border \${className}\`} 
-      style={{ 
+    <div\x20
+      className={\`relative w-full h-[400px] flex items-center justify-center overflow-hidden rounded-xl border \${className}\`}\x20
+      style={{\x20
         perspective: 1200,
         backgroundColor: bg,
         borderColor: borderColor,
-        ...style 
+        ...style\x20
       }}
       {...props}
     >
@@ -6023,8 +6014,8 @@ export function MorphingControlNode({
         animate={states[nodeState]}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         style={{
-          rotateX: mounted ? rotateX : 0,
-          rotateY: mounted ? rotateY : 0,
+          rotateX,
+          rotateY,
           transformStyle: "preserve-3d",
           backdropFilter: "blur(20px)",
         }}
@@ -6056,8 +6047,8 @@ export function MorphingControlNode({
                 <span className="font-mono text-[10px] tracking-[0.25em] text-white/70 uppercase select-none">Monitor</span>
               </div>
               <span className="font-sans font-bold text-xs text-white/95">{idleText}</span>
-              <button 
-                onClick={(e) => { e.stopPropagation(); setNodeState("SCANNING"); }} 
+              <button\x20
+                onClick={(e) => { e.stopPropagation(); setNodeState("SCANNING"); }}\x20
                 className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors group"
                 aria-label="Start Scanning"
               >
@@ -6125,7 +6116,7 @@ export function MorphingControlNode({
               className="flex items-center w-full px-6 gap-5"
               style={{ transform: "translateZ(50px)" }}
             >
-              <div 
+              <div\x20
                 className="w-10 h-10 rounded-full border flex items-center justify-center shrink-0"
                 style={{
                   borderColor: \`\${secondaryColor}33\`,
@@ -6152,9 +6143,9 @@ export function MorphingControlNode({
                 ))}
               </div>
 
-              <button 
-                onClick={(e) => { e.stopPropagation(); setNodeState("ALERT"); }} 
-                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors border border-white/5 group" 
+              <button\x20
+                onClick={(e) => { e.stopPropagation(); setNodeState("ALERT"); }}\x20
+                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors border border-white/5 group"\x20
                 aria-label="Trigger Alert"
               >
                 <span className="text-white/60 group-hover:text-[#ff5c71] transition-colors text-[10px]">⚠</span>
@@ -6185,7 +6176,7 @@ export function MorphingControlNode({
                 onClick={(e) => { e.stopPropagation(); setNodeState("IDLE"); }}
                 className="px-5 py-1.5 rounded bg-white/5 border border-white/10 text-white font-mono uppercase tracking-widest text-[9px] hover:bg-white/10 transition-colors shadow-[0_4px_12px_rgba(255,92,113,0.15)]"
               >
-                Reset System
+                {lockdownText}
               </button>
             </motion.div>
           )}
@@ -8675,7 +8666,7 @@ export function SeedwaveText({
       cliCommand: "npx @melonui-dev/cli add thread-route-board",
       codeSnippet: `"use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion";
 
 export interface ThreadRouteBoardMetric {
@@ -8752,6 +8743,77 @@ const DEFAULT_THREADS: ThreadRouteBoardThread[] = [
   },
 ];
 
+function getLogsForThread(id: string) {
+  switch (id) {
+    case "brief":
+      return [
+        "[sys] initiating trace: brief input data payload...",
+        "[api] source telemetry schema validated: OK",
+        "[parse] mapping constraints and edge layouts...",
+        "[info] cluster processing signal routing indexes",
+        "[success] thread trace ready for execution metrics.",
+      ];
+    case "taste":
+      return [
+        "[sys] initializing visual taste matrices...",
+        "[metrics] scanning contrast values and border physics...",
+        "[safety] verification: brand color checks fully passed",
+        "[telemetry] computing fluid scroll-animation weights...",
+        "[success] active tactile values synced to dashboard.",
+      ];
+    case "ship":
+      return [
+        "[sys] packaging build distribution registry...",
+        "[bundler] packaging react client components...",
+        "[sync] executing components registry sync pipeline...",
+        "[telemetry] verified local compilation checks: OK",
+        "[success] application exported to local node cluster.",
+      ];
+    default:
+      return [
+        \`[sys] establishing connection to node \${id}...\`,
+        "[api] validation: OK, streaming status metadata...",
+        "[trace] pipeline executing trace logs...",
+        "[success] node response processed successfully.",
+      ];
+  }
+}
+
+function ThreadLogStream({ id, color }: { id: string; color: string }) {
+  const [logs, setLogs] = useState<string[]>([]);
+
+  useEffect(() => {
+    const timeouts = getLogsForThread(id).map((log, index) =>
+      setTimeout(() => {
+        setLogs((currentLogs) => [...currentLogs, log]);
+      }, index * 120),
+    );
+
+    return () => timeouts.forEach(clearTimeout);
+  }, [id]);
+
+  return (
+    <AnimatePresence mode="popLayout">
+      {logs.map((log, index) => (
+        <motion.div
+          key={log}
+          initial={{ opacity: 0, x: -3 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="break-all border-l-2 border-white/5 pl-2 leading-relaxed"
+          style={{
+            borderColor: index === logs.length - 1 ? color : "rgba(255,255,255,0.05)",
+            color: index === logs.length - 1 ? "#fff" : "rgba(255,255,255,0.6)",
+          }}
+        >
+          {log}
+        </motion.div>
+      ))}
+    </AnimatePresence>
+  );
+}
+
 export function ThreadRouteBoard({
   title = "Route the next best action",
   eyebrow = "Signal Loom",
@@ -8773,63 +8835,10 @@ export function ThreadRouteBoard({
 }: ThreadRouteBoardProps) {
   const [active, setActive] = useState(1);
   const [hovered, setHovered] = useState<number | null>(null);
-  const [logs, setLogs] = useState<string[]>([]);
 
   const safeThreads = threads && threads.length > 0 ? threads : DEFAULT_THREADS;
   const activeIndex = Math.min(hovered ?? active, safeThreads.length - 1);
   const activeThread = safeThreads[activeIndex] ?? safeThreads[0];
-
-  // Streaming logs mockup generator
-  const getLogsForThread = (id: string) => {
-    switch (id) {
-      case "brief":
-        return [
-          "[sys] initiating trace: brief input data payload...",
-          "[api] source telemetry schema validated: OK",
-          "[parse] mapping constraints and edge layouts...",
-          "[info] cluster processing signal routing indexes",
-          "[success] thread trace ready for execution metrics."
-        ];
-      case "taste":
-        return [
-          "[sys] initializing visual taste matrices...",
-          "[metrics] scanning contrast values and border physics...",
-          "[safety] verification: brand color checks fully passed",
-          "[telemetry] computing fluid scroll-animation weights...",
-          "[success] active tactile values synced to dashboard."
-        ];
-      case "ship":
-        return [
-          "[sys] packaging build distribution registry...",
-          "[bundler] packaging react client components...",
-          "[sync] executing components registry sync pipeline...",
-          "[telemetry] verified local compilation checks: OK",
-          "[success] application exported to local node cluster."
-        ];
-      default:
-        return [
-          \`[sys] establishing connection to node \${id}...\`,
-          "[api] validation: OK, streaming status metadata...",
-          "[trace] pipeline executing trace logs...",
-          "[success] node response processed successfully."
-        ];
-    }
-  };
-
-  useEffect(() => {
-    const targetLogs = getLogsForThread(activeThread.id);
-    setLogs([]);
-    
-    const timeouts = targetLogs.map((log, index) => 
-      setTimeout(() => {
-        setLogs(prev => [...prev, log]);
-      }, index * 120)
-    );
-
-    return () => {
-      timeouts.forEach(clearTimeout);
-    };
-  }, [activeThread.id]);
 
   return (
     <motion.section
@@ -8843,13 +8852,13 @@ export function ThreadRouteBoard({
         style={{ backgroundColor: containerBg }}
       >
         {/* Left Card: Stepper / Pipeline Flow */}
-        <div 
+        <div\x20
           className="relative min-h-fit overflow-hidden rounded border border-white/5 p-4 sm:p-5"
           style={{ backgroundColor: cardBgLeft }}
         >
           {/* Background Subtle Accent Grids */}
-          <div 
-            className="absolute inset-0 opacity-[0.02] pointer-events-none" 
+          <div\x20
+            className="absolute inset-0 opacity-[0.02] pointer-events-none"\x20
             style={{
               backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
               backgroundSize: "20px 20px"
@@ -8908,12 +8917,12 @@ export function ThreadRouteBoard({
                     aria-pressed={active === index}
                   >
                     {/* Stepper Node Bullet */}
-                    <div 
+                    <div\x20
                       className={\`
                         absolute left-[-24px] top-[14px] w-2.5 h-2.5 rounded-full border bg-[#08080a] z-10 transition-all duration-300
                         \${isActive ? "scale-110 shadow-[0_0_8px_currentColor]" : "opacity-45 scale-90"}
                       \`}
-                      style={{ 
+                      style={{\x20
                         borderColor: thread.color,
                         color: thread.color
                       }}
@@ -8924,7 +8933,7 @@ export function ThreadRouteBoard({
                         <span className="font-mono text-[8px] uppercase tracking-wider text-white/30">
                           {thread.meta}
                         </span>
-                        <span 
+                        <span\x20
                           className="font-mono text-[9px] font-semibold"
                           style={{ color: thread.color }}
                         >
@@ -8949,13 +8958,13 @@ export function ThreadRouteBoard({
         </div>
 
         {/* Right Card: Telemetry Trace log monitor */}
-        <aside 
+        <aside\x20
           className="relative overflow-hidden rounded border border-white/5 p-4 sm:p-5"
           style={{ backgroundColor: cardBgRight }}
         >
           {/* Subtle Corner Glow Accent */}
-          <div className="absolute top-0 right-0 w-32 h-32 opacity-15 pointer-events-none rounded-full blur-2xl" 
-               style={{ background: \`radial-gradient(circle, \${activeThread.color} 0%, transparent 70%)\` }} 
+          <div className="absolute top-0 right-0 w-32 h-32 opacity-15 pointer-events-none rounded-full blur-2xl"\x20
+               style={{ background: \`radial-gradient(circle, \${activeThread.color} 0%, transparent 70%)\` }}\x20
           />
 
           <div className="relative z-10 flex h-full flex-col justify-between">
@@ -8967,7 +8976,7 @@ export function ThreadRouteBoard({
                 </span>
                 <div className="flex items-center gap-1.5">
                   <span className="font-mono text-[8px] tracking-wider text-white/40 uppercase">NODE:</span>
-                  <span 
+                  <span\x20
                     className="font-mono text-[8px] font-semibold uppercase tracking-wider"
                     style={{ color: activeThread.color }}
                   >
@@ -8996,24 +9005,11 @@ export function ThreadRouteBoard({
 
                 {/* Simulated Telemetry log monitor */}
                 <div className="bg-[#050507] border border-white/5 rounded p-3 min-h-[140px] font-mono text-[9px] text-white/60 flex flex-col gap-1.5 overflow-hidden">
-                  <AnimatePresence mode="popLayout">
-                    {logs.map((log, idx) => (
-                      <motion.div
-                        key={log}
-                        initial={{ opacity: 0, x: -3 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                        className="leading-relaxed border-l-2 pl-2 border-white/5 break-all"
-                        style={{ 
-                          borderColor: idx === logs.length - 1 ? activeThread.color : "rgba(255,255,255,0.05)",
-                          color: idx === logs.length - 1 ? "#fff" : "rgba(255,255,255,0.6)"
-                        }}
-                      >
-                        {log}
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
+                  <ThreadLogStream
+                    key={activeThread.id}
+                    id={activeThread.id}
+                    color={activeThread.color}
+                  />
                 </div>
 
                 {/* Metrics Grid */}
@@ -9030,7 +9026,7 @@ export function ThreadRouteBoard({
                       <span className="block font-mono text-[7px] uppercase tracking-[0.15em] text-white/30">
                         {m.label}
                       </span>
-                      <span 
+                      <span\x20
                         className="mt-1 block font-mono text-[10px] font-semibold text-white/80"
                         style={{ color: activeThread.color }}
                       >

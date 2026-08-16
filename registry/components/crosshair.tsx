@@ -24,12 +24,17 @@ export function CrosshairCursor({
   const labelRef = useRef<HTMLSpanElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const posRef = useRef({ x: 0, y: 0 });
-  const [isInside, setIsInside] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [isInside, setIsInside] = useState(true);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (!containerRef) return;
+    const target = containerRef.current;
+    if (!target) return;
+
+    const frame = requestAnimationFrame(() => setPortalTarget(target));
+    return () => cancelAnimationFrame(frame);
+  }, [containerRef]);
 
   useEffect(() => {
     const container = containerRef ? containerRef.current : previewRef.current;
@@ -73,8 +78,6 @@ export function CrosshairCursor({
     container.addEventListener("mouseenter", onEnter);
     container.addEventListener("mouseleave", onLeave);
 
-    setIsInside(true);
-
     return () => {
       container.removeEventListener("mousemove", onMove);
       container.removeEventListener("mouseenter", onEnter);
@@ -84,7 +87,7 @@ export function CrosshairCursor({
         container.style.position = originalPosition;
       }
     };
-  }, [containerRef, mounted]);
+  }, [containerRef, portalTarget]);
 
   const crosshairElements = (
     <div 
@@ -134,8 +137,8 @@ export function CrosshairCursor({
 
   // If containerRef is provided, render elements via Portal
   if (containerRef) {
-    if (!mounted || !containerRef.current) return null;
-    return createPortal(crosshairElements, containerRef.current);
+    if (!portalTarget) return null;
+    return createPortal(crosshairElements, portalTarget);
   }
 
   // Default localized preview

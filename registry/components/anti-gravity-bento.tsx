@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "framer-motion";
 
 export interface AntiGravityBentoProps {
   width?: string | number;
@@ -34,6 +34,73 @@ const DEFAULT_ITEMS = [
     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
   </div>
 ];
+
+interface FloatingBentoItemProps {
+  index: number;
+  isHovered: boolean;
+  item: React.ReactNode;
+  smoothX: MotionValue<number>;
+  smoothY: MotionValue<number>;
+}
+
+function FloatingBentoItem({
+  index,
+  isHovered,
+  item,
+  smoothX,
+  smoothY,
+}: FloatingBentoItemProps) {
+  const seed = index * 137;
+  const randomX = ((seed % 100) / 100 - 0.5) * 150;
+  const randomY = (((seed * 7) % 100) / 100 - 0.5) * 150;
+  const randomRot = (((seed * 11) % 100) / 100 - 0.5) * 45;
+  const randomZ = (seed % 50) + 20;
+  const row = Math.floor(index / 2);
+  const col = index % 2;
+  const parallaxX = useTransform(smoothX, [-0.5, 0.5], [-randomZ, randomZ]);
+  const parallaxY = useTransform(smoothY, [-0.5, 0.5], [-randomZ, randomZ]);
+
+  return (
+    <motion.div
+      className="absolute"
+      initial={false}
+      animate={
+        isHovered
+          ? {
+              top: "50%",
+              left: "50%",
+              x: `calc(-50% + ${randomX}px)`,
+              y: `calc(-50% + ${randomY}px)`,
+              rotate: randomRot,
+              scale: 1.1,
+              z: randomZ,
+            }
+          : {
+              top: `${row * 50}%`,
+              left: `${col * 50}%`,
+              x: "0%",
+              y: "0%",
+              rotate: 0,
+              scale: 1,
+              z: 0,
+            }
+      }
+      transition={{
+        type: "spring",
+        stiffness: 150 + index * 20,
+        damping: 15,
+        mass: 0.8,
+      }}
+    >
+      <motion.div
+        style={isHovered ? { x: parallaxX, y: parallaxY } : { x: 0, y: 0 }}
+        className="h-full w-full p-2"
+      >
+        <div className="h-[160px] w-[160px] shadow-2xl">{item}</div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 export const AntiGravityBento: React.FC<AntiGravityBentoProps> = ({
   width = 400,
@@ -133,84 +200,16 @@ export const AntiGravityBento: React.FC<AntiGravityBentoProps> = ({
         {/* Inner Grid / Floating Area */}
         <div className="absolute inset-0 p-4">
           <div className="w-full h-full relative">
-            {items.map((item, index) => {
-              // Deterministic pseudo-random values for floating animation
-              const seed = index * 137;
-              const randomX = ((seed % 100) / 100 - 0.5) * 150; // -75 to 75
-              const randomY = (((seed * 7) % 100) / 100 - 0.5) * 150;
-              const randomRot = (((seed * 11) % 100) / 100 - 0.5) * 45;
-              const randomZ = ((seed % 50) + 20); // 20 to 70
-
-              // Base grid position logic (simple 2x2 assumption for 4 items)
-              const row = Math.floor(index / 2);
-              const col = index % 2;
-              const gridTop = `${row * 50}%`;
-              const gridLeft = `${col * 50}%`;
-
-              // Parallax effect based on mouse when floating
-              const parallaxX = useTransform(smoothX, [-0.5, 0.5], [-randomZ, randomZ]);
-              const parallaxY = useTransform(smoothY, [-0.5, 0.5], [-randomZ, randomZ]);
-
-              return (
-                <motion.div
-                  key={index}
-                  className="absolute"
-                  initial={false}
-                  animate={
-                    isHovered
-                      ? {
-                          // Floating State (Anti-Gravity)
-                          top: "50%",
-                          left: "50%",
-                          x: `calc(-50% + ${randomX}px)`,
-                          y: `calc(-50% + ${randomY}px)`,
-                          rotate: randomRot,
-                          scale: 1.1,
-                          z: randomZ,
-                        }
-                      : {
-                          // Snapped Grid State
-                          top: gridTop,
-                          left: gridLeft,
-                          x: "0%",
-                          y: "0%",
-                          rotate: 0,
-                          scale: 1,
-                          z: 0,
-                        }
-                  }
-                  style={
-                    isHovered
-                      ? {
-                          // Add mouse parallax on top of the base animation position
-                          // Framer motion allows combining animate state with style overwrites carefully,
-                          // but to keep it simple and clean we apply parallax as a secondary translation.
-                          // Wait, Framer motion style overrides animate's x/y if not careful.
-                          // Let's use a wrapper for parallax!
-                        }
-                      : {}
-                  }
-                  transition={{
-                    type: "spring",
-                    stiffness: 150 + (index * 20), // staggered spring
-                    damping: 15,
-                    mass: 0.8
-                  }}
-                >
-                  <motion.div
-                    style={
-                      isHovered ? { x: parallaxX, y: parallaxY } : { x: 0, y: 0 }
-                    }
-                    className="w-full h-full p-2"
-                  >
-                     {/* The item content wrapper */}
-                     <div className="w-[160px] h-[160px] shadow-2xl">
-                       {item}
-                     </div>
-                  </motion.div>
-                </motion.div>
-              );
-            })}
+            {items.map((item, index) => (
+              <FloatingBentoItem
+                key={index}
+                index={index}
+                isHovered={isHovered}
+                item={item}
+                smoothX={smoothX}
+                smoothY={smoothY}
+              />
+            ))}
           </div>
         </div>
 

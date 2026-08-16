@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion";
 
 export interface ThreadRouteBoardMetric {
@@ -77,6 +77,77 @@ const DEFAULT_THREADS: ThreadRouteBoardThread[] = [
   },
 ];
 
+function getLogsForThread(id: string) {
+  switch (id) {
+    case "brief":
+      return [
+        "[sys] initiating trace: brief input data payload...",
+        "[api] source telemetry schema validated: OK",
+        "[parse] mapping constraints and edge layouts...",
+        "[info] cluster processing signal routing indexes",
+        "[success] thread trace ready for execution metrics.",
+      ];
+    case "taste":
+      return [
+        "[sys] initializing visual taste matrices...",
+        "[metrics] scanning contrast values and border physics...",
+        "[safety] verification: brand color checks fully passed",
+        "[telemetry] computing fluid scroll-animation weights...",
+        "[success] active tactile values synced to dashboard.",
+      ];
+    case "ship":
+      return [
+        "[sys] packaging build distribution registry...",
+        "[bundler] packaging react client components...",
+        "[sync] executing components registry sync pipeline...",
+        "[telemetry] verified local compilation checks: OK",
+        "[success] application exported to local node cluster.",
+      ];
+    default:
+      return [
+        `[sys] establishing connection to node ${id}...`,
+        "[api] validation: OK, streaming status metadata...",
+        "[trace] pipeline executing trace logs...",
+        "[success] node response processed successfully.",
+      ];
+  }
+}
+
+function ThreadLogStream({ id, color }: { id: string; color: string }) {
+  const [logs, setLogs] = useState<string[]>([]);
+
+  useEffect(() => {
+    const timeouts = getLogsForThread(id).map((log, index) =>
+      setTimeout(() => {
+        setLogs((currentLogs) => [...currentLogs, log]);
+      }, index * 120),
+    );
+
+    return () => timeouts.forEach(clearTimeout);
+  }, [id]);
+
+  return (
+    <AnimatePresence mode="popLayout">
+      {logs.map((log, index) => (
+        <motion.div
+          key={log}
+          initial={{ opacity: 0, x: -3 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="break-all border-l-2 border-white/5 pl-2 leading-relaxed"
+          style={{
+            borderColor: index === logs.length - 1 ? color : "rgba(255,255,255,0.05)",
+            color: index === logs.length - 1 ? "#fff" : "rgba(255,255,255,0.6)",
+          }}
+        >
+          {log}
+        </motion.div>
+      ))}
+    </AnimatePresence>
+  );
+}
+
 export function ThreadRouteBoard({
   title = "Route the next best action",
   eyebrow = "Signal Loom",
@@ -98,63 +169,10 @@ export function ThreadRouteBoard({
 }: ThreadRouteBoardProps) {
   const [active, setActive] = useState(1);
   const [hovered, setHovered] = useState<number | null>(null);
-  const [logs, setLogs] = useState<string[]>([]);
 
   const safeThreads = threads && threads.length > 0 ? threads : DEFAULT_THREADS;
   const activeIndex = Math.min(hovered ?? active, safeThreads.length - 1);
   const activeThread = safeThreads[activeIndex] ?? safeThreads[0];
-
-  // Streaming logs mockup generator
-  const getLogsForThread = (id: string) => {
-    switch (id) {
-      case "brief":
-        return [
-          "[sys] initiating trace: brief input data payload...",
-          "[api] source telemetry schema validated: OK",
-          "[parse] mapping constraints and edge layouts...",
-          "[info] cluster processing signal routing indexes",
-          "[success] thread trace ready for execution metrics."
-        ];
-      case "taste":
-        return [
-          "[sys] initializing visual taste matrices...",
-          "[metrics] scanning contrast values and border physics...",
-          "[safety] verification: brand color checks fully passed",
-          "[telemetry] computing fluid scroll-animation weights...",
-          "[success] active tactile values synced to dashboard."
-        ];
-      case "ship":
-        return [
-          "[sys] packaging build distribution registry...",
-          "[bundler] packaging react client components...",
-          "[sync] executing components registry sync pipeline...",
-          "[telemetry] verified local compilation checks: OK",
-          "[success] application exported to local node cluster."
-        ];
-      default:
-        return [
-          `[sys] establishing connection to node ${id}...`,
-          "[api] validation: OK, streaming status metadata...",
-          "[trace] pipeline executing trace logs...",
-          "[success] node response processed successfully."
-        ];
-    }
-  };
-
-  useEffect(() => {
-    const targetLogs = getLogsForThread(activeThread.id);
-    setLogs([]);
-    
-    const timeouts = targetLogs.map((log, index) => 
-      setTimeout(() => {
-        setLogs(prev => [...prev, log]);
-      }, index * 120)
-    );
-
-    return () => {
-      timeouts.forEach(clearTimeout);
-    };
-  }, [activeThread.id]);
 
   return (
     <motion.section
@@ -321,24 +339,11 @@ export function ThreadRouteBoard({
 
                 {/* Simulated Telemetry log monitor */}
                 <div className="bg-[#050507] border border-white/5 rounded p-3 min-h-[140px] font-mono text-[9px] text-white/60 flex flex-col gap-1.5 overflow-hidden">
-                  <AnimatePresence mode="popLayout">
-                    {logs.map((log, idx) => (
-                      <motion.div
-                        key={log}
-                        initial={{ opacity: 0, x: -3 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                        className="leading-relaxed border-l-2 pl-2 border-white/5 break-all"
-                        style={{ 
-                          borderColor: idx === logs.length - 1 ? activeThread.color : "rgba(255,255,255,0.05)",
-                          color: idx === logs.length - 1 ? "#fff" : "rgba(255,255,255,0.6)"
-                        }}
-                      >
-                        {log}
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
+                  <ThreadLogStream
+                    key={activeThread.id}
+                    id={activeThread.id}
+                    color={activeThread.color}
+                  />
                 </div>
 
                 {/* Metrics Grid */}

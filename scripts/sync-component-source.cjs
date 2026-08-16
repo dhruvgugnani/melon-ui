@@ -17,6 +17,15 @@ const source = fs.readFileSync(demoPath, "utf8").replace(/\r\n/g, "\n").trimEnd(
 const catalog = fs.readFileSync(catalogPath, "utf8");
 const sourceFile = ts.createSourceFile(catalogPath, catalog, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
 
+const serializeTemplateLiteral = (value) =>
+  `\`${value
+    .replace(/\\/g, "\\\\")
+    .replace(/`/g, "\\`")
+    .replace(/\$\{/g, "\\${")
+    .replace(/[ \t]+(?=\n)/g, (whitespace) =>
+      whitespace.replace(/ /g, "\\x20").replace(/\t/g, "\\t"),
+    )}\``;
+
 const propertyName = (property) => {
   if (!property.name) return undefined;
   if (ts.isIdentifier(property.name) || ts.isStringLiteral(property.name)) return property.name.text;
@@ -55,7 +64,7 @@ if (!codeProperty || !ts.isPropertyAssignment(codeProperty)) {
 
 const updatedCatalog =
   catalog.slice(0, codeProperty.initializer.getStart(sourceFile)) +
-  JSON.stringify(source) +
+  serializeTemplateLiteral(source) +
   catalog.slice(codeProperty.initializer.getEnd());
 
 fs.mkdirSync(path.dirname(registryPath), { recursive: true });

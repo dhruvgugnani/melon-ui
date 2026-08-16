@@ -28,12 +28,17 @@ export function JuicyCursor({
   const ringRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const posRef = useRef({ x: 0, y: 0, vx: 0, vy: 0, px: 0, py: 0 });
-  const [isVisible, setIsVisible] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (!containerRef) return;
+    const target = containerRef.current;
+    if (!target) return;
+
+    const frame = requestAnimationFrame(() => setPortalTarget(target));
+    return () => cancelAnimationFrame(frame);
+  }, [containerRef]);
 
   useEffect(() => {
     const blob = blobRef.current;
@@ -108,9 +113,6 @@ export function JuicyCursor({
     target.addEventListener("mouseenter", onEnter);
     target.addEventListener("mouseleave", onLeave);
 
-    // Initial state check
-    setIsVisible(true);
-
     return () => {
       target.removeEventListener("mousemove", onMove);
       target.removeEventListener("mousedown", onDown);
@@ -122,7 +124,7 @@ export function JuicyCursor({
         target.style.position = originalPosition;
       }
     };
-  }, [containerRef, mounted]);
+  }, [containerRef, portalTarget]);
 
   const positionClass = "absolute";
 
@@ -164,8 +166,8 @@ export function JuicyCursor({
 
   // If containerRef is provided, render via Portal
   if (containerRef) {
-    if (!mounted || !containerRef.current) return null;
-    return createPortal(cursorElements, containerRef.current);
+    if (!portalTarget) return null;
+    return createPortal(cursorElements, portalTarget);
   }
 
   // Localized preview

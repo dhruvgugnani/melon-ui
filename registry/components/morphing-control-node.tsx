@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useEffect, useMemo } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 export type NodeState = "IDLE" | "SCANNING" | "AUDIO" | "ALERT";
@@ -42,22 +42,7 @@ export function MorphingControlNode({
   ...props
 }: MorphingControlNodeProps) {
   const [nodeState, setNodeState] = useState<NodeState>(initialState);
-  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Use pseudo-random seeded values based on index to ensure deterministic rendering
-  // and prevent hydration mismatches
-  const radarConfig = useMemo(() => 
-    Array.from({ length: 18 }).map((_, i) => ({
-      delay: (i * 0.3) % 2,
-      duration: ((i * 0.7) % 2) + 0.5
-    })),
-    []
-  );
 
   const audioDurations = useMemo(() => 
     Array.from({ length: 12 }).map((_, i) => 0.5 + ((i * 0.4) % 0.5)),
@@ -132,8 +117,8 @@ export function MorphingControlNode({
         animate={states[nodeState]}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         style={{
-          rotateX: mounted ? rotateX : 0,
-          rotateY: mounted ? rotateY : 0,
+          rotateX,
+          rotateY,
           transformStyle: "preserve-3d",
           backdropFilter: "blur(20px)",
         }}
@@ -294,7 +279,7 @@ export function MorphingControlNode({
                 onClick={(e) => { e.stopPropagation(); setNodeState("IDLE"); }}
                 className="px-5 py-1.5 rounded bg-white/5 border border-white/10 text-white font-mono uppercase tracking-widest text-[9px] hover:bg-white/10 transition-colors shadow-[0_4px_12px_rgba(255,92,113,0.15)]"
               >
-                Reset System
+                {lockdownText}
               </button>
             </motion.div>
           )}

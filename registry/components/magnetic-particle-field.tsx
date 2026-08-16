@@ -84,7 +84,7 @@ const Particles: React.FC<ParticlesProps> = ({
   });
 
   return (
-    <instancedMesh ref={mesh} args={[null as any, null as any, count]}>
+    <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
       {/* Small glowing tetrahedrons/diamonds */}
       <octahedronGeometry args={[particleSize, 0]} />
       <meshPhysicalMaterial
@@ -127,7 +127,8 @@ export const MagneticParticleField: React.FC<MagneticParticleFieldProps> = ({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   if (!mounted) {
