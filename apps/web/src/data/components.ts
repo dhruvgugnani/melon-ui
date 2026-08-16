@@ -29,7 +29,62 @@ export interface ComponentData {
 
 export const componentsData: ComponentData[] = [
 
-  {
+    {
+    id: "precision-slider",
+    slug: "precision-slider",
+    title: "Precision Slider",
+    description: "A highly precise slider with fine-tuning capability when holding shift, knurled thumb texture, and floating value indicators.",
+    category: "Forms & Inputs",
+    tags: ["framer-motion", "interactive", "slider", "range"],
+    cliCommand: "npx @melonui-dev/cli add precision-slider",
+    codeSnippet: "\"use client\";\n\nimport * as React from \"react\";\nimport { useRef, useState, useEffect } from \"react\";\nimport { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from \"framer-motion\";\n\nexport interface PrecisionSliderProps {\n  min?: number;\n  max?: number;\n  step?: number;\n  defaultValue?: number;\n  onChange?: (val: number) => void;\n  accentColor?: string;\n  trackColor?: string;\n  label?: string;\n  unit?: string;\n  className?: string;\n}\n\nexport const PrecisionSlider: React.FC<PrecisionSliderProps> = ({\n  min = 0,\n  max = 100,\n  step = 1,\n  defaultValue = 50,\n  onChange,\n  accentColor = \"#7fff5e\",\n  trackColor = \"rgba(255, 255, 255, 0.05)\",\n  label = \"FREQUENCY\",\n  unit = \"HZ\",\n  className = \"\",\n}) => {\n  const trackRef = useRef<HTMLDivElement>(null);\n  const [value, setValue] = useState(defaultValue);\n  const [isDragging, setIsDragging] = useState(false);\n  const [isHovered, setIsHovered] = useState(false);\n  \n  // Framer motion values\n  const dragX = useMotionValue(0);\n  const springX = useSpring(dragX, { stiffness: 400, damping: 30 });\n  \n  // Update dragX on mount based on defaultValue\n  useEffect(() => {\n    if (trackRef.current) {\n      const rect = trackRef.current.getBoundingClientRect();\n      const initialPercentage = (defaultValue - min) / (max - min);\n      dragX.set(initialPercentage * rect.width);\n    }\n  }, [defaultValue, min, max, dragX]);\n\n  const handlePointerDown = (e: React.PointerEvent) => {\n    setIsDragging(true);\n    e.currentTarget.setPointerCapture(e.pointerId);\n    updateValue(e.clientX, e.shiftKey);\n  };\n\n  const handlePointerMove = (e: React.PointerEvent) => {\n    if (isDragging) {\n      updateValue(e.clientX, e.shiftKey);\n    }\n  };\n\n  const handlePointerUp = (e: React.PointerEvent) => {\n    setIsDragging(false);\n    e.currentTarget.releasePointerCapture(e.pointerId);\n  };\n\n  const updateValue = (clientX: number, isFineTune: boolean) => {\n    if (!trackRef.current) return;\n    const rect = trackRef.current.getBoundingClientRect();\n    \n    // Normal calculation\n    let rawPercentage = (clientX - rect.left) / rect.width;\n    \n    // If fine-tuning, reduce sensitivity around the current value\n    if (isFineTune && isDragging) {\n      const currentPercentage = (value - min) / (max - min);\n      const delta = rawPercentage - currentPercentage;\n      rawPercentage = currentPercentage + delta * 0.1; // 10% sensitivity for finer control\n    }\n\n    const clampedPercentage = Math.max(0, Math.min(1, rawPercentage));\n    \n    let newValue = min + clampedPercentage * (max - min);\n    if (step) {\n      newValue = Math.round(newValue / step) * step;\n    }\n    newValue = Math.max(min, Math.min(max, newValue));\n\n    if (newValue !== value) {\n      setValue(newValue);\n      onChange?.(newValue);\n    }\n\n    // Update thumb position visually (snapped)\n    const snappedPercentage = (newValue - min) / (max - min);\n    dragX.set(snappedPercentage * rect.width);\n  };\n\n  const fillWidth = useTransform(springX, (x) => {\n    if (!trackRef.current) return \"0%\";\n    const rect = trackRef.current.getBoundingClientRect();\n    return `${Math.max(0, Math.min(100, (x / rect.width) * 100))}%`;\n  });\n\n  // Calculate ticks\n  const numTicks = 21; // 21 ticks for a nice dense look\n  const ticks = Array.from({ length: numTicks }).map((_, i) => {\n    return min + (i / (numTicks - 1)) * (max - min);\n  });\n\n  return (\n    <div \n      className={`relative w-full max-w-md flex flex-col font-mono select-none ${className}`}\n      onMouseEnter={() => setIsHovered(true)}\n      onMouseLeave={() => setIsHovered(false)}\n    >\n      {/* Header */}\n      <div className=\"flex justify-between items-end mb-4 px-1\">\n        <span className=\"text-xs font-bold tracking-widest text-white/70 uppercase\">\n          {label}\n        </span>\n        <div className=\"flex items-baseline gap-1.5 opacity-80\">\n          <span className=\"text-sm font-bold text-white\">FINE-TUNE</span>\n          <span className=\"text-[9px] text-white/50 border border-white/20 px-1 rounded-sm tracking-wider\">SHIFT</span>\n        </div>\n      </div>\n\n      {/* Track Container */}\n      <div \n        className=\"relative h-16 flex items-center group touch-none\"\n        ref={trackRef}\n        onPointerDown={handlePointerDown}\n        onPointerMove={handlePointerMove}\n        onPointerUp={handlePointerUp}\n        onPointerCancel={handlePointerUp}\n      >\n        {/* Main Track Line */}\n        <div \n          className=\"absolute left-0 right-0 h-1.5 rounded-full overflow-hidden shadow-inner backdrop-blur-sm\"\n          style={{ backgroundColor: trackColor, border: '1px solid rgba(255,255,255,0.05)' }}\n        >\n          {/* Active Fill */}\n          <motion.div \n            className=\"absolute top-0 bottom-0 left-0 rounded-full\"\n            style={{ \n              width: fillWidth, \n              backgroundColor: accentColor,\n              boxShadow: `0 0 15px ${accentColor}`\n            }}\n          />\n        </div>\n\n        {/* Ticks Grid */}\n        <div className=\"absolute inset-0 flex justify-between items-center pointer-events-none px-2\">\n          {ticks.map((tick, i) => {\n            const isMajor = i % 5 === 0;\n            const isPassed = value >= tick;\n            const dist = Math.abs(value - tick);\n            const maxDist = (max - min) * 0.15;\n            const proximityOpacity = Math.max(0, 1 - dist / maxDist);\n\n            return (\n              <div key={i} className=\"flex flex-col items-center justify-center relative h-full\">\n                <motion.div \n                  className=\"w-[1px] transition-colors duration-300\"\n                  style={{ \n                    height: isMajor ? '12px' : '6px',\n                    backgroundColor: isPassed ? accentColor : 'rgba(255,255,255,0.15)',\n                    opacity: isPassed ? 0.8 : 0.4,\n                    boxShadow: proximityOpacity > 0 && isPassed ? `0 0 8px ${accentColor}` : 'none'\n                  }}\n                  animate={{\n                    height: isMajor ? (proximityOpacity > 0.5 ? 16 : 12) : (proximityOpacity > 0.5 ? 8 : 6),\n                    backgroundColor: isPassed ? accentColor : (proximityOpacity > 0.2 ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.15)')\n                  }}\n                />\n              </div>\n            );\n          })}\n        </div>\n\n        {/* Draggable Thumb */}\n        <motion.div\n          className=\"absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-10 bg-[#111] border border-white/20 rounded-md shadow-2xl flex flex-col items-center justify-center gap-1 cursor-grab active:cursor-grabbing z-10\"\n          style={{ x: springX }}\n          whileHover={{ scale: 1.05, borderColor: \"rgba(255,255,255,0.4)\" }}\n          animate={{ \n            scale: isDragging ? 1.1 : 1,\n            borderColor: isDragging ? accentColor : \"rgba(255,255,255,0.2)\",\n            boxShadow: isDragging ? `0 10px 20px -5px ${accentColor}40, 0 0 0 1px ${accentColor}` : \"0 4px 10px rgba(0,0,0,0.5)\"\n          }}\n        >\n          {/* Thumb Texture (Knurling) */}\n          <div className=\"w-1.5 h-1.5 rounded-full bg-white/40\" />\n          <div className=\"w-1.5 h-1.5 rounded-full bg-white/40\" />\n          <div className=\"w-1.5 h-1.5 rounded-full bg-white/40\" />\n          \n          {/* Floating Value Indicator */}\n          <AnimatePresence>\n            {(isDragging || isHovered) && (\n              <motion.div\n                initial={{ opacity: 0, y: 10, scale: 0.8 }}\n                animate={{ opacity: 1, y: -35, scale: 1 }}\n                exit={{ opacity: 0, y: 10, scale: 0.8 }}\n                className=\"absolute top-0 pointer-events-none\"\n              >\n                <div \n                  className=\"bg-[#1a1a1a] border px-2 py-1 rounded shadow-xl flex items-baseline gap-1\"\n                  style={{ borderColor: `${accentColor}50` }}\n                >\n                  <span className=\"text-sm font-bold text-white leading-none\">\n                    {value.toFixed(step % 1 !== 0 ? 1 : 0)}\n                  </span>\n                  <span className=\"text-[9px] text-white/50\">{unit}</span>\n                </div>\n              </motion.div>\n            )}\n          </AnimatePresence>\n        </motion.div>\n      </div>\n\n      {/* Min/Max Labels */}\n      <div className=\"flex justify-between items-center mt-2 px-1 text-[10px] text-white/40 tracking-widest font-mono\">\n        <span>{min.toFixed(0)}</span>\n        <div className=\"h-px flex-1 mx-4 bg-gradient-to-r from-transparent via-white/10 to-transparent\" />\n        <span>{max.toFixed(0)}</span>\n      </div>\n    </div>\n  );\n};\n",
+    componentPath: "PrecisionSlider",
+    props: [
+      {
+        name: "min",
+        type: "number",
+        defaultValue: "0",
+        description: "Minimum value of the slider"
+      },
+      {
+        name: "max",
+        type: "number",
+        defaultValue: "100",
+        description: "Maximum value of the slider"
+      },
+      {
+        name: "step",
+        type: "number",
+        defaultValue: "1",
+        description: "Step value for the slider"
+      },
+      {
+        name: "defaultValue",
+        type: "number",
+        defaultValue: "50",
+        description: "Initial value of the slider"
+      },
+      {
+        name: "label",
+        type: "string",
+        defaultValue: '"FREQUENCY"',
+        description: "Label for the slider"
+      },
+      {
+        name: "unit",
+        type: "string",
+        defaultValue: '"HZ"',
+        description: "Unit label for the slider value"
+      },
+      {
+        name: "accentColor",
+        type: "string",
+        defaultValue: '"#7fff5e"',
+        description: "Color of the fill and active elements"
+      }
+    ]
+  },
+{
       id: "kinetic-timeline",
       slug: "kinetic-timeline",
       title: "Kinetic Timeline",
