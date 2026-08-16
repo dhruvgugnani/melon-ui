@@ -6,6 +6,9 @@
     "apps/*",
     "cli"
   ],
+  "devDependencies": {
+    "esbuild": "0.27.2"
+  },
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "start": "npm run start -w melonui-web",
