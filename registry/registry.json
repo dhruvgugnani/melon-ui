@@ -1657,5 +1657,26 @@
       "Drag"
     ],
     "preview": "/preview/tactile-zipper-card.png"
+  },
+  "precision-slider": {
+    "name": "Precision Slider",
+    "description": "A highly precise slider with fine-tuning capability when holding shift.",
+    "category": "Forms & Inputs",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "precision-slider.tsx",
+        "path": "components/precision-slider.tsx"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Interactive",
+      "Slider",
+      "Keyboard"
+    ],
+    "preview": "/preview/precision-slider.png"
   }
 }

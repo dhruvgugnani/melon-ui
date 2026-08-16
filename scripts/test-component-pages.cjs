@@ -325,6 +325,49 @@ async function testMorphingBentoMatrix(page) {
   await page.setViewportSize({ width: 1440, height: 1000 });
 }
 
+async function testPrecisionSlider(page) {
+  await page.setViewportSize({ width: 320, height: 900 });
+  const slider = page.getByRole("slider", { name: "FREQUENCY" });
+  await slider.waitFor({ state: "visible" });
+
+  const compactBox = await slider.boundingBox();
+  assert(
+    compactBox && compactBox.x + compactBox.width <= 320,
+    "Precision Slider overflowed a 320px viewport",
+  );
+  assert(
+    (await slider.getAttribute("aria-valuenow")) === "50",
+    "Precision Slider did not expose its initial value",
+  );
+
+  await slider.focus();
+  await slider.press("ArrowRight");
+  assert(
+    (await slider.getAttribute("aria-valuenow")) === "51",
+    "Precision Slider did not respond to ArrowRight",
+  );
+  await slider.press("Shift+ArrowRight");
+  assert(
+    (await slider.getAttribute("aria-valuenow")) === "51.1",
+    "Precision Slider fine-tune keyboard step did not use one-tenth sensitivity",
+  );
+  await slider.press("Home");
+  assert(
+    (await slider.getAttribute("aria-valuenow")) === "0",
+    "Precision Slider Home key did not select the minimum",
+  );
+
+  const box = await slider.boundingBox();
+  assert(box, "Precision Slider has no measurable interaction area");
+  await page.mouse.click(box.x + box.width * 0.75, box.y + box.height / 2);
+  const pointerValue = Number(await slider.getAttribute("aria-valuenow"));
+  assert(
+    pointerValue >= 74 && pointerValue <= 76,
+    `Precision Slider pointer input selected ${pointerValue} instead of approximately 75`,
+  );
+  await page.setViewportSize({ width: 1440, height: 1000 });
+}
+
 const componentChecks = {
   "astral-morph-node": testAstralMorphNode,
   "aura-morph-terminal": testAuraMorphTerminal,
@@ -334,6 +377,7 @@ const componentChecks = {
   "kinetic-timeline": testKineticTimeline,
   "morphing-bento-matrix": testMorphingBentoMatrix,
   "magnetic-card": testMagneticCard,
+  "precision-slider": testPrecisionSlider,
   "tactile-zipper-card": testTactileZipperCard,
 };
 

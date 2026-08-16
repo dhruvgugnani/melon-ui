@@ -9,6 +9,7 @@ import { componentsData } from "@/data/components";
 // Dynamically import all components with ssr: false to prevent node/hydration canvas issues
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const componentsMap: Record<string, React.ComponentType<any>> = {
+  PrecisionSlider: dynamic(() => import('@/components/community/demos/PrecisionSlider').then(m => m.PrecisionSlider), { ssr: false }),
   AntiGravityBento: dynamic(() => import('@/components/community/demos/AntiGravityBento').then(m => m.AntiGravityBento), { ssr: false }),
   BreadcrumbTrail: dynamic(() => import('@/components/community/demos/BreadcrumbTrail').then(m => m.BreadcrumbTrail), { ssr: false }),
   ChangelogCard: dynamic(() => import('@/components/community/demos/ChangelogCard').then(m => m.ChangelogCard), { ssr: false }),
