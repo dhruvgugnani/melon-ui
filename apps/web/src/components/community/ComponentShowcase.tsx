@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import gsap from "gsap";
-import Link from "next/link";
 import { getComponentBySlug } from "@/data/components";
 import { componentsRegistry } from "./componentsRegistry";
 
@@ -19,6 +18,35 @@ interface ComponentShowcaseProps {
   usageCode?: string;
   aiPrompt?: string;
   componentPath?: string;
+}
+
+type PlaygroundValue = string | number | boolean;
+type PlaygroundProps = Record<string, PlaygroundValue>;
+
+interface PlaygroundPropDefinition {
+  name: string;
+  defaultValue: string;
+  control?: unknown;
+}
+
+function getPlaygroundDefaults(props: readonly PlaygroundPropDefinition[]): PlaygroundProps {
+  const defaults: PlaygroundProps = {};
+
+  props.forEach((prop) => {
+    if (!prop.control) return;
+    if (prop.defaultValue.startsWith('"') || prop.defaultValue.startsWith("'")) {
+      defaults[prop.name] = prop.defaultValue.slice(1, -1);
+    } else if (prop.defaultValue === "true") {
+      defaults[prop.name] = true;
+    } else if (prop.defaultValue === "false") {
+      defaults[prop.name] = false;
+    } else {
+      const value = Number(prop.defaultValue);
+      defaults[prop.name] = Number.isNaN(value) ? prop.defaultValue : value;
+    }
+  });
+
+  return defaults;
 }
 
 function highlightSyntax(code: string): string {
@@ -69,7 +97,6 @@ function highlightSyntax(code: string): string {
 
 export function ComponentShowcase({
   title,
-  description,
   component,
   codeSnippet,
   cliCommand,
@@ -108,29 +135,28 @@ export function ComponentShowcase({
   const resolvedCliCommand = cliCommand || `npx @melonui-dev/cli add ${compSlug}`;
 
   // Fetch component info and props list
-  const componentInfo = slug ? getComponentBySlug(slug) : null;
-  const propsList = componentInfo?.props || [];
+  const componentInfo = useMemo(() => (slug ? getComponentBySlug(slug) : null), [slug]);
+  const propsList = useMemo(() => componentInfo?.props || [], [componentInfo]);
+  const defaultPlaygroundProps = useMemo(() => getPlaygroundDefaults(propsList), [propsList]);
 
   // Playground state management
-  const [playgroundProps, setPlaygroundProps] = useState<Record<string, any>>({});
-
-  useEffect(() => {
-    const defaults: Record<string, any> = {};
-    propsList.forEach((p) => {
-      if (!p.control) return;
-      if (p.defaultValue.startsWith('"') || p.defaultValue.startsWith("'")) {
-        defaults[p.name] = p.defaultValue.slice(1, -1);
-      } else if (p.defaultValue === "true") {
-        defaults[p.name] = true;
-      } else if (p.defaultValue === "false") {
-        defaults[p.name] = false;
-      } else {
-        const val = Number(p.defaultValue);
-        defaults[p.name] = isNaN(val) ? p.defaultValue : val;
-      }
-    });
-    setPlaygroundProps(defaults);
-  }, [slug, componentInfo]); // Reset on slug / component change
+  const [playgroundState, setPlaygroundState] = useState(() => ({
+    slug: compSlug,
+    props: defaultPlaygroundProps,
+  }));
+  const playgroundProps =
+    playgroundState.slug === compSlug ? playgroundState.props : defaultPlaygroundProps;
+  const setPlaygroundProps = useCallback(
+    (update: React.SetStateAction<PlaygroundProps>) => {
+      setPlaygroundState((currentState) => {
+        const currentProps =
+          currentState.slug === compSlug ? currentState.props : defaultPlaygroundProps;
+        const nextProps = typeof update === "function" ? update(currentProps) : update;
+        return { slug: compSlug, props: nextProps };
+      });
+    },
+    [compSlug, defaultPlaygroundProps],
+  );
 
   // Dynamically calculate dependencies based on tags
   const getDependencies = (tagsList: string[]) => {
@@ -167,12 +193,9 @@ export default function Page() {
 }`;
 
   // Dynamic usage code builder
-  const [dynamicUsageCode, setDynamicUsageCode] = useState(resolvedUsageCode);
-
-  useEffect(() => {
+  const dynamicUsageCode = useMemo(() => {
     if (propsList.length === 0) {
-      setDynamicUsageCode(resolvedUsageCode);
-      return;
+      return resolvedUsageCode;
     }
 
     const propsStr = Object.entries(playgroundProps)
@@ -183,7 +206,7 @@ export default function Page() {
       })
       .join("\n");
 
-    const dynamicCode = `import { ${compName} } from "@/components/${compSlug}";
+    return `import { ${compName} } from "@/components/${compSlug}";
 
 export default function Page() {
   return (
@@ -194,10 +217,9 @@ ${propsStr}
     </main>
   );
 }`;
-    setDynamicUsageCode(dynamicCode);
   }, [playgroundProps, propsList, compName, compSlug, resolvedUsageCode]);
 
-  const resolvedAiPrompt = `I want to integrate the MelonUI "${title}" component into my project.
+  const resolvedAiPrompt = aiPrompt || `I want to integrate the MelonUI "${title}" component into my project.
 To add it, run the command: \`${resolvedCliCommand}\`
 
 Please import and merge this component into my project, and write the code showing how to customize its parameters and content.`;
@@ -793,23 +815,7 @@ Please import and merge this component into my project, and write the code showi
               })}
 
               <button
-                onClick={() => {
-                  const defaults: Record<string, any> = {};
-                  propsList.forEach(p => {
-                    if (!p.control) return;
-                    if (p.defaultValue.startsWith('"') || p.defaultValue.startsWith("'")) {
-                      defaults[p.name] = p.defaultValue.slice(1, -1);
-                    } else if (p.defaultValue === "true") {
-                      defaults[p.name] = true;
-                    } else if (p.defaultValue === "false") {
-                      defaults[p.name] = false;
-                    } else {
-                      const val = Number(p.defaultValue);
-                      defaults[p.name] = isNaN(val) ? p.defaultValue : val;
-                    }
-                  });
-                  setPlaygroundProps(defaults);
-                }}
+                onClick={() => setPlaygroundProps(defaultPlaygroundProps)}
                 className="w-full py-2 bg-[#0d0d0d] hover:bg-[#151515] border border-[#1a1a1a] text-[#777] hover:text-[#f4f4f4] font-mono text-[10px] uppercase tracking-widest transition-all rounded cursor-pointer active:scale-98"
               >
                 Reset Default Settings

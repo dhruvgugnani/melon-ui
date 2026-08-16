@@ -288,6 +288,33 @@ async function testKineticTimeline(page) {
   assert(firstPointerPath !== secondPointerPath,
     "Kinetic Timeline line did not bend toward pointer movement");
   await page.setViewportSize({ width: 1440, height: 1000 });
+
+  const playgroundHeading = page.getByText("Interactive Playground", { exact: true });
+  await playgroundHeading.scrollIntoViewIfNeeded();
+  const playground = playgroundHeading.locator(
+    'xpath=ancestor::div[contains(@class, "lg:col-span-5")][1]',
+  );
+  const lineColorInput = playground.locator('input[type="text"]').first();
+  const defaultLineColor = await lineColorInput.inputValue();
+  await lineColorInput.fill("#123456");
+  assert(
+    (await lineColorInput.inputValue()) === "#123456",
+    "Component playground did not apply a controlled prop update",
+  );
+
+  await page.getByRole("tab", { name: "Installation & AI" }).click();
+  const usageCode = page.locator("pre").filter({ hasText: "KineticTimeline" }).first();
+  assert(
+    (await usageCode.textContent())?.includes('lineColor="#123456"'),
+    "Component playground did not update the generated usage example",
+  );
+  await page.getByRole("tab", { name: "Preview", exact: true }).click();
+
+  await playground.getByRole("button", { name: "Reset Default Settings" }).click();
+  assert(
+    (await lineColorInput.inputValue()) === defaultLineColor,
+    "Component playground did not restore default prop values",
+  );
 }
 
 async function testMorphingBentoMatrix(page) {
