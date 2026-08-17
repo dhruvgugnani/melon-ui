@@ -29,6 +29,55 @@ export interface ComponentData {
 
 export const componentsData: ComponentData[] = [
   {
+    id: "layered-notification-stack",
+    slug: "layered-notification-stack",
+    title: "Layered Notification Stack",
+    description: "A stacked, animated notification system that fans out on hover to reveal hidden alerts.",
+    category: "Notifications",
+    tags: ["UI", "Notifications", "Stack", "Interactive"],
+    cliCommand: "npx @melonui-dev/cli add layered-notification-stack",
+    codeSnippet: "\"use client\";\n\nimport React, { useState } from \"react\";\nimport { motion, AnimatePresence } from \"framer-motion\";\n\nexport interface NotificationItem {\n  id: string;\n  title: string;\n  description: string;\n  time: string;\n  status?: \"default\" | \"success\" | \"warning\" | \"error\";\n  read?: boolean;\n}\n\nexport interface LayeredNotificationStackProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"onSelect\"> {\n  notifications: NotificationItem[];\n  maxVisible?: number;\n  onSelect?: (item: NotificationItem) => void;\n  accentColor?: string;\n  borderColor?: string;\n  backgroundColor?: string;\n  textColor?: string;\n}\n\nexport function LayeredNotificationStack({\n  notifications = [],\n  maxVisible = 3,\n  onSelect,\n  accentColor = \"#ff5c71\",\n  borderColor = \"#2a2a2a\",\n  backgroundColor = \"#0d0d0d\",\n  textColor = \"#f4f4f4\",\n  className = \"\",\n  style,\n  ...props\n}: LayeredNotificationStackProps) {\n  const [isHovered, setIsHovered] = useState(false);\n\n  // Take only up to maxVisible + 1 for performance/rendering limits\n  // (We render one extra to handle the \"fold\" gracefully if we want)\n  const visibleItems = notifications.slice(0, maxVisible + 1);\n  const hiddenCount = Math.max(0, notifications.length - maxVisible);\n\n  return (\n    <div\n      className={`relative flex flex-col justify-end ${className}`}\n      style={{\n        width: \"100%\",\n        maxWidth: \"360px\",\n        minHeight: \"240px\",\n        ...style,\n      }}\n      onMouseEnter={() => setIsHovered(true)}\n      onMouseLeave={() => setIsHovered(false)}\n      {...props}\n    >\n      <AnimatePresence mode=\"popLayout\">\n        {visibleItems.map((item, index) => {\n          const isLastVisible = index === maxVisible;\n          if (isLastVisible && !isHovered) return null; // Don't show the extra one unless hovered to give illusion of depth\n\n          // Stack calculations\n          const reverseIndex = visibleItems.length - 1 - index;\n          const yOffset = isHovered ? index * 80 : index * -12;\n          const scale = isHovered ? 1 : 1 - index * 0.05;\n          const zIndex = 50 - index;\n          const opacity = isHovered ? 1 : 1 - index * 0.2;\n\n          // Status colors\n          let statusIndicator = \"transparent\";\n          if (item.status === \"success\") statusIndicator = \"#7fff5e\";\n          else if (item.status === \"warning\") statusIndicator = \"#ffb347\";\n          else if (item.status === \"error\") statusIndicator = \"#ff5c71\";\n          else if (item.status === \"default\") statusIndicator = accentColor;\n\n          return (\n            <motion.div\n              key={item.id}\n              layout\n              initial={{ opacity: 0, y: 50, scale: 0.9 }}\n              animate={{\n                opacity: isLastVisible ? (isHovered ? 1 : 0) : opacity,\n                y: yOffset,\n                scale: isLastVisible ? (isHovered ? 1 : scale) : scale,\n                zIndex: zIndex,\n              }}\n              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}\n              transition={{\n                type: \"spring\",\n                stiffness: 300,\n                damping: 25,\n                mass: 0.8,\n              }}\n              className=\"absolute left-0 w-full cursor-pointer rounded-xl overflow-hidden shadow-xl\"\n              style={{\n                backgroundColor: backgroundColor,\n                border: `1px solid ${borderColor}`,\n                top: isHovered ? 0 : \"auto\",\n                bottom: isHovered ? \"auto\" : 0,\n                position: isHovered ? \"relative\" : \"absolute\",\n                marginBottom: isHovered ? \"12px\" : 0,\n              }}\n              onClick={() => onSelect?.(item)}\n              role=\"button\"\n              tabIndex={0}\n              onKeyDown={(e) => {\n                if (e.key === \"Enter\" || e.key === \" \") {\n                  e.preventDefault();\n                  onSelect?.(item);\n                }\n              }}\n              aria-label={`Notification: ${item.title}`}\n            >\n              <div className=\"flex p-4 gap-3\">\n                {/* Status indicator pill */}\n                <div \n                  className=\"w-1.5 rounded-full shrink-0 mt-0.5 mb-0.5\" \n                  style={{ backgroundColor: statusIndicator, opacity: item.read ? 0.3 : 1 }}\n                />\n                \n                <div className=\"flex-1 min-w-0\">\n                  <div className=\"flex justify-between items-start mb-1\">\n                    <h4 \n                      className=\"text-sm font-semibold truncate pr-2\" \n                      style={{ color: textColor, opacity: item.read ? 0.6 : 1 }}\n                    >\n                      {item.title}\n                    </h4>\n                    <span \n                      className=\"text-xs shrink-0 whitespace-nowrap mt-0.5\" \n                      style={{ color: textColor, opacity: 0.4 }}\n                    >\n                      {item.time}\n                    </span>\n                  </div>\n                  <p \n                    className=\"text-xs line-clamp-2\" \n                    style={{ color: textColor, opacity: item.read ? 0.4 : 0.7 }}\n                  >\n                    {item.description}\n                  </p>\n                </div>\n              </div>\n            </motion.div>\n          );\n        })}\n      </AnimatePresence>\n\n      {/* Hidden count indicator (shows when stacked) */}\n      {!isHovered && hiddenCount > 0 && (\n        <motion.div\n          initial={{ opacity: 0 }}\n          animate={{ opacity: 1 }}\n          exit={{ opacity: 0 }}\n          className=\"absolute -top-6 right-2 text-xs font-mono px-2 py-0.5 rounded-full z-0\"\n          style={{ \n            color: textColor, \n            backgroundColor: borderColor,\n            border: `1px solid ${borderColor}`\n          }}\n        >\n          +{hiddenCount} older\n        </motion.div>\n      )}\n    </div>\n  );\n}\n",
+    componentPath: "LayeredNotificationStack",
+    props: [
+      {
+        name: "notifications",
+        type: "NotificationItem[]",
+        defaultValue: "[]",
+        description: "Array of notification objects to display in the stack."
+      },
+      {
+        name: "maxVisible",
+        type: "number",
+        defaultValue: "3",
+        description: "The maximum number of notifications to display at once."
+      },
+      {
+        name: "onSelect",
+        type: "(item: NotificationItem) => void",
+        defaultValue: "undefined",
+        description: "Callback when a notification is clicked or interacted with."
+      },
+      {
+        name: "accentColor",
+        type: "string",
+        defaultValue: '"#ff5c71"',
+        description: "The default status indicator color."
+      },
+      {
+        name: "backgroundColor",
+        type: "string",
+        defaultValue: '"#0d0d0d"',
+        description: "Background color of each notification card."
+      },
+      {
+        name: "borderColor",
+        type: "string",
+        defaultValue: '"#2a2a2a"',
+        description: "Border color of each notification card."
+      }
+    ],
+  },
+  {
     id: "precision-slider",
     slug: "precision-slider",
     title: "Precision Slider",

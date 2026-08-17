@@ -5,6 +5,7 @@ import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const componentsRegistry: Record<string, React.ComponentType<any>> = {
+  LayeredNotificationStack: dynamic(() => import('./demos/LayeredNotificationStack').then(m => m.LayeredNotificationStackDemo), { ssr: false }),
   PrecisionSlider: dynamic(() => import('./demos/PrecisionSlider').then(m => m.PrecisionSlider), { ssr: false }),
   KineticTimeline: dynamic(() => import('./demos/KineticTimeline').then(m => m.KineticTimeline), { ssr: false }),
   AstralMorphNode: dynamic(() => import('./demos/AstralMorphNode').then(m => m.AstralMorphNode), { ssr: false }),
