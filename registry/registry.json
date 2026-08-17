@@ -1678,5 +1678,29 @@
       "Keyboard"
     ],
     "preview": "/preview/precision-slider.png"
+  },
+  "layered-notification-stack": {
+    "name": "Layered Notification Stack",
+    "description": "A stacked, animated notification system that fans out on hover to reveal hidden alerts.",
+    "category": "Notifications",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "layered-notification-stack.tsx",
+        "path": "components/layered-notification-stack.tsx",
+        "type": "registry:ui"
+      }
+    ],
+    "tags": [
+      "UI",
+      "Notifications",
+      "Stack",
+      "Interactive"
+    ],
+    "preview": "/preview/layered-notification-stack.png",
+    "type": "registry:ui",
+    "devDependencies": []
   }
 }
