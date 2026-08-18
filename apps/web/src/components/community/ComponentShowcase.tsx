@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import gsap from "gsap";
 import { getComponentBySlug } from "@/data/components";
 import { componentsRegistry } from "./componentsRegistry";
+import DOMPurify from 'isomorphic-dompurify';
 
 interface ComponentShowcaseProps {
   title: string;
@@ -648,7 +649,7 @@ Please import and merge this component into my project, and write the code showi
                       <span className="font-mono text-[11px] text-[#ff5c71] font-bold">app/page.tsx</span>
                     </div>
                     <pre className="p-4 overflow-auto text-xs font-mono text-white/80 leading-relaxed max-h-[350px] scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
-                      <code dangerouslySetInnerHTML={{ __html: highlightSyntax(dynamicUsageCode) }} />
+                      <code dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(highlightSyntax(dynamicUsageCode)) }} />
                     </pre>
                   </div>
                 </div>
@@ -692,7 +693,7 @@ Please import and merge this component into my project, and write the code showi
                       <span className="font-mono text-[11px] text-[#7fff5e] font-bold">components/{compSlug}.tsx</span>
                     </div>
                     <pre className="p-4 overflow-auto text-xs font-mono text-white/80 leading-relaxed max-h-[450px] scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
-                      <code dangerouslySetInnerHTML={{ __html: highlightSyntax(codeSnippet) }} />
+                      <code dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(highlightSyntax(codeSnippet)) }} />
                     </pre>
                   </div>
                 </div>

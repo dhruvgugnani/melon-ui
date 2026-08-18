@@ -8,3 +8,8 @@ The CLI downloads code directly from a remote API. If the registry endpoint is c
 
 **Prevention:**
 Always separate commands and arguments when using `execa` or child processes, never use `shell: true` with untrusted input, and place dependency specs after an option separator. Normalize output paths, verify containment with `path.relative`, and reject existing symlink path segments before saving files from external sources.
+
+## 2024-06-05 - [XSS Vulnerability in Component Showcase]
+**Vulnerability:** The `ComponentShowcase` rendered unescaped `codeSnippet` and `dynamicUsageCode` content via `dangerouslySetInnerHTML`, opening up potential Cross-Site Scripting (XSS) attacks.
+**Learning:** Bypassing standard React escaping with `dangerouslySetInnerHTML` poses a high risk if the data comes from unsanitized props.
+**Prevention:** Always sanitize dynamically highlighted or generated HTML using `isomorphic-dompurify` in Next.js/SSR environments before injecting it into the DOM.
