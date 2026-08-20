@@ -87,4 +87,5 @@ export const componentsRegistry: Record<string, React.ComponentType<any>> = {
   VoidNexus: dynamic(() => import('./demos/VoidNexus').then(m => m.VoidNexus), { ssr: false }),
   HoloDropSurface: dynamic(() => import('./demos/HoloDropSurface').then(m => m.HoloDropSurface), { ssr: false }),
   TactileZipperCard: dynamic(() => import('./demos/TactileZipperCard').then(m => m.TactileZipperCard), { ssr: false }),
+  MorphingFilterPill: dynamic(() => import('./demos/MorphingFilterPill').then(m => m.MorphingFilterPillDemo), { ssr: false }),
 };

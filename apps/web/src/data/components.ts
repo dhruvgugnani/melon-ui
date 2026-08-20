@@ -15075,6 +15075,45 @@ export function GlowTerminal({
       }
     ]
   }
+,
+
+  {
+    id: "morphing-filter-pill",
+    slug: "morphing-filter-pill",
+    title: "Morphing Filter Pill",
+    description: "An interactive, expanding inline filter pill that uses framer-motion layout animations to fluidly shift sibling elements when opened.",
+    category: "Forms & Inputs",
+    tags: ["Framer Motion", "Interactive", "Forms", "Utility"],
+    cliCommand: "npx @melonui-dev/cli add morphing-filter-pill",
+    codeSnippet: "\"use client\";\n\nimport * as React from \"react\";\nimport { useState, useRef, useEffect, useId } from \"react\";\nimport { motion, AnimatePresence } from \"framer-motion\";\n\nexport interface FilterOption {\n  value: string;\n  label: string;\n}\n\nexport interface MorphingFilterPillProps {\n  label?: string;\n  options?: FilterOption[];\n  defaultValue?: string;\n  onChange?: (value: string) => void;\n  primaryColor?: string;\n  className?: string;\n}\n\nexport function MorphingFilterPill({\n  label = \"Status\",\n  options = [\n    { value: \"all\", label: \"All\" },\n    { value: \"active\", label: \"Active\" },\n    { value: \"inactive\", label: \"Inactive\" },\n  ],\n  defaultValue = \"all\",\n  onChange,\n  primaryColor = \"#00f0ff\",\n  className = \"\",\n}: MorphingFilterPillProps) {\n  const [isOpen, setIsOpen] = useState(false);\n  const [selectedValue, setSelectedValue] = useState(defaultValue);\n  const containerRef = useRef<HTMLDivElement>(null);\n  const uniqueId = useId();\n\n  useEffect(() => {\n    const handleClickOutside = (event: MouseEvent) => {\n      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {\n        setIsOpen(false);\n      }\n    };\n\n    document.addEventListener(\"mousedown\", handleClickOutside);\n    return () => document.removeEventListener(\"mousedown\", handleClickOutside);\n  }, []);\n\n  const handleSelect = (value: string) => {\n    setSelectedValue(value);\n    setIsOpen(false);\n    onChange?.(value);\n  };\n\n  const toggleOpen = () => setIsOpen(!isOpen);\n\n  const selectedOption = options.find((opt) => opt.value === selectedValue) || options[0];\n\n  return (\n    <motion.div\n      ref={containerRef}\n      layout\n      className={`relative inline-flex items-center bg-black/40 border border-white/10 backdrop-blur-md overflow-hidden ${className}`}\n      style={{ borderRadius: 9999 }}\n      transition={{ type: \"spring\", bounce: 0, duration: 0.3 }}\n    >\n      <motion.button\n        layout\n        onClick={toggleOpen}\n        className=\"flex items-center gap-2 px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors cursor-pointer select-none\"\n      >\n        <span className=\"text-white/40 whitespace-nowrap\">{label}:</span>\n        <span className=\"whitespace-nowrap\">{selectedOption?.label}</span>\n        <motion.svg\n          width=\"12\"\n          height=\"12\"\n          viewBox=\"0 0 24 24\"\n          fill=\"none\"\n          stroke=\"currentColor\"\n          strokeWidth=\"2\"\n          strokeLinecap=\"round\"\n          strokeLinejoin=\"round\"\n          animate={{ rotate: isOpen ? 180 : 0 }}\n          transition={{ duration: 0.2 }}\n        >\n          <polyline points=\"6 9 12 15 18 9\"></polyline>\n        </motion.svg>\n      </motion.button>\n\n      <AnimatePresence>\n        {isOpen && (\n          <motion.div\n            initial={{ width: 0, opacity: 0 }}\n            animate={{ width: \"auto\", opacity: 1 }}\n            exit={{ width: 0, opacity: 0 }}\n            transition={{ type: \"spring\", bounce: 0, duration: 0.3 }}\n            className=\"flex items-center border-l border-white/10 ml-1 overflow-hidden\"\n          >\n            <div className=\"flex px-1 min-w-max\">\n              {options.map((option) => {\n                const isSelected = option.value === selectedValue;\n                return (\n                  <button\n                    key={option.value}\n                    onClick={() => handleSelect(option.value)}\n                    className={`relative px-3 py-1.5 mx-1 my-1 text-sm rounded-full transition-colors ${\n                      isSelected ? \"text-black font-semibold\" : \"text-white/60 hover:text-white hover:bg-white/5\"\n                    }`}\n                  >\n                    {isSelected && (\n                      <motion.div\n                        layoutId={`active-filter-bg-${uniqueId}`}\n                        className=\"absolute inset-0 rounded-full\"\n                        style={{ backgroundColor: primaryColor }}\n                        transition={{ type: \"spring\", bounce: 0.2, duration: 0.4 }}\n                      />\n                    )}\n                    <span className=\"relative z-10 whitespace-nowrap\">{option.label}</span>\n                  </button>\n                );\n              })}\n            </div>\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </motion.div>\n  );\n}\n",
+    componentPath: "MorphingFilterPill",
+    props: [
+      {
+        name: "label",
+        type: "string",
+        defaultValue: '"Status"',
+        description: "The static label shown on the left of the pill."
+      },
+      {
+        name: "options",
+        type: "FilterOption[]",
+        defaultValue: '[]',
+        description: "Array of options."
+      },
+      {
+        name: "defaultValue",
+        type: "string",
+        defaultValue: '"all"',
+        description: "The default selected value."
+      },
+      {
+        name: "primaryColor",
+        type: "string",
+        defaultValue: '"#00f0ff"',
+        description: "The accent color used for the active selection."
+      }
+    ]
+  }
 
 ];
 

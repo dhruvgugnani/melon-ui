@@ -1678,5 +1678,27 @@
       "Keyboard"
     ],
     "preview": "/preview/precision-slider.png"
+  },
+  "morphing-filter-pill": {
+    "name": "Morphing Filter Pill",
+    "description": "An interactive, expanding inline filter pill that uses framer-motion layout animations to fluidly shift sibling elements when opened.",
+    "category": "Forms & Inputs",
+    "dependencies": [
+      "framer-motion"
+    ],
+    "files": [
+      {
+        "name": "morphing-filter-pill.tsx",
+        "path": "components/morphing-filter-pill.tsx",
+        "type": "registry:ui"
+      }
+    ],
+    "tags": [
+      "Framer Motion",
+      "Interactive",
+      "Forms",
+      "Utility"
+    ],
+    "preview": "/preview/morphing-filter-pill.png"
   }
 }
