@@ -8,3 +8,8 @@ The CLI downloads code directly from a remote API. If the registry endpoint is c
 
 **Prevention:**
 Always separate commands and arguments when using `execa` or child processes, never use `shell: true` with untrusted input, and place dependency specs after an option separator. Normalize output paths, verify containment with `path.relative`, and reject existing symlink path segments before saving files from external sources.
+
+## 2024-05-24 - Cross-Site Scripting (XSS) in React via dangerouslySetInnerHTML
+**Vulnerability:** Code snippet strings generated dynamically in `ComponentShowcase.tsx` were being directly injected into the DOM using React's `dangerouslySetInnerHTML` without proper sanitization.
+**Learning:** Even internal toolings or showcase components that render seemingly safe output from functions like `highlightSyntax` can be vulnerable to XSS if the input data (`dynamicUsageCode`, `codeSnippet`) becomes maliciously manipulated or unsanitized at its source. In Next.js/React environments, using the standard `dompurify` package can lead to Server-Side Rendering (SSR) issues because `window` is not defined.
+**Prevention:** Always sanitize any dynamically generated HTML before passing it to `dangerouslySetInnerHTML`. In Next.js workspaces, use `isomorphic-dompurify` (`DOMPurify.sanitize(...)`) to prevent SSR errors while ensuring XSS protection.
